@@ -60,9 +60,16 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $alias, $type)
+		$join = parent::join($builder, $alias, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
+
+		if ($this->is_polymorphic())
+		{
+			$join->on($this->foreign('as', $alias), '=', DB::expr('"'.$this->model.'"'));
+		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)

@@ -60,6 +60,8 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		{
 			$join->on($this->foreign('as', $alias), '=', DB::expr('"'.$this->model.'"'));
 		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)

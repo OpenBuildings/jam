@@ -90,4 +90,11 @@ class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 		$this->assertEquals($image->id(), Jam::factory('test_post', 1)->test_cover_image->id());
 	}
 
+	public function test_polymorphic_join_association()
+	{
+		$this->assertEquals(1, Jam::query('test_post')
+			->join_association('test_cover_image')
+			->count());
+	}
+
 } // End Jam_Field_HasOneTest

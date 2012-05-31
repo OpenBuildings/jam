@@ -31,6 +31,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	public $default = 0;
 	
 	public $touch = FALSE;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -76,7 +77,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
 
-		if ($this->polymorphic)
+		if ($this->is_polymorphic())
 		{
 			if ( ! is_string($this->polymorphic))
 			{
@@ -95,9 +96,17 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $alias, $type)
+		$join = parent::join($builder, $alias, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
+
+		if ($this->is_polymorphic())
+		{
+			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+			$join->on($this->polymorphic, '=', DB::expr('"'.$this->foreign('model').'"'));
+		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)

@@ -99,7 +99,7 @@ abstract class Kohana_Jam_Association {
 			throw new Kohana_Exception("Cannot initialize association :association for model :model: foreign field must be a string",
 				array(':association' => $name, ':model' => $model));
 
-		// Convert $this->foriegn to an array for easier access
+		// Convert $this->foreign to an array for easier access
 		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
 	}
 
