@@ -7,6 +7,8 @@
  *
  * @package    Jam
  * @category   Events
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
@@ -86,6 +88,7 @@ abstract class Kohana_Jam_Event {
 
 	/**
 	 * Trigger a callback, if there are no callbacks found, throws an exception
+	 * 
 	 * @param  string $type   'model', 'builder' or 'meta'
 	 * @param  mixed  $sender Jam_Model, Jam_Builder or Jam_Meta
 	 * @param  string $method 
@@ -105,6 +108,7 @@ abstract class Kohana_Jam_Event {
 
 	/**
 	 * Bind callback methods for specfic types. Supported types are 'model', 'builder' and 'meta'
+	 * 
 	 * @param  string $type      'model', 'builder' or 'meta'
 	 * @param  array  $callbacks Callbacks - array of string/array method names, Closure objects or a whole class to mixin
 	 * @return NULL

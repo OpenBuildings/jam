@@ -80,7 +80,7 @@
 
 ## The Types of Associations
 
-In Jerry, an association is a connection between two Jerry models. Associations are implemented using macro-style calls, so that you can declaratively add features to your models. For example, by declaring that one model `belongsto` another, you instruct Jerry to maintain Primary Key–Foreign Key information between instances of the two models, and you also get a number of utility methods added to your model. Jerry supports four types of associations:
+With Jam, an association is a connection between two Jam models. Associations are implemented using macro-style calls, so that you can declaratively add features to your models. For example, by declaring that one model `belongsto` another, you instruct Jam to maintain Primary Key–Foreign Key information between instances of the two models, and you also get a number of utility methods added to your model. Jam supports four types of associations:
 
 * belongsto
 * hasone
@@ -349,7 +349,7 @@ class Model_Employee extends Jam_Model {
 
 ## Tips, Tricks, and Warnings
 
-Here are a few things you should know to make efficient use of Jerry associations in your Jerry applications:
+Here are a few things you should know to make efficient use of Jam associations in your Jam applications:
 
 * Controlling caching
 * Avoiding name collisions
@@ -427,7 +427,7 @@ If you create an association some time after you build the underlying model, you
 
 #### Creating Join Tables for manytomany Associations
 
-If you create a manytomany association, you need to explicitly create the joining table. Unless the name of the join table is explicitly specified by using the 'through' option, Jerry creates the name by using the lexical order of the class names. So a join between customer and order models will give the default join table name of "customers_orders" because "c" outranks "o" in lexical ordering.
+If you create a manytomany association, you need to explicitly create the joining table. Unless the name of the join table is explicitly specified by using the 'through' option, Jam creates the name by using the lexical order of the class names. So a join between customer and order models will give the default join table name of "customers_orders" because "c" outranks "o" in lexical ordering.
 
 > __Be careful__ The precedence between model names is calculated using the < operator for a string. This means that if the strings are of different lengths, and the strings are equal when compared up to the shortest length, then the longer string is considered of higher lexical precedence than the shorter one. For example, one would expect the tables "paper_boxes" and "papers" to generate a join table name of "papers_paper_boxes" because of the length of the name "paper_boxes", but it in fact generates a join table name of "paper_boxes_papers" (because the underscore ‘_’ is lexicographically less than 's' in common encodings).
 
@@ -485,7 +485,7 @@ class Model_Order extends Jam_Model {
 ?>
 ```
 
-By default, Jerry doesn't know about the connection between these associations. This can lead to two copies of an object getting out of sync:
+By default, Jam doesn't know about the connection between these associations. This can lead to two copies of an object getting out of sync:
 
 ```php
 <?php
@@ -497,7 +497,7 @@ $customer->first_name == $order->customer->first_name; // FALSE
 ?>
 ```
 
-This happens because $customer and $order->customer are two different in-memory representations of the same data, and neither one is automatically refreshed from changes to the other. Jerry provides the `inverse_of` option so that you can inform it of these relations:
+This happens because $customer and $order->customer are two different in-memory representations of the same data, and neither one is automatically refreshed from changes to the other. Jam provides the `inverse_of` option so that you can inform it of these relations:
 
 ```php
 <?php 
@@ -522,7 +522,7 @@ class Model_Order extends Jam_Model {
 ?>
 ```
 
-With these changes, Jerry will only load one copy of the customer object, preventing inconsistencies and making your application more efficient:
+With these changes, Jam will only load one copy of the customer object, preventing inconsistencies and making your application more efficient:
 
 ```php
 <?php
@@ -648,7 +648,7 @@ So when you get the orders inside `suppliers/show` view, only then will the SQL 
 
 ### Mass Assignment
 
-Jerry provides a way to set the whole content of an association with nested arrays. This is particularly useful when you have nested forms on your site and you want to save them all in one single save call. Without mass assignment it might get tricky if some of the associated models exist in the database and some must be created. Jerry takes care of all of that for you - saving all the items in the correct order so you don't have to worry about this stuff. For example lets assume we have those 2 models
+Jam provides a way to set the whole content of an association with nested arrays. This is particularly useful when you have nested forms on your site and you want to save them all in one single save call. Without mass assignment it might get tricky if some of the associated models exist in the database and some must be created. Jam takes care of all of that for you - saving all the items in the correct order so you don't have to worry about this stuff. For example lets assume we have those 2 models
 
 ```php
 <?php 
@@ -1104,7 +1104,7 @@ The following sections give the details of each type of association, including t
 
 The `belongsto` association creates a one-to-one match with another model. In database terms, this association says that this class contains the foreign key. If the other class contains the foreign key, then you should use `hasone` instead.
 
-While Jerry uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `belongsto` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
+While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `belongsto` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
 <?php 
@@ -1139,7 +1139,7 @@ The `belongsto` association supports these options:
 
 #### column
 
-By convention, Jerry assumes that the column used to hold the foreign key on this model is the name of the association with the suffix _id added. The `column` option lets you set the name of the foreign key directly:
+By convention, Jam assumes that the column used to hold the foreign key on this model is the name of the association with the suffix _id added. The `column` option lets you set the name of the foreign key directly:
 
 ```php
 <?php 
@@ -1308,7 +1308,7 @@ Passing a string to the `touch` option changes the field which will be updated w
 
 The `hasone` association creates a one-to-one match with another model. In database terms, this association says that the other class contains the foreign key. If this class contains the foreign key, then you should use `belongsto` instead.
 
-While Jerry uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `hasone` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
+While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `hasone` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
 <?php 
@@ -1462,7 +1462,7 @@ Change the name of the association - this name will be used in cache keys and su
 
 The `hasmany` association creates a one-to-many relationship with another model. In database terms, this association says that the other class will have a foreign key that refers to instances of this class.
 
-While Jerry uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `hasmany` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
+While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `hasmany` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
 <?php
@@ -1529,7 +1529,7 @@ If you set the `dependent` option to `Jam_Association::DELETE`, then deleting th
 
 #### extend
 
-Jerry allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
+Jam allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
 
 ```php
 <?php
@@ -1566,7 +1566,7 @@ echo $supplier->builder('orders')->total(); // 520.59
 ?>
 ```
 
-The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jam/behaviors.md) Section.
+The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md) Section.
 
 The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
 
@@ -1729,7 +1729,7 @@ Change the name of the association - this name will be used in cache keys and su
 
 The `manytomany` association creates a many-to-many relationship with another model. In database terms, this associates two classes via an intermediate join table that includes foreign keys referring to each of the classes.
 
-While Jerry uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `manytomany` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
+While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `manytomany` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
 <?php
@@ -1760,7 +1760,7 @@ The `manytomany` association supports these options:
 
 #### extend
 
-Jerry allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
+Jam allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
 
 ```php
 <?php
@@ -1797,7 +1797,7 @@ echo $supplier->builder('parts')->total_weight(); // 130
 ?>
 ```
 
-The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jam/behaviors.md) Section.
+The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md) Section.
 
 The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
 

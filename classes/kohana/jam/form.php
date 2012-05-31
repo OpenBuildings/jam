@@ -1,9 +1,19 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+/**
+ * Handles building and maintaining HTML Forms
+ * 
+ * @package    Jam
+ * @category   Form
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @license    http://www.opensource.org/licenses/isc-license.txt
+ */
 abstract class Kohana_Jam_Form {
 
 	/**
 	 * Helper method to build a prefix based
+	 * 
 	 * @param string $prefix 
 	 * @param string $name 
 	 * @return string
@@ -27,6 +37,12 @@ abstract class Kohana_Jam_Form {
 		}
 	}
 
+	/**
+	 * Convert Jam_Builder or Jam_Collection to an array of id => name
+	 * 
+	 * @param mixed $choices 
+	 * @return  array 
+	 */
 	static public function list_choices($choices)
 	{
 		if ($choices instanceof Jam_Builder)
@@ -41,6 +57,11 @@ abstract class Kohana_Jam_Form {
 		return $choices;
 	}
 
+	/**
+	 * Get the id or list of ids of an object (Jam_Model / Jam_Colleciton respectively)
+	 * 
+	 * @param int|array $id 
+	 */
 	static public function list_id($id)
 	{
 		if ($id instanceof Jam_Model)
@@ -55,9 +76,25 @@ abstract class Kohana_Jam_Form {
 		return $id;
 	}
 
-
+	/**
+	 * The "prefix" of the form - this is used to implement nesting with html forms
+	 * 
+	 * @var string
+	 */
 	protected $_prefix = '%s';
+
+	/**
+	 * The current object the form is bound to
+	 * 
+	 * @var Jam_Model
+	 */
 	protected $_object;
+
+	/**
+	 * The meta of the Jam_Object the form is bound to
+	 * 
+	 * @var Jam_Meta
+	 */
 	protected $_meta;
 
 	function __construct(Jam_Model $model)
@@ -66,7 +103,11 @@ abstract class Kohana_Jam_Form {
 		$this->_meta = Jam::meta($model);
 	}
 
-
+	/**
+	 * Getter / setter of the prefix
+	 * 
+	 * @param string $prefix 
+	 */
 	public function prefix($prefix = NULL)
 	{
 		if ($prefix !== NULL)
@@ -78,16 +119,29 @@ abstract class Kohana_Jam_Form {
 		return $this->_prefix;
 	}
 
+	/**
+	 * @return Jam_Model this form is bound to
+	 */
 	public function object()
 	{
 		return $this->_object;
 	}
 
+	/**
+	 * @return Jam_Meta of the model this form is bound to
+	 */
 	public function meta()
 	{
 		return $this->_meta;
 	}
 
+	/**
+	 * Create a nested form for a child association of the model, assigning the correct prefix
+	 * 
+	 * @param string $name  of the association
+	 * @param int $index an index id of a collection (if the association if a colleciton)
+	 * @return  Jam_Form
+	 */
 	public function fields_for($name, $index = NULL)
 	{
 		$object = $this->object()->$name;
@@ -102,16 +156,35 @@ abstract class Kohana_Jam_Form {
 		return Jam::form($object, get_class($this))->prefix($new_prefix);
 	}
 
+	/**
+	 * Get the default name for a field of this form
+	 * 
+	 * @param string $name 
+	 * @return string 
+	 */
 	public function default_name($name)
 	{
 		return sprintf($this->prefix(), $name);
 	}
 
+	/**
+	 * Get the default html attribute id for a field of this form
+	 * 
+	 * @param string $name 
+	 * @return string 
+	 */
 	public function default_id($name)
 	{
 		return str_replace(array(']', '['), array('', '_'), $this->default_name($name));
 	}
 
+	/**
+	 * Get the default attributes (name and id) for a field of this form
+	 * 
+	 * @param string $name      
+	 * @param array  $overrides
+	 * @return array 
+	 */
 	public function default_attributes($name, array $overrides = array())
 	{
 		if ( ! isset($overrides['id']))

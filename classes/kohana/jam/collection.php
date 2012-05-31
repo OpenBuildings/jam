@@ -16,6 +16,8 @@
  *
  * @package    Jam
  * @category   Query/Result
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
@@ -37,6 +39,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	 */
 	protected $_result = NULL;
 
+	/**
+	 * Is this collection changed. 
+	 * 
+	 * @var boolean
+	 */
 	protected $_changed = FALSE;
 
 	/**
@@ -45,12 +52,13 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	protected $_builder = NULL;
 
 	/**
-	 * @var  Jam_Model 
+	 * @var  Jam_Model
 	 */
 	protected $_parent = NULL;
 
 	/**
 	 * The accuall association of this collection
+	 * 
 	 * @var Jam_Association
 	 */
 	protected $_association = NULL;
@@ -110,6 +118,12 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return get_class($this).': '.Jam::model_name($this->_model).' ('.$this->count().')';
 	}
 
+	/**
+	 * Convert different collections and single items to an array.
+	 * We use this to standarize the input for initializing the collection and adding new items
+	 * 
+	 * @param mixed $items
+	 */
 	protected function _convert_to_array($items)
 	{
 		if ($items instanceof Jam_Collection)
@@ -127,6 +141,12 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return array_filter($array);
 	}
 
+	/**
+	 * Set the association that this collection represents, as well as the jam model itself
+	 * 
+	 * @param Jam_Model                  $parent      
+	 * @param Jam_Association_Collection $association 
+	 */
 	public function _parent_association(Jam_Model $parent, Jam_Association_Collection $association)
 	{
 		$this->_association = $association;
@@ -135,6 +155,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $this;
 	}
 
+	/**
+	 * Check if the collection is changed, or set the new data of the collection
+	 * @param array $changed 
+	 * @return  bool
+	 */
 	public function changed($changed = NULL)
 	{
 		if ($changed !== NULL)
@@ -148,6 +173,12 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $this->_changed;
 	}
 
+	/**
+	 * Get the inner result of the database call (a Database_Result object) or 
+	 * Jam_Collection_Data which is basically the same but allows modification of its data
+	 * 
+	 * @param Database_Result|Jam_Collection_Data $result
+	 */
 	public function result($result = NULL)
 	{
 		if ($result !== NULL)
@@ -225,6 +256,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Implementation of the Iterator interface
+	 * 
 	 * @return  Jam_Collection
 	 */
 	public function rewind()
@@ -256,6 +288,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Implementation of the Iterator interface
+	 * 
 	 * @return  int
 	 */
 	public function key()
@@ -265,6 +298,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Implementation of the Iterator interface
+	 * 
 	 * @return  Jam_Collection
 	 */
 	public function next()
@@ -373,6 +407,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		{
 			if ($this->changed() AND $this->_association)
 			{
+				// Resolve mass assignments
 				$loaded = $this->_association->model_from_array($values);
 			}
 			elseif ($values instanceof Jam_Model)
@@ -381,6 +416,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 			}
 			elseif ( ! is_array($values)) 
 			{
+				// Load by id
 				$loaded = Jam::factory($this->_meta->model(), $values);
 			}
 			else
@@ -405,6 +441,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $values;
 	}
 
+	/**
+	 * Get the id from an item, be it an array, string, integer or a model instance
+	 * 
+	 * @param int $values
+	 */
 	protected function _id($values)
 	{
 		if ($this->_model)
@@ -415,11 +456,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 			}
 			elseif (is_numeric($values)) 
 			{
-				return $values;
+				return (int) $values;
 			}
 			elseif (is_array($values)) 
 			{
-				return Arr::get($values, $this->_meta->primary_key());
+				return (int) Arr::get($values, $this->_meta->primary_key());
 			}
 			elseif (is_string($values))
 			{
@@ -431,21 +472,30 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 			}
 		}
 
-		return Arr::get($values, 'id');
+		return (int) Arr::get($values, 'id');
 	}
 
-
+	/**
+	 * Will perform another sql query on the next getter operation
+	 */
 	public function reload()
 	{
 		$this->_result = NULL;
 		return $this;
 	}
 
+	/**
+	 * Get the model that this association collection belongs to
+	 */
 	public function parent()
 	{
 		return $this->_parent;
 	}
 
+	/**
+	 * Add an item to the collection, will transform the result to Jam_Collection_Data
+	 * @param mixed $item id, model, array or collection
+	 */
 	public function add($item)
 	{
 		$items = $this->_convert_to_array($item);
@@ -458,6 +508,10 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $this;
 	}
 
+	/**
+	 * Remove an item from the collection, found by the id
+	 * @param mixed $item id, model, array or collection
+	 */
 	public function remove($item)
 	{
 		$items = $this->_convert_to_array($item);
@@ -475,6 +529,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $this;
 	}
 
+	/**
+	 * Remove items, but throw an exception if its not found
+	 * 
+	 * @param mixed $item id, model, array or collection
+	 */
 	public function remove_insist($item)
 	{
 		if ($offset = $this->search($item))
@@ -485,6 +544,10 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		throw new Jam_Exception_Missing("Item does not exist in collection");
 	}
 
+	/**
+	 * Get the ids of the collection
+	 * @param array $ids 
+	 */
 	public function ids(array $ids = NULL)
 	{
 		if ($ids !== NULL)
@@ -496,11 +559,19 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return array_map(array($this, '_id'), $this->result()->as_array());
 	}
 
+	/**
+	 * Remove all items from the collection
+	 */
 	public function clear()
 	{
 		return $this->result(array());
 	}
 
+	/**
+	 * Create a new jam item and add it to the colleciton, but do not save it to the database
+	 * @param array $attributes
+	 * @return Jam_Model 
+	 */
 	public function build(array $attributes = NULL)
 	{
 		$item = $this->_association->build($this->_parent, $attributes);
@@ -509,6 +580,11 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		return $item;
 	}
 
+	/**
+	 * Create a new jam item and add it to the colleciton, save it to the database first
+	 * @param array $attributes
+	 * @return Jam_Model 
+	 */
 	public function create(array $attributes = NULL)
 	{
 		$item = $this->_association->create($this->_parent, $attributes);
@@ -518,6 +594,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Search for an item in the collection.
+	 * 
 	 * @param  integer|string|Jam_Model $item You can pass primary key, name key or a model object.
 	 * @return integer|NULL If an item is found its index would be returned, else NULL is returned.
 	 */
@@ -538,6 +615,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	/**
 	 * Check if an item exists in the collection.
 	 * You can pass primary key, name key or a model object.
+	 * 
 	 * @param  integer|string|Jam_Model $item You can pass primary key, name key or a model object.
 	 * @return boolean whether the item exists in the collection
 	 */
@@ -548,6 +626,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Get a model object for the first element in the collection.
+	 * 
 	 * @return Jam_Model|NULL if there are no elements in the collection NULL is returned.
 	 */
 	public function first()
@@ -564,6 +643,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 	/**
 	 * Get a model object for the last element in the collection
+	 * 
 	 * @return Jam_Model|NULL if there are no elements in the collection NULL is returned.
 	 */
 	public function last()

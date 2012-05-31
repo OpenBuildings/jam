@@ -1,9 +1,10 @@
 <?php
 /**
  * Abstract Class for manupulating a server
+ * 
  * @package    OpenBuildings/jam-upload
  * @author     Ivan Kerin
- * @copyright  (c) 2011 OpenBuildings Inc.
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 abstract class Kohana_Upload_Server
@@ -263,6 +264,12 @@ abstract class Kohana_Upload_Server
 		return join('/', array_filter($args));
 	}
 
+	/**
+	 * Flatten an array method as Arr::flatten does not do a good enough job
+	 * 
+	 * @param array $arr
+	 * @return array
+	 */
 	static private function flatten_array(array $arr)
 	{
 		$ab = array(); 

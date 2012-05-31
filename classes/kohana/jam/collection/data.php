@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+/**
+ * Represents the changed data of a Jam_Collection. The same as Database_Result, but allow to change its contents
+ * 
+ * @package    Jam
+ * @category   Collection
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @license    http://www.opensource.org/licenses/isc-license.txt
+ */
 class Kohana_Jam_Collection_Data implements ArrayAccess, Iterator, Countable, SeekableIterator {
 
 	private $_container = array();

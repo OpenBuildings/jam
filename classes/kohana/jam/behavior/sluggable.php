@@ -8,7 +8,7 @@
  *  e.g news: some-news-title-23
  *  Slugs are automatically updated upon save
  *
- * @package    OpenBuildings/http-resource
+ * @package    Jam
  * @author     Yasen Yanev
  * @author     Ivan Kerin
  * @author     Haralan Dobrev

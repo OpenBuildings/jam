@@ -1,9 +1,9 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-- [Jerry Events](#jerry-events)
+- [Jam Events](#jam-events)
 	- [Available events](#available-events)
 	- [Binding events](#binding-events)
-- [Jerry behaviors](#jerry-behaviors)
+- [Jam behaviors](#jam-behaviors)
 	- [Nested Behavior](#nested-behavior)
 	- [Paranoid Behavior](#paranoid-behavior)
 - [Sluggable Behavior](#sluggable-behavior)
@@ -14,7 +14,7 @@
 	- [Sortable Behavior](#sortable-behavior)
 	- [Uploadable Behavior](#uploadable-behavior)
 
-## Jerry Events
+## Jam Events
 
 In the lifetime of each model(and builder) there are several events being triggered. 
 
@@ -71,9 +71,9 @@ To tap into that functionality you'll have to bind events to your custom functio
 		}
 	}
 
-## Jerry behaviors
+## Jam behaviors
 
-Jerry comes with some behaviors already built for you - this is functionality that can be cherry picked and added to your models as you need it. Existing behaviors are:
+Jam comes with some behaviors already built for you - this is functionality that can be cherry picked and added to your models as you need it. Existing behaviors are:
 
 * nested
 * paranoid
@@ -275,4 +275,4 @@ When you want to have a user-ordered list of items you can use the `sortbale` be
 
 ### Uploadable Behavior
 
-This is discussed in depth in [Uploads](/OpenBuildings/Jerry/blob/master/guide/jam/uploads.md)
+This is discussed in depth in [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/uploads.md)

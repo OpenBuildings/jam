@@ -3,11 +3,12 @@
 /**
  *  Uploadable behavior for Jam ORM library
  *  
- *  @copyright 2011 Despark Ltd.
- *  @version 1.0
- *  @author Radil Radenkov
+ * @package    Jam
+ * @category   Behavior
+ * @author     Radil Radenkov
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-
 abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior 
 {	
 	public $_thumbnails = array();

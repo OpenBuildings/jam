@@ -3,7 +3,7 @@
 /**
  * Jam_Exception_Event class for event exceptions
  *
- * @package    OpenBuildings/http-resource
+ * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2012 OpenBuildings Inc.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
