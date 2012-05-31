@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<table name="test_blogs">
+		<column>id</column>
+		<column>name</column>
+		<column>url</column>
+		<column>test_owner_id</column>
+		<row>
+			<value>1</value>
+			<value>Flowers blog</value>
+			<value>http://flowers.wordpress.com/</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Awesome programming</value>
+			<value>http://programming-blog.com</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Tabless</value>
+			<value>http://bobby-tables-ftw.com</value>
+			<value>3</value>
+		</row>
+	</table>
+	<table name="test_authors">
+		<column>id</column>
+		<column>name</column>
+		<column>email</column>
+		<column>password</column>
+		<column>test_position_id</column>
+		<row>
+			<value>1</value>
+			<value>Jonathan Geiger</value>
+			<value></value>
+			<value>jonathan@jonathan-geiger.com</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Paul Banks</value>
+			<value></value>
+			<value>paul@banks.com</value>
+			<value>0</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Bobby Tables</value>
+			<value></value>
+			<value>bobby@sql-injection.com</value>
+			<value>2</value>
+		</row>
+	</table>
+	<table name="test_positions">
+		<column>id</column>
+		<column>name</column>
+		<row>
+			<value>1</value>
+			<value>Staff</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Freelancer</value>
+		</row>
+	</table>
+
+	<table name="test_tags">
+		<column>id</column>
+		<column>name</column>
+		<column>slug</column>
+		<column>test_post_id</column>
+		<row>
+			<value>1</value>
+			<value>red</value>
+			<value>red</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>green</value>
+			<value>green</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>orange</value>
+			<value>orange</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>--black</value>
+			<value>black</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>* List 1</value>
+			<value>list-1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>* List 2</value>
+			<value>list-2</value>
+			<value>1</value>
+		</row>
+	</table>
+	<table name="test_blogs_test_tags">
+		<column>id</column>
+		<column>test_tag_id</column>
+		<column>test_blog_id</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>2</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>3</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>4</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>5</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>6</value>
+			<value>3</value>
+		</row>
+	</table>
+	<table name="test_images">
+		<column>id</column>
+		<column>file</column>
+		<column>test_holder_id</column>
+		<column>test_holder_model</column>
+		<row>
+			<value>1</value>
+			<value>file.jpg</value>
+			<value>1</value>
+			<value>test_post</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>file2.jpg</value>
+			<value>1</value>
+			<value>test_author</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>file3.jpg</value>
+			<value></value>
+			<value></value>
+		</row>
+	</table>
+
+	<table name="test_copyrights">
+		<column>id</column>
+		<column>name</column>
+		<column>test_image_id</column>
+		<row>
+			<value>1</value>
+			<value>My Copyright</value>
+			<value>1</value>
+		</row>
+	</table>
+
+	<table name="test_videos">
+		<column>id</column>
+		<column>file</column>
+		<column>test_holder_id</column>
+		<column>test_holder_type</column>
+		<column>deleted</column>
+		<column>position</column>
+		<column>slug</column>
+		<row>
+			<value>1</value>
+			<value>video.jpg</value>
+			<value>1</value>
+			<value>test_post</value>
+			<value>0</value>
+			<value>1</value>
+			<value>video-jpg-1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>video2.jpg</value>
+			<null />
+			<null />
+			<value>0</value>
+			<value>0</value>
+			<value>video2-jpg-2</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>video3.jpg</value>
+			<value>1</value>
+			<value>test_post</value>
+			<value>1</value>
+			<value>1</value>
+			<value>video3-jpg-3</value>
+		</row>
+	</table>     
+	<table name="test_categories">
+		<column>id</column>
+		<column>name</column>
+		<column>parent_id</column>
+		<column>is_featured</column>
+		<column>test_author_id</column>
+		<column>test_blog_id</column>
+		<row>
+			<value>1</value>
+			<value>Category One</value>
+			<value>0</value>
+			<value>0</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Category Two</value>
+			<value>0</value>
+			<value>1</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Category Three</value>
+			<value>1</value>
+			<value>0</value>
+			<value>1</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>Category Four</value>
+			<value>0</value>
+			<value>1</value>
+			<value>1</value>
+			<value>3</value>
+		</row>
+	</table>
+	<table name="test_posts">
+		<column>id</column>
+		<column>name</column>
+		<column>slug</column>
+		<column>status</column>
+		<column>created</column>
+		<column>updated</column>
+		<column>published</column>
+		<column>test_author_id</column>
+		<column>test_blog_id</column>
+		<column>_approved_by</column>
+		<column>test_tags_count</column>
+		<row>
+			<value>1</value>
+			<value>First Post</value>
+			<value>first-post</value>
+			<value>draft</value>
+			<value>1264985737</value>
+			<value>1264985737</value>
+			<value>1264985737</value>
+			<value>1</value>
+			<value>1</value>
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>2</value>
+			<value>Second Post</value>
+			<value>second-post</value>
+			<value>review</value>
+			<value>1264985737</value>
+			<value>1264985740</value>
+			<value>1264985737</value>
+			<value>1</value>
+			<value>3</value>
+			<value>1</value>
+			<null />
+		</row>
+	</table>
+	<table name="test_categories_test_posts">
+		<column>test_category_id</column>
+		<column>test_post_id</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>1</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>3</value>
+		</row>
+	</table>
+</dataset>
