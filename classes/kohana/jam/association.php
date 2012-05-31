@@ -290,7 +290,7 @@ abstract class Kohana_Jam_Association {
 	/**
 	 * Apply the conditions array of this association to a builder
 	 * @param  Jam_Builder $builder 
-	 * @return JellY_Builder
+	 * @return Jam_Builder
 	 */
 	public function apply_conditions(Jam_Builder $builder)
 	{

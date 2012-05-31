@@ -28,9 +28,9 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		
 		if ($this->_save_size)
 		{
-			Jam::meta($model)->field($name.'_width', Jelly::field('integer'));
-			Jam::meta($model)->field($name.'_height', Jelly::field('integer'));
-			Jam::meta($model)->field('is_portrait', Jelly::field('integer'));
+			Jam::meta($model)->field($name.'_width', Jam::field('integer'));
+			Jam::meta($model)->field($name.'_height', Jam::field('integer'));
+			Jam::meta($model)->field('is_portrait', Jam::field('integer'));
 		}
 	}
 
