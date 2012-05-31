@@ -3,13 +3,13 @@
 /**
  * Handles has one to relationships
  *
- * @package    Jelly
+ * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
  * @copyright  (c) 2010-2011 OpenBuildings
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collection {
+abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection {
 
 	public $as;
 
@@ -22,18 +22,18 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 	 * @param   string  $name
 	 * @return  void
 	 */
-	public function initialize(Jelly_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $model, $name)
 	{
 		// Empty? The model defaults to the the singularized name
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = inflector::singular($name).'.'.Jelly::meta($model)->foreign_key();
+			$this->foreign = inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
 		{
-			$this->foreign = $this->foreign.'.'.Jelly::meta($model)->foreign_key();
+			$this->foreign = $this->foreign.'.'.Jam::meta($model)->foreign_key();
 		}
 
 		parent::initialize($meta, $model, $name);
@@ -50,7 +50,7 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 		}
 	}
 
-	public function join(Jelly_Builder $builder, $alias = NULL, $type = NULL)
+	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
 		$join = parent::join($builder, $type)
 			->join($this->foreign(NULL, $alias), $type)
@@ -62,7 +62,7 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 		}
 	}
 
-	public function builder(Jelly_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		$builder = parent::builder($model)
 			->where($this->foreign('field'), '=', $model->id());
@@ -75,26 +75,26 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 		return $builder;
 	}
 
-	public function delete(Jelly_Model $model, $key)
+	public function delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
-			case Jelly_Association::DELETE:
+			case Jam_Association::DELETE:
 				foreach ($this->get($model) as $item) 
 				{
 					$item->delete();
 				}
 			break;
-			case Jelly_Association::ERASE:
+			case Jam_Association::ERASE:
 				$this->builder($model)->delete();
 			break;
-			case Jelly_Association::NULLIFY:
+			case Jam_Association::NULLIFY:
 				$this->nullify_builder($model)->update();
 			break;
 		}
 	}
 
-	public function nullify_builder(Jelly_Model $model)
+	public function nullify_builder(Jam_Model $model)
 	{
 		$builder = $this->builder($model)
 			->value($this->foreign('field'), $this->foreign_default);
@@ -107,7 +107,7 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 		return $builder;
 	}
 
-	public function after_save(Jelly_Model $model, $collection, $is_changed)
+	public function after_save(Jam_Model $model, $collection, $is_changed)
 	{
 		if ($is_changed AND $collection AND $collection->changed())
 		{
@@ -120,7 +120,7 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 			
 			if ($new_ids)
 			{
-				$new_items_builder = Jelly::query($this->foreign())
+				$new_items_builder = Jam::query($this->foreign())
 					->key($new_ids)
 					->value($this->foreign('field'), $model->id());
 
@@ -143,9 +143,9 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 		return (bool) $this->as;
 	}
 
-	public function assign_relation(Jelly_Model $model, $item)
+	public function assign_relation(Jam_Model $model, $item)
 	{
-		if ($item instanceof Jelly_Model)
+		if ($item instanceof Jam_Model)
 		{
 			$item->set($this->foreign['field'], $model->id());
 
@@ -158,4 +158,4 @@ abstract class Kohana_Jelly_Association_HasMany extends Jelly_Association_Collec
 	}
 
 
-} // End Kohana_Jelly_Association_HasMany
+} // End Kohana_Jam_Association_HasMany

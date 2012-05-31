@@ -3,12 +3,12 @@
 /**
  * Tests BelongsTo associatons.
  *
- * @package Jelly
- * @group   jelly
- * @group   jelly.association
- * @group   jelly.association.has_one
+ * @package Jam
+ * @group   jam
+ * @group   jam.association
+ * @group   jam.association.has_one
  */
-class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
+class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 
 	/**
 	 * Provides test data for test_builder()
@@ -25,18 +25,18 @@ class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
 	}
 
 	/**
-	 * Tests for Jelly_Association_BelongsTo::builder()
+	 * Tests for Jam_Association_BelongsTo::builder()
 	 *
 	 * @dataProvider  provider_builder
-	 * @param         Jelly         $builder
+	 * @param         Jam         $builder
 	 * @param         bool          $loaded
 	 * @return        void
 	 */
 	public function test_builder($args, $loaded)
 	{
-		$builder = Jelly::factory($args[0], $args[1])->builder($args[2]);
+		$builder = Jam::factory($args[0], $args[1])->builder($args[2]);
 
-		$this->assertTrue($builder instanceof Jelly_Builder, "Must load Jelly_Builder object for the association");
+		$this->assertTrue($builder instanceof Jam_Builder, "Must load Jam_Builder object for the association");
 
 		// Load the model
 		$model = $builder->select();
@@ -48,7 +48,7 @@ class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
 
 	public function test_build_association()
 	{
-		$test_author = Jelly::factory('test_author', 1);
+		$test_author = Jam::factory('test_author', 1);
 		$test_post = $test_author->build('test_post');
 		$this->assertInstanceOf('Model_Test_Post', $test_post);
 		$this->assertSame($test_post->test_author, $test_author);
@@ -56,7 +56,7 @@ class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
 
 	public function test_create_association()
 	{
-		$test_author = Jelly::factory('test_author', 1);
+		$test_author = Jam::factory('test_author', 1);
 		$test_post = $test_author->create('test_post');
 		$test_author->save();
 
@@ -67,7 +67,7 @@ class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
 
 	public function test_delete()
 	{
-		$test_image = Jelly::factory('test_image', 1);
+		$test_image = Jam::factory('test_image', 1);
 		$test_image_id = $test_image->id();
 		$test_copyright = $test_image->test_copyright;
 		$test_copyright_id = $test_copyright->id();
@@ -79,15 +79,15 @@ class Jelly_Association_HasOneTest extends Unittest_Jelly_TestCase {
 
 	public function test_polymorphic_as()
 	{
-		$post = Jelly::factory('test_post', 1);
-		$image = Jelly::factory('test_image')->set(array('file' => 'new file.file'))->save();
+		$post = Jam::factory('test_post', 1);
+		$image = Jam::factory('test_image')->set(array('file' => 'new file.file'))->save();
 		$post->test_cover_image = $image;
 		$post->save();
 
-		$image = Jelly::factory('test_image', $image->id());
+		$image = Jam::factory('test_image', $image->id());
 
 		$this->assertEquals($post->id(), $image->test_holder->id());
-		$this->assertEquals($image->id(), Jelly::factory('test_post', 1)->test_cover_image->id());
+		$this->assertEquals($image->id(), Jam::factory('test_post', 1)->test_cover_image->id());
 	}
 
-} // End Jelly_Field_HasOneTest
+} // End Jam_Field_HasOneTest

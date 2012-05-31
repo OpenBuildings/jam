@@ -2,13 +2,13 @@
 /**
  * Common association for has-many and many-to-many relationships
  *
- * @package    Jelly
+ * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
  * @copyright  (c) 2010-2011 OpenBuildings
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
+abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
 	public $extend;
 
@@ -42,7 +42,7 @@ abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
 		return implode('_', $through);
 	}
 
-	public function builder(Jelly_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		$builder = parent::builder($model);
 
@@ -54,18 +54,18 @@ abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
 		return $builder;
 	}
 
-	public function get(Jelly_Model $model)
+	public function get(Jam_Model $model)
 	{
 		return $this->builder($model)->select_all()->_parent_association($model, $this);
 	}
 
-	public function set(Jelly_Model $model, $value)
+	public function set(Jam_Model $model, $value)
 	{
-		$new_collection = new Jelly_Collection($value, Jelly::class_name($this->foreign()));
+		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
 	}
 
-	public function convert_new_result_to_models(Jelly_Model $model, Jelly_Collection $collection)
+	public function convert_new_result_to_models(Jam_Model $model, Jam_Collection $collection)
 	{
 		if ($collection->changed())
 		{
@@ -79,7 +79,7 @@ abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
 		}
 	}
 
-	public function after_check(Jelly_Model $model, Jelly_Validation $validation, $collection)
+	public function after_check(Jam_Model $model, Jam_Validation $validation, $collection)
 	{
 		if ($collection AND $collection->changed())
 		{
@@ -112,7 +112,7 @@ abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
 		}
 	}
 
-	public function diff_collection_ids(Jelly_Model $model, Jelly_Collection $collection)
+	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
 	{
 		$current_ids = $this->builder($model)
 			->select_column(array($model->meta()->primary_key()))
@@ -136,4 +136,4 @@ abstract class Kohana_Jelly_Association_Collection extends Jelly_Association {
 			array_diff($collection->ids(), $current_ids)
 		);	
 	}
-} // End Kohana_Jelly_Association_Collection
+} // End Kohana_Jam_Association_Collection

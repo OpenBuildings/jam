@@ -2,13 +2,13 @@
 /**
  * Handles has one to relationships
  *
- * @package    Jelly
+ * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
  * @copyright  (c) 2010-2011 OpenBuildings
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
+abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public $as = NULL;
 
@@ -21,18 +21,18 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 	 * @param   string  $name
 	 * @return  void
 	 */
-	public function initialize(Jelly_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $model, $name)
 	{
 		// Empty? The model defaults to the the singularized name
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = inflector::singular($name).'.'.Jelly::meta($model)->foreign_key();
+			$this->foreign = inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
 		{
-			$this->foreign = $this->foreign.'.'.Jelly::meta($model)->foreign_key();
+			$this->foreign = $this->foreign.'.'.Jam::meta($model)->foreign_key();
 		}
 
 		parent::initialize($meta, $model, $name);
@@ -58,14 +58,14 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 	}
 
 
-	public function join(Jelly_Builder $builder, $alias = NULL, $type = NULL)
+	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
 		return parent::join($builder, $alias, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
 	}
 
-	public function builder(Jelly_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		$builder = parent::builder($model)
 			->limit(1)
@@ -79,19 +79,19 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 		return $builder;
 	}
 
-	public function get(Jelly_Model $model)
+	public function get(Jam_Model $model)
 	{
 		$item = $this->builder($model);
 		return $model->loaded() ? $item->select() : $item;
 	}
 
-	public function set(Jelly_Model $model, $value)
+	public function set(Jam_Model $model, $value)
 	{
 		$item = $this->model_from_array($value);
 		return $this->assign_relation($model, $item);
 	}
 
-	public function assign_relation(Jelly_Model $model, $item)
+	public function assign_relation(Jam_Model $model, $item)
 	{
 		$item = parent::assign_relation($model, $item);
 
@@ -105,23 +105,23 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 		return $item;
 	}
 
-	public function delete(Jelly_Model $model, $key)
+	public function delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
-			case Jelly_Association::DELETE:
+			case Jam_Association::DELETE:
 				$this->get($model)->delete();
 			break;
-			case Jelly_Association::ERASE:
+			case Jam_Association::ERASE:
 				$this->builder($model)->delete();
 			break;
-			case Jelly_Association::NULLIFY:
+			case Jam_Association::NULLIFY:
 				$this->nullify_builder($model)->update();
 			break;
 		}
 	}
 
-	public function nullify_builder(Jelly_Model $model)
+	public function nullify_builder(Jam_Model $model)
 	{
 		$builder = $this->builder($model)
 			->value($this->foreign('field'), $this->foreign_default);
@@ -134,11 +134,11 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 		return $builder;
 	}
 
-	public function after_check(Jelly_Model $model, Jelly_Validation $validation, $new_item)
+	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
 		if ($this->required)
 		{
-			if ( ! (($new_item AND $new_item instanceof Jelly_Model AND $new_item->check())))
+			if ( ! (($new_item AND $new_item instanceof Jam_Model AND $new_item->check())))
 			{
 				$validation->error($this->name, 'required');
 			}
@@ -147,7 +147,7 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 		parent::after_check($model, $validation, $new_item);
 	}
 
-	public function after_save(Jelly_Model $model, $new_item, $is_changed)
+	public function after_save(Jam_Model $model, $new_item, $is_changed)
 	{
 		if ($is_changed)
 		{
@@ -170,4 +170,4 @@ abstract class Kohana_Jelly_Association_HasOne extends Jelly_Association {
 			$nullify->update();
 		}
 	}
-} // End Kohana_Jelly_Association_HasOne
+} // End Kohana_Jam_Association_HasOne

@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Jelly Collection
+ * Jam Collection
  *
- * Jelly_Collection encapsulates a Database_Result object. It has the exact same API.
+ * Jam_Collection encapsulates a Database_Result object. It has the exact same API.
  * It offers a few special features that make it useful:
  *
  *  - Only one model is instantiated for the whole result set, which
@@ -10,48 +10,48 @@
  *  - It is easily extensible, so things like polymorphism and
  *    recursive result sets can be easily implemented.
  *
- * Jelly_Collection likes to know what model its result set is related to,
+ * Jam_Collection likes to know what model its result set is related to,
  * though it's not required. Some features may disappear, however, if
  * it doesn't know the model it's working with.
  *
- * @package    Jelly
+ * @package    Jam
  * @category   Query/Result
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableIterator, ArrayAccess {
+abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIterator, ArrayAccess {
 
 	/**
-	 * @var  Jelly_Meta  The current meta object, based on the model we're returning
+	 * @var  Jam_Meta  The current meta object, based on the model we're returning
 	 */
 	protected $_meta = NULL;
 
 	/**
-	 * @var  Jelly_Model  The current class we're placing results into
+	 * @var  Jam_Model  The current class we're placing results into
 	 */
 	protected $_model = NULL;
 
 	/**
-	 * @var  Jelly_Collection|array|mixed  The current result set
+	 * @var  Jam_Collection|array|mixed  The current result set
 	 */
 	protected $_result = NULL;
 
 	protected $_changed = FALSE;
 
 	/**
-	 * @var  Jelly_Builder the builder that built this jelly collection
+	 * @var  Jam_Builder the builder that built this jam collection
 	 */
 	protected $_builder = NULL;
 
 	/**
-	 * @var  Jelly_Model 
+	 * @var  Jam_Model 
 	 */
 	protected $_parent = NULL;
 
 	/**
 	 * The accuall association of this collection
-	 * @var Jelly_Association
+	 * @var Jam_Association
 	 */
 	protected $_association = NULL;
 
@@ -64,11 +64,11 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 */
 	public function __construct($result, $model = NULL)
 	{
-		if ($result instanceof Jelly_Collection OR is_array($result) OR is_numeric($result) OR ! $result)
+		if ($result instanceof Jam_Collection OR is_array($result) OR is_numeric($result) OR ! $result)
 		{
 			$this->result($this->_convert_to_array($result));
 		}
-		elseif ($result instanceof Jelly_Builder)
+		elseif ($result instanceof Jam_Builder)
 		{
 			$this->_builder = $result;
 		}
@@ -78,9 +78,9 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 		}
 
 		// Load our default model
-		if ($model AND Jelly::meta($model))
+		if ($model AND Jam::meta($model))
 		{
-			$this->_model = ($model instanceof Jelly_Model) ? $model : new $model;
+			$this->_model = ($model instanceof Jam_Model) ? $model : new $model;
 			$this->_meta  = $this->_model->meta();
 		}
 	}
@@ -107,12 +107,12 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 */
 	public function __toString()
 	{
-		return get_class($this).': '.Jelly::model_name($this->_model).' ('.$this->count().')';
+		return get_class($this).': '.Jam::model_name($this->_model).' ('.$this->count().')';
 	}
 
 	protected function _convert_to_array($items)
 	{
-		if ($items instanceof Jelly_Collection)
+		if ($items instanceof Jam_Collection)
 		{
 			$array = $items->as_array();
 		}
@@ -127,7 +127,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 		return array_filter($array);
 	}
 
-	public function _parent_association(Jelly_Model $parent, Jelly_Association_Collection $association)
+	public function _parent_association(Jam_Model $parent, Jam_Association_Collection $association)
 	{
 		$this->_association = $association;
 		$this->_parent = $parent;
@@ -139,9 +139,9 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	{
 		if ($changed !== NULL)
 		{
-			if ( ! ($this->_result instanceof Jelly_Collection_Data))
+			if ( ! ($this->_result instanceof Jam_Collection_Data))
 			{
-				$this->_result = new Jelly_Collection_Data(array_map(array($this, '_load'), $this->result()->as_array()));
+				$this->_result = new Jam_Collection_Data(array_map(array($this, '_load'), $this->result()->as_array()));
 			}
 			$this->_changed = $changed;
 		}
@@ -153,7 +153,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 		if ($result !== NULL)
 		{
 			$this->_changed = TRUE;
-			$this->_result = new Jelly_Collection_Data($result);
+			$this->_result = new Jam_Collection_Data($result);
 			return $this;
 		}
 
@@ -174,7 +174,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	/**
 	 * Returns the collection's meta object, if it exists.
 	 *
-	 * @return  Jelly_Meta
+	 * @return  Jam_Meta
 	 */
 	public function meta()
 	{
@@ -225,7 +225,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 	/**
 	 * Implementation of the Iterator interface
-	 * @return  Jelly_Collection
+	 * @return  Jam_Collection
 	 */
 	public function rewind()
 	{
@@ -236,7 +236,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	/**
 	 * Implementation of the Iterator interface
 	 *
-	 * @return  Jelly_Model|array
+	 * @return  Jam_Model|array
 	 */
 	public function current()
 	{
@@ -265,7 +265,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 	/**
 	 * Implementation of the Iterator interface
-	 * @return  Jelly_Collection
+	 * @return  Jam_Collection
 	 */
 	public function next()
 	{
@@ -320,7 +320,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 *
 	 * @param   mixed  $offset
 	 * @param   bool   $object
-	 * @return  array|Jelly_Model
+	 * @return  array|Jam_Model
 	 */
 	public function offsetGet($offset, $object = TRUE)
 	{
@@ -341,7 +341,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 		$this->result()->offsetSet($offset, $value);
 
-		if ($this->_parent AND $value instanceof Jelly_Model)
+		if ($this->_parent AND $value instanceof Jam_Model)
 		{
 			$this->_association->assign_relation($this->_parent, $value);
 		}
@@ -365,7 +365,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 * Loads values into the model.
 	 *
 	 * @param   array  $values
-	 * @return  Jelly_Model|array
+	 * @return  Jam_Model|array
 	 */
 	protected function _load($values)
 	{
@@ -375,13 +375,13 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 			{
 				$loaded = $this->_association->model_from_array($values);
 			}
-			elseif ($values instanceof Jelly_Model)
+			elseif ($values instanceof Jam_Model)
 			{
 				$loaded = $values;
 			}
 			elseif ( ! is_array($values)) 
 			{
-				$loaded = Jelly::factory($this->_meta->model(), $values);
+				$loaded = Jam::factory($this->_meta->model(), $values);
 			}
 			else
 			{
@@ -409,7 +409,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	{
 		if ($this->_model)
 		{
-			if ($values instanceof Jelly_Model)
+			if ($values instanceof Jam_Model)
 			{
 				return $values->id();
 			}
@@ -423,11 +423,11 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 			}
 			elseif (is_string($values))
 			{
-				return Jelly::factory($this->_meta->model(), $values)->id();
+				return Jam::factory($this->_meta->model(), $values)->id();
 			}
 			else
 			{
-				throw new Kohana_Exception("Checking for id can be done only with numeric, Jelly_Model or array of values");
+				throw new Kohana_Exception("Checking for id can be done only with numeric, Jam_Model or array of values");
 			}
 		}
 
@@ -482,7 +482,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 			$this->offsetUnset($offset, $item);
 			return $this;
 		}
-		throw new Jelly_Exception_Missing("Item does not exist in collection");
+		throw new Jam_Exception_Missing("Item does not exist in collection");
 	}
 
 	public function ids(array $ids = NULL)
@@ -518,7 +518,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 	/**
 	 * Search for an item in the collection.
-	 * @param  integer|string|Jelly_Model $item You can pass primary key, name key or a model object.
+	 * @param  integer|string|Jam_Model $item You can pass primary key, name key or a model object.
 	 * @return integer|NULL If an item is found its index would be returned, else NULL is returned.
 	 */
 	public function search($item)
@@ -541,7 +541,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 * 
 	 * If you pass an array with primary keys it would check if each of them is in the collection.
 	 * 
-	 * @param  integer|string|Jelly_Model|array $item You can pass primary key, name key or a model object.
+	 * @param  integer|string|Jam_Model|array $item You can pass primary key, name key or a model object.
 	 * @return boolean whether the item exists in the collection
 	 */
 	public function exists($item)
@@ -560,7 +560,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 	/**
 	 * Get a model object for the first element in the collection.
-	 * @return Jelly_Model|NULL if there are no elements in the collection NULL is returned.
+	 * @return Jam_Model|NULL if there are no elements in the collection NULL is returned.
 	 */
 	public function first()
 	{
@@ -576,7 +576,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 
 	/**
 	 * Get a model object for the last element in the collection
-	 * @return Jelly_Model|NULL if there are no elements in the collection NULL is returned.
+	 * @return Jam_Model|NULL if there are no elements in the collection NULL is returned.
 	 */
 	public function last()
 	{
@@ -597,7 +597,7 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 	 * [!!] Indexes start at 0!
 	 * 
 	 * @param  integer $index   The index to get the element at
-	 * @return Jelly_Model|NULL A model object from the element or NULL
+	 * @return Jam_Model|NULL A model object from the element or NULL
 	 */
 	public function at($index)
 	{
@@ -611,4 +611,4 @@ abstract class Kohana_Jelly_Collection implements Iterator, Countable, SeekableI
 		}
 	}
 
-} // End Kohana_Jelly_Collection
+} // End Kohana_Jam_Collection

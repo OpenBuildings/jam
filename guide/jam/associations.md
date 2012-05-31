@@ -15,15 +15,15 @@ A belongsto association sets up a one-to-one connection with another model, such
 
 ```php
 <?php 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto'));
+		$meta->association('customer', Jam::association('belongsto'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'order_date' => Jelly::field('timestamp'),
+			'id'         => Jam::field('primary'),
+			'order_date' => Jam::field('timestamp'),
 		));
 	}
 }
@@ -49,15 +49,15 @@ A `hasone` association also sets up a one-to-one connection with another model, 
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('account', Jelly::association('hasone'));
+		$meta->association('account', Jam::association('hasone'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'name'       => Jelly::field('string'),
+			'id'         => Jam::field('primary'),
+			'name'       => Jam::field('string'),
 		));
 	}
 }
@@ -80,15 +80,15 @@ A `hasmany` association indicates a one-to-many connection with another model. Y
 
 ```php
 <?php 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'name'       => Jelly::field('string'),
+			'id'         => Jam::field('primary'),
+			'name'       => Jam::field('string'),
 		));
 	}
 }
@@ -112,28 +112,28 @@ A `manytomany` association creates a many-to-many connection with another model.
 
 ```php
 <?php 
-class Model_Assembly extends Jelly_Model {
+class Model_Assembly extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany'));
+		$meta->association('parts', Jam::association('manytomany'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'name'       => Jelly::field('string'),
+			'id'         => Jam::field('primary'),
+			'name'       => Jam::field('string'),
 		));
 	}
 }
 
-class Model_Part extends Jelly_Model {
+class Model_Part extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany'));
+		$meta->association('parts', Jam::association('manytomany'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'name'       => Jelly::field('string'),
+			'id'         => Jam::field('primary'),
+			'name'       => Jam::field('string'),
 		));
 	}
 }
@@ -166,20 +166,20 @@ The distinction is in where you place the foreign key (it goes on the table for 
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('account', Jelly::association('hasone'));
+		$meta->association('account', Jam::association('hasone'));
 		// ...
 	}
 }
 
-class Model_Account extends Jelly_Model {
+class Model_Account extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('supplier', Jelly::association('belongsto'));
+		$meta->association('supplier', Jam::association('belongsto'));
 		// ...
 	}
 }
@@ -193,29 +193,29 @@ A slightly more advanced twist on associations is the polymorphic association. W
 
 ```php
 <?php 
-class Model_Picture extends Jelly_Model {
+class Model_Picture extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('imageable', Jelly::association('belongsto', array('polymorphic' => TRUE)));
+		$meta->association('imageable', Jam::association('belongsto', array('polymorphic' => TRUE)));
 		// ...
 	}
 }
 
-class Model_Employee extends Jelly_Model {
+class Model_Employee extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('pictures', Jelly::association('hasmany', array('as' => 'imageable')));
+		$meta->association('pictures', Jam::association('hasmany', array('as' => 'imageable')));
 		// ...
 	}
 }
 
-class Model_Product extends Jelly_Model {
+class Model_Product extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('pictures', Jelly::association('hasmany', array('as' => 'imageable')));
+		$meta->association('pictures', Jam::association('hasmany', array('as' => 'imageable')));
 		// ...
 	}
 }
@@ -254,12 +254,12 @@ In designing a data model, you will sometimes find a model that should have a re
 ```php
 <?php 
 
-class Model_Employee extends Jelly_Model {
+class Model_Employee extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('subordinates', Jelly::association('hasmany', array('foreign' => 'employee.manager_id')));
-		$meta->association('manager', Jelly::association('belongsto', array('foreign' => 'employee', 'column' => 'manager_id')));
+		$meta->association('subordinates', Jam::association('hasmany', array('foreign' => 'employee.manager_id')));
+		$meta->association('manager', Jam::association('belongsto', array('foreign' => 'employee', 'column' => 'manager_id')));
 		// ...
 	}
 }
@@ -303,7 +303,7 @@ foreach($customer->orders->reload() as $order) // discards the cached copy of or
 
 ### Avoiding Name Collisions
 
-You are not free to use just any name for your associations. Because creating an association adds a field with that name to the model, it is a bad idea to give an association a name that is already used Jelly Fields. The association will overwrite the field, breaking things. For instance, its bad to have "profile" as both field and association in your model.
+You are not free to use just any name for your associations. Because creating an association adds a field with that name to the model, it is a bad idea to give an association a name that is already used Jam Fields. The association will overwrite the field, breaking things. For instance, its bad to have "profile" as both field and association in your model.
 
 ### Updating the Schema
 
@@ -316,15 +316,15 @@ When you declare a belongs_to association, you need to create foreign keys as ap
 ```php
 <?php 
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto'));
+		$meta->association('customer', Jam::association('belongsto'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'order_date' => Jelly::field('timestamp'),
+			'id'         => Jam::field('primary'),
+			'order_date' => Jam::field('timestamp'),
 		));
 	}
 }
@@ -355,20 +355,20 @@ Whatever the name, you must manually generate the join table with an appropriate
 
 ```php
 <?php 
-class Model_Assembly extends Jelly_Model {
+class Model_Assembly extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany'));
+		$meta->association('parts', Jam::association('manytomany'));
 		// ...
 	}
 }
 
-class Model_Part extends Jelly_Model {
+class Model_Part extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany'));
+		$meta->association('parts', Jam::association('manytomany'));
 
 		// ...
 	}
@@ -384,20 +384,20 @@ It' normal for associations to work in two directions, requiring declaration on 
 
 ```php
 <?php 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 		// ...
 	}
 }
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto'));
+		$meta->association('customer', Jam::association('belongsto'));
 
 		// ...
 	}
@@ -409,7 +409,7 @@ By default, Jerry doesn't know about the connection between these associations. 
 
 ```php
 <?php
-$customer = Jelly::query('customer')->find();
+$customer = Jam::query('customer')->find();
 $order = $customer->orders[0];
 $customer->first_name == $order->customer->first_name; // TRUE
 $customer->first_name = 'Manny';
@@ -421,20 +421,20 @@ This happens because $customer and $order->customer are two different in-memory 
 
 ```php
 <?php 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany', array('inverse_of' => 'customer')));
+		$meta->association('orders', Jam::association('hasmany', array('inverse_of' => 'customer')));
 		// ...
 	}
 }
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array('inverse_of' => 'orders')));
+		$meta->association('customer', Jam::association('belongsto', array('inverse_of' => 'orders')));
 
 		// ...
 	}
@@ -446,7 +446,7 @@ With these changes, Jerry will only load one copy of the customer object, preven
 
 ```php
 <?php
-$customer = Jelly::query('customer')->find();
+$customer = Jam::query('customer')->find();
 $order = $customer->orders[0];
 $customer->first_name == $order->customer->first_name; // TRUE
 $customer->first_name = 'Manny';
@@ -456,7 +456,7 @@ $customer->first_name == $order->customer->first_name; // TRUE
 
 ## Model Helper Methods
 
-The `Jelly_Model` class has some helper methods that work only with associations. Their first argument is the name of the association.
+The `Jam_Model` class has some helper methods that work only with associations. Their first argument is the name of the association.
 
 * `builder()`
 * `build()`
@@ -464,19 +464,19 @@ The `Jelly_Model` class has some helper methods that work only with associations
 
 ### builder()
 
-Use this to get the `Jelly_Builder` for the association (The builder that, when executed will get you the Jelly_Collection of the association). This can allow you to modify the association query, add more constraints and generally perform more low level stuff than with the association itself. Have in mind that everything you do with this builder does not get cached or associated with the parent model so things like 'inverse_of' will not function. This is just a `Jelly_Builder`
+Use this to get the `Jam_Builder` for the association (The builder that, when executed will get you the Jam_Collection of the association). This can allow you to modify the association query, add more constraints and generally perform more low level stuff than with the association itself. Have in mind that everything you do with this builder does not get cached or associated with the parent model so things like 'inverse_of' will not function. This is just a `Jam_Builder`
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'name'       => Jelly::field('string'),
+			'id'         => Jam::field('primary'),
+			'name'       => Jam::field('string'),
 		));
 	}
 }
@@ -496,15 +496,15 @@ This is available only on `belongsto` and `hasmany` associations. You can create
 ```php
 <?php 
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto'));
+		$meta->association('customer', Jam::association('belongsto'));
 
 		$meta->fields(array(
-			'id'         => Jelly::field('primary'),
-			'order_date' => Jelly::field('timestamp'),
+			'id'         => Jam::field('primary'),
+			'order_date' => Jam::field('timestamp'),
 		));
 	}
 }
@@ -525,19 +525,19 @@ The second argument of `build()` is an array of attributes that is given to the 
 
 `create()` is the same as `build()` but it saves the object immediately.
 
-## Jelly_Collection
+## Jam_Collection
 
-When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jelly_Collection` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it. 
+When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jam_Collection` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it. 
 
-It is important to note that `Jelly_Collection` utilizes lazy loading so the SQL query to retrieve the objects from the database is executed at the last possible moment (in a `foreach` or `[]`).
+It is important to note that `Jam_Collection` utilizes lazy loading so the SQL query to retrieve the objects from the database is executed at the last possible moment (in a `foreach` or `[]`).
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
@@ -547,9 +547,9 @@ class Controller_Supliers extends Controller_Template {
 
 	public function action_show()
 	{
-		$supplier = Jelly::factory('supplier', $this->request->parma('id'));
+		$supplier = Jam::factory('supplier', $this->request->parma('id'));
 
-		// This line will not perform an SQL query, just create a Jelly_Collection object
+		// This line will not perform an SQL query, just create a Jam_Collection object
 		$this->template->content = View::Factory("suppliers/show", array('orders' => $supplier->orders));
 	}
 }
@@ -572,25 +572,25 @@ Jerry provides a way to set the whole content of an association with nested arra
 
 ```php
 <?php 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto'));
+		$meta->association('customer', Jam::association('belongsto'));
 
 		$meta->fields(array(
-			'name' => Jelly::field('string'),
-			'price' => Jelly::field('float'),
+			'name' => Jam::field('string'),
+			'price' => Jam::field('float'),
 		));
 	}
 }
@@ -601,7 +601,7 @@ You can set all the orders in one single assignment, creating the objects in the
 
 ```php
 <?php
-$customer = Jelly::factory('customer', 1);
+$customer = Jam::factory('customer', 1);
 $customer->orders = array(
 	array(
 		'name' => 'one order',
@@ -626,7 +626,7 @@ There's one more cool feature, after you perform the assignment, you can get the
 
 ```php
 <?php
-$customer = Jelly::factory('customer', 1);
+$customer = Jam::factory('customer', 1);
 $customer->orders = array(
 	array(
 		'name' => 'one order',
@@ -648,29 +648,29 @@ Polymorphic associations also can be populated with mass assignments, but you wi
 
 ```php
 <?php
-class Model_Picture extends Jelly_Model {
+class Model_Picture extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('imageable', Jelly::association('belongsto', array('polymorphic' => TRUE)));
+		$meta->association('imageable', Jam::association('belongsto', array('polymorphic' => TRUE)));
 		$meta->fields(array(
-			'name' => Jelly::field('string'),
-			'file' => Jelly::field('image'),
+			'name' => Jam::field('string'),
+			'file' => Jam::field('image'),
 		))
 	}
 }
 
-class Model_Employee extends Jelly_Model {
+class Model_Employee extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('pictures', Jelly::association('hasmany', array('as' => 'imageable')));
+		$meta->association('pictures', Jam::association('hasmany', array('as' => 'imageable')));
 
 		// ...
 	}
 }
 
-$employee = Jelly::factory('employee', 1);
+$employee = Jam::factory('employee', 1);
 $employee->pictures = array(
 	array(
 		'picture' => array(
@@ -692,9 +692,9 @@ echo $employee->picture[0]->name; // 'Mug Shot'
 ?>
 ```
 
-### Helper Methods for Jelly_Collection
+### Helper Methods for Jam_Collection
 
-Along with the basic array stuff, `Jelly_Collection` implements some useful helper methods
+Along with the basic array stuff, `Jam_Collection` implements some useful helper methods
 
 * meta()
 * as_array()
@@ -717,34 +717,34 @@ Get the meta of the model being retrieved. For example:
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
-echo $supplier->orders->meta() // Jelly_Meta object for the Model_Order class
+echo $supplier->orders->meta() // Jam_Meta object for the Model_Order class
 ?>
 ```
 
 ### as_array()
 
-Get the contents of the `Jelly_Collection` as an array, this get rid of the `Jelly_Collection` object, and gives you a simple array of `Jelly_Model` objects. `as_array()` method is a lot more powerful though: 
+Get the contents of the `Jam_Collection` as an array, this get rid of the `Jam_Collection` object, and gives you a simple array of `Jam_Model` objects. `as_array()` method is a lot more powerful though: 
 
 ```
 <?php
 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
@@ -785,22 +785,22 @@ echo $supplier->orders[1];
 ```
 ### add()
 
-Add an object to the association. The object will be added to the current Jelly_Collection object and will be saved when your save the parent object. Also if you have defined `inverse_of` on the filed, then when you `add()` an object to a collection, then the inverse association is set as well. You can use different representations of the object that you pass to `add()` - you can pass a primary_key a name_key or the object itself:
+Add an object to the association. The object will be added to the current Jam_Collection object and will be saved when your save the parent object. Also if you have defined `inverse_of` on the filed, then when you `add()` an object to a collection, then the inverse association is set as well. You can use different representations of the object that you pass to `add()` - you can pass a primary_key a name_key or the object itself:
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
-$order = Jelly::factory('order', 20);
+$supplier = Jam::factory('supplier', 1);
+$order = Jam::factory('order', 20);
 $supplier->orders->add($order);
 
 // Assigns the parent
@@ -813,7 +813,7 @@ echo $supplier->orders->exists($order); // TRUE
 $supplier->save();
 
 // The new association is persisted in the database.
-echo Jelly::factory('supplier', 1)->orders->exists($order); // TRUE 
+echo Jam::factory('supplier', 1)->orders->exists($order); // TRUE 
 
 // Add by primary key
 $supplier->orders->add(21);
@@ -825,22 +825,22 @@ $supplier->orders->add('last order');
 
 ### remove()
 
-Remove an object from the association. The object will be removed from the current `Jelly_Collection` object and will be saved when your save the parent object. You can use different representations of the object that you pass to `remove()` - you can pass a primary_key a name_key or the object itself
+Remove an object from the association. The object will be removed from the current `Jam_Collection` object and will be saved when your save the parent object. You can use different representations of the object that you pass to `remove()` - you can pass a primary_key a name_key or the object itself
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
-$order = Jelly::factory('order', 20);
+$supplier = Jam::factory('supplier', 1);
+$order = Jam::factory('order', 20);
 $supplier->orders->remove($order);
 
 // The user is already present in the collection even though its not saved yet.
@@ -850,7 +850,7 @@ echo $supplier->orders->exists($order); // FALSE
 $supplier->save();
 
 // The new association is persisted in the database.
-echo Jelly::factory('supplier', 1)->orders->exists($order); // FALSE 
+echo Jam::factory('supplier', 1)->orders->exists($order); // FALSE 
 
 // Remove by primary key
 $supplier->orders->remove(21);
@@ -862,7 +862,7 @@ $supplier->orders->remove('last order');
 
 ### remove_insist()
 
-The same as `remove()` but if the object is not present in the collection, then raise an `Jelly_Exception_Missing`
+The same as `remove()` but if the object is not present in the collection, then raise an `Jam_Exception_Missing`
 
 ### ids()
 
@@ -871,17 +871,17 @@ Using `ids()` you can get all the ids of the objects in the association, additio
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 echo $supplier->orders->ids(); // Array with the ids
 
@@ -893,32 +893,32 @@ $supplier->orders->ids(array(14, 21));
 
 ### clear()
 
-Clear the contents of the association leaving an empty `Jelly_Collection`
+Clear the contents of the association leaving an empty `Jam_Collection`
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 // Lets assume we have some orders
-echo $supplier->orders; // Jelly_Collection: Model_Order(2)
+echo $supplier->orders; // Jam_Collection: Model_Order(2)
 
 $supplier->orders->clear();
 
-echo $supplier->orders; // Jelly_Collection: Model_Order(0)
+echo $supplier->orders; // Jam_Collection: Model_Order(0)
 
 $supplier->save();
 
-echo Jelly::factory('supplier', 1)->orders; // Jelly_Collection: Model_Order(0)
+echo Jam::factory('supplier', 1)->orders; // Jam_Collection: Model_Order(0)
 ?>
 ```
 
@@ -932,17 +932,17 @@ This method will return the parent model that requested the association.
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 // The parent is the supplier
 echo $supplier->orders->parent() === $supplier; // TRUE
@@ -955,17 +955,17 @@ You can build an new object for the association and have it assigned to the coll
 
 ```
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 // The parent is the supplier
 $order = $supplier->orders->build(array('name' => 'new name'));
@@ -992,20 +992,20 @@ If you want to check if an element is in the collection you can use the `exists(
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany'));
+		$meta->association('orders', Jam::association('hasmany'));
 
 		// ...
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
-$order = Jelly::factory('order', 1)
+$supplier = Jam::factory('supplier', 1);
+$order = Jam::factory('order', 1)
 
-// Check with Jelly_Model object
+// Check with Jam_Model object
 echo $supplier->orders->exists($order);
 
 // Check with id of an
@@ -1028,11 +1028,11 @@ While Jerry uses intelligent defaults that will work well in most situations, th
 
 ```php
 <?php 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'foreign' => 'order_customer',
 			'column' => 'order_customer_uid'			
 		)));
@@ -1063,11 +1063,11 @@ By convention, Jerry assumes that the column used to hold the foreign key on thi
 
 ```php
 <?php 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'column' => 'customer_identifier'
 		)));
 
@@ -1079,15 +1079,15 @@ class Model_Order extends Jelly_Model {
 
 #### conditions
 
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jelly_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
+The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
 
 ```php
 <?php
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'conditions' => array(
 				'where' => array('customer.is_active', '=', TRUE),
 				'or_where' => array('customer.is_paid', '=', TRUE)
@@ -1107,11 +1107,11 @@ The `default` option is used as the default value of the foreign key column, by 
 ```php
 <?php 
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'default' => NULL
 		)));
 
@@ -1119,7 +1119,7 @@ class Model_Order extends Jelly_Model {
 	}
 }
 
-$order = Jelly::factory('order');
+$order = Jam::factory('order');
 
 echo $order->customer_id; // NULL instead of 0
 ?>
@@ -1127,7 +1127,7 @@ echo $order->customer_id; // NULL instead of 0
 
 #### dependent
 
-If you set the `dependent` option to `Jelly_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to `Jelly_Association::ERASE`, then deleting this object will delete the associated object without calling its delete method.
+If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to `Jam_Association::ERASE`, then deleting this object will delete the associated object without calling its delete method.
 
 > __Be careful__ You should not specify this option on a `belongsto` association that is connected with a `hasmany` association on the other class. Doing so can lead to orphaned records in your database.
 
@@ -1137,11 +1137,11 @@ The `foreign` option is used to configure the associated model and its unique ke
 
 ```php
 <?php 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'foreign' => 'customer.uid'
 		)));
 
@@ -1149,7 +1149,7 @@ class Model_Order extends Jelly_Model {
 	}
 }
 
-$order = Jelly::factory('order');
+$order = Jam::factory('order');
 
 echo $order->customer_id; // NULL instead of 0
 ?>
@@ -1160,11 +1160,11 @@ You can also go very low level and pass an array with the model and foreign key 
 ```php
 <?php 
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array(
+		$meta->association('customer', Jam::association('belongsto', array(
 			'foreign' => array('model' => 'customer', 'field' => 'uid')
 		)));
 
@@ -1180,21 +1180,21 @@ The `inverse_of` option specifies the name of the `hasmany` or `hasone` associat
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('orders', Jelly::association('hasmany', array('inverse_of' => 'customer'));
+		$meta->association('orders', Jam::association('hasmany', array('inverse_of' => 'customer'));
 
 		// ...
 	}
 }
 
-class Model_Order extends Jelly_Model {
+class Model_Order extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('customer', Jelly::association('belongsto', array('inverse_of' => 'orders')));
+		$meta->association('customer', Jam::association('belongsto', array('inverse_of' => 'orders')));
 
 		// ...
 	}
@@ -1233,11 +1233,11 @@ While Jerry uses intelligent defaults that will work well in most situations, th
 ```php
 <?php 
 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasone', array(
+		$meta->association('order', Jam::association('hasone', array(
 			'foreign' => 'customer_order.order_uid',
 			'label' => 'Purchase'
 		)));
@@ -1266,15 +1266,15 @@ Setting the `as` option indicates that this is a polymorphic association. Polymo
 
 #### conditions
 
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the Jelly_Builder retrieving the object). It is an associative array of "method_name" and arguments array:
+The `conditions` option lets you specify the conditions that the associated object must meet (used on the Jam_Builder retrieving the object). It is an associative array of "method_name" and arguments array:
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasone', array(
+		$meta->association('order', Jam::association('hasone', array(
 			'conditions' => array(
 				'where' => array('customer.is_active', '=', TRUE),
 				'or_where' => array('customer.is_paid', '=', TRUE)
@@ -1290,7 +1290,7 @@ class Model_Supplier extends Jelly_Model {
 
 #### dependent
 
-If you set the `dependent` option to `Jelly_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to Jelly_Association::ERASE, then deleting this object will delete the associated object without calling its delete method. If you set the `dependent` option to `Jelly_Association::NULLIFY`, then deleting this object will set the foreign key in the association object to NULL.
+If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to Jam_Association::ERASE, then deleting this object will delete the associated object without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association object to NULL.
 
 #### foreign
 
@@ -1298,11 +1298,11 @@ The `foreign` option is used to configure the associated model and its foreign k
 
 ```php
 <?php
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasone', array(
+		$meta->association('order', Jam::association('hasone', array(
 			'foreign' => 'order.customer_uid'
 		)));
 
@@ -1316,11 +1316,11 @@ You can also go very low level and pass an array with the model and foreign key 
 
 ```php
 <?php
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasone', array(
+		$meta->association('order', Jam::association('hasone', array(
 			'foreign' => array('model' => 'order', 'field' => 'customer_uid')
 		)));
 
@@ -1332,7 +1332,7 @@ class Model_Customer extends Jelly_Model {
 
 #### foreign_default
 
-When using the `dependent` option you can set it as `Jelly_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
+When using the `dependent` option you can set it as `Jam_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
 
 #### inverse_of
 
@@ -1340,11 +1340,11 @@ The `inverse_of` option specifies the name of the `belongto` association that is
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('account', Jelly::association('hasone', array(
+		$meta->association('account', Jam::association('hasone', array(
 			'inverse_of' => 'supplier'
 		)));
 
@@ -1352,11 +1352,11 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-class Model_Account extends Jelly_Model {
+class Model_Account extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('supplier', Jelly::association('belongsto', array(
+		$meta->association('supplier', Jam::association('belongsto', array(
 			'inverse_of' => 'account'
 		)));
 
@@ -1386,11 +1386,11 @@ While Jerry uses intelligent defaults that will work well in most situations, th
 
 ```php
 <?php
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'foreign' => 'order_customer',
 			'column' => 'order_customer_uid'
 		)));
@@ -1421,15 +1421,15 @@ Setting the `as` option indicates that this is a polymorphic association. Polymo
 
 #### conditions
 
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jelly_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
+The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'conditions' => array(
 				'where' => array('customer.is_active', '=', TRUE),
 				'or_where' => array('customer.is_paid', '=', TRUE)
@@ -1445,19 +1445,19 @@ class Model_Supplier extends Jelly_Model {
 
 #### dependent
 
-If you set the `dependent` option to `Jelly_Association::DELETE`, then deleting this object will call the delete method on the associated objects to delete that object. If you set the `dependent` option to `Jelly_Association::ERASE`, then deleting this object will delete the associated objects without calling its delete method. If you set the `dependent` option to `Jelly_Association::NULLIFY`, then deleting this object will set the foreign key in the association objects to NULL.
+If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated objects to delete that object. If you set the `dependent` option to `Jam_Association::ERASE`, then deleting this object will delete the associated objects without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association objects to NULL.
 
 #### extend
 
-Jerry allows you to extend the `Jelly_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
+Jerry allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'extend' => array(
 				'paid' => function($builder) {
 					$builder->where('order.is_paid', '=', TRUE);
@@ -1475,10 +1475,10 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 // Get all the paid orders for this supplier
-echo $supplier->builder('orders')->paid()->select_all(); // Jelly_Collection: Model_Order(2)
+echo $supplier->builder('orders')->paid()->select_all(); // Jam_Collection: Model_Order(2)
 
 // Get the total sum of all orders
 echo $supplier->builder('orders')->total(); // 520.59
@@ -1486,17 +1486,17 @@ echo $supplier->builder('orders')->total(); // 520.59
 ?>
 ```
 
-The extension function receives the builder as its first argument, and then the `Jelly_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jelly_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jelly/behaviors.md) Section.
+The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jam/behaviors.md) Section.
 
 The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
 
 ```php
 <?php 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'extend' => array(
 				'paid' => 'Model_Supplier::paid',
 				'total' => array('Model_Supplier', 'total')
@@ -1506,12 +1506,12 @@ class Model_Supplier extends Jelly_Model {
 		// ...
 	}
 
-	public static function paid(Jelly_Builder $builder) 
+	public static function paid(Jam_Builder $builder) 
 	{
 		$builder->where('order.is_paid', '=', TRUE);
 	}
 
-	public static function total(Jelly_Builder $builder, Jelly_Event_Data $data)
+	public static function total(Jam_Builder $builder, Jam_Event_Data $data)
 	{
 		$orders = $builder->select_all();
 		$prices = $orders->as_array(NULL, 'price');
@@ -1519,11 +1519,11 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'extend' => 'Model_Customer_Extension'
 		)));
 
@@ -1533,27 +1533,27 @@ class Model_Customer extends Jelly_Model {
 
 class Model_Customer_Extension {
 
-	public static function approved(Jelly_Builder $builder, Jelly_Event_Data $data, $is_approved = TRUE) 
+	public static function approved(Jam_Builder $builder, Jam_Event_Data $data, $is_approved = TRUE) 
 	{
 		$builder->where('order.is_approved', '=', $is_approved);
 	}
 }
 
 
-$supplier = Jelly::factory('supplier', 1);
-$customer = Jelly::factory('customer', 1);
+$supplier = Jam::factory('supplier', 1);
+$customer = Jam::factory('customer', 1);
 
 // Get all the paid orders for this supplier
-echo $supplier->builder('orders')->paid()->select_all(); // Jelly_Collection: Model_Order(2)
+echo $supplier->builder('orders')->paid()->select_all(); // Jam_Collection: Model_Order(2)
 
 // Get the total sum of all orders
 echo $supplier->builder('orders')->total(); // 520.59
 
 // Get the approved orders using the Model_Customer_Extension class
-echo $customer->builder('orders')->approved()->select_all();  // Jelly_Collection: Model_Order(3)
+echo $customer->builder('orders')->approved()->select_all();  // Jam_Collection: Model_Order(3)
 
 // Get the non approved orders using the Model_Customer_Extension class
-echo $customer->builder('orders')->approved(FALSE)->select_all();  // Jelly_Collection: Model_Order(1)
+echo $customer->builder('orders')->approved(FALSE)->select_all();  // Jam_Collection: Model_Order(1)
 
 ?>
 ```
@@ -1564,11 +1564,11 @@ The `foreign` option is used to configure the associated model and its foreign k
 
 ```php
 <?php
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'foreign' => 'order.customer_uid'
 		)));
 
@@ -1582,11 +1582,11 @@ You can also go very low level and pass an array with the model and foreign key 
 
 ```php
 <?php
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jelly::association('hasmany', array(
+		$meta->association('order', Jam::association('hasmany', array(
 			'foreign' => array('model' => 'order', 'field' => 'customer_uid')
 		)));
 
@@ -1598,7 +1598,7 @@ class Model_Customer extends Jelly_Model {
 
 #### foreign_default
 
-When using the `dependent` option you can set it as `Jelly_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
+When using the `dependent` option you can set it as `Jam_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
 
 #### inverse_of
 
@@ -1606,11 +1606,11 @@ The `inverse_of` option specifies the name of the `belongto` association that is
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('account', Jelly::association('hasmany', array(
+		$meta->association('account', Jam::association('hasmany', array(
 			'inverse_of' => 'supplier'
 		)));
 
@@ -1618,11 +1618,11 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-class Model_Account extends Jelly_Model {
+class Model_Account extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('supplier', Jelly::association('belongsto', array(
+		$meta->association('supplier', Jam::association('belongsto', array(
 			'inverse_of' => 'account'
 		)));
 
@@ -1653,11 +1653,11 @@ While Jerry uses intelligent defaults that will work well in most situations, th
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'through' => 'assemblies',
 			'column' => 'order_customer_uid'
 		)));
@@ -1680,15 +1680,15 @@ The `manytomany` association supports these options:
 
 #### extend
 
-Jerry allows you to extend the `Jelly_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
+Jerry allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'extend' => array(
 				'assembled' => function($builder) {
 					$builder->where('part.is_assembled', '=', TRUE);
@@ -1706,10 +1706,10 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-$supplier = Jelly::factory('supplier', 1);
+$supplier = Jam::factory('supplier', 1);
 
 // Get all the assembled parts from this supplier
-echo $supplier->builder('parts')->assembled()->select_all(); // Jelly_Collection: Model_Part(2)
+echo $supplier->builder('parts')->assembled()->select_all(); // Jam_Collection: Model_Part(2)
 
 // Get the total weight of all parts for this supplier
 echo $supplier->builder('parts')->total_weight(); // 130
@@ -1717,17 +1717,17 @@ echo $supplier->builder('parts')->total_weight(); // 130
 ?>
 ```
 
-The extension function receives the builder as its first argument, and then the `Jelly_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jelly_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jelly/behaviors.md) Section.
+The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jerry/blob/master/guide/jam/behaviors.md) Section.
 
 The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
 
 ```php
 <?php
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'extend' => array(
 				'assembled' => 'Model_Supplier::assembled',
 				'total_weight' => array('Model_Supplier', 'total_weight')
@@ -1737,12 +1737,12 @@ class Model_Supplier extends Jelly_Model {
 		// ...
 	}
 
-	public static function assembled(Jelly_Builder $builder) 
+	public static function assembled(Jam_Builder $builder) 
 	{
 		$builder->where('part.is_assembled', '=', TRUE);
 	}
 
-	public static function total_weight(Jelly_Builder $builder, Jelly_Event_Data $data)
+	public static function total_weight(Jam_Builder $builder, Jam_Event_Data $data)
 	{
 		$parts = $builder->select_all();
 		$weights = $parts->as_array(NULL, 'weight');
@@ -1751,11 +1751,11 @@ class Model_Supplier extends Jelly_Model {
 	}
 }
 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'extend' => 'Model_Customer_Extension'
 		)));
 
@@ -1765,27 +1765,27 @@ class Model_Customer extends Jelly_Model {
 
 class Model_Customer_Extension {
 
-	public static function approved(Jelly_Builder $builder, Jelly_Event_Data $data, $is_approved = TRUE) 
+	public static function approved(Jam_Builder $builder, Jam_Event_Data $data, $is_approved = TRUE) 
 	{
 		$builder->where('part.is_approved', '=', $is_approved);
 	}
 }
 
 
-$supplier = Jelly::factory('supplier', 1);
-$customer = Jelly::factory('customer', 1);
+$supplier = Jam::factory('supplier', 1);
+$customer = Jam::factory('customer', 1);
 
 // Get all the assembled parts for this supplier
-echo $supplier->builder('parts')->assembled()->select_all(); // Jelly_Collection: Model_Part(2)
+echo $supplier->builder('parts')->assembled()->select_all(); // Jam_Collection: Model_Part(2)
 
 // Get the total sum of all parts
 echo $supplier->builder('parts')->total_weight(); // 520.59
 
 // Get the approved parts using the Model_Customer_Extension class
-echo $customer->builder('parts')->approved()->select_all();  // Jelly_Collection: Model_Part(3)
+echo $customer->builder('parts')->approved()->select_all();  // Jam_Collection: Model_Part(3)
 
 // Get the non approved parts using the Model_Customer_Extension class
-echo $customer->builder('parts')->approved(FALSE)->select_all();  // Jelly_Collection: Model_Part(1)
+echo $customer->builder('parts')->approved(FALSE)->select_all();  // Jam_Collection: Model_Part(1)
 
 ?>
 ```
@@ -1797,11 +1797,11 @@ The `through` option allows you to configure the join table for the association.
 ```php
 <?php 
 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'through' => array(
 				'model' => 'assembly',
 				'fields' => array(
@@ -1824,11 +1824,11 @@ The `foreign` option is used to configure the associated model and its primary k
 ```php
 <?php 
 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'foreign' => 'part.uid'
 		)));
 
@@ -1843,11 +1843,11 @@ You can also go very low level and pass an array with the model and field explic
 ```php
 <?php 
 
-class Model_Customer extends Jelly_Model {
+class Model_Customer extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'foreign' => array('model' => 'part', 'field' => 'uid')
 		)));
 
@@ -1859,16 +1859,16 @@ class Model_Customer extends Jelly_Model {
 
 #### conditions
 
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jelly_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
+The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
 
 ```php
 <?php 
 
-class Model_Supplier extends Jelly_Model {
+class Model_Supplier extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jelly::association('manytomany', array(
+		$meta->association('parts', Jam::association('manytomany', array(
 			'conditions' => array(
 				'where' => array('part.is_available', '=', TRUE),
 				'or_where' => array('part.is_paid', '=', TRUE)

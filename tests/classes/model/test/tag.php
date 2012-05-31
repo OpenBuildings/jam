@@ -3,41 +3,41 @@
 /**
  * Represents a tag in the database.
  *
- * @package  Jelly
+ * @package  Jam
  */
-class Model_Test_Tag extends Jelly_Model {
+class Model_Test_Tag extends Jam_Model {
 
-	public static function initialize(Jelly_Meta $meta)
+	public static function initialize(Jam_Meta $meta)
 	{
 		// Set database to connect to
-		$meta->db(Unittest_Jelly_Testcase::$database_connection);
+		$meta->db(Unittest_Jam_Testcase::$database_connection);
 
 		$meta->associations(array(
-			'test_post'     => Jelly::association('belongsto', array(
+			'test_post'     => Jam::association('belongsto', array(
 				'conditions' => array(
 					'where' => array('test_post._approved_by', 'IS', NULL)
 				),
 				'counter_cache' => TRUE,
 				'touch' => TRUE
 			)),
-			'test_blogs' => Jelly::association('manytomany', array(
+			'test_blogs' => Jam::association('manytomany', array(
 				'required' => TRUE,
 				'through' => 'test_blogs_test_tags'
 			))
 		));
 
 		$meta->behaviors(array(
-			'sluggable' => Jelly::behavior('sluggable', array('uses_primary_key' => FALSE, 'unique' => TRUE, 'slug' => 'Model_Test_Tag::_slug'))
+			'sluggable' => Jam::behavior('sluggable', array('uses_primary_key' => FALSE, 'unique' => TRUE, 'slug' => 'Model_Test_Tag::_slug'))
 		));
 
 		// Set fields
 		$meta->fields(array(
-			'id'              => Jelly::field('primary'),
-			'name'            => Jelly::field('string'),
+			'id'              => Jam::field('primary'),
+			'name'            => Jam::field('string'),
 		));
 	}
 
-	public static function _slug(Jelly_Model $model)
+	public static function _slug(Jam_Model $model)
 	{
 		return $model->name();
 	}
