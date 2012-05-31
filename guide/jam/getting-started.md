@@ -14,7 +14,6 @@
 		- [The database migration](#the-database-migration)
 		- [Associating of the models](#associating-of-the-models)
 		- [Showing the Association](#showing-the-association)
-	- [](#)
 
 # Getting Started
 
