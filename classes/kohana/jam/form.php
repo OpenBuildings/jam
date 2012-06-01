@@ -201,4 +201,4 @@ abstract class Kohana_Jam_Form {
 	}
 
 
-} // End Kohana_Jam_Field
+} // End Kohana_Jam_Form
