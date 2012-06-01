@@ -65,7 +65,7 @@ class Kohana_Upload_File
 		
 		if ($keep_aspect)
 		{
-			$new = array('width' => $new_width === NULL ? $new_height * $new_aspect : $new_width, 'height' => ($new_height === NULL ? $new_width * $aspect : $new_height));
+			$new = array('width' => $new_width === NULL ? $new_height * $new_aspect : $new_width, 'height' => ($new_height === NULL ? $new_width / $new_aspect : $new_height));
 		}
 		elseif ($new_aspect < $aspect)
 		{
