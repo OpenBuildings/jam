@@ -28,14 +28,8 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 * Default value of the column in the database
 	 * @var integer
 	 */
-	public $default = 0;
+	public $default = NULL;
 
-	/**
-	 * Sets the convert_empty setting for the foreign field.
-	 * @var boolean
-	 */
-	public $convert_empty = TRUE;
-	
 	public $touch = FALSE;
 
 	/**
@@ -78,7 +72,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		/**
 		 * Assign the accual field in the database. Default value can be set with $this->default
 		 */
-		$meta->field($this->column, Jam::field('integer', array("default" => $this->default, 'convert_empty' => $this->convert_empty)));
+		$meta->field($this->column, Jam::field('integer', array("default" => $this->default)));
 
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
