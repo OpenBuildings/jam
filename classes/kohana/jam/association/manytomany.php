@@ -23,7 +23,7 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 	{
 		if (empty($this->foreign))
 		{
-			$foreign_model = inflector::singular($name);
+			$foreign_model = Inflector::singular($name);
 			$this->foreign = $foreign_model.'.'.Jam::meta($foreign_model)->primary_key();
 		}
 		// Is it model.field?
