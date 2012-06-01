@@ -17,6 +17,8 @@
  *
  * @package    Jam
  * @category   Query
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
@@ -35,7 +37,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 	/**
 	 * Default database to execute on
-	 * @var [type]
+	 * @var string
 	 */
 	protected $_db;
 
@@ -79,9 +81,22 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 	 */
 	protected $_with_cache = array();
 
+	/**
+	 * The joins for this builder, used to avoid dupliating them
+	 * @var array
+	 */
 	protected $_joins = array();
+
+	/**
+	 * Used by the join() method to disambiguate the valid joins from invalid once
+	 * @var boolean
+	 */
 	protected $_valid_join = TRUE;
 
+	/**
+	 * A store for user defined values for the builder
+	 * @var array
+	 */
 	protected $_params = array();
 
 	/**
@@ -137,6 +152,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 	/**
 	 * Getter/setter for the params array used to store arbitrary values by the behaviors
+	 * 
 	 * @param  array|string $params 
 	 * @param  mixed $param  
 	 * @return Jam_Builder         $this
@@ -168,6 +184,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 	 * Class - loads all static methods
 	 * array or string/array callback
 	 * array of closures
+	 * 
 	 * @param  array|string   $callbacks 
 	 * @param  mixed $callback  
 	 * @return Jam_Builder              $this
@@ -267,7 +284,8 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 	/**
 	 * Retrieve only the ids (select the primary_key column)
-	 * @return [type] [description]
+	 * 
+	 * @return array ids
 	 */
 	public function select_ids()
 	{
@@ -301,7 +319,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 		// Ready to leave the builder, we need to figure out what type to return
 		
-
 		// Return an actual array
 		if ($this->_as_object === FALSE OR Jam::meta($this->_as_object))
 		{
@@ -703,6 +720,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 	/**
 	 * Join an association, if you wont to go deeper, pass an array (association of association)
+	 * 
 	 * @param  string|array $associations Association name
 	 * @param  string $type You can add a type to be joined (LEFT, RIGHT, NATURAL) on all joins.
 	 * @return Jam_Builder
@@ -1005,6 +1023,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 		$this->_set     =
 		$this->_columns =
+		$this->_joins   =
 		$this->_values  = array();
 		$this->_result = NULL;
 
@@ -1359,7 +1378,8 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 	}
 
 	/**
-	 * You can inspect some of the parameters of the jam builder - very useful for extensions.
+	 * You can inspect some of the parameters of the jam builder - useful for extensions.
+	 * 
 	 * @param  string $name one of select, from, join, where, group_by, having, order_by, union, distinct, limit, offset, last_join, parameters
 	 * @return string
 	 */

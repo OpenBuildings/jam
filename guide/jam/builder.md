@@ -43,7 +43,7 @@ To get a builder for a specific model use the `query()` method
 
 ## Retrieving a Single Object
 
-Jerry provides several different ways of retrieving a single object.
+Jam provides several different ways of retrieving a single object.
 
 
 ### Using a factory Method
@@ -141,7 +141,7 @@ This is the basic constraint method. It adds a WHERE SQL clause and requires 3 m
 
 `where()`, `and_where()` are the same method - `where()` is just a shortcut.
 
-There are a lot of logic to help you in writing precise SQL queries in the `where()` functions. When you have ambiguous column names, you can use model names instead of tables. There are also some meta aliases for each model that are available as the name of the field. Also if you want use a SQL Function for the method you can just write it in uppercase, Jerry will figure out the details.
+There are a lot of logic to help you in writing precise SQL queries in the `where()` functions. When you have ambiguous column names, you can use model names instead of tables. There are also some meta aliases for each model that are available as the name of the field. Also if you want use a SQL Function for the method you can just write it in uppercase, Jam will figure out the details.
 
 	Jam::query('client')->where('client.title', '=', 'Patrik');  
 	// SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
@@ -155,7 +155,7 @@ There are a lot of logic to help you in writing precise SQL queries in the `wher
 	Jam::query('client')->where('SUBSTR(client.:name_key, 4)', '=', 'noon');
 	// SELECT clients.* FROM clients WHERE SUBSTR(clients.title, 4) = 'noon'
 
-The available meta aliases in Jerry are
+The available meta aliases with Jam are
 
 * :primary_key - usually the table's id field
 * :name_key - the field named "name" if not otherwise specified in the `initialize()` method of the Model
@@ -170,7 +170,7 @@ The available meta aliases in Jerry are
 	Jam::query('client')->where('client.:unique_key', '=', 'Patrik');
 	// SELECT clients.* FROM clients WHERE clients.name = 'Patrick'
 
-That in itself is quite neat. However, internally this method uses the `unique_key()` method of the `Jam_Builder` that could be extended by your application for every `Jam_Model`. You can for example write a custom logic that searched by email if the value is an email or by IP if the value is by IP. This is all covered in [Writing Models & Builders](/OpenBuildings/Jerry/blob/master/guide/jam/models-and-builders.md)
+That in itself is quite neat. However, internally this method uses the `unique_key()` method of the `Jam_Builder` that could be extended by your application for every `Jam_Model`. You can for example write a custom logic that searched by email if the value is an email or by IP if the value is by IP. This is all covered in [Writing Models & Builders](/OpenBuildings/Jam/blob/master/guide/jam/models-and-builders.md)
 
 For operators you can use all the SQL operators ('=', '!=', '>' ...). Special cases are "IN", "IS", "IS NOT", and "BETWEEN" operators
 
@@ -238,7 +238,7 @@ When you want to add constraints to the HAVING SQL clause you can use the `havin
 
 ### join(), on()
 
-When you want to join other tables to the SQL, use `join()` methods. You can join by table name, model name or a table/model and alias. To add an ON statement to the JOIN, you must use the on() method. You can also use multiple on() clauses. Jerry keeps track of the models that have been joined already and will not duplicate joins. If you want to join the same model twice with different conditions, you can use an array('model', 'alias') for the first argument. You can also perform different kinds of joins (LEFT, NATURAL ...) with the second argument of the `join()` method.
+When you want to join other tables to the SQL, use `join()` methods. You can join by table name, model name or a table/model and alias. To add an ON statement to the JOIN, you must use the on() method. You can also use multiple on() clauses. Jam keeps track of the models that have been joined already and will not duplicate joins. If you want to join the same model twice with different conditions, you can use an array('model', 'alias') for the first argument. You can also perform different kinds of joins (LEFT, NATURAL ...) with the second argument of the `join()` method.
 
 	// Normal JOIN statements
 	Jam::query('client')
@@ -410,7 +410,7 @@ You can delete all the records matched in a query by simply calling `delete()` o
 
 	$builder->small();
 
-> __Be Careful__ Using extend() is the least preferable way to extend your model as its more magic and different code intelligence tools cannot present information about those methods to you. There are other methods to add classes to the builder that are more straightforward and will nod be such a surprise to an unexpected user of your code. You can read up on that in the [Extending Jerry](/OpenBuildings/Jerry/blob/master/guide/jam/extending-jam.md)
+> __Be Careful__ Using extend() is the least preferable way to extend your model as its more magic and different code intelligence tools cannot present information about those methods to you. There are other methods to add classes to the builder that are more straightforward and will nod be such a surprise to an unexpected user of your code. You can read up on that in the [Extending Jam](/OpenBuildings/Jam/blob/master/guide/jam/extending-jam.md)
 
 
 ## Adding unmapped data

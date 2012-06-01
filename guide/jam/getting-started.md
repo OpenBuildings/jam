@@ -14,7 +14,6 @@
 		- [The database migration](#the-database-migration)
 		- [Associating of the models](#associating-of-the-models)
 		- [Showing the Association](#showing-the-association)
-	- [](#)
 
 # Getting Started
 
@@ -84,12 +83,12 @@ class Model_Post extends Jam_Model {
 ?>
 ```
 
-This isn't much of a model but it tells jerry about how to store your data in the relating table that we've created earlier. Jerry gives you a lot of functionality for free - basic database CRUD (Create, Read, Update, Destroy) operations, data validation, as well as sophisticated search support and the ability to relate multiple models to one another.
+This isn't much of a model but it tells jam about how to store your data in the relating table that we've created earlier. Jam gives you a lot of functionality for free - basic database CRUD (Create, Read, Update, Destroy) operations, data validation, as well as sophisticated search support and the ability to relate multiple models to one another.
 
 
 ### Adding Some Validation
 
-Jerry also has a lot of functionality to help you with keeping the data in your database valid. Modify your classes/model/posts.php file accordingly
+Jam also has a lot of functionality to help you with keeping the data in your database valid. Modify your classes/model/posts.php file accordingly
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -121,7 +120,7 @@ class Model_Post extends Jam_Model {
 ?>
 ```
 
-These changes will ensure that all posts have a name and a title, and that the title is at least five characters long. Jerry can validate a variety of conditions in a model, including the presence or uniqueness of columns, their format, and the existence of associated objects. Validations are covered in detail in [Validations](validations.md)
+These changes will ensure that all posts have a name and a title, and that the title is at least five characters long. Jam can validate a variety of conditions in a model, including the presence or uniqueness of columns, their format, and the existence of associated objects. Validations are covered in detail in [Validations](validations.md)
 
 
 ## Controllers and views
@@ -298,7 +297,7 @@ kohana db:migrate
 
 ### Associating of the models
 
-Jerry associations let you easily declare the relationship between two models. In the case of comments and posts, you could write out the relationships this way:
+Jam associations let you easily declare the relationship between two models. In the case of comments and posts, you could write out the relationships this way:
 
 * Each comment belongs to one post.
 * One post can have many comments.
@@ -442,4 +441,4 @@ The view to handle all this functionality will look like this:
 
 ------
 
-Hopefully that will give you an idea how to use Jerry in your projects. Of course it's immensely more powerful but to learn it's full potential you'll have to read the other parts of this guide.
+Hopefully that will give you an idea how to use Jam in your projects. Of course it's immensely more powerful but to learn it's full potential you'll have to read the other parts of this guide.

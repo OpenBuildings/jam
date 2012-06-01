@@ -6,6 +6,8 @@
  *
  * @package    Jam
  * @category   Meta
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
@@ -658,7 +660,12 @@ abstract class Kohana_Jam_Meta {
 		return $this->_validation_options;
 	}
 
-
+	/**
+	 * Add some extra rules for validation of models for this meta, or pass array() to clear them all
+	 * 
+	 * @param string|array $rules 
+	 * @param array $rule  
+	 */
 	public function extra_rules($rules = NULL, $rule = NULL)
 	{
 		// Accept rules('name', 'rule');

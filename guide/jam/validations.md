@@ -33,7 +33,7 @@
 
 # Validations Overview
 
-Validations allow you to ensure that only valid data is stored in your database. Before you dive into the detail of validations in Jerry, you should understand a bit about how validations fit into the big picture.
+Validations allow you to ensure that only valid data is stored in your database. Before you dive into the detail of validations with Jam, you should understand a bit about how validations fit into the big picture.
 
 ## Why Use Validations?
 
@@ -43,11 +43,11 @@ There are several ways to validate data before it is saved into your database, i
 * Database constraints and/or stored procedures make the validation mechanisms database-dependent and can make testing and maintenance more difficult. However, if your database is used by other applications, it may be a good idea to use some constraints at the database level. Additionally, database-level validations can safely handle some things (such as uniqueness in heavily-used tables) that can be difficult to implement otherwise.
 * Client-side validations can be useful, but are generally unreliable if used alone. If they are implemented using JavaScript, they may be bypassed if JavaScript is turned off in the user's browser. However, if combined with other techniques, client-side validation can be a convenient way to provide users with immediate feedback as they use your site.
 * Controller-level validations can be tempting to use, but often become unwieldy and difficult to test and maintain. Whenever possible, it's a good idea to keep your controllers skinny, as it will make your application a pleasure to work with in the long run.
-* Model-level validations are the best way to ensure that only valid data is saved into your database. They are database agnostic, cannot be bypassed by end users, and are convenient to test and maintain. Jerry makes them easy to use, using the built in Validation Helpers of Kohana for common needs, and allows you to create your own validation methods as well.
+* Model-level validations are the best way to ensure that only valid data is saved into your database. They are database agnostic, cannot be bypassed by end users, and are convenient to test and maintain. Jam makes them easy to use, using the built in Validation Helpers of Kohana for common needs, and allows you to create your own validation methods as well.
 
 ## When Does Validation Happen?
 
-There are two kinds of Jerry objects: those that correspond to a row inside your database and those that do not. When you create a fresh object, for example using Jerry::factory('model'), that object does not belong to the database yet. Once you call save upon that object it will be saved into the appropriate database table. Jerry uses the ->loaded() instance method to determine whether an object is already in the database or not. Consider the following simple Active Record class:
+There are two kinds of Jam objects: those that correspond to a row inside your database and those that do not. When you create a fresh object, for example using Jam::factory('model'), that object does not belong to the database yet. Once you call save upon that object it will be saved into the appropriate database table. Jam uses the ->loaded() instance method to determine whether an object is already in the database or not. Consider the following simple Active Record class:
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -82,7 +82,7 @@ echo $post->loaded();
 ?>
 ```
 
-Creating and saving a new record will send an SQL INSERT operation to the database. Updating an existing record will send an SQL UPDATE operation instead. Validations are typically run before these commands are sent to the database. If any validations fail, the object will be marked as invalid and Jerry will not perform the INSERT or UPDATE operation. This helps to avoid storing an invalid object in the database. You can choose to have specific validations run when an object is created, saved, or updated.
+Creating and saving a new record will send an SQL INSERT operation to the database. Updating an existing record will send an SQL UPDATE operation instead. Validations are typically run before these commands are sent to the database. If any validations fail, the object will be marked as invalid and Jam will not perform the INSERT or UPDATE operation. This helps to avoid storing an invalid object in the database. You can choose to have specific validations run when an object is created, saved, or updated.
 
 > __Be careful__
 > There are many ways to change the state of an object in the database. Some methods will trigger validations, but some will not. This means that it's possible to save an object in the database in an invalid state if you aren't careful.
@@ -119,7 +119,7 @@ $post->save(FALSE);
 ```
 ## check(), check_insist()
 
-To verify whether or not an object is valid, Jerry uses the `check()` method. You can also use this method on your own. `check()` triggers your validations and returns TRUE if no errors were found in the object, and FALSE otherwise.
+To verify whether or not an object is valid, Jam uses the `check()` method. You can also use this method on your own. `check()` triggers your validations and returns TRUE if no errors were found in the object, and FALSE otherwise.
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -154,7 +154,7 @@ $post->set('title', NULL)->check_insist();
 ?>
 ```
 
-After Jerry has performed validations, any errors found can be accessed through the `errors()` instance method, which returns a collection of errors.
+After Jam has performed validations, any errors found can be accessed through the `errors()` instance method, which returns a collection of errors.
 
 If you want to make sure the model is valid, you can use the `check_insist()` method. It will raise a `Jam_Validation_Exception` on failure to validate. The exception itself contains all the errors so you can inspect them, as well as references to the model itself. The plain `save()` method uses this to ensure that only valid models are saved and will raise the `Jam_Validation_Exception` if its not valid.
 
@@ -164,18 +164,18 @@ To verify whether or not a particular field of an object is valid, you can use `
 
 This method is only useful after validations have been run, because it only inspects the errors collection and does not trigger validations itself. It's different from the `check()` method explained above because it doesn't verify the validity of the object as a whole. It only checks to see whether there are errors found on an individual attribute of the object.
 
-We'll cover validation errors in greater depth in the Working with Validation Errors section. For now, let's turn to the built-in validation helpers that Jerry provides by default.
+We'll cover validation errors in greater depth in the Working with Validation Errors section. For now, let's turn to the built-in validation helpers that Jam provides by default.
 
 ## Validation Helpers
 
-Jerry uses Kohana's Validation helpers directly inside your class definitions. These helpers provide common validation rules. Every time a validation fails, an error message is added to the object's errors collection, and this message is associated with the attribute being validated.
+Jam uses Kohana's Validation helpers directly inside your class definitions. These helpers provide common validation rules. Every time a validation fails, an error message is added to the object's errors collection, and this message is associated with the attribute being validated.
 
-By default Jerry passes the value being checked to the validation helper, but there a lot of other variables you can pass. Jerry uses the concept of "bound" variables. Those are bound to the current execution context and can be used to reference variables. The available once are those:
+By default Jam passes the value being checked to the validation helper, but there a lot of other variables you can pass. Jam uses the concept of "bound" variables. Those are bound to the current execution context and can be used to reference variables. The available once are those:
 
 * `:value` - the value being checked 
 * `:field` - the name of the field
 * `:model` - the model instance object
-* `:validation` - the internal Validation object that Jerry uses - this is useful as it holds all the data being saved.
+* `:validation` - the internal Validation object that Jam uses - this is useful as it holds all the data being saved.
 
 Of caurse any other variable will be passed directly. In the example above, if we wanted to add a more complex validation rules for "title", we'll use this
 
@@ -542,7 +542,7 @@ Notice that you can pass ":model" and other bound context variables even to the 
 
 ## Working with Validation Errors
 
-In addition to the check() and check_insist() methods covered earlier, Jerry provides an error() for working with the errors collection and inquiring about the validity of objects.
+In addition to the check() and check_insist() methods covered earlier, Jam provides an error() for working with the errors collection and inquiring about the validity of objects.
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -579,7 +579,7 @@ print_r($post->errors('title'));
 
 The `errors()` method returns any results only after the validation has been performed, otherwise it will return NULL, as it does not perform a validation itself, only retrieves the errors. 
 
-Kohana Validation uses error message files to make the errors human readable. Jerry automatically sets this filename to "messages/jam/{model name}.php" so the result of `errors()` or `errors('name')` are already human readable. If you want to change the file used for validation error messages of a particular model, you can do so with the `errors_filename()`method on the meta:
+Kohana Validation uses error message files to make the errors human readable. Jam automatically sets this filename to "messages/jam/{model name}.php" so the result of `errors()` or `errors('name')` are already human readable. If you want to change the file used for validation error messages of a particular model, you can do so with the `errors_filename()`method on the meta:
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');

@@ -1,10 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
+
 /**
  * Core class that all associations must extend
  *
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Association {
@@ -35,6 +37,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * This is used to define the inverse association (has_many/has_one -> belongs_to)
+	 * 
 	 * @var string
 	 */
 	public $inverse_of = NULL;
@@ -42,6 +45,7 @@ abstract class Kohana_Jam_Association {
 	/**
 	 * And Arry of conditions to be applied on the builder for this associaiton,
 	 * Example array('where' => array('id', '=', '2'), 'or_where' => array('name', '=', 'name'))
+	 * 
 	 * @var array
 	 */
 	public $conditions;
@@ -50,11 +54,17 @@ abstract class Kohana_Jam_Association {
 	 * If set to true, will delete the association object when this one gets deleted
 	 * possible values are Jam_Association::DELETE and Jam_Association::ERASE and Jam_Association::NULLIFY
 	 * Jam_Association::DELETE will run the delete event of the associated model, Jam_Association::ERASE will not
+	 * 
 	 * @var boolean|string
 	 */
 	public $dependent = FALSE;
 
 
+	/**
+	 * A boolean flag for validating the existance of this association, if it's not set, will result in a validation error
+	 * 
+	 * @var boolean
+	 */
 	public $required = FALSE;
 	
 	/**
@@ -76,6 +86,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Default initialize set model, name and foreign variables
+	 * 
 	 * @param  Jam_Meta $meta
 	 * @param  string     $model   the model name 
 	 * @param  string     $name    the name of the association 
@@ -105,6 +116,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Get the relevant Jam_Model or Jam_Collection
+	 * 
 	 * @param  Jam_Model $model the model to query against
 	 * @return Jam_Model|Jam_Collection
 	 */
@@ -112,6 +124,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Get the relevant Jam_Model or Jam_Collection
+	 * 
 	 * @param  Jam_Model $model the model to set against
 	 * @param  mixed $value 
 	 * @return Jam_Model $this
@@ -120,6 +133,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * This method should perform stuff on model delete
+	 * 
 	 * @param  Jam_Model $model
 	 * @param  mixed $value
 	 * @return NULL
@@ -129,6 +143,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * This method should perform stuff before its saved
+	 * 
 	 * @param  Jam_Model $model
 	 * @param  mixed $value
 	 * @return NULL                   
@@ -139,6 +154,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * This method should perform a check after the parent model is checked
+	 * 
 	 * @param  Jam_Model $model
 	 * @param  mixed $value
 	 * @return NULL                   
@@ -152,6 +168,7 @@ abstract class Kohana_Jam_Association {
 	}
 	/**
 	 * This method should perform stuff after its saved
+	 * 
 	 * @param  Jam_Model $model
 	 * @param  mixed $value
 	 * @return NULL                   
@@ -162,8 +179,10 @@ abstract class Kohana_Jam_Association {
 	}
 
 	/**
-	 * Convert an array to a model. Handle polymorphic associations with one more level of arrays. 
-	 * Load and update objects if they you pass an id in the array
+	 * Convert an array to a model, mostly for mass assignment and nested forms. 
+	 * Handle polymorphic associations with one more level of nesting the arrays. 
+	 * Load and update objects if they pass an id in the array
+	 * 
 	 * @param  array|string  $array       
 	 * @param  boolean $polymorphic 
 	 * @return Jam_Model               The converted item
@@ -191,6 +210,7 @@ abstract class Kohana_Jam_Association {
 			$foreign_model = $this->foreign();
 		}
 
+		// Handle cases where there is an ID available - we load them first and then set the new attributes
 		if (is_array($array)) 
 		{
 			$key = Arr::get($array, Jam::meta($foreign_model)->primary_key());
@@ -205,7 +225,9 @@ abstract class Kohana_Jam_Association {
 	}
 
 	/**
-	 * See if the association is polymorphic.
+	 * See if the association is polymorphic. 
+	 * This is overloaded in the associations themselves
+	 * 
 	 * @return boolean 
 	 */
 	public function is_polymorphic()
@@ -215,6 +237,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Help the builder join the association
+	 * 
 	 * @param  Jam_Builder $builder
 	 * @param  string $alias
 	 * @param  string $type To be used by all joins
@@ -227,6 +250,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Create the builder required to load the associated models
+	 * 
 	 * @param  Jam_Model $model parent model
 	 * @return Jam_Builder             
 	 */
@@ -237,6 +261,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * This method is executed for each child model so that it's values are properly assigned
+	 * 
 	 * @param  Jam_Model $model parent model
 	 * @param  Jam_Model|mixed  $item  child model item
 	 * @return Jam_Model        $item
@@ -307,6 +332,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * Assigns the inverse model for the association
+	 * 
 	 * @param  Jam_Model $model parent model
 	 * @param  Jam_Model $item  child model
 	 * @return Jam_Model        $item
@@ -322,6 +348,7 @@ abstract class Kohana_Jam_Association {
 
 	/**
 	 * If the item is changed or not yet saved - save it to the database
+	 * 
 	 * @param  Jam_Model $item 
 	 * @return Jam_Model         $item
 	 */
