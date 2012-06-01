@@ -40,7 +40,7 @@ Models go in the classes / model folder of your application and their initializa
 
 ### Jam_Meta
 
-The `JellY_Meta` object has a lot of methods to help you configure the model.
+The `Jam_Meta` object has a lot of methods to help you configure the model.
 
 * db()
 * model()

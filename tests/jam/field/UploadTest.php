@@ -7,34 +7,34 @@
  * @group jam.field.upload
  * @package Jam
  */
-if ( ! defined("JELLY_UPLOAD_TEMP"))
-	define("JELLY_UPLOAD_TEMP", MODPATH . "extensions/jam/tests/test_data/temp");
+if ( ! defined("JAM_UPLOAD_TEMP"))
+	define("JAM_UPLOAD_TEMP", MODPATH . "extensions/jam/tests/test_data/temp");
 
-if ( ! defined("JELLY_UPLOAD_LOCAL"))
-	define("JELLY_UPLOAD_LOCAL", MODPATH . "extensions/jam/tests/test_data/local");
+if ( ! defined("JAM_UPLOAD_LOCAL"))
+	define("JAM_UPLOAD_LOCAL", MODPATH . "extensions/jam/tests/test_data/local");
 	
-if ( ! defined("JELLY_UPLOAD_TEST_LOCAL"))
-	define("JELLY_UPLOAD_TEST_LOCAL", MODPATH . "extensions/jam/tests/test_data/test_local");
+if ( ! defined("JAM_UPLOAD_TEST_LOCAL"))
+	define("JAM_UPLOAD_TEST_LOCAL", MODPATH . "extensions/jam/tests/test_data/test_local");
 
 class Jam_Field_UploadTest extends Unittest_TestCase {
 
 	protected $environmentDefault = array(
 		'jam.upload.temp' => array(
-			'path' => JELLY_UPLOAD_TEMP,
+			'path' => JAM_UPLOAD_TEMP,
 			'web' => '/temp/',
 		),
 		'jam.upload.servers' => array(
 			'test_local' => array(
 				'type' => 'local',
 				'params' => array(
-					'path' => JELLY_UPLOAD_TEST_LOCAL,
+					'path' => JAM_UPLOAD_TEST_LOCAL,
 					'web' => 'upload',
 				),
 			),
 			'default' => array(
 				'type' => 'local',
 				'params' => array(
-					'path' => JELLY_UPLOAD_TEST_LOCAL,
+					'path' => JAM_UPLOAD_TEST_LOCAL,
 					'web' => 'upload',
 				),
 			),			
@@ -46,13 +46,13 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 	{
 		parent::setUpBeforeClass();
 		
-		if ( ! is_dir(JELLY_UPLOAD_LOCAL))
+		if ( ! is_dir(JAM_UPLOAD_LOCAL))
 		{
-			mkdir(JELLY_UPLOAD_LOCAL, 0777, true);	
+			mkdir(JAM_UPLOAD_LOCAL, 0777, true);	
 		}
-		if ( ! is_dir(JELLY_UPLOAD_TEST_LOCAL))
+		if ( ! is_dir(JAM_UPLOAD_TEST_LOCAL))
 		{
-			mkdir(JELLY_UPLOAD_TEST_LOCAL, 0777, true);	
+			mkdir(JAM_UPLOAD_TEST_LOCAL, 0777, true);	
 		}			
 	}	
 
@@ -111,7 +111,7 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 
 	public function test_upload()
 	{
-		$file = array('error' => UPLOAD_ERR_OK, 'name' => 'upload_test.txt', 'type' => 'test/plain', 'tmp_name' => JELLY_UPLOAD_LOCAL.'/upload_test', 'size' => 4);
+		$file = array('error' => UPLOAD_ERR_OK, 'name' => 'upload_test.txt', 'type' => 'test/plain', 'tmp_name' => JAM_UPLOAD_LOCAL.'/upload_test', 'size' => 4);
 
 		file_put_contents($file['tmp_name'], 'data');
 
@@ -133,11 +133,11 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 
 	public function test_upload_populate()
 	{
-		if ( ! is_dir(JELLY_UPLOAD_TEMP.'/populate'))
+		if ( ! is_dir(JAM_UPLOAD_TEMP.'/populate'))
 		{
-			mkdir(JELLY_UPLOAD_TEMP.'/populate', 0777, TRUE);
+			mkdir(JAM_UPLOAD_TEMP.'/populate', 0777, TRUE);
 		}
-		file_put_contents(JELLY_UPLOAD_TEMP.'/populate/test_upload_populate.txt', 'data');
+		file_put_contents(JAM_UPLOAD_TEMP.'/populate/test_upload_populate.txt', 'data');
 
 		$field = Jam::field('upload');
 		$field->temp = Upload_Temp::factory();
