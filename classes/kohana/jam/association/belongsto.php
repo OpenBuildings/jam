@@ -18,7 +18,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	public $polymorphic = FALSE;
 
 	/**
-	 * The name of the accual field holding the id of the associated model. Defaults to
+	 * The name of the actual field holding the id of the associated model. Defaults to
 	 * <name>_id
 	 * @var string
 	 */
@@ -29,6 +29,12 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 * @var integer
 	 */
 	public $default = 0;
+
+	/**
+	 * Sets the convert_empty setting for the foreign field.
+	 * @var boolean
+	 */
+	public $convert_empty = TRUE;
 	
 	public $touch = FALSE;
 
@@ -72,7 +78,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		/**
 		 * Assign the accual field in the database. Default value can be set with $this->default
 		 */
-		$meta->field($this->column, Jam::field('integer', array("default" => $this->default)));
+		$meta->field($this->column, Jam::field('integer', array("default" => $this->default, 'convert_empty' => $this->convert_empty)));
 
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
@@ -242,4 +248,4 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			$this->builder($model)->delete();	
 		}
 	}
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_BelongsTo
