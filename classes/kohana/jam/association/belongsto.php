@@ -240,4 +240,4 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			$this->builder($model)->delete();	
 		}
 	}
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_BelongsTo
