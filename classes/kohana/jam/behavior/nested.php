@@ -9,11 +9,9 @@
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
-
+class Kohana_Jam_Behavior_Nested extends Jam_Behavior
+{
 	protected $_field = 'parent_id';
-
-	protected $_convert_empty = TRUE;
 	
 	public function initialize(Jam_Event $event, $model, $name) 
 	{
@@ -24,8 +22,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 				'foreign' => $model,
 				'column' => $this->_field,
 				'default' => 0,
-				'inverse_of' => 'children',
-				'convert_empty' => $this->_convert_empty
+				'inverse_of' => 'children'
 			)),
 			'children' => Jam::association('hasmany', array(
 				'foreign' => $model.'.'.$this->_field,
