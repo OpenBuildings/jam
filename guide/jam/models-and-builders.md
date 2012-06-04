@@ -188,7 +188,7 @@ You can use this to get all the defaults for this model or only the defaults for
 
 #### errors_filename()
 
-By default Jerry uses `messages/jam/{model name}.php` file for error messages of the model. but you can override this with the `errors_filename()` method. It acts as a getter to so if you're not sure of the name of the error messages file you can use this method to find out.
+By default Jam uses `messages/jam/{model name}.php` file for error messages of the model. but you can override this with the `errors_filename()` method. It acts as a getter to so if you're not sure of the name of the error messages file you can use this method to find out.
 
 	$meta->errors_filename('messages/errors/order.php');
 	echo $meta->errors_filename();       // 'messages/errors/order.php'

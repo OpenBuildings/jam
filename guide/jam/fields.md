@@ -1,6 +1,6 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-- [Jerry Fields](#jerry-fields)
+- [Jam Fields](#jam-fields)
 	- [Meta::fields, Meta::field](#meta::fields-meta::field)
 	- [Global properties](#global-properties)
 	- [Validation properties](#validation-properties)
@@ -24,7 +24,7 @@
 			- [Jam::field('weblink')](#jam::field'weblink')
 	- [Custom fields](#custom-fields)
 
-# Jerry Fields
+# Jam Fields
 
 Jam comes with many common field types defined as objects with suitable logic for retrieving and formatting them for the database.
 
@@ -54,7 +54,7 @@ class Model_Post extends Jam_Model {
 
 ## Meta::fields, Meta::field
 
-In order for the Jerry model to map your database fields accurately you'll need to define each field in your model yourself. This is done in hte static "initialize" method of the model, and is executed only once for each model class. You do this with one of the two methods - `field()` or `fields()` - `fields()` is just a convenience method to assign multipule fields with an array. 
+In order for the Jam model to map your database fields accurately you'll need to define each field in your model yourself. This is done in hte static "initialize" method of the model, and is executed only once for each model class. You do this with one of the two methods - `field()` or `fields()` - `fields()` is just a convenience method to assign multipule fields with an array. 
 
 Here's how all of this looks in practice:
 
@@ -106,7 +106,7 @@ The following properties apply to nearly all fields.
 
 ## Validation properties
 
-The following properties are available to all of the field types and mostly relate to validation. There is a more in-depth discussion of these properties on [Validations](/OpenBuildings/Jerry/blob/master/guide/jam/validations.md).
+The following properties are available to all of the field types and mostly relate to validation. There is a more in-depth discussion of these properties on [Validations](/OpenBuildings/Jam/blob/master/guide/jam/validations.md).
 
 `unique` — A shortcut property for validating that the field's data is unique in the database.
 
@@ -119,7 +119,7 @@ The following properties are available to all of the field types and mostly rela
 
 ## Field Types
 
-Here are all the Jerry Fields available out of the box. 
+Here are all the Jam Fields available out of the box. 
 
 #### Jam::field('boolean')
 
@@ -294,7 +294,7 @@ Jam::field('image', array(
 
 Those are the same as as file / image but have a more sophisticated functionality - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database. 
 
-You can read more about it in [Uploads](/OpenBuildings/Jerry/blob/master/guide/jam/upload.md) section.
+You can read more about it in [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/upload.md) section.
 
 #### Jam::field('password')
 
@@ -310,7 +310,7 @@ Represents any serialized data. Any serialized data in the database is unseriali
 
 Represents a slug, commonly used in URLs. Any value passed to this will be converted to a lowercase string, will have spaces, dashes, and underscores converted to dashes, and will be stripped of any non-alphanumeric characters (other than dashes).
 
-Jerry has another way of defining slugs that handles more use cases but as it requires more functionality it is implemented with the Sluggable Behavior.
+Jam has another way of defining slugs that handles more use cases but as it requires more functionality it is implemented with the Sluggable Behavior.
 
 #### Jam::field('weblink')
 

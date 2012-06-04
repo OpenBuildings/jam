@@ -7,7 +7,6 @@
  * @author     creatoro
  * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
- * @credits    Kohana Team
  */
 class Kohana_Jam_Validation_Exception extends Kohana_Exception {
 
@@ -18,7 +17,7 @@ class Kohana_Jam_Validation_Exception extends Kohana_Exception {
 	protected $_objects = array();
 
 	/**
-	 * The alias of the main Jam model this exception was created for
+	 * The alias of the mawith Jam model this exception was created for
 	 * @var string
 	 */
 	protected $_alias = NULL;

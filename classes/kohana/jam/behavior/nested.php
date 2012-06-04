@@ -3,9 +3,11 @@
  *  Nested behavior for Jam ORM library
  *  Creates a nested set for this model, where an object can have a parent object of the same model. Requires parent_id field in the database. Reference @ref behaviors  
  * 
- *  @copyright 2011 Despark Ltd.
- *  @version 1.0
- *  @author Ivan Kerin
+ * @package    Jam
+ * @category   Behavior
+ * @author     Ivan Kerin
+ * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 class Kohana_Jam_Behavior_Nested extends Jam_Behavior
 {
@@ -29,12 +31,26 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior
 		));
 	}
 	
+	/**
+	 * $builder->root() select only the root items 
+	 * 
+	 * @param Jam_Builder    $builder 
+	 * @param Jam_Event_Data $data    
+	 * @return Jam_Builder
+	 */
 	public function builder_call_root(Jam_Builder $builder, Jam_Event_Data $data)
 	{														
 		$data->return = $builder->where_open()->where($this->_field, '=', 0)->or_where($this->_field, 'IS', NULL)->where_close();
 		$data->stop = TRUE;
 	}
 	
+	/**
+	 * $model->root() method to get the root element from Jam_Model
+	 * 
+	 * @param Jam_Model      $model 
+	 * @param Jam_Event_Data $data 
+	 * @return Jam_Model|NULL
+	 */
 	public function model_call_root(Jam_Model $model, Jam_Event_Data $data)
 	{
 		for ($item = $model; $item->parent->loaded(); $item = $item->parent);
@@ -42,12 +58,24 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior
 		$data->return = $item;
 	}
 
+	/**
+	 * $model->is_root() check if an item is a root object
+	 * @param Jam_Model      $model 
+	 * @param Jam_Event_Data $data  
+	 * @return Jam_Model 
+	 */
 	public function model_call_is_root(Jam_Model $model, Jam_Event_Data $data)
 	{
 		$data->stop = TRUE;
 		$data->return = ! (bool) $model->{$this->_field};
 	}
 	
+	/**
+	 * $model->parents() get an array of all the parents of a given item
+	 * @param Jam_Model      $model 
+	 * @param Jam_Event_Data $data  
+	 * @return array
+	 */
 	public function model_call_parents(Jam_Model $model, Jam_Event_Data $data)
 	{	
 		$parents = array();	
