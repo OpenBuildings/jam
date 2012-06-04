@@ -59,7 +59,7 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 	{
 		$model = Jam::factory($builder[0], $builder[1]);
 
-		if ( ! $model->loaded())
+		if ( ! $model->loaded() AND $model->meta()->association($builder[2])->is_polymorphic())
 		{
 			$this->setExpectedException('Jam_Exception_NotLoaded');
 		}
