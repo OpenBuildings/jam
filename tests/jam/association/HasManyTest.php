@@ -32,7 +32,14 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_builder($args, $count)
 	{
-		$builder = Jam::factory($args[0], $args[1])->builder($args[2]);
+		$model = Jam::factory($args[0], $args[1]);
+
+		if ( ! $model->loaded())
+		{
+			$this->setExpectedException('Jam_Exception_NotLoaded');
+		}
+
+		$builder = $model->builder($args[2]);
 		if (isset($args[3]))
 		{
 			$method = $args[3];

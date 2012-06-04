@@ -889,7 +889,7 @@ abstract class Kohana_Jam_Model extends Model {
 	public function loaded_insist()
 	{
 		if ( ! $this->loaded())
-			throw new Kohana_Jam_Exception_NotLoaded("Model not loaded", $this);
+			throw new Jam_Exception_NotLoaded("Model not loaded", $this);
 
 		return $this;
 	}

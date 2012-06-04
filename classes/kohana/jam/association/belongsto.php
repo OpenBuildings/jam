@@ -139,6 +139,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		}
 		else
 		{
+			$model->loaded_insist();
 			$builder = parent::builder($model)
 				->limit(1)
 				->where($this->foreign('field'), '=', $model->{$this->column});
@@ -162,9 +163,12 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function get(Jam_Model $model)
 	{
-		$builder = $this->builder($model);
-		// Polymorphic associations can return a NULL builder if the model column is empty
-		return $builder ? $builder->find() : $builder;
+		if (($model->loaded() OR $this->is_polymorphic()) AND ($builder = $this->builder($model)))
+		{
+			return $builder->find();
+		}
+
+		return NULL;
 	}
 
 	public function set(Jam_Model $model, $new_item)

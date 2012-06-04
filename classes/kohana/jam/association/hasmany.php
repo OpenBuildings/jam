@@ -59,6 +59,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 	public function builder(Jam_Model $model)
 	{
+		$model->loaded_insist();
 		$builder = parent::builder($model)
 			->where($this->foreign('field'), '=', $model->id());
 
