@@ -13,7 +13,7 @@ class Model_Test_Category extends Jam_Model {
 		$meta->db(Unittest_Jam_Testcase::$database_connection);
 
 		$meta->behaviors(array(
-			'nested' => Jam::behavior('nested', array('convert_empty' => FALSE))
+			'nested' => Jam::behavior('nested')
 		));
 
 		$meta->associations(array(

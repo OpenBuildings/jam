@@ -13,8 +13,6 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 
 	protected $_field = 'parent_id';
 
-	protected $_convert_empty = TRUE;
-	
 	public function initialize(Jam_Event $event, $model, $name) 
 	{
 		parent::initialize($event, $model, $name);
@@ -25,7 +23,6 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 				'column' => $this->_field,
 				'default' => 0,
 				'inverse_of' => 'children',
-				'convert_empty' => $this->_convert_empty
 			)),
 			'children' => Jam::association('hasmany', array(
 				'foreign' => $model.'.'.$this->_field,
