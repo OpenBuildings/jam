@@ -74,6 +74,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function builder(Jam_Model $model)
 	{
+		$model->loaded_insist();
 		$builder = parent::builder($model)
 			->limit(1)
 			->where($this->foreign('field'), '=', $model->id());
@@ -88,8 +89,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function get(Jam_Model $model)
 	{
-		$item = $this->builder($model);
-		return $model->loaded() ? $item->select() : $item;
+		return $model->loaded() ? $this->builder($model)->select() : Jam::factory($this->foreign());
 	}
 
 	public function set(Jam_Model $model, $value)

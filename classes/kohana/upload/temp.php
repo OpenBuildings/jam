@@ -250,9 +250,18 @@ class Kohana_Upload_Temp
 	 * @author Ivan K
 	 **/
 	public function clear()
-	{		
-		if ( ! $this->clear) return $this;
-		if( is_dir($this->pathdir()))
+	{	
+		if ( ! $this->clear)
+			return $this;
+		global $counter;
+		$counter++;
+		if ($counter > 2000)
+		{
+			throw new Exception("Error Processing Request", 1);
+			
+		}
+
+		if (is_dir($this->pathdir()))
 		{
 			if ($this->clear_only_empty)
 			{

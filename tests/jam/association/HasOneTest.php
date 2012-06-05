@@ -18,9 +18,17 @@ class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 	public function provider_builder()
 	{
 		return array(
+			// Get existing post
 			array(array('test_author', 1, 'test_post'), TRUE),
+
+			// Get non-existing post
 			array(array('test_author', 2, 'test_post'), FALSE),
+
+			// Get non-existing author
 			array(array('test_author', 555, 'test_post'), FALSE),
+
+			// Get post without specifying an author
+			array(array('test_author', NULL, 'test_post'), FALSE),
 		);
 	}
 
@@ -34,7 +42,14 @@ class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_builder($args, $loaded)
 	{
-		$builder = Jam::factory($args[0], $args[1])->builder($args[2]);
+		$model = Jam::factory($args[0], $args[1]);
+
+		if ( ! $model->loaded())
+		{
+			$this->setExpectedException('Jam_Exception_NotLoaded');
+		}
+
+		$builder = $model->builder($args[2]);
 
 		$this->assertTrue($builder instanceof Jam_Builder, "Must load Jam_Builder object for the association");
 

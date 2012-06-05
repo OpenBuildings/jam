@@ -4,7 +4,7 @@ CREATE TABLE `test_blogs` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `name` VARCHAR( 255 ) NOT NULL ,
 `url` VARCHAR( 255 ) NOT NULL ,
-`test_owner_id` INT( 11 ) NOT NULL
+`test_owner_id` INT( 11 ) DEFAULT NULL
 ) ENGINE = INNODB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `test_authors`;
@@ -14,7 +14,7 @@ CREATE TABLE `test_authors` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `test_position_id` int(11) NOT NULL,
+  `test_position_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `test_copyrights`;
 CREATE TABLE `test_copyrights` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `test_image_id` int(11) NOT NULL,
+  `test_image_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -33,7 +33,7 @@ CREATE TABLE `test_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `test_post_id` int(11) NOT NULL,
+  `test_post_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -41,8 +41,8 @@ DROP TABLE IF EXISTS `test_blogs_test_tags`;
 
 CREATE TABLE `test_blogs_test_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `test_tag_id` int(11) NOT NULL,
-  `test_blog_id` int(11) NOT NULL,
+  `test_tag_id` int(11) DEFAULT NULL,
+  `test_blog_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -51,7 +51,7 @@ DROP TABLE IF EXISTS `test_images`;
 CREATE TABLE `test_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `file` varchar(255) NOT NULL,
-  `test_holder_id` int(11) NULL,
+  `test_holder_id` int(11) DEFAULT NULL,
   `test_holder_model` varchar(255) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `test_videos`;
 CREATE TABLE `test_videos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `file` varchar(255) NOT NULL,
-  `test_holder_id` int(11) NULL,
+  `test_holder_id` int(11) DEFAULT NULL,
   `test_holder_type` varchar(255) NULL,
   `deleted` int(11) DEFAULT 0 NOT NULL,
   `position` int(11) DEFAULT 0 NOT NULL,
@@ -82,10 +82,10 @@ DROP TABLE IF EXISTS `test_categories`;
 CREATE TABLE `test_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `parent_id` int(11) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
   `is_featured` tinyint(1) NOT NULL,
-  `test_author_id` int(11) NOT NULL,
-  `test_blog_id` int(11) NOT NULL,
+  `test_author_id` int(11) DEFAULT NULL,
+  `test_blog_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -109,8 +109,8 @@ CREATE TABLE `test_posts` (
 DROP TABLE IF EXISTS `test_categories_test_posts`;
 
 CREATE TABLE `test_categories_test_posts` (
-  `test_category_id` int(11) NOT NULL,
-  `test_post_id` int(11) NOT NULL
+  `test_category_id` int(11) DEFAULT NULL,
+  `test_post_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `test_uploads`;
