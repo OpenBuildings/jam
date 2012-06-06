@@ -90,13 +90,13 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	public function get(Jam_Model $model)
 	{
 		if ($model->loaded())
-		{
 			return $this->builder($model)->select();
-		}
 
-		$empty_model = Jam::factory($this->foreign());
-		$model->{$this->name} = $empty_model;
-		return $empty_model;
+		$foreign_model = Jam::factory($this->foreign());
+
+		$this->assign_relation($foreign_model);
+
+		return $foreign_model;
 	}
 
 	public function set(Jam_Model $model, $value)
