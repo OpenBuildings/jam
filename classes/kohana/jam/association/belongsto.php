@@ -165,7 +165,14 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		if ($builder = $this->builder($model))
 			return $builder->find();
 
-		return $this->is_polymorphic() ? NULL : Jam::factory($this->foreign());
+		if ($this->is_polymorphic())
+			return NULL;
+
+		$foreign_model = Jam::factory($this->foreign());
+
+		$this->assign_relation($foreign_model);
+
+		return $foreign_model;
 	}
 
 	public function set(Jam_Model $model, $new_item)

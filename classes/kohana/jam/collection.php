@@ -67,8 +67,8 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	/**
 	 * Tracks a database result
 	 *
-	 * @param  mixed  $model
 	 * @param  mixed  $result
+	 * @param  mixed  $model
 	 */
 	public function __construct($result, $model = NULL)
 	{
