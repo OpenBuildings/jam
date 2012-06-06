@@ -157,12 +157,9 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($this->required)
+		if ($this->required AND (! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0))))
 		{
-			if ( ! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0)))
-			{
-				$validation->error($this->name, 'required');
-			}
+			$validation->error($this->name, 'required');
 		}
 		
 		parent::after_check($model, $validation, $new_item);
@@ -173,7 +170,14 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		if ($builder = $this->builder($model))
 			return $builder->find();
 
-		return $this->is_polymorphic() ? NULL : Jam::factory($this->foreign());
+		if ($this->is_polymorphic())
+			return NULL;
+
+		$empty_model = Jam::factory($this->foreign());
+
+		$model->{$this->name} = $empty_model;
+
+		return $empty_model;
 	}
 
 	public function set(Jam_Model $model, $new_item)

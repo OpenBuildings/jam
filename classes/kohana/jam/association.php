@@ -156,7 +156,8 @@ abstract class Kohana_Jam_Association {
 	 * This method should perform a check after the parent model is checked
 	 * 
 	 * @param  Jam_Model $model
-	 * @param  mixed $value
+	 * @param  Jam_Validation $validation
+	 * @param  boolean $new_item  is the association new
 	 * @return NULL                   
 	 */
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
@@ -360,4 +361,4 @@ abstract class Kohana_Jam_Association {
 		}
 		return $item;
 	}
-} // End Kohana_Jam_Field
+} // End Kohana_Jam_Association

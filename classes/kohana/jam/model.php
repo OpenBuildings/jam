@@ -937,11 +937,20 @@ abstract class Kohana_Jam_Model extends Model {
 	 * @param   string   $field
 	 * @return  boolean
 	 */
-	public function changed($field = NULL)
+	public function changed($name = NULL)
 	{
-		if ($field)
+		if ($name)
 		{
-			return array_key_exists($this->_meta->field($field)->name, $this->_changed);
+			if ($association = $this->_meta->association($name))
+			{
+				$name = $association->name;
+			}
+			elseif ($field = $this->_meta->field($name))
+			{
+				$name = $field->name;
+			}
+
+			return array_key_exists($name, $this->_changed);
 		}
 		else
 		{
