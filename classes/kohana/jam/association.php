@@ -162,11 +162,12 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($new_item AND ! $new_item->check())
+		if ($new_item AND ! $new_item->is_validating() AND ! $new_item->check())
 		{
 			$validation->error($this->name, 'validation');
 		}
 	}
+
 	/**
 	 * This method should perform stuff after its saved
 	 * 
@@ -193,7 +194,7 @@ abstract class Kohana_Jam_Association {
 		if ($array instanceof Jam_Model)
 			return $array;
 
-		if ($this->is_polymorphic() AND $this instanceof Jam_Association_BelongsTo)
+		if ($this->is_polymorphic() AND ! $this instanceof Jam_Association_HasOne)
 		{
 			if ( ! is_array($array))
 				throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 

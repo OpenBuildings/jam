@@ -150,12 +150,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($this->required)
+		if ($this->required AND ( ! ($new_item AND $new_item instanceof Jam_Model AND ! $new_item->is_validating() AND $new_item->check())))
 		{
-			if ( ! (($new_item AND $new_item instanceof Jam_Model AND $new_item->check())))
-			{
-				$validation->error($this->name, 'required');
-			}
+			$validation->error($this->name, 'required');
 		}
 		
 		parent::after_check($model, $validation, $new_item);

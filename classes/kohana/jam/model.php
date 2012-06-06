@@ -46,9 +46,14 @@ abstract class Kohana_Jam_Model extends Model {
 	protected $_saved = FALSE;
 
 	/**
-	 * @var  boolean  Whether or not the model is saved
+	 * @var  boolean  Whether or not the model is saving
 	 */
 	protected $_is_saving = FALSE;
+	
+	/**
+	 * @var  boolean  Whether or not the model is validating
+	 */
+	protected $_is_validating = FALSE;
 
 	/**
 	 * @var  Jam_Meta  A copy of this object's meta object
@@ -589,6 +594,8 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function check()
 	{
+		$this->_is_validating = TRUE;
+
 		$key = $this->_original[$this->_meta->primary_key()];
 
 		// For loaded models, we're only checking what's changed, otherwise we check it all
@@ -621,6 +628,8 @@ abstract class Kohana_Jam_Model extends Model {
 
 			$this->_meta->events()->trigger('model.after_validate', $this, array($this->_validation));
 		}
+
+		$this->_is_validating = FALSE;
 
 		return $this->_valid;
 	}
@@ -916,6 +925,16 @@ abstract class Kohana_Jam_Model extends Model {
 	public function is_saving()
 	{
 		return $this->_is_saving;
+	}
+
+	/**
+	 * Whether or not the model is in the process of being validated
+	 *
+	 * @return  boolean
+	 */
+	public function is_validating()
+	{
+		return $this->_is_validating;
 	}
 
 	/**

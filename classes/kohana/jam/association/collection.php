@@ -95,7 +95,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 				{
 					$validation_errors[] = TRUE;
 				}
-				else
+				elseif ( ! $item->is_validating())
 				{
 					$validation_errors[] = $item->check();
 				}

@@ -246,8 +246,8 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 
 	public function test_polymorphic_join_association()
 	{
-		$this->markTestSkipped('join_association is not implemented for belongs_to association');
-		$this->assertEquals(1, Jam::query('test_image')->join_association('test_holder')->count());
+		$this->setExpectedException('Kohana_Exception');
+		Jam::query('test_image')->join_association('test_holder');
 	}
 
 } // End Jam_Association_BelongsToTest
