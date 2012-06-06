@@ -193,7 +193,7 @@ abstract class Kohana_Jam_Association {
 		if ($array instanceof Jam_Model)
 			return $array;
 
-		if ($this->is_polymorphic())
+		if ($this->is_polymorphic() AND $this instanceof Jam_Association_BelongsTo)
 		{
 			if ( ! is_array($array))
 				throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 
