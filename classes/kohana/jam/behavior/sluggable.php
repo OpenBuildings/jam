@@ -110,7 +110,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 */
 	public function model_after_save(Jam_Model $model)
 	{
-		if ($this->_auto_save)
+		if ($this->auto_save())
 		{
 			$original = $model->slug;
 
