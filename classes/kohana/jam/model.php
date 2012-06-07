@@ -934,7 +934,7 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function is_validating()
 	{
-		return $this->_is_validating;
+		return ($this->_is_validating OR $this->_is_saving);
 	}
 
 	/**
