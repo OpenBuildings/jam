@@ -343,7 +343,7 @@ abstract class Kohana_Jam_Association {
 	{
 		if ($this->inverse_of)
 		{
-			$item->retrieved($this->inverse_of, $model);
+			$item->set($this->inverse_of, $model);
 		}
 		return $item;
 	}
