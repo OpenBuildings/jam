@@ -87,4 +87,4 @@ class Jam_Behavior_SluggableTest extends Unittest_Jam_TestCase {
 		Jam::query('test_video')->find_by_slug($pattern);
 	}
 
-} // End Jam_Builder_SelectTest
+}
