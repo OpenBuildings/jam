@@ -28,7 +28,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
+			$this->foreign = Inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
