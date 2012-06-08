@@ -94,7 +94,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		$foreign_model = Jam::factory($this->foreign());
 
-		$this->assign_relation($foreign_model);
+		$this->assign_relation($model, $foreign_model);
 
 		return $foreign_model;
 	}

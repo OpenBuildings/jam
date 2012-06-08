@@ -185,8 +185,7 @@ abstract class Kohana_Jam_Association {
 	 * Handle polymorphic associations with one more level of nesting the arrays. 
 	 * Load and update objects if they pass an id in the array
 	 * 
-	 * @param  array|string  $array       
-	 * @param  boolean $polymorphic 
+	 * @param  array|string|Jam_Model  $array       
 	 * @return Jam_Model               The converted item
 	 */
 	public function model_from_array($array)
