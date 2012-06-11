@@ -95,7 +95,7 @@ class Kohana_Upload_File
 
 	public function is_portrait()
 	{
-		return (float) ($this->_width / $this->_height) < 1.00;
+		return ( ! $this->_height) ? FALSE : (float) ($this->_width / $this->_height) < 1.00;
 	}
 	
 	public function is_landscape()
