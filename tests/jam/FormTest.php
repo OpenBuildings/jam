@@ -34,7 +34,7 @@ class Jam_FormTest extends Unittest_Jam_TestCase {
 		$this->assertEquals($select, $choices);
 	}
 
-	public function test_defualts()
+	public function test_defaults()
 	{
 		$this->assertSame($this->form->object(), $this->post, 'Assert same object');
 
