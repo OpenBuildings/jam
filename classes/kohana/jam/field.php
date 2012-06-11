@@ -184,7 +184,7 @@ abstract class Kohana_Jam_Field {
 	}
 
 	/**
-	 * Called just before saving if the field is $in_db, and just after if it's not.
+	 * Called just before saving.
 	 *
 	 * If $in_db, it is expected to return a value suitable for insertion
 	 * into the database.
@@ -197,6 +197,19 @@ abstract class Kohana_Jam_Field {
 	public function save($model, $value, $loaded)
 	{
 		return $value;
+	}
+
+
+	/**
+	 * Called just after saving.
+	 *
+	 * @param   Jam_Model  $model
+	 * @param   mixed        $value
+	 * @param   bool         $loaded
+	 * @return  mixed
+	 */
+	public function after_save($model, $value, $loaded)
+	{
 	}
 
 	/**

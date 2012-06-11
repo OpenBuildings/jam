@@ -77,13 +77,12 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	public function save($model, $value, $loaded)
 	{
 		if ($model->changed($this->name))
-		{		
+		{
 			$this->create_model_temp($model);
-			$model->meta()->events()->bind("model.after_save", array($this, 'after_save'));
 
-			if ($model->_temp_server->filename())
+			if ($filename = $model->_temp_server->filename())
 			{
-				return $model->_temp_server->filename();
+				return $filename;
 			}
 			else
 			{
@@ -103,42 +102,21 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $value;
 	}
 
-	public function after_save($model, $params)
+	public function after_save($model, $value, $loaded)
 	{
 		$this->create_model_temp($model);
+
 		if ($model->_temp_server->filename())
 		{
-			if($this->_old_filename)
+			if ($this->_old_filename)
 			{
 				$this->_delete_old_file($model, $this->_old_filename);
 			}
 			
-			$this->_list_files( $model->_temp_server->pathdir(), '/', $files);
-			
 			$model->_temp_server->move_to_server($this->server, $this->path($model));
 		}
 	}
-	
-	private function _list_files($dir, $path, &$files) {
-		if ( ! is_dir($dir)) return ;
-		$dir = realpath($dir).DIRECTORY_SEPARATOR;
-		$path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		if ( ! is_dir($dir.$path)) return ;
 
-		foreach (glob($dir.$path.'*') as $item)
-		{
-			if (is_dir($item))
-			{
-				$this->_list_files($dir, str_replace($dir,'', $item), $files);
-			}
-			else 
-			{
-				$files[] = str_replace($dir.DIRECTORY_SEPARATOR,'', $item);
-			}
-		}
-		return true;
-	}
-	
 	/**
 	 * Returns the Jam model that this model belongs to.
 	 *
@@ -294,7 +272,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $model->_temp_server->filename() ? $model->_temp_server->url() : $this->server->webpath($this->path($model).$file);
 	}
 
-	protected function path($model = null)
+	protected function path($model = NULL)
 	{
 		$opts = array();
 		preg_match_all('#\:[a-zA-z]*#', $this->_path, $matches);

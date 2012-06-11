@@ -45,12 +45,12 @@ class Kohana_Upload_Temp
 
 	public function __destruct()
 	{
-		$this->clear();
+		$this->clear_files();
 	}
 
 	public function populate($filename)
 	{
-		$this->clear();
+		$this->clear_files();
 		
 		$this->key = dirname($filename);
 		$this->_filename = basename($filename);
@@ -160,12 +160,15 @@ class Kohana_Upload_Temp
 	public function thumbnail($thumbnail)
 	{
 		$this->initialize();
-		
-		$this->_thumbnails[] = $thumbnail;
 
-		if( ! is_dir(Upload_Server::combine_path($this->pathdir(), $thumbnail)))
+		if ( ! in_array($thumbnail, $this->_thumbnails))
 		{
-			mkdir(Upload_Server::combine_path($this->pathdir(), $thumbnail), 0777, TRUE);
+			$this->_thumbnails[] = $thumbnail;
+
+			if ( ! is_dir(Upload_Server::combine_path($this->pathdir(), $thumbnail)))
+			{
+				mkdir(Upload_Server::combine_path($this->pathdir(), $thumbnail), 0777, TRUE);
+			}
 		}
 				
 		return $this;
@@ -205,12 +208,12 @@ class Kohana_Upload_Temp
 
 			$server->save_from_local(Upload_Server::combine_path($path, $this->_filename), $this->file(), $clear);
 
-			foreach ($this->_thumbnails as $thumb) 
+			foreach ($this->_thumbnails as $thumb)
 			{
 				$server->save_from_local(Upload_Server::combine_path($path, $thumb, $this->_filename), $this->file($thumb), $clear);
 			}
 		}
-		return $this->clear();
+		return $this->clear_files();
 	}
 	
 	public function copy_to_server(Upload_Server $server, $path)
@@ -222,17 +225,17 @@ class Kohana_Upload_Temp
 	{
 		if ( ! $this->_initialized)
 		{
-			if( ! is_dir($this->path))
+			if ( ! is_dir($this->path))
 			{
 				mkdir( $this->path, 0777, TRUE);
 			}
 
-			if( ! is_writable($this->path))
+			if ( ! is_writable($this->path))
 			{
 				throw new Kohana_Exception("The assigned path :path must be writable", array(":path" => $this->path));
 			}
 
-			if( ! is_dir($this->pathdir()))
+			if ( ! is_dir($this->pathdir()))
 			{
 				mkdir($this->pathdir(), 0777, TRUE);
 			}		
@@ -249,17 +252,10 @@ class Kohana_Upload_Temp
 	 * @return $this
 	 * @author Ivan K
 	 **/
-	public function clear()
+	public function clear_files()
 	{	
 		if ( ! $this->clear)
 			return $this;
-		global $counter;
-		$counter++;
-		if ($counter > 2000)
-		{
-			throw new Exception("Error Processing Request", 1);
-			
-		}
 
 		if (is_dir($this->pathdir()))
 		{
@@ -284,13 +280,13 @@ class Kohana_Upload_Temp
 	{
 		$this->initialize();
 		
-		if(is_file($dir_path))
+		if (is_file($dir_path))
 		{
 				return unlink($dir_path);
 		}
-		elseif(is_dir($dir_path))
+		elseif (is_dir($dir_path))
 		{
-				foreach(glob(rtrim($dir_path,'/').'/*') as $index=>$path)
+				foreach (glob(rtrim($dir_path,'/').'/*') as $index=>$path)
 				{
 						$this->recursive_delete($path);
 				}
@@ -333,10 +329,10 @@ class Kohana_Upload_Temp
 	{
 		$this->initialize();
 		
-		if( ! is_file($uploaded_file) AND $uploaded_file != "php://input")
+		if ( ! is_file($uploaded_file) AND $uploaded_file != "php://input")
 			throw new Kohana_Exception("File :file does not exist", array(":file" => $uploaded_file));
 
-		if($uploaded_file == "php://input")
+		if ($uploaded_file == "php://input")
 		{
 			$input = fopen($uploaded_file, "r");
 			$temp = fopen($this->file($thumb), 'w');
@@ -362,7 +358,7 @@ class Kohana_Upload_Temp
 
 	public function filename($filename = null)
 	{		
-		if( $filename !== null)
+		if ($filename !== null)
 		{
 			$this->initialize();
 			$this->_filename = URL::title(pathinfo((string) $filename, PATHINFO_FILENAME)).'.'.pathinfo((string) $filename, PATHINFO_EXTENSION);
