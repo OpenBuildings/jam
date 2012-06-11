@@ -110,7 +110,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 */
 	public function model_after_save(Jam_Model $model)
 	{
-		if ($this->_auto_save)
+		if ($this->auto_save())
 		{
 			$original = $model->slug;
 
@@ -196,7 +196,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 		$this->builder_call_where_slug($builder, $data, $slug);
 		$data->return = $builder->find_insist();
 
-		if ($this->_uses_primary_key AND $data->return->slug != $slug)
+		if ($this->_uses_primary_key AND $data->return->slug AND $data->return->slug != $slug)
 		{
 			throw new Jam_Exception_Sluggable("Old slug :slug for model :model ", $data->return, $slug);
 		}
