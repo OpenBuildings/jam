@@ -1,83 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [The Types of Associations](#the-types-of-associations)
-	- [The belongsto Association](#the-belongsto-association)
-	- [The hasone Association](#the-hasone-association)
-	- [The hasmany Association](#the-hasmany-association)
-	- [The manytomany Association](#the-manytomany-association)
-- [Choosing Between belongsto and hasone](#choosing-between-belongsto-and-hasone)
-- [Polymorphic Associations](#polymorphic-associations)
-- [Self Joins](#self-joins)
-- [Tips, Tricks, and Warnings](#tips-tricks-and-warnings)
-	- [Controlling Caching](#controlling-caching)
-	- [Avoiding Name Collisions](#avoiding-name-collisions)
-	- [Updating the Schema](#updating-the-schema)
-		- [Creating Foreign Keys for belongsto Associations](#creating-foreign-keys-for-belongsto-associations)
-		- [Creating Join Tables for manytomany Associations](#creating-join-tables-for-manytomany-associations)
-- [Bi-directional Associations](#bi-directional-associations)
-- [Model Helper Methods](#model-helper-methods)
-	- [builder()](#builder)
-	- [build(), create()](#build-create)
-- [Jam_Collection](#jam_collection)
-	- [Mass Assignment](#mass-assignment)
-	- [Helper Methods for Jam_Collection](#helper-methods-for-jam_collection)
-	- [meta()](#meta)
-	- [as_array()](#as_array)
-	- [reload()](#reload)
-	- [add()](#add)
-	- [remove()](#remove)
-	- [remove_insist()](#remove_insist)
-	- [ids()](#ids)
-	- [clear()](#clear)
-	- [changed()](#changed)
-	- [parent()](#parent)
-	- [build()](#build)
-	- [create()](#create)
-	- [search()](#search)
-	- [exists()](#exists)
-- [Detailed Association Reference](#detailed-association-reference)
-	- [belongsto Association Reference](#belongsto-association-reference)
-		- [column](#column)
-		- [conditions](#conditions)
-		- [default](#default)
-		- [dependent](#dependent)
-		- [foreign](#foreign)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-		- [polymorphic](#polymorphic)
-		- [touch](#touch)
-	- [hasone Association Reference](#hasone-association-reference)
-		- [as](#as)
-		- [conditions](#conditions)
-		- [dependent](#dependent)
-		- [foreign](#foreign)
-		- [foreign_default](#foreign_default)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-	- [hasmany Association Reference](#hasmany-association-reference)
-		- [as](#as)
-		- [conditions](#conditions)
-		- [dependent](#dependent)
-		- [extend](#extend)
-		- [foreign](#foreign)
-		- [foreign_default](#foreign_default)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-	- [manytomany Association Reference](#manytomany-association-reference)
-		- [extend](#extend)
-		- [through](#through)
-		- [foreign](#foreign)
-		- [conditions](#conditions)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-
 ## The Types of Associations
 
 With Jam, an association is a connection between two Jam models. Associations are implemented using macro-style calls, so that you can declaratively add features to your models. For example, by declaring that one model `belongsto` another, you instruct Jam to maintain Primary Key–Foreign Key information between instances of the two models, and you also get a number of utility methods added to your model. Jam supports four types of associations:
@@ -1207,7 +1127,7 @@ echo $order->customer_id; // NULL instead of 0
 
 #### dependent
 
-If you set the `dependent` option to Jam_Association::DELETE, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to `Jam_Association::ERASE`, then deleting this object will delete the associated object without calling its delete method.
+If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to `Jam_Association::ERASE`, then deleting this object will delete the associated object without calling its delete method.
 
 > __Be careful__ You should not specify this option on a `belongsto` association that is connected with a `hasmany` association on the other class. Doing so can lead to orphaned records in your database.
 
@@ -1370,7 +1290,7 @@ class Model_Supplier extends Jam_Model {
 
 #### dependent
 
-If you set the `dependent` option to` Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to Jam_Association::ERASE, then deleting this object will delete the associated object without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association object to NULL.
+If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to Jam_Association::ERASE, then deleting this object will delete the associated object without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association object to NULL.
 
 #### foreign
 

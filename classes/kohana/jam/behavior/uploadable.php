@@ -31,6 +31,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		{
 			Jam::meta($model)->field($name.'_width', Jam::field('integer'));
 			Jam::meta($model)->field($name.'_height', Jam::field('integer'));
+			Jam::meta($model)->field('is_portrait', Jam::field('integer'));
 		}
 	}
 
@@ -39,6 +40,10 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		if ($model->changed($this->_name) AND is_file($model->{$this->_name}->file()))
 		{
 			list($model->{$this->_name.'_width'}, $model->{$this->_name.'_height'}) = getimagesize($model->{$this->_name}->file());
+			if ($model->{$this->_name.'_width'} AND $model->{$this->_name.'_height'})
+			{
+				$model->is_portrait = (bool) (($model->{$this->_name.'_width'} / $model->{$this->_name.'_height'}) < 1);
+			}
 		}
 	}
 	

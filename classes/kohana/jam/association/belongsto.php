@@ -18,7 +18,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	public $polymorphic = FALSE;
 
 	/**
-	 * The name of the accual field holding the id of the associated model. Defaults to
+	 * The name of the actual field holding the id of the associated model. Defaults to
 	 * <name>_id
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
 
-		if ($this->polymorphic)
+		if ($this->is_polymorphic())
 		{
 			if ( ! is_string($this->polymorphic))
 			{
@@ -116,9 +116,17 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $alias, $type)
+		$join = parent::join($builder, $alias, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
+
+		if ($this->is_polymorphic())
+		{
+			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+			$join->on($this->polymorphic, '=', DB::expr('"'.$this->foreign('model').'"'));
+		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)
@@ -149,12 +157,9 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($this->required)
+		if ($this->required AND ( ! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0))))
 		{
-			if ( ! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0)))
-			{
-				$validation->error($this->name, 'required');
-			}
+			$validation->error($this->name, 'required');
 		}
 		
 		parent::after_check($model, $validation, $new_item);
@@ -262,4 +267,4 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			$this->builder($model)->delete();	
 		}
 	}
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_BelongsTo

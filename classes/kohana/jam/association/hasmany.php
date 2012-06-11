@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
+
 /**
  * Handles has one to relationships
  *
@@ -27,7 +28,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
+			$this->foreign = Inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
@@ -47,14 +48,20 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 			$this->foreign['as'] = $this->as.'_model';
 			$this->foreign['field'] = $this->as.'_id';
 		}
-
 	}
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $type)
+		$join = parent::join($builder, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
+		
+		if ($this->as)
+		{
+			$join->on($this->foreign('as', $alias), '=', DB::expr('"'.$this->model.'"'));
+		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)
@@ -145,7 +152,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		{
 			$item->set($this->foreign['field'], $model->id());
 
-			if ($this->as)
+			if ($this->is_polymorphic())
 			{
 				$item->set($this->foreign['as'], $model->meta()->model());
 			}
@@ -154,4 +161,4 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 	}
 
 
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_HasMany

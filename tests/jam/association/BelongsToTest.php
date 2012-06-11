@@ -244,5 +244,10 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 
 	}
 
+	public function test_polymorphic_join_association()
+	{
+		$this->setExpectedException('Kohana_Exception');
+		Jam::query('test_image')->join_association('test_holder');
+	}
 
-} // End Jam_Field_BelongsToTest
+} // End Jam_Association_BelongsToTest

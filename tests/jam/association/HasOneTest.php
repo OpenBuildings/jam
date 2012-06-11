@@ -92,5 +92,24 @@ class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 		$this->assertNotExists('test_copyright', $test_image_id);
 	}
 
+	public function test_polymorphic_as()
+	{
+		$post = Jam::factory('test_post', 1);
+		$image = Jam::factory('test_image')->set(array('file' => 'new file.file'))->save();
+		$post->test_cover_image = $image;
+		$post->save();
 
-} // End Jam_Field_BelongsToTest
+		$image = Jam::factory('test_image', $image->id());
+
+		$this->assertEquals($post->id(), $image->test_holder->id());
+		$this->assertEquals($image->id(), Jam::factory('test_post', 1)->test_cover_image->id());
+	}
+
+	public function test_polymorphic_join_association()
+	{
+		$this->assertEquals(1, Jam::query('test_post')
+			->join_association('test_cover_image')
+			->count());
+	}
+
+} // End Jam_Field_HasOneTest

@@ -140,11 +140,11 @@ class Kohana_Jam_Collection_Data implements ArrayAccess, Iterator, Countable, Se
 	public function valid() 
 	{
 		return isset($this->_container[$this->_current]);
-	}    
+	}
 
 	public function count() 
 	{
-	 return count($this->_container);
+		return count($this->_container);
 	}
 
 }

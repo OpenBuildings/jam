@@ -110,7 +110,7 @@ abstract class Kohana_Jam_Association {
 			throw new Kohana_Exception("Cannot initialize association :association for model :model: foreign field must be a string",
 				array(':association' => $name, ':model' => $model));
 
-		// Convert $this->foriegn to an array for easier access
+		// Convert $this->foreign to an array for easier access
 		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
 	}
 
@@ -156,16 +156,18 @@ abstract class Kohana_Jam_Association {
 	 * This method should perform a check after the parent model is checked
 	 * 
 	 * @param  Jam_Model $model
-	 * @param  mixed $value
+	 * @param  Jam_Validation $validation
+	 * @param  boolean $new_item  is the association new
 	 * @return NULL                   
 	 */
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($new_item AND ! $new_item->check())
+		if ($new_item AND ! $new_item->is_validating() AND ! $new_item->check())
 		{
 			$validation->error($this->name, 'validation');
 		}
 	}
+
 	/**
 	 * This method should perform stuff after its saved
 	 * 
@@ -183,8 +185,7 @@ abstract class Kohana_Jam_Association {
 	 * Handle polymorphic associations with one more level of nesting the arrays. 
 	 * Load and update objects if they pass an id in the array
 	 * 
-	 * @param  array|string  $array       
-	 * @param  boolean $polymorphic 
+	 * @param  array|string|Jam_Model  $array       
 	 * @return Jam_Model               The converted item
 	 */
 	public function model_from_array($array)
@@ -192,7 +193,7 @@ abstract class Kohana_Jam_Association {
 		if ($array instanceof Jam_Model)
 			return $array;
 
-		if ($this->is_polymorphic())
+		if ($this->is_polymorphic() AND ! $this instanceof Jam_Association_HasOne)
 		{
 			if ( ! is_array($array))
 				throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 
@@ -341,7 +342,7 @@ abstract class Kohana_Jam_Association {
 	{
 		if ($this->inverse_of)
 		{
-			$item->retrieved($this->inverse_of, $model);
+			$item->set($this->inverse_of, $model);
 		}
 		return $item;
 	}
@@ -360,4 +361,4 @@ abstract class Kohana_Jam_Association {
 		}
 		return $item;
 	}
-} // End Kohana_Jam_Field
+} // End Kohana_Jam_Association

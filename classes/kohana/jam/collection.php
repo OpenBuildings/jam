@@ -616,11 +616,22 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	 * Check if an item exists in the collection.
 	 * You can pass primary key, name key or a model object.
 	 * 
-	 * @param  integer|string|Jam_Model $item You can pass primary key, name key or a model object.
+	 * If you pass an array with primary keys it would check if each of them is in the collection.
+	 * 
+	 * @param  integer|string|Jam_Model|array $item You can pass primary key, name key or a model object.
 	 * @return boolean whether the item exists in the collection
 	 */
 	public function exists($item)
 	{
+		if (is_array($item))
+		{
+			foreach ($item as $item_id) 
+			{
+				if ( ! $this->exists($item_id))
+					return FALSE;
+			}
+			return TRUE;
+		}
 		return $this->search($item) !== NULL;
 	}
 

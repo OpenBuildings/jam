@@ -21,7 +21,8 @@ class Model_Test_Tag extends Jam_Model {
 				'touch' => TRUE
 			)),
 			'test_blogs' => Jam::association('manytomany', array(
-				'required' => TRUE
+				'required' => TRUE,
+				'through' => 'test_blogs_test_tags'
 			))
 		));
 
@@ -41,4 +42,4 @@ class Model_Test_Tag extends Jam_Model {
 		return $model->name();
 	}
 
-} // End Model_Test_Post
+} // End Model_Test_Tag

@@ -150,20 +150,19 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 	public function test_remove()
 	{
 		$post = Jam::factory('test_post', 1);
-		$tags = $post->test_tags;
 		$tag = Jam::factory('test_tag', 1);
 
-		$this->assertCount(4, $tags);
+		$this->assertCount(4, $post->test_tags);
 
-		$tags->remove($tag);
-		$this->assertCount(3, $tags);
+		$post->test_tags->remove($tag);
+		$this->assertCount(3, $post->test_tags);
 
-		$this->assertFalse($tags->exists($tag));
+		$this->assertFalse($post->test_tags->exists($tag));
 		$post->save();
 
 		$new_tags = Jam::factory('test_post', 1)->test_tags;
 		$this->assertCount(3, $new_tags);
-		$this->assertFalse($tags->exists($tag));
+		$this->assertFalse($post->test_tags->exists($tag));
 	}
 
 	public function test_remove_collection()
@@ -418,8 +417,12 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[2]);
 		$this->assertEquals('file2.jpg', $test_post->test_images[2]->file);
-
 	}
 
+	public function test_polymorphic_join()
+	{
+		$this->assertEquals(1, Jam::query('test_post')
+			->join_association('test_images')
+			->count());
+	}
 }
-

@@ -27,7 +27,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
+			$this->foreign = Inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
@@ -60,9 +60,16 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $alias, $type)
+		$join = parent::join($builder, $alias, $type)
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
+
+		if ($this->is_polymorphic())
+		{
+			$join->on($this->foreign('as', $alias), '=', DB::expr('"'.$this->model.'"'));
+		}
+
+		return $join;
 	}
 
 	public function builder(Jam_Model $model)
@@ -87,7 +94,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		$foreign_model = Jam::factory($this->foreign());
 
-		$this->assign_relation($foreign_model);
+		$this->assign_relation($model, $foreign_model);
 
 		return $foreign_model;
 	}
@@ -101,7 +108,13 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	public function assign_relation(Jam_Model $model, $item)
 	{
 		$item = parent::assign_relation($model, $item);
+
 		$item->set($this->foreign['field'], $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$item->set($this->foreign['as'], $model->meta()->model());
+		}
 
 		return $item;
 	}
@@ -127,7 +140,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		$builder = $this->builder($model)
 			->value($this->foreign('field'), $this->foreign_default);
 
-		if ($this->as)
+		if ($this->is_polymorphic())
 		{
 			$builder->value($this->foreign('as'), NULL);
 		}
@@ -137,12 +150,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
-		if ($this->required)
+		if ($this->required AND ( ! ($new_item AND $new_item instanceof Jam_Model AND ! $new_item->is_validating() AND $new_item->check())))
 		{
-			if ( ! (($new_item AND $new_item instanceof Jam_Model AND $new_item->check())))
-			{
-				$validation->error($this->name, 'required');
-			}
+			$validation->error($this->name, 'required');
 		}
 		
 		parent::after_check($model, $validation, $new_item);
@@ -157,10 +167,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			if ($new_item)
 			{
 				$new_item->set($this->foreign['field'], $model->id());
-				if ($this->as)
+
+				if ($this->is_polymorphic())
 				{
-					$item->set($this->as, $model->meta()->model());
+					$new_item->set($this->foreign['as'], $model->meta()->model());
 				}
+
 				$new_item->save();
 				
 				$nullify->where($this->foreign().':primary_key', '!=', $new_item->id());
@@ -169,4 +181,4 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			$nullify->update();
 		}
 	}
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_HasOne

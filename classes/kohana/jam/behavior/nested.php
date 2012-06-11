@@ -9,10 +9,10 @@
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Kohana_Jam_Behavior_Nested extends Jam_Behavior
-{
+class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
+
 	protected $_field = 'parent_id';
-	
+
 	public function initialize(Jam_Event $event, $model, $name) 
 	{
 		parent::initialize($event, $model, $name);

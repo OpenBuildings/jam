@@ -46,9 +46,14 @@ abstract class Kohana_Jam_Model extends Model {
 	protected $_saved = FALSE;
 
 	/**
-	 * @var  boolean  Whether or not the model is saved
+	 * @var  boolean  Whether or not the model is saving
 	 */
 	protected $_is_saving = FALSE;
+	
+	/**
+	 * @var  boolean  Whether or not the model is validating
+	 */
+	protected $_is_validating = FALSE;
 
 	/**
 	 * @var  Jam_Meta  A copy of this object's meta object
@@ -93,6 +98,8 @@ abstract class Kohana_Jam_Model extends Model {
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
 
+		$this->_meta->events()->trigger('model.before_construct', $this);
+
 		// Copy over the defaults into the original data.
 		$this->_original = $this->_meta->defaults();
 
@@ -109,6 +116,8 @@ abstract class Kohana_Jam_Model extends Model {
 				$this->load_values($result);
 			}
 		}
+
+		$this->_meta->events()->trigger('model.after_construct', $this);
 	}
 
 	/**
@@ -585,6 +594,8 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function check()
 	{
+		$this->_is_validating = TRUE;
+
 		$key = $this->_original[$this->_meta->primary_key()];
 
 		// For loaded models, we're only checking what's changed, otherwise we check it all
@@ -617,6 +628,8 @@ abstract class Kohana_Jam_Model extends Model {
 
 			$this->_meta->events()->trigger('model.after_validate', $this, array($this->_validation));
 		}
+
+		$this->_is_validating = FALSE;
 
 		return $this->_valid;
 	}
@@ -690,7 +703,6 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			return $this;
 		}
-		
 		$event_type = $key ? 'update' : 'create';
 		
 		if ($this->_meta->events()->trigger('model.before_'.$event_type, $this) === FALSE)
@@ -775,11 +787,6 @@ abstract class Kohana_Jam_Model extends Model {
 		foreach ($this->_meta->associations() as $name => $association)
 		{
 			$association->after_save($this, Arr::get($this->_changed, $name), (bool) isset($this->_changed[$name]));
-		}
-
-		foreach ($this->_meta->fields() as $name => $field)
-		{			
-			$field->after_save($this, Arr::get($this->_changed, $name), (bool) isset($this->_changed[$name]));
 		}
 
 		// Set the changed data back as original
@@ -921,6 +928,16 @@ abstract class Kohana_Jam_Model extends Model {
 	}
 
 	/**
+	 * Whether or not the model is in the process of being validated
+	 *
+	 * @return  boolean
+	 */
+	public function is_validating()
+	{
+		return ($this->_is_validating OR $this->_is_saving);
+	}
+
+	/**
 	 * Whether or not the model is deleted
 	 *
 	 * @return  boolean
@@ -939,11 +956,20 @@ abstract class Kohana_Jam_Model extends Model {
 	 * @param   string   $field
 	 * @return  boolean
 	 */
-	public function changed($field = NULL)
+	public function changed($name = NULL)
 	{
-		if ($field)
+		if ($name)
 		{
-			return array_key_exists($this->_meta->field($field)->name, $this->_changed);
+			if ($association = $this->_meta->association($name))
+			{
+				$name = $association->name;
+			}
+			elseif ($field = $this->_meta->field($name))
+			{
+				$name = $field->name;
+			}
+
+			return array_key_exists($name, $this->_changed);
 		}
 		else
 		{

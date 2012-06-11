@@ -20,6 +20,8 @@ In the lifetime of each model(and builder) there are several events being trigge
 
 ### Available events
 
+* model.before_construct
+* model.after_construct
 * model.before_create
 * model.before_update
 * model.before_save
@@ -35,6 +37,8 @@ In the lifetime of each model(and builder) there are several events being trigge
 * meta.after_finalize
 
 * builder.before_select
+
+`before_construct` and `after_construct` are called when a new Jam_Model object is constructed.
 
 On model save, `before_create` and `after_create` are called for newly created models, `before_update` and `after_update` are triggered for loaded model that have already been previously saved to the database, and `before_save` and `after_save` are called in both cases.
 

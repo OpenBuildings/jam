@@ -42,6 +42,11 @@ class Model_Test_Post extends Jam_Model {
 				'as' => 'test_holder',
 				'dependent' => Jam_Association::DELETE
 			)),
+			'test_cover_image'     => Jam::association('hasone', array(
+				'as' => 'test_holder',
+				'foreign' => 'test_image',
+				'dependent' => Jam_Association::DELETE
+			)),
 			'test_categories' => Jam::association('manytomany'),
 			'types' => Jam::association('taxonomy_terms', array('vocabulary' => 'Types', 'vocabulary_model' => 'test_vocabulary', 'through' => 'test_terms_items', 'foreign' => 'test_term.id'))
 		));

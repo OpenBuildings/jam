@@ -44,11 +44,30 @@ class Kohana_Upload_File
 
 		if ( ! $this->_width OR ! $this->_height)
 			return array('width' => NULL, 'height' => NULL);
-
-		$new_aspect = $new_width / $new_height;
+		
 		$aspect = $this->_width / $this->_height;
-
-		if ($new_aspect < $aspect) 
+		$keep_aspect = FALSE;
+		
+		if ($new_height === NULL)
+		{			
+			$new_aspect = $aspect;
+			$keep_aspect = TRUE;
+		}
+		elseif ($new_width === NULL)
+		{
+			$new_aspect = $aspect;
+			$keep_aspect = TRUE;
+		}
+		else		
+		{
+			$new_aspect = $new_width / $new_height;
+		}
+		
+		if ($keep_aspect)
+		{
+			$new = array('width' => $new_width === NULL ? $new_height * $new_aspect : $new_width, 'height' => ($new_height === NULL ? $new_width / $new_aspect : $new_height));
+		}
+		elseif ($new_aspect < $aspect)
 		{
 			$new = array('width' => $new_width, 'height' => $this->_height * ($new_width / $this->_width));
 		} 
@@ -74,6 +93,16 @@ class Kohana_Upload_File
 		return $new;
 	}
 
+	public function is_portrait()
+	{
+		return ( ! $this->_height) ? FALSE : (float) ($this->_width / $this->_height) < 1.00;
+	}
+	
+	public function is_landscape()
+	{
+		return ! $this->is_portrait();
+	}
+	
 	/**
 	 * Get the width of the image (or calculate new width when constrained to dimensions)
 	 * @param  integer $new_width  constrained to this widht

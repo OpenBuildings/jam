@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Handles has one to relationships
+ * Common association for has-many and many-to-many relationships
  *
  * @package    Jam
  * @category   Associations
@@ -95,7 +95,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 				{
 					$validation_errors[] = TRUE;
 				}
-				else
+				elseif ( ! $item->is_validating())
 				{
 					$validation_errors[] = $item->check();
 				}
@@ -139,4 +139,4 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			array_diff($collection->ids(), $current_ids)
 		);	
 	}
-} // End Kohana_Jam_Field_BelongsTo
+} // End Kohana_Jam_Association_Collection
