@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
  * @package    Jam
@@ -6,8 +6,8 @@
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Kohana_Upload_File
-{
+class Kohana_Upload_File {
+
 	protected $_hidden_filename;
 	protected $_path;
 	protected $_file;
