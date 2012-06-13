@@ -478,9 +478,18 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		return $result;
 	}
 
-	public function count_by_query()
+	public function count_by_query($force = FALSE)
 	{
-		return Database::instance()->query(Database::SELECT, "SELECT COUNT(*) as total FROM ({$this}) as t", FALSE)->get('total');
+		if ($force)
+		{
+			return Database::instance()->query(Database::SELECT, "SELECT COUNT(*) as total FROM ({$this}) as t", FALSE)->get('total');
+		}
+		else
+		{
+			$builder = clone $this;
+			$builder->group_by(NULL);
+			return $builder->count();			
+		}
 	}
 
 	/**
