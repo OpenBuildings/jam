@@ -847,6 +847,18 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 		return parent::order_by($this->_field_alias($column), $direction);
 	}
+	
+	public function limit($number) 
+	{
+		if ($number === NULL)
+		{
+			$this->_limit = NULL;
+			return $this;
+		}
+		
+		return 
+			parent::limit($number);
+	}
 
 	/**
 	 * Set the values to update with an associative array.
