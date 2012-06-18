@@ -12,6 +12,7 @@
 	- [or_where()](#or_where)
 	- [where_open(), where_close(), and_where_close(), and_where_open(), or_where_open(), or_where_close()](#where_open-where_close-and_where_close-and_where_open-or_where_open-or_where_close)
 	- [having(), and_having(), or_having(), having_open(), having_close(), and_having_close(), and_having_open(), or_having_open(), or_having_close()](#having-and_having-or_having-having_open-having_close-and_having_close-and_having_open-or_having_open-or_having_close)
+	- [not()](#not)
 	- [join(), on()](#join-on)
 	- [join_association()](#join_association)
 	- [distinct()](#distinct)
@@ -111,6 +112,7 @@ If you want to get objects with a specific primary_key, just use the `find()` me
 * or_having()
 * or_having_close()
 * or_having_open()
+* not()
 * join()
 * on()
 * join_association()
@@ -131,6 +133,7 @@ If you want to limit the records to specific ids, then you can use the `key()` m
 	Jam::query('client')->key(1)->find();                   // Model_Client(1)
 	Jam::query('client')->key('Pesho')->find();             // Model_Client(1)
 	Jam::query('client')->key(array(1, 2))->select_all();   // Jam_Collection: Model_Client(2)
+
 
 ### where(), and_where()
 
@@ -235,6 +238,13 @@ If we wanted to change the logic of the query to say that
 ### having(), and_having(), or_having(), having_open(), having_close(), and_having_close(), and_having_open(), or_having_open(), or_having_close()
 
 When you want to add constraints to the HAVING SQL clause you can use the `having()` methods group. They act just like `where()` but the SQL appears inside HAVING
+
+### not()
+
+If you want to exclude a particular model from the result you can use the not() method, you can pass it a model object and it will add a where model.id != id clause
+
+	$client = Jam::factory('client', 2);
+	Jam::query('client')->not($client)->select_all();
 
 ### join(), on()
 

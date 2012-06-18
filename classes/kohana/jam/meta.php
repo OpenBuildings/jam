@@ -160,7 +160,6 @@ abstract class Kohana_Jam_Meta {
 		if ($this->_initialized)
 			return;
 
-
 		// Set the name of a possible behavior class
 		$behavior_class = Jam::behavior_prefix().$model;
 

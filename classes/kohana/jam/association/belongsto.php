@@ -116,14 +116,23 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		$join = parent::join($builder, $alias, $type)
-			->join($this->foreign(NULL, $alias), $type)
-			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
+		$join = parent::join($builder, $alias, $type);
 
 		if ($this->is_polymorphic())
 		{
-			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
-			$join->on($this->polymorphic, '=', DB::expr('"'.$this->foreign('model').'"'));
+			if ( ! $alias)
+				throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+
+			$join
+				->join($alias, $type)
+				->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column)
+				->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
+		}
+		else
+		{
+			$join
+				->join($this->foreign(NULL, $alias), $type)
+				->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
 		}
 
 		return $join;

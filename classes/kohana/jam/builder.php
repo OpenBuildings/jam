@@ -550,7 +550,16 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		{
 			return $this->where($this->_model.'.'.$this->unique_key($key), '=', $key)->limit(1);	
 		}
-		
+	}
+
+	/**
+	 * Exclude a given model from the results
+	 * @param  Jam_Model $model 
+	 * @return Jam_Builder
+	 */
+	public function not(Jam_Model $model)
+	{
+		return $this->where($model->meta()->model().'.:primary_key', '!=', $model->id());
 	}
 
 	/**
