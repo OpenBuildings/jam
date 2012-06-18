@@ -488,6 +488,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		{
 			$builder = clone $this;
 			$builder->group_by(NULL);
+			$builder->order_by(NULL);
 			return $builder->count();			
 		}
 	}
