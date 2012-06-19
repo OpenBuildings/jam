@@ -59,6 +59,7 @@ abstract class Kohana_Jam_Association {
 	 */
 	public $dependent = FALSE;
 
+	public $extend;
 
 	/**
 	 * A boolean flag for validating the existance of this association, if it's not set, will result in a validation error
@@ -257,7 +258,14 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function builder(Jam_Model $model)
 	{
-		return $this->apply_conditions(Jam::query($this->foreign()));
+		$builder =  $this->apply_conditions(Jam::query($this->foreign()));
+		
+		if ($this->extend)
+		{
+			$builder->extend($this->extend);
+		}
+		
+		return $builder;
 	}
 
 	/**

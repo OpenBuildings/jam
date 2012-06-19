@@ -10,8 +10,6 @@
  */
 abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
-	public $extend;
-
 	public $through;
 
 	public function through($field_name = NULL)
@@ -40,18 +38,6 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
 		sort($through);
 		return implode('_', $through);
-	}
-
-	public function builder(Jam_Model $model)
-	{
-		$builder = parent::builder($model);
-
-		if ($this->extend)
-		{
-			$builder->extend($this->extend);
-		}
-
-		return $builder;
 	}
 
 	public function get(Jam_Model $model)

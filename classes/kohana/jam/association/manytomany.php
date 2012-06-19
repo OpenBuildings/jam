@@ -69,11 +69,6 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 			->on($this->through('foreign'), '=', $this->foreign('field'))
 			->where($this->through('our'), '=', $model->id());
 
-		if ($this->extend)
-		{
-			$builder->extend($this->extend);
-		}
-
 		return $builder;
 	}
 

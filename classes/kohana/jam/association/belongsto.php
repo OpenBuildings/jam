@@ -152,7 +152,12 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 				->select_column(array("$parent_model.*"))
 				->where($parent_model.'.'.$this->foreign['field'], '=', $model->{$this->column});
 
-			$this->apply_conditions($builder);
+			$builder = $this->apply_conditions($builder);
+
+			if ($this->extend)
+			{
+				$builder->extend($this->extend);
+			}
 		}
 		else
 		{
