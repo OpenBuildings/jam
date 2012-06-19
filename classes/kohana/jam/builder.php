@@ -488,6 +488,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		{
 			$builder = clone $this;
 			$builder->group_by(NULL);
+			$builder->order_by(NULL);
 			return $builder->count();			
 		}
 	}
@@ -855,6 +856,18 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		}
 
 		return parent::order_by($this->_field_alias($column), $direction);
+	}
+	
+	public function limit($number) 
+	{
+		if ($number === NULL)
+		{
+			$this->_limit = NULL;
+			return $this;
+		}
+		
+		return 
+			parent::limit($number);
 	}
 
 	/**
