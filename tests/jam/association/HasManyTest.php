@@ -373,9 +373,9 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 		$test_post = Jam::factory('test_post', 1);
 
 		$test_post->test_images = array(
-			array('test_image' => array('id' => 1, 'file' => 'file3.jpg')),
-			array('test_image' => array('file' => 'file1.jpg')),
-			array('test_image' => array('file' => 'file2.jpg')),
+			array('id' => 1, 'file' => 'file3.jpg'),
+			array('file' => 'file1.jpg'),
+			array('file' => 'file2.jpg'),
 			'',
 			'' => '',
 		);
