@@ -773,7 +773,7 @@ abstract class Kohana_Jam_Model extends Model {
 							 ->insert();
 
 			// Gotta make sure to set this
-			$key = $this->_changed[$this->_meta->primary_key()] = $id;
+			$key = $values[$this->_meta->primary_key()] = $id;
 		}
 		
 		// Re-set any saved values; they may have changed
