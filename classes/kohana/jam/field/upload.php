@@ -104,14 +104,16 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	public function after_save($model, $value, $loaded)
 	{
-		$this->create_model_temp($model);
-
+		$this->create_model_temp($model);		
+		Log::instance()->add(Log::INFO, 'After save');
+		
 		if ($model->_temp_server->filename())
 		{
 			if ($this->_old_filename)
 			{
 				$this->_delete_old_file($model, $this->_old_filename);
 			}
+			Log::instance()->add(Log::INFO, 'After save called with path:'.$this->path($model));			
 			
 			$model->_temp_server->move_to_server($this->server, $this->path($model));
 		}
@@ -234,7 +236,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		}
 		elseif (is_string($file))
 		{
-			if (is_file($file) AND (strpos($file, APPPATH.'tests/test_data/files/') === 0 OR strpos($file, DOCROOT.'upload/') === 0 ))
+			if (is_file($file) AND (strpos($file, APPPATH.'tests/test_data/files/') === 0 /*OR strpos($file, DOCROOT.'upload/') === 0*/ ))
 			{
 				$model->_temp_server->get_file($file);
 			}
