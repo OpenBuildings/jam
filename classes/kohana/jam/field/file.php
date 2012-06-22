@@ -13,7 +13,7 @@
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Field_File extends Jam_Field implements Jam_Field_Supports_Save {
+abstract class Kohana_Jam_Field_File extends Jam_Field {
 
 	/**
 	 * @var  boolean  whether or not to delete the old file when a new file is added
