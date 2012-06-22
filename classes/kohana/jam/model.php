@@ -788,6 +788,11 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			$association->after_save($this, Arr::get($this->_changed, $name), (bool) isset($this->_changed[$name]));
 		}
+		
+		foreach ($this->_meta->fields() as $name => $field)
+		{			
+			$field->after_save($this, Arr::get($this->_changed, $name), (bool) isset($this->_changed[$name]));
+		}
 
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
