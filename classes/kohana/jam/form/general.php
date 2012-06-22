@@ -166,6 +166,21 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	}
 
 	/**
+	 * HTML input password field
+	 * @param  string $name       the name of the Jam_Model attribute
+	 * @param  array  $options    Not Used - for compatibility
+	 * @param  array  $attributes HTML attributes for the field
+	 * @return string             
+	 */
+	public function password($name, array $options = array(), array $attributes = array())
+	{
+		$attributes = $this->default_attributes($name, $attributes);
+
+		return Form::password($attributes['name'], '', $attributes);
+	}
+
+
+	/**
 	 * HTML input textarea field
 	 * 
 	 * @param string $name       the name of the Jam_Model attribute
