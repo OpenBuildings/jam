@@ -116,7 +116,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 
-			if ($old_ids)
+			if (array_filter($old_ids))
 			{
 				$this->nullify_builder($model)->key($old_ids)->update();
 			}
