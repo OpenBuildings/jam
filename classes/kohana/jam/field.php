@@ -36,6 +36,11 @@ abstract class Kohana_Jam_Field {
 	public $unique = FALSE;
 
 	/**
+	 * @var  boolean  limit the uniqueness to a specified scope
+	 */
+	public $unique_scope = array();
+
+	/**
 	* @var  boolean  a primary key field.
 	*/
 	public $primary = FALSE;
@@ -272,6 +277,14 @@ abstract class Kohana_Jam_Field {
 		{
 			// Build query
 			$query = Jam::query($model)->where($field, '=', $value);
+
+			if ($this->unique_scope)
+			{
+				foreach ( (array) $this->unique_scope as $field) 
+				{
+					$query->where($field, '=', $model->$field);
+				}
+			}
 
 			// Limit to one
 			$query->limit(1);

@@ -110,6 +110,8 @@ The following properties are available to all of the field types and mostly rela
 
 `unique` — A shortcut property for validating that the field's data is unique in the database.
 
+`unique_scope` — You can limit the uniqueness of the each model to a field or an array of field so only fields are the same will they be considered for uniqeness.
+
 `label` — The label to use for the field when validating.
 
 `filters` — Filters to apply to data before validating it.
