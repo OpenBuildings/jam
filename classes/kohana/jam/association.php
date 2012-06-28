@@ -69,6 +69,12 @@ abstract class Kohana_Jam_Association {
 	public $required = FALSE;
 	
 	/**
+	 * Indicates whether the foreign model should be touched (updated) after the association has been updated.
+	 * @var boolean
+	 */
+	public $touch = FALSE;
+
+	/**
 	 * Sets all options.
 	 *
 	 * @param  array  $options
@@ -113,6 +119,11 @@ abstract class Kohana_Jam_Association {
 
 		// Convert $this->foreign to an array for easier access
 		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
+
+		if ($this->touch === TRUE)
+		{
+			$this->touch = 'updated';
+		}
 	}
 
 	/**
@@ -178,7 +189,14 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function after_save(Jam_Model $model, $value, $is_changed)
 	{
-		
+		if ($this->touch)
+		{
+			$item = $model->{$this->name};
+			if ($item instanceof Jam_Model AND $item->loaded())
+			{
+				$item->_touch_if_untouched($model, $this->touch, $is_changed);
+			}
+		}
 	}
 
 	/**

@@ -160,6 +160,8 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function after_save(Jam_Model $model, $new_item, $is_changed)
 	{
+		parent::after_save($model, $new_item, $is_changed);
+		
 		if ($is_changed)
 		{
 			$nullify = $this->nullify_builder($model);

@@ -81,6 +81,11 @@ abstract class Kohana_Jam_Model extends Model {
 	protected $_with = array();
 
 	/**
+	 * @var Boolean use this to prevent multiple touches
+	 */
+	protected $_is_touched = FALSE;
+
+	/**
 	 * Constructor.
 	 *
 	 * A key can be passed to automatically load a model by its
@@ -806,7 +811,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Trigger post-save callback
 		$this->_meta->events()->trigger('model.after_save', $this);
 
-		$this->_is_saving = FALSE;
+		$this->_is_touched = $this->_is_saving = FALSE;
 
 		return $this;
 	}
@@ -867,6 +872,7 @@ abstract class Kohana_Jam_Model extends Model {
 			$this->_saved  = TRUE;
 
 			$this->_changed   =
+			$this->_is_touched =
 			$this->_retrieved = array();
 		}
 
@@ -882,6 +888,7 @@ abstract class Kohana_Jam_Model extends Model {
 	{
 		$this->_valid  =
 		$this->_loaded =
+		$this->_is_touched =
 		$this->_saved  = FALSE;
 
 		$this->_with      =
@@ -1010,6 +1017,27 @@ abstract class Kohana_Jam_Model extends Model {
 	public function meta()
 	{
 		return $this->_meta;
+	}
+
+	public function is_touched($value = NULL)
+	{
+		return $this->_is_touched;
+	}
+
+	public function _touch_if_untouched(Jam_Model $sender, $field, $is_changed)
+	{
+		if ( ! $this->_is_touched)
+		{
+			$this->touch($sender, $field, $is_changed);
+			$this->_is_touched = TRUE;
+		}
+	}
+
+	public function touch(Jam_Model $sender, $field, $is_changed)
+	{
+		Jam::query($this->meta()->model(), $this->id())
+			->value($field, $this->meta()->field($field)->save(NULL, NULL, TRUE))
+			->update();
 	}
 
 	public function builder($name)

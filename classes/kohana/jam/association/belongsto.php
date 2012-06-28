@@ -42,11 +42,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 */
 	public $convert_empty = TRUE;
 	
-	/**
-	 * Indicates whether the foreign model should be touched (updated) after the association has been updated.
-	 * @var boolean
-	 */
-	public $touch = FALSE;
 
 	/**
 	 * Automatically sets foreign to sensible defaults.
@@ -72,11 +67,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		if (empty($this->column))
 		{
 			$this->column = $name.'_id';
-		}
-		
-		if ($this->touch === TRUE)
-		{
-			$this->touch = 'updated';
 		}
 		
 		if ($this->column === $name)
@@ -249,27 +239,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		}
 	}
 	
-	public function after_save(Jam_Model $model, $value, $is_changed) 
-	{
-		$value_id = ($value AND $value->loaded()) ? $value->id() : $model->{$this->column};
-		
-		if ($this->is_polymorphic()) {
-			$value_model = ($value AND $value->loaded()) ? $value->meta()->model() : $model->{$this->polymorphic};
-		}
-		else
-		{
-			$value_model = $this->foreign();
-		}
-		
-		if ($this->touch AND $value_id)
-		{						
-			Jam::query($value_model)
-				->key($value_id)
-				->value($this->touch, Jam::meta($value_model)->field($this->touch)->save(NULL, NULL, TRUE))
-				->update();
-		}
-	}
-
 	public function delete(Jam_Model $model, $key)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
