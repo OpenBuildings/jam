@@ -122,7 +122,7 @@ abstract class Kohana_Jam_Association {
 
 		if ($this->touch === TRUE)
 		{
-			$this->touch = 'updated';
+			$this->touch = 'updated_at';
 		}
 	}
 
@@ -188,7 +188,7 @@ abstract class Kohana_Jam_Association {
 	 * @return NULL                   
 	 */
 	public function after_save(Jam_Model $model, $value, $is_changed)
-	{
+	{					
 		if ($this->touch)
 		{
 			$item = $model->{$this->name};

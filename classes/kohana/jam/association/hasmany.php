@@ -111,7 +111,9 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 	}
 
 	public function after_save(Jam_Model $model, $collection, $is_changed)
-	{
+	{				
+		parent::after_save($model, $collection, $is_changed);
+		
 		if ($is_changed AND $collection AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
