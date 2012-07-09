@@ -759,6 +759,10 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 			$association = $meta->association_insist($name);
 			$association->join($this, $name_alias, $type);
 			$meta = Jam::meta($association->foreign());
+			if ( ! $meta AND $association->is_polymorphic())
+			{
+				$meta = Jam::meta($name_alias);
+			}
 		}
 		return $this;
 	}
