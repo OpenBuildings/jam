@@ -4,7 +4,8 @@ CREATE TABLE test_blogs (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   url TEXT NOT NULL,
-  test_owner_id INTEGER NOT NULL
+  test_owner_id INTEGER NOT NULL,
+  test_posts_count INTEGER NOT NULL
 );
 
 DROP TABLE IF EXISTS test_authors;

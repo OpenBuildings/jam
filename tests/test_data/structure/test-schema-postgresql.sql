@@ -4,7 +4,8 @@ CREATE TABLE test_blogs (
   id serial,
   "name" varchar( 255 ) NOT NULL,
   url varchar( 255 ) NOT NULL,
-  test_owner_id bigint NOT NULL
+  test_owner_id bigint NOT NULL,
+  test_posts_count bigint NOT NULL
 );
 
 DROP TABLE IF EXISTS test_authors;
