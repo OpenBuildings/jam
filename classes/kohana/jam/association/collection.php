@@ -86,9 +86,13 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			$validation->error($this->name, 'required');
 		}
 	}
-
-	public function preserve_collection_changes(Jam_Model $model, Jam_Collection $collection)
+	
+	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
 	{
+		$current_ids = $this->builder($model)
+			->select_column(array($model->meta()->primary_key()))
+			->select_ids();
+
 		if ($collection->changed())
 		{
 			foreach ($collection as $i => $item)
@@ -101,13 +105,6 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 				}
 			}
 		}
-	}
-
-	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
-	{
-		$current_ids = $this->builder($model)
-			->select_column(array($model->meta()->primary_key()))
-			->select_ids();
 
 		return array(
 			array_diff($current_ids, $collection->ids()),

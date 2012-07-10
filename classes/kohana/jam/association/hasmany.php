@@ -177,8 +177,6 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 		if ($is_changed AND $collection AND $collection->changed())
 		{
-			$this->preserve_collection_changes($model, $collection);
-
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 
 			if (array_filter($old_ids))

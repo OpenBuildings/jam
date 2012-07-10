@@ -245,7 +245,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	{
 		parent::after_save($model, $new_item, $is_changed);
 
-		if ($assoc = $this->inverse_association() AND $assoc->count_cache)
+		if ($assoc = $this->inverse_association() AND $assoc instanceof Jam_Association_HasMany AND $assoc->count_cache)
 		{
 			if ($new_item)
 			{
