@@ -8,7 +8,7 @@
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Field {
+abstract class Kohana_Jam_Field extends Jam_Attribute {
 
 	/**
 	 * @var  string  the model's name
@@ -134,23 +134,13 @@ abstract class Kohana_Jam_Field {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize($model, $column)
+	public function initialize($model, $name)
 	{
-		// This will come in handy for setting complex relationships
-		$this->model = $model;
-
-		// This is for naming form fields
-		$this->name = $column;
+		parent::initialize($model, $name);
 
 		if ( ! $this->column)
 		{
-			$this->column = $column;
-		}
-
-		// Check for a name, because we can easily provide a default
-		if ( ! $this->label)
-		{
-			$this->label = Inflector::humanize($column);
+			$this->column = $name;
 		}
 
 		// Check as to whether we need to add
