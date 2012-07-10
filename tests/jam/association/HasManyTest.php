@@ -79,6 +79,39 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 		$this->assertCount(5, $new_tags);
 		$this->assertTrue($tags->exists($tag));
 	}
+
+	public function test_count_cache()
+	{
+		$blog1 = Jam::factory('test_blog', 1);
+		$blog3 = Jam::factory('test_blog', 3);
+		$post1 = Jam::factory('test_post', 1);
+		$post2 = Jam::factory('test_post', 2);
+		$this->assertNotNull(Jam::meta('test_blog')->field('test_posts_count'), 'Should automatically create _count field');
+
+		$this->assertEquals(1, $blog1->test_posts_count);
+		$this->assertEquals(1, $blog3->test_posts_count);
+
+		// Test adding same post
+		$blog1->test_posts->add($post1);
+		$blog1->save();
+
+		$blog1 = Jam::factory('test_blog', 1);
+		$blog3 = Jam::factory('test_blog', 3);
+
+		$this->assertEquals(1, $blog1->test_posts_count);
+		$this->assertEquals(1, $blog3->test_posts_count);
+
+		// Test adding different post
+		$blog1->test_posts->add($post2);
+		$blog1->save();
+
+		$blog1 = Jam::factory('test_blog', 1);
+		$blog3 = Jam::factory('test_blog', 3);
+
+		$this->assertEquals(2, $blog1->test_posts_count);
+		$this->assertEquals(0, $blog3->test_posts_count);
+
+	}
 	
 	public function test_add_unsaved()
 	{

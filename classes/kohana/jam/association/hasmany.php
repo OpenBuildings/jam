@@ -15,6 +15,8 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 	public $foreign_default = 0;
 
+	public $count_cache = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -37,7 +39,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		}
 
 		parent::initialize($meta, $model, $name);
-		
+
 		// Polymorphic associations
 		if ($this->as)
 		{
@@ -47,6 +49,49 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 			}
 			$this->foreign['as'] = $this->as.'_model';
 			$this->foreign['field'] = $this->as.'_id';
+		}
+
+		// Count Cache
+		if ($this->count_cache)
+		{
+			if ($this->is_polymorphic())
+				throw new Kohana_Exception('Cannot use count cache on polymorphic associations');
+			
+			if ($this->count_cache === TRUE)
+			{
+				$this->count_cache = $name.'_count';
+			}
+
+			$meta->field($this->count_cache, Jam::field('integer', array('default' => 0, 'allow_null' => FALSE)));
+		}
+		
+
+	}
+
+	public function before_save(Jam_Model $model, $collection, $is_loaded)
+	{
+		parent::before_save($model, $collection, $is_loaded);
+
+		if ($this->count_cache AND $collection !== NULL)
+		{
+			$model->{$this->count_cache} = count($collection);
+		}
+	}
+
+	public function update_count_cache(Jam_model $model, $count = NULL)
+	{
+		if ($this->count_cache)
+		{
+			if ($count === NULL)
+			{
+				$count = $model->builder($this->name)->count();
+			}
+			else
+			{
+				$count = max(0, $model->{$this->count_cache} + $count);
+			}
+
+			Jam::query($this->model, $model->id())->value($this->count_cache, $count)->update();
 		}
 	}
 
@@ -110,10 +155,30 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $builder;
 	}
 
+	public function affected_model_ids(Jam_Model $model, Jam_Collection $collection)
+	{
+		$affected_ids = array();
+		foreach ($collection as $item) 
+		{
+			$affected_ids[] = $item->original($this->foreign['field']);
+		}
+		unset($affected_ids[array_search($model->id(), $affected_ids)]);
+		return $affected_ids;
+	}
+
 	public function after_save(Jam_Model $model, $collection, $is_changed)
 	{
+		parent::after_save($model, $collection, $is_changed);
+
+		if ($this->count_cache AND $collection AND $collection->changed())
+		{
+			$affected_ids = $this->affected_model_ids($model, $collection);
+		}
+
 		if ($is_changed AND $collection AND $collection->changed())
 		{
+			$this->preserve_collection_changes($model, $collection);
+
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 
 			if (array_filter($old_ids))
@@ -133,6 +198,14 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 				}
 
 				$new_items_builder->update();
+			}
+
+			if ($this->count_cache AND ! empty($affected_ids))
+			{
+				foreach (Jam::query($this->model)->find($affected_ids) as $item) 
+				{
+					$this->update_count_cache($item);
+				}
 			}
 		}
 	}

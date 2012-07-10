@@ -236,18 +236,51 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 				$this->preserve_item_changes($new_item);
 				$this->set($model, $new_item);
 			}
+
+			$model->{'_original_'.$this->column} = $model->original($this->column);
 		}
 	}
-	
+
+	public function after_save(Jam_Model $model, $new_item, $is_changed)
+	{
+		parent::after_save($model, $new_item, $is_changed);
+
+		if ($assoc = $this->inverse_association() AND $assoc->count_cache)
+		{
+			if ($new_item)
+			{
+				$assoc->update_count_cache($new_item);
+			}
+
+			$original = $model->{'_original_'.$this->column};
+
+			if ($original AND (($new_item->id() !== $original) OR ! $new_item))
+			{
+				$assoc->update_count_cache(Jam::factory($this->foreign(), $original), -1);
+			}
+		}
+	}
+
 	public function delete(Jam_Model $model, $key)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
 		{
-			$this->get($model)->delete();
+			$model->{$this->name}->delete();
 		}
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{
 			$this->builder($model)->delete();	
+		}
+		else
+		{
+			if ($assoc = $this->inverse_association() AND $assoc->count_cache)
+			{	
+				if ($model->{$this->column})
+				{
+					$assoc->update_count_cache($model->{$this->name}, -1);
+				}
+			}
+
 		}
 	}
 } // End Kohana_Jam_Association_BelongsTo

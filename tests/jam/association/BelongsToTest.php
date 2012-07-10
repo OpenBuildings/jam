@@ -75,6 +75,30 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 		$this->assertSame($loaded, $model->loaded());
 	}
 
+	public function test_count_cache()
+	{
+		$post = Jam::factory('test_post', 1);
+		$blog3 = Jam::factory('test_blog', 3);	
+
+		$post->test_blog = $blog3;
+		$post->save();
+
+		$blog1 = Jam::factory('test_blog', 1);
+		$blog3 = Jam::factory('test_blog', 3);
+
+		$this->assertEquals(2, $blog3->test_posts_count);
+		$this->assertEquals(0, $blog1->test_posts_count);
+
+		$post->delete();
+
+		$blog1 = Jam::factory('test_blog', 1);
+		$blog3 = Jam::factory('test_blog', 3);
+
+		$this->assertEquals(1, $blog3->test_posts_count);
+		$this->assertEquals(0, $blog1->test_posts_count);
+
+	}
+
 	public function test_model_assignment()
 	{
 		$test_post = Jam::factory('test_post', 1);

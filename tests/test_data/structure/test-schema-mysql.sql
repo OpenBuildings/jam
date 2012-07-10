@@ -4,7 +4,8 @@ CREATE TABLE `test_blogs` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `name` VARCHAR( 255 ) NOT NULL ,
 `url` VARCHAR( 255 ) NOT NULL ,
-`test_owner_id` INT( 11 ) DEFAULT NULL
+`test_owner_id` INT( 11 ) DEFAULT NULL,
+`test_posts_count` INT( 11 ) DEFAULT NULL
 ) ENGINE = INNODB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `test_authors`;

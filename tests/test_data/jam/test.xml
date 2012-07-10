@@ -5,10 +5,12 @@
 		<column>name</column>
 		<column>url</column>
 		<column>test_owner_id</column>
+		<column>test_posts_count</column>
 		<row>
 			<value>1</value>
 			<value>Flowers blog</value>
 			<value>http://flowers.wordpress.com/</value>
+			<value>1</value>
 			<value>1</value>
 		</row>
 		<row>
@@ -16,12 +18,14 @@
 			<value>Awesome programming</value>
 			<value>http://programming-blog.com</value>
 			<value>3</value>
+			<value>0</value>
 		</row>
 		<row>
 			<value>3</value>
 			<value>Tabless</value>
 			<value>http://bobby-tables-ftw.com</value>
 			<value>3</value>
+			<value>1</value>
 		</row>
 	</table>
 	<table name="test_authors">

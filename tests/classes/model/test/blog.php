@@ -21,7 +21,7 @@ class Model_Test_Blog extends Jam_Model {
 					'limit' => array(1)
 				)
 			)),
-			'test_posts'             => Jam::association('hasmany', array('inverse_of' => 'test_blog', 'dependent' => Jam_Association::DELETE)),
+			'test_posts'             => Jam::association('hasmany', array('inverse_of' => 'test_blog', 'count_cache' => TRUE, 'dependent' => Jam_Association::DELETE)),
 			'test_categories'        => Jam::association('hasmany', array('required' => TRUE, 'inverse_of' => 'test_blog')),
 			'test_tags'              => Jam::association('manytomany', array(
 				'required' => TRUE

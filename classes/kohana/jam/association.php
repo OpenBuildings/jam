@@ -373,6 +373,15 @@ abstract class Kohana_Jam_Association {
 		return $item;
 	}
 
+	public function inverse_association()
+	{
+		if ( ! $this->is_polymorphic() AND $this->inverse_of)
+		{
+			return Jam::meta($this->foreign())->association($this->inverse_of);
+		}
+		return NULL;
+	}
+
 	/**
 	 * If the item is changed or not yet saved - save it to the database
 	 * 
