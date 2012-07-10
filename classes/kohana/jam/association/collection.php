@@ -116,11 +116,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	}
 
 	public function after_save(Jam_Model $model, $collection, $is_changed) 
-	{
-		if ($this->touch AND $collection instanceof Jam_Collection AND count($collection))
+	{				
+		if ($this->touch)
 		{
-			foreach ($collection as $item) 
-			{
+			foreach ($model->{$this->name} as $item) 
+			{								
 				$item->_touch_if_untouched($model, $this->touch, $is_changed);
 			}
 		}

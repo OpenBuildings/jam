@@ -18,7 +18,7 @@ class Model_Test_Tag extends Jam_Model {
 					'where' => array('test_post._approved_by', 'IS', NULL)
 				),
 				'counter_cache' => TRUE,
-				'touch' => TRUE
+				'touch' => 'updated'
 			)),
 			'test_blogs' => Jam::association('manytomany', array(
 				'required' => TRUE,
