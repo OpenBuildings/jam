@@ -97,6 +97,12 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 			$meta->field($this->polymorphic, Jam::field('string'));
 		}
+
+				// Count Cache
+		if ($this->inverse_of)
+		{
+			$this->extension('countcache', Jam::extension('countcache'));
+		}
 	}
 
 	public function is_polymorphic()
@@ -104,72 +110,63 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return (bool) $this->polymorphic;
 	}
 
-	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		$join = parent::join($builder, $alias, $type);
-
 		if ($this->is_polymorphic())
-		{
-			if ( ! $alias)
-				throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+			return $this->join_polymorphic($builder, $alias, $type);
 
-			$join
-				->join($alias, $type)
-				->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column)
-				->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
-		}
-		else
-		{
-			$join
-				->join($this->foreign(NULL, $alias), $type)
-				->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
-		}
-
-		return $join;
+		return $builder
+			->join($this->foreign(NULL, $alias), $type)
+			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
 	}
 
-	public function builder(Jam_Model $model)
+	public function join_polymorphic(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	{
+		if ( ! $alias)
+			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+
+		return $builder
+			->join($alias, $type)
+			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column)
+			->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
+	}
+
+	public function attribute_builder(Jam_Model $model)
 	{
 		if ($this->is_polymorphic())
-		{
-			$parent_model = $model->{$this->polymorphic};
+			return $this->builder_polymorphic($model);
 
-			if ( ! $parent_model)
-				return NULL;
+		return Jam::query($this->foreign())
+			->limit(1)
+			->where($this->foreign('field'), '=', $model->{$this->column});
+	}
 
-			$builder = Jam::query($parent_model)
-				->limit(1)
-				->select_column(array("$parent_model.*"))
-				->where($parent_model.'.'.$this->foreign['field'], '=', $model->{$this->column});
+	protected function builder_polymorphic(Jam_Model $model)
+	{
+		$parent_model = $model->{$this->polymorphic};
 
-			$builder = $this->apply_conditions($builder);
+		if ( ! $parent_model)
+			return NULL;
 
-			if ($this->extend)
-			{
-				$builder->extend($this->extend);
-			}
-		}
-		else
-		{
-			$builder = parent::builder($model)
-				->limit(1)
-				->where($this->foreign('field'), '=', $model->{$this->column});
-		}
+		$builder = Jam::query($parent_model)
+			->limit(1)
+			->select_column(array("$parent_model.*"))
+			->where($parent_model.'.'.$this->foreign['field'], '=', $model->{$this->column});
 
 		return $builder;
 	}
 
-	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
+	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
 		if ($this->required AND ( ! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0))))
 		{
 			$validation->error($this->name, 'required');
 		}
 		
-		parent::after_check($model, $validation, $new_item);
+		parent::attribute_after_check($model, $validation, $new_item);
 	}
 
-	public function get(Jam_Model $model)
+	public function attribute_get(Jam_Model $model)
 	{
 		if ($builder = $this->builder($model))
 			return $builder->find();
@@ -184,7 +181,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $foreign_model;
 	}
 
-	public function set(Jam_Model $model, $new_item)
+	public function attribute_set(Jam_Model $model, $new_item)
 	{
 		if ($new_item)
 		{
@@ -227,7 +224,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $new_item;
 	}
 
-	public function before_save(Jam_Model $model, $new_item, $is_changed)
+	public function attribute_before_save(Jam_Model $model, $new_item, $is_changed)
 	{
 		if ($is_changed)
 		{
@@ -236,32 +233,10 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 				$this->preserve_item_changes($new_item);
 				$this->set($model, $new_item);
 			}
-
-			$model->{'_original_'.$this->column} = $model->original($this->column);
 		}
 	}
 
-	public function after_save(Jam_Model $model, $new_item, $is_changed)
-	{
-		parent::after_save($model, $new_item, $is_changed);
-
-		if ($assoc = $this->inverse_association() AND $assoc instanceof Jam_Association_HasMany AND $assoc->count_cache)
-		{
-			if ($new_item)
-			{
-				$assoc->update_count_cache($new_item);
-			}
-
-			$original = $model->{'_original_'.$this->column};
-
-			if ($original AND (($new_item->id() !== $original) OR ! $new_item))
-			{
-				$assoc->update_count_cache(Jam::factory($this->foreign(), $original), -1);
-			}
-		}
-	}
-
-	public function delete(Jam_Model $model, $key)
+	public function attribute_delete(Jam_Model $model, $key)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
 		{
@@ -270,17 +245,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{
 			$this->builder($model)->delete();	
-		}
-		else
-		{
-			if ($assoc = $this->inverse_association() AND $assoc->count_cache)
-			{	
-				if ($model->{$this->column})
-				{
-					$assoc->update_count_cache($model->{$this->name}, -1);
-				}
-			}
-
 		}
 	}
 } // End Kohana_Jam_Association_BelongsTo

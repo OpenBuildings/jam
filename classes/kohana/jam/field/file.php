@@ -60,9 +60,9 @@ abstract class Kohana_Jam_Field_File extends Jam_Field {
 	 * @param   string       $column
 	 * @return void
 	 */
-	public function initialize($model, $column)
+	public function initialize(Jam_Meta $meta, $model, $column)
 	{
-		parent::initialize($model, $column);
+		parent::initialize($meta, $model, $column);
 
 		// Add a rule to save the file when validating
 		$this->rules[] = array(array(':field', '_upload'), array(':validation', ':model', ':field'));
@@ -76,7 +76,7 @@ abstract class Kohana_Jam_Field_File extends Jam_Field {
 	 * @param   boolean      $loaded
 	 * @return  void
 	 */
-	public function save($model, $value, $loaded)
+	public function attribute_convert($model, $value, $is_loaded)
 	{
 		if ($this->_filename)
 		{
@@ -102,7 +102,7 @@ abstract class Kohana_Jam_Field_File extends Jam_Field {
 	 * @param   mixed        $key
 	 * @return  void
 	 */
-	public function delete($model, $key)
+	public function attribute_delete($model, $key)
 	{
 		// Set the field name
 		$field = $this->name;

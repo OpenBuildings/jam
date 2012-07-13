@@ -62,13 +62,13 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	 *
 	 * @param   Jam_Model  $model
 	 * @param   mixed        $value
-	 * @param   boolean      $loaded
+	 * @param   boolean      $is_loaded
 	 * @return  int|string
 	 */
-	public function save($model, $value, $loaded)
+	public function attribute_convert($model, $value, $is_loaded)
 	{
 		// Do we need to provide a default since we're creating or updating
-		if (( ! $loaded AND $this->auto_now_create) OR ($loaded AND $this->auto_now_update))
+		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
 		{
 			$value = time();
 		}

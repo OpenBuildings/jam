@@ -53,18 +53,18 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		parent::initialize($meta, $model, $name);
 	}
 
-	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return parent::join($builder, $alias, $type)
+		return $builder
 			->join($this->through(), $type)
 			->on($this->through('our'), '=', "{$this->model}.:primary_key")
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', $this->through('foreign'));
 	}
 
-	public function builder(Jam_Model $model)
+	public function attribute_builder(Jam_Model $model)
 	{
-		$builder = parent::builder($model)
+		$builder = Jam::query($this->foreign())
 			->join($this->through())
 			->on($this->through('foreign'), '=', $this->foreign('field'))
 			->where($this->through('our'), '=', $model->id());
@@ -72,17 +72,15 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		return $builder;
 	}
 
-	public function delete(Jam_Model $model, $key)
+	public function attribute_delete(Jam_Model $model, $key)
 	{
 		Jam::query($this->through())
 			->where($this->through('our'), '=', $model->id())
 			->delete($model->meta()->db());
 	}
 
-	public function after_save(Jam_Model $model, $collection, $is_changed)
+	public function attribute_after_save(Jam_Model $model, $collection, $is_changed)
 	{
-		parent::after_save($model, $collection, $is_changed);
-
 		if ($is_changed AND $collection AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);

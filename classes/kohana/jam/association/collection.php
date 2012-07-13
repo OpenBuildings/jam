@@ -40,7 +40,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
-	public function get(Jam_Model $model)
+	public function attribute_get(Jam_Model $model)
 	{
 		if ( ! $model->loaded())
 			return $this->set($model, array());
@@ -48,13 +48,13 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return $this->builder($model)->select_all()->_parent_association($model, $this);
 	}
 
-	public function set(Jam_Model $model, $value)
+	public function attribute_set(Jam_Model $model, $value)
 	{
 		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
 	}
 
-	public function after_check(Jam_Model $model, Jam_Validation $validation, $collection)
+	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $collection)
 	{
 		if ($collection AND $collection->changed())
 		{
@@ -110,16 +110,5 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			array_diff($current_ids, $collection->ids()),
 			array_diff($collection->ids(), $current_ids)
 		);	
-	}
-
-	public function after_save(Jam_Model $model, $collection, $is_changed) 
-	{				
-		if ($this->touch)
-		{
-			foreach ($model->{$this->name} as $item) 
-			{								
-				$item->_touch_if_untouched($model, $this->touch, $is_changed);
-			}
-		}
 	}
 }

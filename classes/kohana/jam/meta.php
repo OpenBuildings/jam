@@ -269,7 +269,7 @@ abstract class Kohana_Jam_Meta {
 				continue;
 			}
 
-			$field->initialize($model, $column);
+			$field->initialize($this, $model, $column);
 
 			// Set the defaults so they're actually persistent
 			$this->_defaults[$column] = $field->default;

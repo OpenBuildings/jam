@@ -73,7 +73,7 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 
 		$field = Jam::field('upload', array('server' => 'test_local'));
 
-		$field->initialize($jam, 'file');
+		$field->initialize($jam->meta(), $jam, 'file');
 		$this->assertNotEmpty($field->rules);
 	}
 
@@ -159,7 +159,7 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 
 		$field = Jam::field('upload', array('temp' => $tmp));
 		$jam = new Model_Test_Upload();
-		$this->assertEquals('test.txt', $field->save($jam, 'test.txt', true));
+		$this->assertEquals('test.txt', $field->convert($jam, 'test.txt', true));
 	}
 
 	public function test_delete_value()
@@ -168,7 +168,7 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 
 		$field = Jam::field('upload', array('temp' => $tmp));
 		$jam = new Model_Test_Upload();
-		$this->assertEquals('', $field->save($jam, '', true));
+		$this->assertEquals('', $field->convert($jam, '', true));
 	}
 
 

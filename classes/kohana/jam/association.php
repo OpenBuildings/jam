@@ -9,26 +9,11 @@
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association {
+abstract class Kohana_Jam_Association extends Jam_Attribute {
 
 	const NULLIFY  = 'nullify';
 	const ERASE    = 'erase';
 	const DELETE   = 'delete';
-
-	/**
-	 * @var  string  the model's name
-	 */
-	public $model;
-
-	/**
-	 * @var  string  a pretty name for the field
-	 */
-	public $label;
-
-	/**
-	 * @var  string  the field's name in the form
-	 */
-	public $name;
 
 	/**
 	 * @var string the foreign relationship model and field - model or model.field
@@ -75,23 +60,6 @@ abstract class Kohana_Jam_Association {
 	public $touch = FALSE;
 
 	/**
-	 * Sets all options.
-	 *
-	 * @param  array  $options
-	 */
-	public function __construct($options = array())
-	{
-		if (is_array($options))
-		{
-			// Just throw them into the class as public variables
-			foreach ($options as $name => $value)
-			{
-				$this->$name = $value;
-			}
-		}
-	}
-
-	/**
 	 * Default initialize set model, name and foreign variables
 	 * 
 	 * @param  Jam_Meta $meta
@@ -101,17 +69,7 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function initialize(Jam_Meta $meta, $model, $name)
 	{
-		// This will come in handy for setting complex relationships
-		$this->model = $model;
-
-		// This is for naming form fields
-		$this->name = $name;
-
-		// Check for a name, because we can easily provide a default
-		if ( ! $this->label)
-		{
-			$this->label = Inflector::humanize($name);
-		}
+		parent::initialize($meta, $model, $name);
 
 		if ( ! is_string($this->foreign))
 			throw new Kohana_Exception("Cannot initialize association :association for model :model: foreign field must be a string",
@@ -120,48 +78,14 @@ abstract class Kohana_Jam_Association {
 		// Convert $this->foreign to an array for easier access
 		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
 
-		if ($this->touch === TRUE)
+		if ($this->touch)
 		{
-			$this->touch = 'updated_at';
+			$this->touch = ($this->touch === TRUE) ? 'updated_at' : $this->touch;
+
+			$this->extension('touch', Jam::extension('touch'));
 		}
-	}
 
-	/**
-	 * Get the relevant Jam_Model or Jam_Collection
-	 * 
-	 * @param  Jam_Model $model the model to query against
-	 * @return Jam_Model|Jam_Collection
-	 */
-	abstract public function get(Jam_Model $model);
-
-	/**
-	 * Get the relevant Jam_Model or Jam_Collection
-	 * 
-	 * @param  Jam_Model $model the model to set against
-	 * @param  mixed $value 
-	 * @return Jam_Model $this
-	 */
-	abstract public function set(Jam_Model $model, $value);
-
-	/**
-	 * This method should perform stuff on model delete
-	 * 
-	 * @param  Jam_Model $model
-	 * @param  mixed $value
-	 * @return NULL
-	 */
-	abstract public function delete(Jam_Model $model, $value);
-
-
-	/**
-	 * This method should perform stuff before its saved
-	 * 
-	 * @param  Jam_Model $model
-	 * @param  mixed $value
-	 * @return NULL                   
-	 */
-	public function before_save(Jam_Model $model, $value, $is_changed)
-	{
+		$this->extension('general', Jam::extension('general'));
 	}
 
 	/**
@@ -172,30 +96,11 @@ abstract class Kohana_Jam_Association {
 	 * @param  boolean $new_item  is the association new
 	 * @return NULL                   
 	 */
-	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
+	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
 		if ($new_item AND ! $new_item->is_validating() AND ! $new_item->check())
 		{
 			$validation->error($this->name, 'validation');
-		}
-	}
-
-	/**
-	 * This method should perform stuff after its saved
-	 * 
-	 * @param  Jam_Model $model
-	 * @param  mixed $value
-	 * @return NULL                   
-	 */
-	public function after_save(Jam_Model $model, $value, $is_changed)
-	{					
-		if ($this->touch)
-		{
-			$item = $model->{$this->name};
-			if ($item instanceof Jam_Model AND $item->loaded())
-			{
-				$item->_touch_if_untouched($model, $this->touch, $is_changed);
-			}
 		}
 	}
 
@@ -265,7 +170,7 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		return $this->apply_conditions($builder);
+		return $this->trigger('join', $builder, $alias, $type);
 	}
 
 	/**
@@ -276,14 +181,12 @@ abstract class Kohana_Jam_Association {
 	 */
 	public function builder(Jam_Model $model)
 	{
-		$builder =  $this->apply_conditions(Jam::query($this->foreign()));
-		
-		if ($this->extend)
-		{
-			$builder->extend($this->extend);
-		}
-		
-		return $builder;
+		return $this->trigger('builder', $model);
+	}
+
+	public function delete(Jam_Model $model, $value)
+	{
+		return $this->trigger('delete', $model, $value);
 	}
 
 	/**
@@ -337,24 +240,6 @@ abstract class Kohana_Jam_Association {
 			return $alias ? array($this->foreign['model'], $alias) : $this->foreign['model'];
 		}
 		
-	}
-
-	/**
-	 * Apply the conditions array of this association to a builder
-	 * @param  Jam_Builder $builder 
-	 * @return Jam_Builder
-	 */
-	public function apply_conditions(Jam_Builder $builder)
-	{
-		if ($this->conditions)
-		{
-			foreach ($this->conditions as $type => $args) 
-			{
-				call_user_func_array(array($builder, $type), $args);		
-			}
-		}
-
-		return $builder;
 	}
 
 	/**

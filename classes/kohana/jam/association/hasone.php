@@ -58,9 +58,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	}
 
 
-	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		$join = parent::join($builder, $alias, $type)
+		$join = $builder
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
 
@@ -72,10 +72,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $join;
 	}
 
-	public function builder(Jam_Model $model)
+	public function attribute_builder(Jam_Model $model)
 	{
 		$model->loaded_insist();
-		$builder = parent::builder($model)
+		$builder = Jam::query($this->foreign())
 			->limit(1)
 			->where($this->foreign('field'), '=', $model->id());
 
@@ -87,7 +87,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
-	public function get(Jam_Model $model)
+	public function attribute_get(Jam_Model $model)
 	{
 		if ($model->loaded())
 			return $this->builder($model)->select();
@@ -99,7 +99,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $foreign_model;
 	}
 
-	public function set(Jam_Model $model, $value)
+	public function attribute_set(Jam_Model $model, $value)
 	{
 		$item = $this->model_from_array($value);
 		return $this->assign_relation($model, $item);
@@ -119,12 +119,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $item;
 	}
 
-	public function delete(Jam_Model $model, $key)
+	public function attribute_delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				$this->get($model)->delete();
+				$this->get($model, $key)->delete();
 			break;
 			case Jam_Association::ERASE:
 				$this->builder($model)->delete();
@@ -148,20 +148,18 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
-	public function after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
+	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
 	{
 		if ($this->required AND ( ! ($new_item AND $new_item instanceof Jam_Model AND ! $new_item->is_validating() AND $new_item->check())))
 		{
 			$validation->error($this->name, 'required');
 		}
 		
-		parent::after_check($model, $validation, $new_item);
+		parent::attribute_after_check($model, $validation, $new_item);
 	}
 
-	public function after_save(Jam_Model $model, $new_item, $is_changed)
+	public function attribute_after_save(Jam_Model $model, $new_item, $is_changed)
 	{
-		parent::after_save($model, $new_item, $is_changed);
-		
 		if ($is_changed)
 		{
 			$nullify = $this->nullify_builder($model);

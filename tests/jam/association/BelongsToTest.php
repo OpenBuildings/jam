@@ -252,7 +252,7 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 		
 		$post = Jam::factory('test_tag', 1)->test_post;
 		
-		$this->assertTrue($post->updated > 1264985737);
+		$this->assertGreaterThan(1264985737, $post->updated);
 		
 	}
 

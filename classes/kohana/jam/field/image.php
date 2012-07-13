@@ -128,7 +128,7 @@ abstract class Kohana_Jam_Field_Image extends Jam_Field_File {
 	 * @param   mixed        $key
 	 * @return  void
 	 */
-	public function delete($model, $key)
+	public function attribute_delete($model, $key)
 	{
 		if ( ! $this->delete_file)
 		{

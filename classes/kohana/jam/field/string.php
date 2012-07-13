@@ -30,7 +30,7 @@ abstract class Kohana_Jam_Field_String extends Jam_Field {
 	 * @param   mixed   $value
 	 * @return  string
 	 */
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		list($value, $return) = $this->_default($value);
 

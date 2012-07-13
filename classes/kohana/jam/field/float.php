@@ -29,7 +29,7 @@ abstract class Kohana_Jam_Field_Float extends Jam_Field {
 	 * @param   mixed  $value
 	 * @return  mixed
 	 */
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		list($value, $return) = $this->_default($value);
 

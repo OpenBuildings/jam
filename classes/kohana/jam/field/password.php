@@ -23,25 +23,13 @@ abstract class Kohana_Jam_Field_Password extends Jam_Field_String {
 	public $hash_with = 'sha1';
 
 	/**
-	 * Adds a filter that hashes the password.
-	 *
-	 * @param   Jam_Model  $model
-	 * @param   mixed        $column
-	 * @return  void
-	 */
-	public function initialize($model, $column)
-	{
-		parent::initialize($model, $column);
-	}
-
-	/**
 	 * Hash and set the password to the database
 	 * @param  Jam_Model $model  
 	 * @param  string      $value  plain password
 	 * @param  bool        $loaded 
 	 * @return string
 	 */
-	public function save($model, $value, $loaded)
+	public function attribute_convert($model, $value, $is_loaded)
 	{
 		$hashed = call_user_func($this->hash_with, $value);
 

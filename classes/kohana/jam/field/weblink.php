@@ -23,14 +23,14 @@ class Kohana_Jam_Field_Weblink extends Jam_Field_String {
 	 * @param  boolean $loaded
 	 * @return string the new url
 	 */
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		if ($value AND ! preg_match('|^http(s)?://|i', $value))
 		{
 			$value = "http://".$value;
 		}
 
-		return parent::set($value);
+		return parent::attribute_set($model, $value);
 	}
 
 } // End Jam_Field_Weblink

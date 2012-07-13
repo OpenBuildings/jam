@@ -20,9 +20,9 @@ abstract class Kohana_Jam_Field_Email extends Jam_Field_String {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize($model, $column)
+	public function initialize(Jam_Meta $meta, $model, $column)
 	{
-		parent::initialize($model, $column);
+		parent::initialize($meta, $model, $column);
 
 		if (count($this->rules) > 0)
 		{

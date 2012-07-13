@@ -51,6 +51,13 @@ abstract class Kohana_Jam {
 	protected static $_form_prefix = 'Jam_Form_';	
 
 	/**
+	 * @var  string  This prefix to use for all attribute's extension classes
+	 *               This can be overridden to allow you to place
+	 *               form classes in a different location.
+	 */
+	protected static $_extension_prefix = 'Jam_Extension_';	
+
+	/**
 	 * @var  array  Contains all of the meta classes related to models
 	 */
 	public static $_models = array();
@@ -181,6 +188,21 @@ abstract class Kohana_Jam {
 
 		return new $behavior($options);
 	}
+
+	/**
+	 * Factoring for instantiating behaviors.
+	 *
+	 * @param   string  $type
+	 * @param   mixed   $options
+	 * @return  Jam_Behavior
+	 */
+	public static function extension($type, $options = array())
+	{
+		$extension = Jam::$_extension_prefix.$type;
+
+		return new $extension($options);
+	}
+
 
 	/**
 	 * Automatically loads a model, if it exists,

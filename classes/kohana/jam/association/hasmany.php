@@ -59,45 +59,18 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 			
 			if ($this->count_cache === TRUE)
 			{
-				$this->count_cache = $name.'_count';
+				$this->count_cache = $this->name.'_count';
 			}
 
 			$meta->field($this->count_cache, Jam::field('integer', array('default' => 0, 'allow_null' => FALSE)));
-		}
-		
 
-	}
-
-	public function before_save(Jam_Model $model, $collection, $is_loaded)
-	{
-		parent::before_save($model, $collection, $is_loaded);
-
-		if ($this->count_cache AND $collection !== NULL)
-		{
-			$model->{$this->count_cache} = count($collection);
+			$this->extension('countcache', Jam::extension('countcache'));
 		}
 	}
 
-	public function update_count_cache(Jam_model $model, $count = NULL)
+	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
-		if ($this->count_cache)
-		{
-			if ($count === NULL)
-			{
-				$count = $model->builder($this->name)->count();
-			}
-			else
-			{
-				$count = max(0, $model->{$this->count_cache} + $count);
-			}
-
-			Jam::query($this->model, $model->id())->value($this->count_cache, $count)->update();
-		}
-	}
-
-	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
-	{
-		$join = parent::join($builder, $type)
+		$join = $builder
 			->join($this->foreign(NULL, $alias), $type)
 			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
 		
@@ -109,10 +82,10 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $join;
 	}
 
-	public function builder(Jam_Model $model)
+	public function attribute_builder(Jam_Model $model)
 	{
 		$model->loaded_insist();
-		$builder = parent::builder($model)
+		$builder = Jam::query($this->foreign())
 			->where($this->foreign('field'), '=', $model->id());
 
 		if ($this->as)
@@ -123,12 +96,12 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $builder;
 	}
 
-	public function delete(Jam_Model $model, $key)
+	public function attribute_delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				foreach ($this->get($model) as $item) 
+				foreach ($this->get($model, $key) as $item) 
 				{
 					$item->delete();
 				}
@@ -155,26 +128,9 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $builder;
 	}
 
-	public function affected_model_ids(Jam_Model $model, Jam_Collection $collection)
+
+	public function attribute_after_save(Jam_Model $model, $collection, $is_changed)
 	{
-		$affected_ids = array();
-		foreach ($collection as $item) 
-		{
-			$affected_ids[] = $item->original($this->foreign['field']);
-		}
-		unset($affected_ids[array_search($model->id(), $affected_ids)]);
-		return $affected_ids;
-	}
-
-	public function after_save(Jam_Model $model, $collection, $is_changed)
-	{
-		parent::after_save($model, $collection, $is_changed);
-
-		if ($this->count_cache AND $collection AND $collection->changed())
-		{
-			$affected_ids = $this->affected_model_ids($model, $collection);
-		}
-
 		if ($is_changed AND $collection AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
@@ -196,14 +152,6 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 				}
 
 				$new_items_builder->update();
-			}
-
-			if ($this->count_cache AND ! empty($affected_ids))
-			{
-				foreach (Jam::query($this->model)->find($affected_ids) as $item) 
-				{
-					$this->update_count_cache($item);
-				}
 			}
 		}
 	}

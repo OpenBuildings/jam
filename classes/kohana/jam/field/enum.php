@@ -80,7 +80,7 @@ abstract class Kohana_Jam_Field_Enum extends Jam_Field_String {
 	 * @param   mixed  $value
 	 * @return  string
 	 */
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		if ($value === NULL AND ! $this->allow_null)
 		{
@@ -88,7 +88,7 @@ abstract class Kohana_Jam_Field_Enum extends Jam_Field_String {
 			$value = $this->default;
 		}
 
-		return parent::set($value);
+		return parent::attribute_set($model, $value);
 	}
 
 } // End Kohana_Jam_Field_Enum

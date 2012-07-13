@@ -281,7 +281,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 			else
 			{
-				return $association->get($this);
+				return $association->get($this, NULL);
 			}
 		}
 		elseif ($field = $this->_meta->field($name))
@@ -414,7 +414,7 @@ abstract class Kohana_Jam_Model extends Model {
 
 				// Compare the new value with the current value
 				// If it's not changed, we don't need to continue
-				$value = $field->set($value);
+				$value = $field->set($this, $value);
 				$current_value = array_key_exists($field->name, $this->_changed)
 											 ? $this->_changed[$field->name]
 											 : $this->_original[$field->name];
@@ -575,7 +575,7 @@ abstract class Kohana_Jam_Model extends Model {
 			// Standard setting of a field
 			elseif ($field = $this->_meta->field($key))
 			{
-				$this->_original[$field->name] = $field->set($value);
+				$this->_original[$field->name] = $field->set($this, $value);
 			}
 			// Unmapped data
 			else
@@ -743,7 +743,7 @@ abstract class Kohana_Jam_Model extends Model {
 				if ($field->in_db)
 				{
 					// See if field wants to alter the value on save()
-					$value = $field->save($this, $value, $key);
+					$value = $field->convert($this, $value, $key);
 
 					// Only set the value to be saved if it's changed from the original
 					if ($value !== $this->_original[$column])
@@ -1024,19 +1024,19 @@ abstract class Kohana_Jam_Model extends Model {
 		return $this->_is_touched;
 	}
 
-	public function _touch_if_untouched(Jam_Model $sender, $field, $is_changed)
+	public function _touch_if_untouched(Jam_Model $sender, $field)
 	{
 		if ( ! $this->_is_touched)
 		{
-			$this->touch($sender, $field, $is_changed);
+			$this->touch($sender, $field);
 			$this->_is_touched = TRUE;
 		}
 	}
 
-	public function touch(Jam_Model $sender, $field, $is_changed)
+	public function touch(Jam_Model $sender, $field)
 	{
 		Jam::query($this->meta()->model(), $this->id())
-			->value($field, $this->meta()->field($field)->save(NULL, NULL, TRUE))
+			->value($field, $this->meta()->field($field)->convert(NULL, NULL, TRUE))
 			->update();
 	}
 

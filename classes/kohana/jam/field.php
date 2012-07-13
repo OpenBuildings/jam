@@ -134,9 +134,9 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize($model, $name)
+	public function initialize(Jam_Meta $meta, $model, $name)
 	{
-		parent::initialize($model, $name);
+		parent::initialize($meta, $model, $name);
 
 		if ( ! $this->column)
 		{
@@ -151,6 +151,13 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		}
 	}
 
+
+	public function convert($model, $value, $is_loaded)
+	{
+		return $this->trigger('convert', $model, $value, $is_loaded);
+	}
+
+
 	/**
 	 * Sets a particular value processed according
 	 * to the class's standards.
@@ -158,7 +165,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed  $value
 	 * @return  mixed
 	 **/
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		list($value, $return) = $this->_default($value);
 
@@ -173,7 +180,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed        $value
 	 * @return  mixed
 	 **/
-	public function get($model, $value)
+	public function attribute_get($model, $value)
 	{
 		return $value;
 	}
@@ -189,41 +196,9 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   bool         $loaded
 	 * @return  mixed
 	 */
-	public function save($model, $value, $loaded)
+	public function attribute_convert($model, $value, $is_loaded)
 	{
 		return $value;
-	}
-
-
-	/**
-	 * Called just after saving.
-	 *
-	 * @param   Jam_Model  $model
-	 * @param   mixed        $value
-	 * @param   bool         $loaded
-	 * @return  mixed
-	 */
-	public function after_save($model, $value, $loaded)
-	{
-	}
-
-	/**
-	 * Triggered whenever the model this field is attached to is deleted.
-	 *
-	 * This is useful for fields that need to implement some sort of
-	 * garbage collection.
-	 *
-	 * This method is called just before the actual record in the database
-	 * is deleted, and is not called at all if a model behavior stops
-	 * the actual deletion of the record.
-	 *
-	 * @param   Jam_Model  $model
-	 * @param   mixed        $key
-	 * @return  void
-	 */
-	public function delete($model, $key)
-	{
-		return;
 	}
 
 	/**

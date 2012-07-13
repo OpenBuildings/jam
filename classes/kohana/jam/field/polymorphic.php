@@ -25,8 +25,10 @@ abstract class Kohana_Jam_Field_Polymorphic extends Jam_Field_String {
 	 * @param   string  $column
 	 * @return  void
 	 */
-	public function initialize($model, $column)
+	public function initialize(Jam_Meta $meta, $model, $column)
 	{
+		parent::initialize($meta, $model, $column);
+		
 		$this->default = $model;
 	}
 
@@ -36,7 +38,7 @@ abstract class Kohana_Jam_Field_Polymorphic extends Jam_Field_String {
 	 * @param   mixed   $value
 	 * @return  string
 	 */
-	public function set($value)
+	public function attribute_set($value)
 	{
 		list($value, $return) = $this->_default($value);
 

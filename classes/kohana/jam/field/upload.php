@@ -58,12 +58,14 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param   string       $column
 	 * @return void
 	 */
-	public function initialize($model, $column)
+	public function initialize(Jam_Meta $meta, $model, $column)
 	{
-		parent::initialize($model, $column);
+		parent::initialize($meta, $model, $column);
 
 		// Add a rule to save the file when validating
 		$this->rules[] = array(array(':field', '_upload'), array(':validation', ':model', ':field'));
+
+
 	}
 
 	/**
@@ -74,7 +76,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param   boolean      $loaded
 	 * @return  void
 	 */
-	public function save($model, $value, $loaded)
+	public function attribute_convert($model, $value, $is_loaded)
 	{
 		if ($model->changed($this->name))
 		{
@@ -102,7 +104,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $value;
 	}
 
-	public function after_save($model, $value, $loaded)
+	public function attribute_after_save($model, $value, $loaded)
 	{
 		$this->create_model_temp($model);		
 		
@@ -124,7 +126,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param   mixed          $value
 	 * @return  Jam_Builder
 	 */
-	public function get($model, $value)
+	public function attribute_get($model, $value)
 	{
 		$this->create_model_temp($model);
 		$model->_temp_server->clear_only_empty = TRUE;
@@ -159,7 +161,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param   mixed        $key
 	 * @return  void
 	 */
-	public function delete($model, $key)
+	public function attribute_delete($model, $key)
 	{
 		if ($this->delete_file)
 		{

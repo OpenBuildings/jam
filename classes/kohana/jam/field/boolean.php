@@ -57,7 +57,7 @@ abstract class Kohana_Jam_Field_Boolean extends Jam_Field {
 	 * @param   mixed  $value
 	 * @return  void
 	 */
-	public function set($value)
+	public function attribute_set($model, $value)
 	{
 		list($value, $return) = $this->_default($value);
 
@@ -66,19 +66,6 @@ abstract class Kohana_Jam_Field_Boolean extends Jam_Field {
 			$value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 		}
 
-		return $value;
-	}
-
-	/**
-	 * Returns the value as it should be represented in the database.
-	 *
-	 * @param   Jam_Model  $model
-	 * @param   mixed        $value
-	 * @param   boolean      $loaded
-	 * @return  mixed
-	 */
-	public function save($model, $value, $loaded)
-	{
 		return $value;
 	}
 

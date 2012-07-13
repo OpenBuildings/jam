@@ -26,6 +26,18 @@ abstract class Kohana_Jam_Attribute {
 	public $name;
 
 	/**
+	 * Callbacks to be executed after events
+	 * @var Jam_Event
+	 */
+	protected $_events;
+
+	/**
+	 * An array of extension objects for easy reference
+	 * @var array
+	 */
+	protected $_extensions = array();
+
+	/**
 	 * Sets all options.
 	 *
 	 * @param  array  $options
@@ -54,7 +66,7 @@ abstract class Kohana_Jam_Attribute {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize($model, $name)
+	public function initialize(Jam_Meta $meta, $model, $name)
 	{
 		// This will come in handy for setting complex relationships
 		$this->model = $model;
@@ -68,4 +80,99 @@ abstract class Kohana_Jam_Attribute {
 			$this->label = Inflector::humanize($name);
 		}
 	}
+
+	public function trigger($method, $arg0, $arg1 = NULL, $arg2 = NULL)
+	{
+		$method_name = 'attribute_'.$method;
+		$return = NULL;
+
+		$arguments = func_get_args();
+		$arguments = array_slice($arguments, 1);
+
+		if ($this->_events)
+		{
+			$this->_events->trigger('before.'.$method, $this, $arguments);
+		}
+
+		if (method_exists($this, $method_name))
+		{
+			$return = $this->$method_name($arg0, $arg1, $arg2);
+		}
+
+		if ($this->_events)
+		{
+			array_push($arguments, $return);
+			$this->_events->trigger('after.'.$method, $this, $arguments);
+		}
+
+		return $return;
+	}
+
+	public function bind($event, $callback)
+	{
+		if ( ! $this->_events)
+		{
+			$this->_events = new Jam_Event($this->name);
+		}
+
+		$this->_events->bind($event, $callback);
+
+		return $this;
+	}
+
+	public function extension($extension_name, Jam_Extension $extension = NULL)
+	{
+		if ($extension !== NULL)
+		{
+			if (isset($this->extensions[$extension_name]))
+				throw new Kohana_Exception('The extension :extension_name has already been added to :class (:name)', array(':extension_name' => $extension_name, ':class' => get_class($this), ':name' => $this->name));
+
+			$this->extensions[$extension_name] = $extension;
+			$extension->initialize($this);
+			return $this;
+		}
+
+		return $this->extensions[$extension_name];
+	}
+
+	public function get(Jam_Model $model, $value)
+	{
+		return $this->trigger('get', $model, $value);
+	}
+
+	public function set($model, $value)
+	{
+		return $this->trigger('set', $model, $value);
+	}
+
+	public function before_delete(Jam_Model $model, $value)
+	{
+		return $this->trigger('before_delete', $model, $value);
+	}
+
+	public function after_delete(Jam_Model $model, $value)
+	{
+		return $this->trigger('before_delete', $model, $value);
+	}
+
+	public function before_save(Jam_Model $model, $value, $is_changed)
+	{
+		return $this->trigger('before_save', $model, $value, $is_changed);
+	}
+
+	public function after_save(Jam_Model $model, $value, $is_changed)
+	{
+		return $this->trigger('after_save', $model, $value, $is_changed);
+	}
+
+	public function before_check(Jam_Model $model, Jam_Validation $validation, $value)
+	{
+		return $this->trigger('before_check', $model, $validation, $value);
+	}
+
+	public function after_check(Jam_Model $model, Jam_Validation $validation, $value)
+	{
+		return $this->trigger('after_check', $model, $validation, $value);
+	}
+
 }

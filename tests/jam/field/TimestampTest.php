@@ -32,7 +32,7 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$this->assertSame($field->save(NULL, $value, FALSE), $expected);
+		$this->assertSame($field->convert(NULL, $value, FALSE), $expected);
 	}
 	
 	/**
