@@ -23,13 +23,6 @@ class Model_Test_Alias extends Jam_Model {
 			'description'  => Jam::field('string', array(
 				'column' => 'description-alias',
 			)),
-			
-			'_id'          => 'id',
-			'_name'        => 'name',
-			'_description' => 'description',
-			
-			// Non-existent alias shouldn't hurt anybody
-			'_bar'         => 'foo',
 		));
 	}
 

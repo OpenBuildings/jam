@@ -33,8 +33,6 @@ class Model_Test_Blog extends Jam_Model {
 			'id'         => Jam::field('primary'),
 			'name'       => Jam::field('string'),
 			'url'        => Jam::field('weblink'),
-			// Aliases for testing
-			'_id'        => 'id',
 		 ));
 	}
 

@@ -104,7 +104,7 @@ class Jam_Field_UploadTest extends Unittest_TestCase {
 		$tmp->expects($this->any())->method('is_uploaded_file')->will($this->returnValue($is_uploaded_file));
 		$field = Jam::field('upload', array('temp' => $tmp, 'types' => (array) $types));
 		
-		$model = Jam::factory('Test_Upload');
+		$model = Jam::factory('test_upload');
 		
 		$this->assertEquals( ! $is_invalid, $field->check_valid_upload($file, 'file', Validation::factory(array()), $model ));
 	}

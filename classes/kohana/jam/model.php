@@ -76,11 +76,6 @@ abstract class Kohana_Jam_Model extends Model {
 	 protected $_deleted = FALSE;
 
 	/**
-	 * @var  array  With data
-	 */
-	protected $_with = array();
-
-	/**
 	 * @var Boolean use this to prevent multiple touches
 	 */
 	protected $_is_touched = FALSE;
@@ -137,18 +132,6 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function &__get($name)
 	{
-		// Alias the field to its actual name. We must do this now
-		// so that any aliases will be cached under the real field's
-		// name, rather than under its alias name
-		if ($association = $this->_meta->association($name))
-		{
-			$name = $association->name;
-		}
-		elseif ($field = $this->_meta->field($name))
-		{
-			$name = $field->name;
-		}
-
 		if ( ! array_key_exists($name, $this->_retrieved))
 		{
 			$this->_retrieved[$name] = $this->get($name);;
@@ -222,7 +205,7 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function __isset($name)
 	{
-		return (bool) ($this->_meta->field($name) OR (bool) ($this->_meta->association($name)) OR array_key_exists($name, $this->_unmapped));
+		return (bool) ($this->_meta->attribute($name) OR array_key_exists($name, $this->_unmapped));
 	}
 
 	/**
@@ -237,7 +220,7 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function __unset($name)
 	{
-		if ($this->_meta->field($name) OR $this->_meta->association($name))
+		if ($this->_meta->attribute($name))
 		{
 			// Ensure changed and retrieved data is cleared
 			// This effectively clears the cache and any changes
@@ -314,15 +297,14 @@ abstract class Kohana_Jam_Model extends Model {
 	 * @param   string  $field The field's or alias name
 	 * @return  mixed
 	 */
-	public function original($field = NULL)
+	public function original($field_name = NULL)
 	{
-		if ($field === NULL)
+		if ($field_name === NULL)
 			return $this->_original;
 
-		if ($field = $this->_meta->field($field))
+		if ($field = $this->_meta->field($field_name))
 		{
-			// Alias the name to its actual name
-			return $field->get($this, $this->_original[$field->name]);
+			return $field->get($this, $this->_original[$field_name]);
 		}
 	}
 
@@ -415,7 +397,6 @@ abstract class Kohana_Jam_Model extends Model {
 				$this->_changed[$field->name] = $field->set($this, $value);
 			}
 
-
 			// Invalidate the cache
 			if (array_key_exists($field->name, $this->_retrieved))
 			{
@@ -498,11 +479,6 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 
 			$this->_valid = $this->_validation->is_valid();
-
-			if ( ! $this->_valid)
-			{
-				Kohana::$log->add(Log::DEBUG, "Errors in ".$this." : ".print_r($this->errors(), TRUE));
-			}
 
 			$this->_meta->events()->trigger('model.after_validate', $this, array($this->_validation));
 		}
@@ -764,7 +740,6 @@ abstract class Kohana_Jam_Model extends Model {
 		$this->_is_touched =
 		$this->_saved  = FALSE;
 
-		$this->_with      =
 		$this->_changed   =
 		$this->_retrieved =
 		$this->_unmapped  = array();

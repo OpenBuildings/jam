@@ -92,7 +92,7 @@ class Jam_Builder_SelectTest extends Unittest_Jam_TestCase {
 			array(Jam::query('test_post')->where(':primary_key', 'IS', NULL), 0),
 
 			// Test aliasing columns
-			array(Jam::query('test_author')->order_by('_id', 'ASC'), 3),
+			array(Jam::query('test_author')->order_by('id', 'ASC'), 3),
 
 			// This does not resolve to any model, but should still work
 			array(Jam::query('test_categories_test_posts')->where('test_post:foreign_key', '=', 1), 3, FALSE),
@@ -107,7 +107,7 @@ class Jam_Builder_SelectTest extends Unittest_Jam_TestCase {
 
 			array(Jam::query('test_author')->join_association(array('permission' => 'perms')), 2),
 
-			array(Jam::query('test_post')->select_column('*')->select_column('TRIM("_slug") as trimmed_slug'), 2),
+			array(Jam::query('test_post')->select_column('*')->select_column('TRIM("slug") as trimmed_slug'), 2),
 
 			array(Jam::query('test_post')->select_column('*')->select_column(':primary_key', 'uid'), 2),
 			array(Jam::query('test_post')->select_column('*')->select_column(':name_key', 'name_id'), 2),
@@ -208,49 +208,7 @@ class Jam_Builder_SelectTest extends Unittest_Jam_TestCase {
 		}
 	}
 
-	// /**
-	//  * Provides test data for test_with()
-	//  *
-	//  * @return  array
-	//  */
-	// public function provider_with()
-	// {
-	// 	return array(
-	// 		// Single 'with' using non-standard relationship naming
-	// 		array(Jam::query('test_post'), array('approved_by')),
-	// 		// Multiple 'with' using non-standard relationship naming
-	// 		array(Jam::query('test_post'), array('approved_by', 'permission')),
-	// 	);
-	// }
-
-	// /**
-	//  * Tests for with()
-	//  *
-	//  * @dataProvider  provider_with
-	//  * @param         Jam          $query
-	//  * @param         array          $with
-	//  * @return        void
-	//  */
-	// public function test_with($query, $with)
-	// {
-	// 	// Load query
-	// 	$query = $query->with(implode(':', $with))->select();
-
-	// 	// Ensure we find the proper columns in the result
-	// 	foreach ($query->as_array() as $array)
-	// 	{
-	// 		$this->assertTrue(array_key_exists(':test_author:id', $array));
-	// 		$this->assertTrue(array_key_exists(':approved_by:id', $array));
-	// 	}
-
-	// 	// Ensure we can actually access the models
-	// 	foreach ($query as $model)
-	// 	{
-	// 		$this->assertTrue($model->test_author instanceof Model_Test_Author);
-	// 		$this->assertTrue($model->test_author->permission instanceof Model_Test_Role);
-	// 	}
-	// }
-
+	
 	/**
 	 * Provides test data for test_as_object()
 	 *
@@ -286,23 +244,6 @@ class Jam_Builder_SelectTest extends Unittest_Jam_TestCase {
 			$this->assertTrue(is_array($result->current()));
 		}
 	}
-
-	// /**
-	//  * Test for issue #58 that ensures count() uses any load_with
-	//  * conditions specified.
-	//  *
-	//  * @return  void
-	//  */
-	// public function test_count_uses_load_with()
-	// {
-	// 	$count = Jam::query('test_post')
-	// 		// Where condition includes a column from joined table
-	// 		// this will cause a SQL error if load_with hasn't been taken into account
-	// 		->where(':test_author.name', '=', 'Jonathan Geiger')
-	// 		->count();
-
-	// 	$this->assertEquals(2, $count);
-	// }
 
 	/**
 	 * Test for Issue #95. This only fails when testing on Postgres.

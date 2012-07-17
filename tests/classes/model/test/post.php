@@ -67,10 +67,6 @@ class Model_Test_Post extends Jam_Model {
 			'updated'         => Jam::field('timestamp', array(
 				'auto_now_update' => TRUE
 			)),	
-
-			// Alias columns, for testing
-			'_id'             => 'id',
-			'_slug'           => 'slug',
 		));
 	}
 

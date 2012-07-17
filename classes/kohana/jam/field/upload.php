@@ -172,7 +172,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return;
 	}
 
-	public function check_valid_upload(array $file, $field, Validation $validation, $model )
+	public function check_valid_upload(array $file, $field, Validation $validation, Jam_Model $model )
 	{
 	  $this->create_model_temp($model);
 		// Check if it's a valid file

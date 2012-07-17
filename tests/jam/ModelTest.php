@@ -128,7 +128,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 
 		// Test without changes
 		return array(
-			array($alias, '_id', 1),
+			array($alias, 'id', 1),
 			array($alias, 'name', 'Test'),
 			array($alias, 'description', 'Description'),
 		);
@@ -163,7 +163,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 
 		// Test without changes
 		return array(
-			array($alias, '_id', TRUE),
+			array($alias, 'id', TRUE),
 			array($alias, 'name', TRUE),
 			array($alias, 'description', TRUE),
 		);

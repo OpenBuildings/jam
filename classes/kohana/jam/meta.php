@@ -66,11 +66,6 @@ abstract class Kohana_Jam_Meta {
 	protected $_sorting = array();
 
 	/**
-	 * @var  array  An array of 1:1 relationships to pass to with() for every SELECT
-	 */
-	protected $_load_with = array();
-
-	/**
 	 * @var  array  A map to the models's fields and how to process each column.
 	 */
 	protected $_fields = array();
@@ -84,11 +79,6 @@ abstract class Kohana_Jam_Meta {
 	 * @var  array  A map to the models's associations and how to process each column.
 	 */
 	protected $_associations = array();	
-
-	/**
-	 * @var  array  A map of aliases to fields
-	 */
-	protected $_aliases = array();
 
 	/**
 	 * @var  string  The builder class the model is associated with. This defaults to
@@ -117,11 +107,6 @@ abstract class Kohana_Jam_Meta {
 	 * @var  array  Default data for each field
 	 */
 	protected $_defaults = array();
-
-	/**
-	 * @var  array  A cache of retrieved fields, with aliases resolved
-	 */
-	protected $_field_cache = array();
 
 	/**
 	 * @var Jam_Event Events attached to this model
@@ -196,9 +181,7 @@ abstract class Kohana_Jam_Meta {
 		// Ensure certain fields are not overridden
 		$this->_model       = $model;
 		$this->_columns     =
-		$this->_defaults    =
-		$this->_field_cache =
-		$this->_aliases     = array();
+		$this->_defaults    = array();
 
 		if ( ! $this->_errors_filename)
 		{
@@ -244,37 +227,14 @@ abstract class Kohana_Jam_Meta {
 
 		foreach ($this->_associations as $column => & $association)
 		{
-			if (is_string($association))
-			{
-				$association = Jam::association($association);
-			}
-
 			$association->initialize($this, $model, $column);
 		}
 
-		// Initialize all of the fields with their column and the model name
-		foreach ($this->_fields as $column => $field)
+		foreach ($this->_fields as $column => & $field)
 		{
-			// Allow aliasing fields
-			if (is_string($field))
-			{
-				if (isset($this->_fields[$field]))
-				{
-					$this->_aliases[$column] = $field;
-				}
-
-				// Aliases shouldn't pollute fields
-				unset($this->_fields[$column]);
-
-				continue;
-			}
-
 			$field->initialize($this, $model, $column);
-
-			// Set the defaults so they're actually persistent
 			$this->_defaults[$column] = $field->default;
 		}
-
 
 		// Meta object is initialized and no longer writable
 		$this->_initialized = TRUE;
@@ -425,32 +385,8 @@ abstract class Kohana_Jam_Meta {
 	{
 		if ($field === NULL)
 		{
-			// Get the field
-			if ( ! isset($this->_field_cache[$name]))
-			{
-				// Set the resolved name to the given name for now
-				$resolved_name = $name;
-
-				if (isset($this->_aliases[$name]))
-				{
-					// If the field is among the aliases set the alias as resolved name
-					$resolved_name = $this->_aliases[$name];
-				}
-
-				if (isset($this->_fields[$resolved_name]))
-				{
-					// Get the field from cache using the resolved name
-					$this->_field_cache[$name] = $this->_fields[$resolved_name];
-				}
-				else
-				{
-					// No such field found
-					return NULL;
-				}
-			}
-
-			// Return the field
-			return $this->_field_cache[$name];
+			// Get the association
+			return Arr::get($this->_fields, $name);
 		}
 
 		if ($this->_initialized)
@@ -582,6 +518,11 @@ abstract class Kohana_Jam_Meta {
 
 		// Return Jam_Meta
 		return $this;
+	}
+
+	public function attribute($name)
+	{
+		return Arr::get($this->_associations, $name, Arr::get($this->_fields, $name));
 	}
 
 	/**
@@ -820,28 +761,6 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		return $this->_sorting;
-	}
-
-	/**
-	 * Gets or sets the object's load_with properties
-	 *
-	 * @param   array|null  $value
-	 * @return  array
-	 */
-	public function load_with($value = NULL)
-	{
-		if (func_num_args() !== 0)
-		{
-			// Convert the value to an array if needed
-			if ( ! is_array($value))
-			{
-				$value = (array) $value;
-			}
-
-			return $this->set('load_with', $value);
-		}
-
-		return $this->_load_with;
 	}
 
 	/**

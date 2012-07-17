@@ -32,10 +32,6 @@ class Model_Test_Video extends Jam_Model {
 					array('min_length', array(':value', 4))
 				)
 			)),
-
-			// Alias columns, for testing
-			'_id'             => 'id',
-			'_slug'           => 'slug',
 		));
 	}
 

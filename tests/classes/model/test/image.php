@@ -22,10 +22,6 @@ class Model_Test_Image extends Jam_Model {
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
 			'file'            => Jam::field('string'),
-
-			// Alias columns, for testing
-			'_id'             => 'id',
-			'_slug'           => 'slug',
 		));
 	}
 

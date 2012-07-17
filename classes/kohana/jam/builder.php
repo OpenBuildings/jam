@@ -1070,7 +1070,7 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 	/**
 	 * Initializes the builder by setting a default
-	 * table and adding the load_with joins.
+	 * table
 	 *
 	 * @return void
 	 */
@@ -1080,12 +1080,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		if ($this->_meta)
 		{
 			$this->from($this->_meta->model());
-
-			// Load with automatically here.
-			foreach ($this->_meta->load_with() as $relationship)
-			{
-				$this->with($relationship);
-			}
 
 			// Default to loading the current model
 			$this->as_object(TRUE);

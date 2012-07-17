@@ -84,6 +84,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			'convert_empty' => $this->convert_empty
 		)));
 
+
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
 

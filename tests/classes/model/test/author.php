@@ -35,8 +35,6 @@ class Model_Test_Author extends Jam_Model {
 			'name'       => Jam::field('string'),
 			'password'   => Jam::field('password'),
 			'email'      => Jam::field('email'),
-			// Aliases for testing
-			'_id'        => 'id',
 		 ));
 	}
 
