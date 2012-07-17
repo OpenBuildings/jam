@@ -102,7 +102,12 @@ abstract class Kohana_Jam_Attribute {
 		if ($this->_events)
 		{
 			array_push($arguments, $return);
-			$this->_events->trigger('after.'.$method, $this, $arguments);
+			$event_return = $this->_events->trigger('after.'.$method, $this, $arguments);
+			
+			if ($event_return !== NULL)
+			{
+				$return = $event_return;
+			}
 		}
 
 		return $return;

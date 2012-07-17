@@ -425,7 +425,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 
 				// Don't return models when we don't have one
 				$loaded = $values
-				        ? $model->load_values($values)
+				        ? $model->load_fields($values)
 				        : $model->clear();
 			}
 

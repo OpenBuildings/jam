@@ -86,11 +86,11 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 		return array(
 			array(Jam::factory('test_alias'), FALSE, FALSE, FALSE),
 			array(Jam::factory('test_alias')->set('name', 'Test'), FALSE, FALSE, TRUE),
-			array(Jam::factory('test_alias')->load_values(array('name' => 'Test')), TRUE, TRUE, FALSE),
-			array(Jam::factory('test_alias')->load_values(array('name' => 'Test'))->set('name', 'Test'), TRUE, TRUE, FALSE),
-			array(Jam::factory('test_alias')->load_values(array('name' => 'Test'))->set('name', 'Test2'), TRUE, FALSE, TRUE),
+			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test')), TRUE, TRUE, FALSE),
+			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test'), TRUE, FALSE, TRUE),
+			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test2'), TRUE, FALSE, TRUE),
 			array(Jam::factory('test_alias')->set('name', 'Test')->clear(), FALSE, FALSE, FALSE),
-			array(Jam::factory('test_alias')->load_values(array('name' => 'Test'))->clear(), FALSE, FALSE, FALSE),
+			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->clear(), FALSE, FALSE, FALSE),
 		);
 	}
 
@@ -116,7 +116,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	{
 		// Create a mock model for most of our tests
 		$alias = Jam::factory('test_alias')
-			->load_values(array(
+			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
 				'description' => 'Description',
@@ -151,7 +151,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	{
 		// Create a mock model for most of our tests
 		$alias = Jam::factory('test_alias')
-			->load_values(array(
+			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
 				'description' => 'Description',
@@ -165,7 +165,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 		return array(
 			array($alias, '_id', TRUE),
 			array($alias, 'name', TRUE),
-			array($alias, 'description', FALSE),
+			array($alias, 'description', TRUE),
 		);
 	}
 
@@ -189,7 +189,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 
 		// Set and cleared model
 		$two = Jam::factory('test_alias')
-			->load_values(array(
+			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
 				'description' => 'Description',

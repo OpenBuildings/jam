@@ -118,7 +118,7 @@ abstract class Kohana_Jam_Model extends Model {
 			// Only load if a record is found
 			if ($result)
 			{
-				$this->load_values($result);
+				$this->load_fields($result);
 			}
 		}
 
@@ -412,22 +412,7 @@ abstract class Kohana_Jam_Model extends Model {
 					continue;
 				}
 
-				// Compare the new value with the current value
-				// If it's not changed, we don't need to continue
-				$value = $field->set($this, $value);
-				$current_value = array_key_exists($field->name, $this->_changed)
-											 ? $this->_changed[$field->name]
-											 : $this->_original[$field->name];
-
-				// Ensure data is really changed
-				if ($value === $current_value)
-					continue;
-
-				// Data has changed
-				$this->_changed[$field->name] = $value;
-
-				// Run filters after it's set as changed
-				$this->_changed[$field->name] = $this->run_filter($field, $this->_changed[$field->name]);
+				$this->_changed[$field->name] = $field->set($this, $value);
 			}
 
 
@@ -444,95 +429,7 @@ abstract class Kohana_Jam_Model extends Model {
 		return $this;
 	}
 
-	/**
-	 * Filters a value for a specific column
-	 *
-	 * @param    string       $field  The column name
-	 * @param    string       $value  The value to filter
-	 * @return   string
-	 * @credits  Kohana Team
-	 */
-	protected function run_filter($field, $value)
-	{
-		// Set filters
-		$filters = $field->filters;
-
-		// Set the actual field
-		$field = $field->name;
-
-		// Bind the field name and model so they can be used in the filter method
-		$_bound = array
-		(
-			':field' => $field,
-			':model' => $this,
-		);
-
-		foreach ($filters as $array)
-		{
-			// Value needs to be bound inside the loop so we are always using the
-			// version that was modified by the filters that already ran
-			$_bound[':value'] = $value;
-
-			// Filters are defined as array($filter, $params)
-			$filter = $array[0];
-			$params = Arr::get($array, 1, array(':value'));
-
-			foreach ($params as $key => $param)
-			{
-				if (is_string($param) AND array_key_exists($param, $_bound))
-				{
-					// Replace with bound value
-					$params[$key] = $_bound[$param];
-				}
-			}
-
-			// Replace bound values for the filter
-			if (is_array($filter) AND ($filter[0] == ':model' OR $filter[0] == ':field') AND array_key_exists(':model', $_bound))
-			{
-				if ($filter[0] == ':model')
-				{
-					// Replace with bound value
-					$filter[0] = $_bound[$filter[0]];
-				}
-				elseif ($filter[0] == ':field')
-				{
-					// Set fields
-					$_fields = $_bound[':model']->meta()->fields();
-
-					// Replace with bound value
-					$filter[0] = $_fields[$field];
-				}
-			}
-
-			if (is_array($filter) OR ! is_string($filter))
-			{
-				// This is either a callback as an array or a lambda
-				$value = call_user_func_array($filter, $params);
-			}
-			elseif (strpos($filter, '::') === FALSE)
-			{
-				// Use a function call
-				$function = new ReflectionFunction($filter);
-
-				// Call $function($this[$field], $param, ...) with Reflection
-				$value = $function->invokeArgs($params);
-			}
-			else
-			{
-				// Split the class and method of the rule
-				list($class, $method) = explode('::', $filter, 2);
-
-				// Use a static method call
-				$method = new ReflectionMethod($class, $method);
-
-				// Call $Class::$method($this[$field], $param, ...) with Reflection
-				$value = $method->invokeArgs(NULL, $params);
-			}
-		}
-
-		return $value;
-	}
-
+	
 	/**
 	 * Clears the object and loads an array of values into the object.
 	 *
@@ -542,38 +439,14 @@ abstract class Kohana_Jam_Model extends Model {
 	 * @param   Jam_Collection|Jam_Model|array  $values
 	 * @return  Jam_Model
 	 */
-	public function load_values($values)
+	public function load_fields($values)
 	{
 		// Clear the object
 		$this->clear();
 
 		foreach ($values as $key => $value)
 		{
-			// Key is coming from a with statement
-			if (substr($key, 0, 1) === ':')
-			{
-				// The field comes back as ':model:field',
-				// but can have infinite :field parts
-				$targets = explode(':', ltrim($key, ':'), 2);
-
-				// Alias as it comes back in, which allows
-				// people to use with() with alaised field names
-				$relationship = $this->_meta->association_insist(array_shift($targets))->name;
-
-				// Find the field we need to set the value as
-				$target = implode(':', $targets);
-
-				// If there is no ":" in the target, it is a
-				// column, otherwise it's another with()
-				if (FALSE !== strpos($target, ':'))
-				{
-					$target = ':'.$target;
-				}
-
-				$this->_with[$relationship][$target] = $value;
-			}
-			// Standard setting of a field
-			elseif ($field = $this->_meta->field($key))
+			if ($field = $this->_meta->field($key))
 			{
 				$this->_original[$field->name] = $field->set($this, $value);
 			}

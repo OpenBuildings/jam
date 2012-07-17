@@ -149,6 +149,11 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		{
 			$this->rules[] = array(array(':field', '_is_unique'), array(':validation', ':model', ':field', ':value'));
 		}
+
+		if ($this->filters)
+		{
+			$this->extension('filters', Jam::extension('filters'));
+		}
 	}
 
 
