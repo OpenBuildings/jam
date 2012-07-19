@@ -18,8 +18,6 @@
  * @category   Query/Result
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
- * @author     Jonathan Geiger
- * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIterator, ArrayAccess {

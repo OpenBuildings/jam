@@ -313,8 +313,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 			// Trigger before_select callback
 			$meta->events()->trigger('builder.before_select', $this);
-
-			Jam::global_trigger('builder.before_select', $this);
 		}
 
 		// Ready to leave the builder, we need to figure out what type to return
@@ -337,8 +335,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		if ($meta)
 		{
 			$meta->events()->trigger('builder.after_select', $this);
-
-			Jam::global_trigger('builder.after_select', $this);
 		}
 
 		return $this->_result;
@@ -358,15 +354,11 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		// Trigger callbacks
 		$meta AND $meta->events()->trigger('builder.before_insert', $this);
 
-		Jam::global_trigger('builder.before_insert', $this);
-
 		// Ready to leave the builder
 		$result = $this->database_query(Database::INSERT)->execute($db);
 
 		// Trigger after_query callbacks
 		$meta AND $meta->events()->trigger('builder.after_insert', $this);
-
-		Jam::global_trigger('builder.after_insert', $this);
 
 		return $result;
 	}
@@ -385,15 +377,11 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		// Trigger callbacks
 		$meta AND $meta->events()->trigger('builder.before_update', $this);
 
-		Jam::global_trigger('builder.before_update', $this);
-
 		// Ready to leave the builder
 		$result = $this->database_query(Database::UPDATE)->execute($db);
 
 		// Trigger after_query callbacks
 		$meta AND $meta->events()->trigger('builder.after_update', $this);
-		
-		Jam::global_trigger('builder.after_update', $this);
 
 		return $result;
 	}
@@ -415,8 +403,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		{
 			// Listen for a result to see if we need to actually delete the record
 			$result = $meta->events()->trigger('builder.before_delete', $this);
-
-			Jam::global_trigger('builder.before_delete', $this);
 		}
 
 		if ($result === NULL)
@@ -429,8 +415,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		{
 			// Allow the events to modify the result
 			$event_result = $meta->events()->trigger('builder.after_delete', $this);
-
-			Jam::global_trigger('builder.after_delete', $this);
 
 			// Only modify the result if callback is run
 			if ($event_result !== NULL)
@@ -456,8 +440,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 		// Trigger callbacks
 		$meta AND $meta->events()->trigger('builder.before_select', $this);
 
-		Jam::global_trigger('builder.before_select', $this);
-
 		// Start with a basic SELECT
 		$query = $this->database_query(Database::SELECT)->as_object(FALSE);
 
@@ -472,8 +454,6 @@ abstract class Kohana_Jam_Builder extends Database_Query_Builder_Select {
 
 		// Trigger after_query callbacks
 		$meta AND $meta->events()->trigger('builder.after_select', $this);
-
-		Jam::global_trigger('builder.after_select', $this);
 
 		return $result;
 	}

@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
+	<table name="test_elements">
+		<column>id</column>
+		<column>name</column>
+		<column>url</column>
+		<column>email</column>
+		<column>description</column>
+		<column>amount</column>
+		<column>test_author_id</column>
+		<row>
+			<value>1</value>
+			<value>Part 1</value>
+			<value>http://parts.wordpress.com/</value>
+			<value>staff@example.com</value>
+			<value>Big Part</value>
+			<value>20</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Part 2</value>
+			<value>http://parts.wordpress.com/</value>
+			<value>staff@example.com</value>
+			<value>Small Part</value>
+			<value>10</value>
+			<value>1</value>
+		</row>
+	</table>
 	<table name="test_blogs">
 		<column>id</column>
 		<column>name</column>

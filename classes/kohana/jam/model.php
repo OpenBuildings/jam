@@ -61,14 +61,9 @@ abstract class Kohana_Jam_Model extends Model {
 	protected $_meta = NULL;
 
 	/**
-	 * @var  Jam_Validation  A copy of this object's validation
-	 */
-	protected $_validation = NULL;
-
-	/**
 	 * @var  Boolean  A flag that keeps track of whether or not the model is valid
 	 */
-	 protected $_valid = FALSE;
+	 protected $_errors = FALSE;
 
 	/**
 	 * @var  Boolean  A flag that indicates a record has been deleted from the database
@@ -379,7 +374,7 @@ abstract class Kohana_Jam_Model extends Model {
 			if ($field = $this->_meta->association($key))
 			{
 				$this->_changed[$field->name] = $field->set($this, $value);
-				$this->_saved = $this->_valid = FALSE;
+				$this->_saved = FALSE;
 			}
 			else
 			{
@@ -404,7 +399,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 
 			// Model is no longer saved or valid
-			$this->_saved = $this->_valid = FALSE;
+			$this->_saved = FALSE;
 		}
 
 		return $this;
@@ -444,6 +439,11 @@ abstract class Kohana_Jam_Model extends Model {
 		return $this;
 	}
 
+	public function is_valid()
+	{
+		return count($this->errors()) == 0;
+	}
+
 	/**
 	 * Validates the current model's data
 	 *
@@ -455,37 +455,19 @@ abstract class Kohana_Jam_Model extends Model {
 	{
 		$this->_is_validating = TRUE;
 
-		$key = $this->_original[$this->_meta->primary_key()];
-
-		// For loaded models, we're only checking what's changed, otherwise we check it all
-		$data = $key ? ($this->_changed) : ($this->_changed + $this->_original);
-
-		// Always build a new validation object
-		$this->_validation($data + $this->_unmapped, (bool) $key);
-
-		// Run validation
-		if ( ! $this->_valid)
+		// Run validation only when new or changed
+		if ( ! $this->loaded() OR $this->changed())
 		{
-			$this->_meta->events()->trigger('model.before_validate', $this, array($this->_validation));
+			$this->_meta->events()->trigger('model.before_validate', $this);
 
-			$this->_valid = $this->_validation->check();
+			$this->_meta->execute_validators($this);
 
-			foreach ($this->_meta->associations() as $association_name => $association) 
-			{
-				if ($key AND ! array_key_exists($association_name, $this->_changed))
-					continue;
-
-				$association->after_check($this, $this->_validation, Arr::get($data, $association_name));
-			}
-
-			$this->_valid = $this->_validation->is_valid();
-
-			$this->_meta->events()->trigger('model.after_validate', $this, array($this->_validation));
+			$this->_meta->events()->trigger('model.after_validate', $this);
 		}
 
 		$this->_is_validating = FALSE;
 
-		return $this->_valid;
+		return $this->is_valid();
 	}
 
 	public function check_insist()
@@ -506,30 +488,17 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function errors($name = NULL)
 	{
-		if ( ! $this->_validation)
-			return NULL;
+		if ( ! $this->_errors)
+		{
+			$this->_errors = new Jam_Errors($this, $this->_meta->errors_filename());
+		}
 
-		$errors = $this->_validation->errors($this->_meta->errors_filename());
+		if ($name !== NULL)
+			return $this->_errors->messages($name);
 
-		return $name === NULL ? $errors : Arr::get($errors, $name);
+		return $this->_errors;
 	}
 
-	/**
-	 * Initializes validation rules, and labels
-	 *
-	 * @param   array  $data
-	 * @param   bool   $update
-	 * @return  void
-	 */
-	protected function _validation($data, $update = FALSE)
-	{
-		// Build the validation object with its rules
-		$this->_validation = Jam_Validation::factory($data)
-			->bind(':model', $this);
-
-		// Add rules and labels
-		$this->_validation = $this->_meta->validation_options($this->_validation, $update);
-	}
 
 	/**
 	 * Creates or updates the current record.
@@ -720,6 +689,8 @@ abstract class Kohana_Jam_Model extends Model {
 			$this->_loaded =
 			$this->_saved  = TRUE;
 
+			$this->_errors = NULL;
+
 			$this->_changed   =
 			$this->_is_touched =
 			$this->_retrieved = array();
@@ -735,10 +706,11 @@ abstract class Kohana_Jam_Model extends Model {
 	 */
 	public function clear()
 	{
-		$this->_valid  =
 		$this->_loaded =
 		$this->_is_touched =
 		$this->_saved  = FALSE;
+
+		$this->_errors = NULL;
 
 		$this->_changed   =
 		$this->_retrieved =

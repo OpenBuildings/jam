@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS test_elements;
+
+CREATE TABLE test_elements (
+  id serial,
+  "name" varchar( 255 ) NOT NULL,
+  url varchar( 255 ) NOT NULL,
+  email varchar( 255 ) NOT NULL,
+  description varchar( 255 ) NOT NULL,
+  amount bigint NOT NULL,
+  test_author_id bigint NOT NULL,
+);
+
 DROP TABLE IF EXISTS test_blogs;
 
 CREATE TABLE test_blogs (

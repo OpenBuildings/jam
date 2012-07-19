@@ -57,6 +57,14 @@ abstract class Kohana_Jam {
 	 */
 	protected static $_extension_prefix = 'Jam_Extension_';	
 
+
+	/**
+	 * @var  string  This prefix to use for all attribute's validator rule classes
+	 *               This can be overridden to allow you to place
+	 *               form classes in a different location.
+	 */
+	protected static $_validator_rule_prefix = 'Jam_Validator_Rule_';	
+
 	/**
 	 * @var  array  Contains all of the meta classes related to models
 	 */
@@ -194,7 +202,7 @@ abstract class Kohana_Jam {
 	 *
 	 * @param   string  $type
 	 * @param   mixed   $options
-	 * @return  Jam_Behavior
+	 * @return  Jam_Extension
 	 */
 	public static function extension($type, $options = array())
 	{
@@ -202,6 +210,21 @@ abstract class Kohana_Jam {
 
 		return new $extension($options);
 	}
+
+	/**
+	 * Factoring for instantiating behaviors.
+	 *
+	 * @param   string  $type
+	 * @param   mixed   $options
+	 * @return  Jam_Validator_Rule
+	 */
+	public static function validator_rule($type, $options = array())
+	{
+		$rule = Jam::$_validator_rule_prefix.$type;
+
+		return new $rule($options);
+	}
+
 
 
 	/**
@@ -364,35 +387,6 @@ abstract class Kohana_Jam {
 		}
 
 		return new $class($model);
-	}
-
-	/**
-	 * Bind to an event globally without associated model
-	 * @param  string   $event    
-	 * @param  mixed    $callback 
-	 */
-	public static function global_bind($event, $callback)
-	{
-		Jam::$_global_callbacks[] = array($event, $callback);
-	}
-
-	/**
-	 * Execute a global event
-	 * @param  string $event  
-	 * @param  mixed  $sender 
-	 */
-	public static function global_trigger($event, $sender)
-	{
-		if ( ! empty(Jam::$_global_callbacks))
-		{
-			foreach (Jam::$_global_callbacks as $callback) 
-			{
-				if ($callback[0] === $event)
-				{
-					call_user_func($callback[1], $sender);
-				}
-			}
-		}
 	}
 
 } // End Kohana_Jam

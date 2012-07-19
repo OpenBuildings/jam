@@ -58,8 +58,8 @@ class Model_Test_Post extends Jam_Model {
 			'slug'            => Jam::field('slug', array(
 				'unique' => TRUE
 			)),
-			'status'          => Jam::field('enum', array(
-				'choices' => array('draft', 'published', 'review'),
+			'status'          => Jam::field('string', array(
+				// 'choices' => array('draft', 'published', 'review'),
 			)),
 			'created'         => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE

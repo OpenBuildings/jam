@@ -123,6 +123,10 @@ abstract class Kohana_Jam_Meta {
 	 */
 	protected $_parent = NULL;
 
+	protected $_validators = array();
+
+	protected $_with_options;
+
 	/**
 	 * The most basic initialization possible
 	 * @param string $model Model name
@@ -175,8 +179,6 @@ abstract class Kohana_Jam_Meta {
 
 		// Allow modification of this meta object by the behaviors
 		$this->_events->trigger('meta.before_finalize', $this);
-
-		Jam::global_trigger('meta.before_finalize', $this);
 
 		// Ensure certain fields are not overridden
 		$this->_model       = $model;
@@ -241,8 +243,6 @@ abstract class Kohana_Jam_Meta {
 
 		// Final meta callback
 		$this->_events->trigger('meta.after_finalize', $this);
-
-		Jam::global_trigger('meta.after_finalize', $this);
 	}
 
 	/**
@@ -263,6 +263,42 @@ abstract class Kohana_Jam_Meta {
 	public function initialized()
 	{
 		return $this->_initialized;
+	}
+
+	public function validator($field, $options)
+	{
+		$fields = func_get_args();
+		$options = (array) array_pop($fields);
+
+		if ($this->_with_options)
+		{
+			$options = Arr::merge($options, $this->_with_options);
+		}
+
+		$this->validators[] = new Jam_Validator($fields, $options);
+		
+		return $this;
+	}
+
+	public function with_options($options)
+	{
+		$this->_with_options = $options;
+		return $this;
+	}
+
+	public function end()
+	{
+		$this->_with_options = NULL;
+		return $this;
+	}
+
+	public function execute_validators(Jam_Model $model)
+	{
+		foreach ($this->validators as $validator) 
+		{
+			$validator->validate_model($model);
+		}
+		return $this;
 	}
 
 	/**
@@ -545,91 +581,6 @@ abstract class Kohana_Jam_Meta {
 	}
 
 	/**
-	 * Add rules and labels to the validation object
-	 *
-	 * @param   Validation  $validation
-	 * @param   bool        $update Are we updating?
-	 * @return  null|string
-	 */
-	public function validation_options(Validation $validation, $update = FALSE)
-	{
-		// Set validation options
-		$this->_validation_options = $validation;
-
-		// Set submitted fields
-		if ($update)
-		{
-			$submitted_fields = $validation->data();
-		}
-
-		// Add our rules and labels
-		foreach ($this->_fields as $name => $field)
-		{
-			// If updating add only the rules for the updated fields
-			if ($update AND ! array_key_exists($name, $submitted_fields))
-			{
-				continue;
-			}
-
-			$this->_validation_options->label($name, $field->label);
-			$this->_validation_options->rules($name, $field->rules);
-
-		}
-
-		foreach ($this->_associations as $name => $association) 
-		{
-			$this->_validation_options->label($name, $association->label);
-		}
-
-		// Apply extra rules added after the initializing of the model
-		if ($this->_extra_rules)
-		{
-			foreach ($this->_extra_rules as $name => $rules) 
-			{
-				// If updating add only the rules for the updated fields
-				if ($update AND ! array_key_exists($name, $submitted_fields) AND array_key_exists($name, $this->_fields))
-				{
-					continue;
-				}
-
-				$this->_validation_options->rules($name, $rules);
-			}
-		}
-
-		// Return the validation object with rules and labels
-		return $this->_validation_options;
-	}
-
-	/**
-	 * Add some extra rules for validation of models for this meta, or pass array() to clear them all
-	 * 
-	 * @param string|array $rules 
-	 * @param array $rule  
-	 */
-	public function extra_rules($rules = NULL, $rule = NULL)
-	{
-		// Accept rules('name', 'rule');
-		if ($rule !== NULL)
-		{
-			$rules = array($rules => $rule);
-		}
-
-		if (is_array($rules))
-		{
-			// If passed empty array - clear the rules
-			$this->_extra_rules = $rules ? Arr::merge($rules, $this->_extra_rules) : $rules;
-			return $this;
-		}
-
-		if (is_string($rules))
-		{
-			return Arr::get($this->_extra_rules, $rules);
-		}
-
-		return $this->_extra_rules;
-	}
-
-	/**
 	 * Returns or sets the name of the file used for errors.
 	 *
 	 * @return string
@@ -761,39 +712,6 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		return $this->_sorting;
-	}
-
-	/**
-	 * Add methods for this meta on the fly (mixins) you can assign:
-	 * Class - loads all static methods
-	 * array or string/array callback
-	 * array of closures
-	 * @param  array|string   $callbacks 
-	 * @param  mixed $callback  
-	 * @return Jam_Meta              $this
-	 */
-	public function extend($callbacks, $callback = NULL)
-	{
-		// Handle input with second argument, so you can pass single items without an array
-		if ($callback !== NULL)
-		{
-			$callbacks = array($callbacks => $callback);
-		}
-
-		$this->events()->bind_callbacks('meta', $callbacks);
-		return $this;
-	}
-
-	/**
-	 * Passes unknown methods along to the behaviors.
-	 *
-	 * @param   string  $method
-	 * @param   array   $args
-	 * @return  mixed
-	 **/
-	public function __call($method, $args)
-	{
-		return $this->events()->trigger_callback('meta', $this, $method, $args);
 	}
 
 } // End Kohana_Jam_Meta

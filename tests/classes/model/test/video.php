@@ -27,11 +27,7 @@ class Model_Test_Video extends Jam_Model {
 		// Set fields
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'file'            => Jam::field('string', array(
-				'rules' => array(
-					array('min_length', array(':value', 4))
-				)
-			)),
+			'file'            => Jam::field('string'),
 		));
 	}
 

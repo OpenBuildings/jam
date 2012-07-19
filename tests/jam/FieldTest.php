@@ -73,30 +73,6 @@ class Jam_FieldTest extends Unittest_TestCase {
 				'default'    => NULL,
 				'allow_null' => TRUE,
 			)),
-			
-			// Enum: They default to allow_null as false as well
-			array(new Jam_Field_Enum(array(
-				'choices' => array('one', 'two', 'three')
-			)), array(
-				'default'  => 'one',
-				'null_set' => 'one',
-			)),
-			// allow_null should be set since there is a NULL value here
-			array(new Jam_Field_Enum(array(
-				'choices' => array(NULL, 'one', 'two', 'three')
-			)), array(
-				'allow_null' => TRUE,
-				'default'    => NULL,
-			)),
-			// A NULL choice should be set since allow_null is TRUE
-			array(new Jam_Field_Enum(array(
-				'allow_null' => TRUE,
-				'choices' => array('one', 'two', 'three')
-			)), array(
-				'allow_null' => TRUE,
-				'default'    => NULL,
-				'choices' => array('' => NULL, 'one' => 'one', 'two' => 'two', 'three' => 'three')
-			)),
 
 			// Weblink
 			array(
@@ -208,10 +184,6 @@ class Jam_FieldTest extends Unittest_TestCase {
 			array(new Jam_Field_Timestamp, '1264985682', '1264985682'),
 			array(new Jam_Field_Timestamp, '03/15/2010 12:56:32', '03/15/2010 12:56:32'),
 			
-			// Enumerated lists
-			array(new Jam_Field_Enum(array('choices' => array(1,2,3))), '1', '1'),
-			array(new Jam_Field_Enum(array('choices' => array(1,2,3))), '4', '4'),
-
 			//Weblink
 			array(new Jam_Field_Weblink, 'example.com', 'http://example.com'),
 			array(new Jam_Field_Weblink, 'http://example.com', 'http://example.com'),

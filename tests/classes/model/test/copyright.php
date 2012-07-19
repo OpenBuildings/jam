@@ -19,7 +19,7 @@ class Model_Test_Copyright extends Jam_Model {
 		// Set fields
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'anme'            => Jam::field('string'),
+			'name'            => Jam::field('string'),
 		));
 	}
 

@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS `test_elements`;
+
+CREATE TABLE `test_elements` (
+`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`name` VARCHAR( 255 ) NOT NULL ,
+`url` VARCHAR( 255 ) NOT NULL ,
+`email` VARCHAR( 255 ) NOT NULL ,
+`description` VARCHAR( 255 ) NOT NULL ,
+`amount` INT( 11 ) DEFAULT NULL,
+`test_author_id` INT( 11 ) DEFAULT NULL
+) ENGINE = INNODB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `test_blogs`;
 
 CREATE TABLE `test_blogs` (

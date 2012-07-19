@@ -76,11 +76,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	public $filters = array();
 
 	/**
-	* @var  array  rules for this field
-	*/
-	public $rules = array();
-
-	/**
 	 * Sets all options.
 	 *
 	 * @param  array  $options
@@ -204,18 +199,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	public function attribute_convert($model, $value, $is_loaded)
 	{
 		return $value;
-	}
-
-	/**
-	 * Shortcut for setting a rule
-	 * @param  string $rule_name 
-	 * @param  array $values    values, defaults to array(':value')
-	 * @return Jam_Field            $this
-	 */
-	public function rule($rule_name, $values = NULL)
-	{
-		$this->rules[] = array($rule_name, $values);
-		return $this;
 	}
 
 	/**

@@ -1,3 +1,16 @@
+
+DROP TABLE IF EXISTS test_blogs;
+
+CREATE TABLE test_blogs (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  email TEXT NOT NULL,
+  description TEXT NOT NULL,
+  amount INTEGER NOT NULL,
+  test_author_id INTEGER NOT NULL,
+);
+
 DROP TABLE IF EXISTS test_blogs;
 
 CREATE TABLE test_blogs (
