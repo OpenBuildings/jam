@@ -71,11 +71,6 @@ abstract class Kohana_Jam_Meta {
 	protected $_fields = array();
 
 	/**
-	 * @var array  Extra validation rules to be added to the model validation
-	 */
-	protected $_extra_rules = array();
-
-	/**
 	 * @var  array  A map to the models's associations and how to process each column.
 	 */
 	protected $_associations = array();	
@@ -86,10 +81,6 @@ abstract class Kohana_Jam_Meta {
 	 */
 	protected $_builder = '';
 
-	/**
-	 * @var  string  Rules and labels attached to the validation object
-	 */
-	protected $_validation_options = NULL;
 
 	/**
 	 * The message filename used for validation errors.
@@ -188,7 +179,7 @@ abstract class Kohana_Jam_Meta {
 		if ( ! $this->_errors_filename)
 		{
 			// Default errors filename to the model's name
-			$this->_errors_filename = 'jam-validation/'.$this->_model;
+			$this->_errors_filename = 'validatior/'.$this->_model;
 		}
 
 		// Table should be a sensible default
@@ -276,7 +267,7 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		$this->validators[] = new Jam_Validator($fields, $options);
-		
+
 		return $this;
 	}
 
@@ -299,6 +290,24 @@ abstract class Kohana_Jam_Meta {
 			$validator->validate_model($model);
 		}
 		return $this;
+	}
+
+	public function trigger_model(Jam_Model $model, $event, $with_fields = TRUE)
+	{
+		$result = $this->_events->trigger('model.'.$event, $model);
+
+		if ($with_fields)
+		{
+			foreach ($this->attributes() as $name => $attribute)
+			{
+				if ($model->changed($name))
+				{
+					$attribute->$event($model, $model->$name);
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
@@ -560,6 +569,12 @@ abstract class Kohana_Jam_Meta {
 	{
 		return Arr::get($this->_associations, $name, Arr::get($this->_fields, $name));
 	}
+
+	public function attributes()
+	{
+		return $this->_associations + $this->_fields;
+	}
+
 
 	/**
 	 * Returns the defaults for the object.

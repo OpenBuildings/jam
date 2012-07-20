@@ -53,39 +53,6 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
 	}
-
-	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $collection)
-	{
-		if ($collection AND $collection->changed())
-		{
-			$validation_errors = array();
-
-			foreach ($collection as $i => $item)
-			{
-				// Avoid child / parent relations 
-				if ($this->inverse_of AND $item->{$this->inverse_of} === $model)
-				{
-					$validation_errors[] = TRUE;
-				}
-				elseif ( ! $item->is_validating())
-				{
-					$validation_errors[] = $item->check();
-				}
-				
-				$collection[$i] = $item;
-			}
-
-			if (in_array(FALSE, $validation_errors))
-			{
-				$validation->error($this->name, 'validation');
-			}
-		}
-
-		if ($this->required AND ( ! $collection OR count($collection) == 0))
-		{
-			$validation->error($this->name, 'required');
-		}
-	}
 	
 	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
 	{

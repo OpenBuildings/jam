@@ -243,51 +243,5 @@ abstract class Kohana_Upload_Server
 	 **/	
 	abstract public function webpath($file);
 
-
-  /**
-   * Create a filename path from function arguments with / based on the operating system
-   * @code
-   * $filename = file::combine('usr','local','bin'); // will be "user/local/bin"
-   * @endcode
-   * @return string
-   * @author Ivan Kerin
-   */
-	static public function combine_path()
-	{
-		$params = func_get_args();
-		$args = self::flatten_array($params);
-		foreach($args as $i => &$arg)
-		{
-			$arg = $i == 0 ? rtrim($arg, '/') : trim($arg, '/');
-		}
-		
-		return join('/', array_filter($args));
-	}
-
-	/**
-	 * Flatten an array method as Arr::flatten does not do a good enough job
-	 * 
-	 * @param array $arr
-	 * @return array
-	 */
-	static private function flatten_array(array $arr)
-	{
-		$ab = array(); 
-
-		if ( ! is_array($arr)) 
-			return $ab;
-
-		foreach ($arr as $value){
-			if (is_array($value))
-			{
-				$ab = array_merge($ab, self::flatten_array($value));
-			}
-			else
-			{
-				array_push($ab,$value);
-			}
-		}
-		return $ab;
-	}
 		
 }

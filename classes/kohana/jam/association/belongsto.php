@@ -157,16 +157,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $builder;
 	}
 
-	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
-	{
-		if ($this->required AND ( ! (($new_item AND $new_item instanceof Jam_Model) OR ($model->{$this->column} > 0))))
-		{
-			$validation->error($this->name, 'required');
-		}
-		
-		parent::attribute_after_check($model, $validation, $new_item);
-	}
-
 	public function attribute_get(Jam_Model $model)
 	{
 		if ($builder = $this->builder($model))

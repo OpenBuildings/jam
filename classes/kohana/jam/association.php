@@ -89,22 +89,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	}
 
 	/**
-	 * This method should perform a check after the parent model is checked
-	 * 
-	 * @param  Jam_Model $model
-	 * @param  Jam_Validation $validation
-	 * @param  boolean $new_item  is the association new
-	 * @return NULL                   
-	 */
-	public function attribute_after_check(Jam_Model $model, Jam_Validation $validation, $new_item)
-	{
-		if ($new_item AND ! $new_item->is_validating() AND ! $new_item->check())
-		{
-			$validation->error($this->name, 'validation');
-		}
-	}
-
-	/**
 	 * Convert an array to a model, mostly for mass assignment and nested forms. 
 	 * Handle polymorphic associations with one more level of nesting the arrays. 
 	 * Load and update objects if they pass an id in the array

@@ -8,171 +8,358 @@
 */
 class Kohana_Upload_File {
 
-	protected $_hidden_filename;
-	protected $_path;
-	protected $_file;
-	protected $_web;
-	protected $_width;
-	protected $_height;
-
-	public function __construct($file, $hidden_filename, $web, $path, $sizes = NULL)
+	static public function sanitize($filename)
 	{
-		$this->_file = $file;
-		$this->_hidden_filename = $hidden_filename;
-		$this->_web = $web;
+		// Transliterate strange chars
+		$filename = UTF8::transliterate_to_ascii($filename);
+
+		// Sanitize the filename
+		$filename = preg_replace('/[^a-z0-9-\.]/', '-', strtolower($filename));
+
+		// Remove spaces
+		$filename = preg_replace('/\s+/u', '_', $filename);
+
+		// Strip multiple dashes
+		$filename = preg_replace('/-{2,}/', '-', $filename);
+
+		return $filename;
+	}
+
+	public static function name($file = NULL, $mime_type = NULL, $url = NULL)
+	{
+		$ext = NULL;
+		$url = str_replace(' ', '%20', $url);
+		$filename = basename($url);
+
+		if ($mime_type)
+		{
+			$ext = File::ext_by_mime($mime_type);
+		}
+		
+		if ( ! $ext AND $file AND is_file($file))
+		{
+			$ext = File::ext_by_mime(File::mime($file));
+		}
+		
+		if ( ! $ext)
+		{
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			if ($ext)
+			{
+				$filename = substr($filename, 0, - strlen($ext) - 1);
+				$ext = preg_replace('/(\?[^?]+|\&.+)$/', '', $ext);
+			}
+		}
+
+		$filename = pathinfo($filename, Upload_Filename::sanitize($filename), PATHINFO_FILENAME);
+
+		if ( ! $ext)
+		{
+			$ext = 'jpg';
+		}
+		
+		return $filename.'.'.$ext;
+	}
+
+  /**
+   * Create a filename path from function arguments with / based on the operating system
+   * @code
+   * $filename = file::combine('usr','local','bin'); // will be "user/local/bin"
+   * @endcode
+   * @return string
+   * @author Ivan Kerin
+   */
+	public static function combine()
+	{
+		$args = func_get_args();
+
+		foreach ($args as $i => &$arg)
+		{
+			$arg = $i == 0 ? rtrim($arg, '/') : trim($arg, '/');
+		}
+		
+		return join('/', array_filter($args));
+	}
+
+	public static function from_url($url, $directory)
+	{
+		$url = str_replace(' ', '%20', $url);
+
+		$curl = curl_init($url);
+		$file = Upload_File::combine($directory, uniqid());
+		$handle = fopen($file, 'w');
+
+		curl_setopt($curl, CURLOPT_FILE, $handle);
+		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_exec($curl);
+		fclose($handle);
+		
+		$filename = Upload_File::name($file, curl_getinfo($curl, CURLINFO_CONTENT_TYPE), curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+
+		$result_file = Upload_File::combine($directory, $filename);
+		
+		rename($file, $result_file);
+		
+		return is_file($result_file) ? $filename : NULL;
+	}
+
+	public static function from_upload(array $file, $directory)
+	{
+		if ($file['error'] !== UPLOAD_ERR_OK)
+			return NULL;
+
+		$filename = Upload_File::sanitize($file['name']);
+		$result_file = Upload_File::combine($directory, $filename);
+
+		move_uploaded_file($file['tmp_name'], $result_file);
+
+		return is_file($result_file) ? $filename : NULL;
+	}
+
+	public static function from_file($file, $directory)
+	{
+		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
+			return NULL;
+
+		$filename = Upload_File::name($file);
+		$result_file = Upload_File::combine($directory, $filename);
+
+		rename($file, $result_file);
+
+		return is_file($result_file) ? $filename : NULL;
+	}
+
+	public static function from_stream($file, $directory)
+	{
+		$input = fopen('php://input', "r");
+		$hamdle = fopen($file, 'w');
+		$realSize = stream_copy_to_stream($input, $hamdle);
+		fclose($input);
+		fclose($hamdle);
+
+		return is_file($result_file);
+	}
+
+	public static function from_temp($file, $directory)
+	{
+		return Upload_Temp::preloaded_filename($file);
+	}
+
+	public static function transform_image($from, $to, array $transformations = array())
+	{
+		$thumb = Image::factory($from, Kohana::$config->load('jam.upload.image_driver'));
+
+		// Process tranformations
+		foreach ($transformations as $transformation => $params)
+		{
+			if ($transformation !== 'factory' OR $transformation !== 'save' OR $transformation !== 'render')
+			{
+				// Call the method excluding the factory, save and render methods
+				call_user_func_array(array($image, $transformation), $params);
+			}
+		}
+
+		$thumb->save($to, 95);
+	}
+
+	public static function source_type($source)
+	{
+		if (is_file($source))
+		{
+			return 'file';
+		}
+		elseif (Valid::url($source)) 
+		{
+			return 'url';
+		}
+		elseif ($source == 'php://input')
+		{
+			return 'stream';
+		}
+		elseif (Upload_Temp::valid($source))
+		{
+			return 'temp';
+		}
+		elseif (Upload::valid($source))
+		{
+			return 'upload';
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	protected $_source;
+
+	protected $_source_type = NULL;
+
+	protected $_server;
+
+	protected $_path;
+
+	protected $_transformations;
+
+	protected $_thumbnails;
+
+	protected $_temp;
+
+	protected $_filename;
+
+	public function __construct($source, $path, $server, array $transformations = array(), array $thumbnails = array())
+	{
+		$this->source($source);
+
+		$this->_server = $server;
+
 		$this->_path = $path;
 
-		if ($sizes)
-		{
-			$this->_width = $sizes[0];
-			$this->_height = $sizes[1];
-		}
+		$this->_transformations = $transformations;
+
+		$this->_thumbnails = $thumbnails;
 	}
 
-	/**
-	 * Return the dimensions of the image (if the file is an image)
-	 * you can pass width/height to constrain the new dimensions
-	 * @param  integer  $new_width  constrain to these dimensions
-	 * @param  integer  $new_height constrain to this height
-	 * @param  boolean  $upscale    default true - allow upscaling of dimensions
-	 * @return array                new dimensions
-	 */
-	public function dimensions($new_width = NULL, $new_height = NULL, $upscale = TRUE)
+	public function source($source = NULL)
 	{
-		if ($new_width === NULL AND $new_height === NULL)
-			return array('width' => $this->_width, 'height' => $this->_height);
-
-		if ( ! $this->_width OR ! $this->_height)
-			return array('width' => NULL, 'height' => NULL);
-		
-		$aspect = $this->_width / $this->_height;
-		$keep_aspect = FALSE;
-		
-		if ($new_height === NULL)
-		{			
-			$new_aspect = $aspect;
-			$keep_aspect = TRUE;
-		}
-		elseif ($new_width === NULL)
+		if ($source !== NULL)
 		{
-			$new_aspect = $aspect;
-			$keep_aspect = TRUE;
-		}
-		else		
-		{
-			$new_aspect = $new_width / $new_height;
-		}
-		
-		if ($keep_aspect)
-		{
-			$new = array('width' => $new_width === NULL ? $new_height * $new_aspect : $new_width, 'height' => ($new_height === NULL ? $new_width / $new_aspect : $new_height));
-		}
-		elseif ($new_aspect < $aspect)
-		{
-			$new = array('width' => $new_width, 'height' => $this->_height * ($new_width / $this->_width));
-		} 
-		else 
-		{
-			$new = array('width' => $this->_width * ($new_height / $this->_height), 'height' => $new_height);
-		}
-
-		if ( ! $upscale AND ($new['width'] > $this->_width OR $new['height'] > $this->_height))
-		{
-			if ($new['width'] > $this->_width)
+			if ($this->_source_type = Upload_File::source_type($source))
 			{
-				$new['width'] = $this->_width;
-				$new['height'] = $new['width']/$aspect;
+				$this->_source = $source;
+				$this->_filename = NULL;
 			}
-			elseif($new['height'] > $this->_height)
+			else
 			{
-				$new['height'] = $this->_height;
-				$new['width'] = $new['height']*$aspect;
+				$this->_source = NULL;
+				$this->_filename = $source;
+			}
+			return $this;
+		}
+
+		return $this->_source;
+	}
+
+	public function path($path)
+	{
+		if ($path !== NULL)
+		{
+			$this->_path = $path;
+
+			return $this;
+		}
+
+		return $this->_path;
+	}
+
+	public function temp()
+	{
+		if ( ! $this->_temp)
+		{
+			$this->_temp = new Upload_Temp();
+
+			if ($directory = Upload_Temp::check($this->_source))
+			{
+				$this->_temp->directory($directory);
 			}
 		}
 
-		return $new;
+		return $this->_temp;
 	}
 
-	public function is_portrait()
+	public function server()
 	{
-		return ( ! $this->_height) ? FALSE : (float) ($this->_width / $this->_height) < 1.00;
-	}
-	
-	public function is_landscape()
-	{
-		return ! $this->is_portrait();
-	}
-	
-	/**
-	 * Get the width of the image (or calculate new width when constrained to dimensions)
-	 * @param  integer $new_width  constrained to this widht
-	 * @param  integer $new_height constrained to this height
-	 * @return integer             the width
-	 */
-	public function width($new_width = NULL, $new_height = NULL )
-	{
-		return Arr::get($this->dimensions($new_width,$new_height), 'width');
+		return Upload_Server::instance($this->server);
 	}
 
-	/**
-	 * Get the height of the image (or calculate new height when constrained to dimensions)
-	 * @param  integer $new_width  constrained to this widht
-	 * @param  integer $new_height constrained to this height
-	 * @return integer             the height
-	 */
-	public function height( $new_width = NULL, $new_height = NULL )
+	public function filename()
 	{
-		return Arr::get($this->dimensions($new_width,$new_height), 'height');
+		return $this->_filename;
 	}
 
-	/**
-	 * Check if the file variable is populated
-	 * @return boolean 
-	 */
-	public function is_empty()
+	public function save_to_temp()
 	{
-		return ! (bool) $this->_file;
-	}
+		if ( ! $this->_source)
+			throw new Kohana_Exception("Cannot move file to temp directory, source does not exist");
 
-	/**
-	 * Return the file name
-	 * @return string 
-	 */
-	public function __toString()
-	{
-		return (string) $this->_file;
-	}
-
-	public function hidden_filename()
-	{
-		return $this->_hidden_filename ? $this->_hidden_filename : $this->_file;
-	}
-
-	/**
-	 * Get the publically availble url of the file
-	 * @param  string $thumbnail if it's an image with thumbnails you can pass this to get a thumbnail
-	 * @param  string $protocol  absolute path with protocol (http/https) or TRUE for current protocol
-	 * @param  boolean $index    use index file or not
-	 * @return string            
-	 */
-	public function url($thumbnail = NULL, $protocol = NULL, $index = NULL)
-	{
-		$url = Upload_Server::combine_path($this->_web, $thumbnail, $this->_file);
-		if (strpos($this->_web, '://') !== FALSE)
+		if ($type = $this->source_type())
 		{
-			return $url;
+			$from_method = "from_$type";
+			$this->_filename = Upload_File::$from_method($this->_source, $this->temp->realpath());	
 		}
-		return url::site($url, $protocol, $index);
+		else
+		{
+			throw new Kohana_Exception("Not a valid source for file input - :source", array(':source' => $this->_source));	
+		}
+
+		if ($this->_transformations)
+		{
+			Upload_File::transform_image($this->file(), $this->file(), $this->_transformations);
+		}
+
+		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		{
+			Upload_File::transform_image($this->file(), $this->file($thumbnail), $transformations);	
+		}
 	}
 
-	/**
-	 * Get the filename on the server (for local files)
-	 * @param  string $thumbnail if tt's an image with thumbanils you can pass this to get a thumbnail
-	 * @return [type]            [description]
-	 */
+	public function save()
+	{
+		$this->server()->save_from_local($this->location(), $this->file());
+
+		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		{
+			$this->server()->save_from_local($this->location($thumbnail), $this->file($thumbnail));
+		}
+	}
+
+	public function cleanup()
+	{
+		$this->temp->clear();
+	}
+
+	public function delete()
+	{
+		$this->server()->delete($this->location());
+
+		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		{
+			$this->server()->delete($this->location($thumbnail));
+		}
+
+		$this->cleanup();
+	}
+
+	public function location($thumbnail = NULL)
+	{
+		if ( ! $this->_source)
+			return Upload_File::combine($thumbnail, $this->_filename);
+
+		return Upload_File::combine($this->path(), $thumbnail, $this->_filename);
+	}
+
+	public function path_server()
+	{
+		return $this->_source ? $this->temp() : $this->server();	
+	}
+
 	public function file($thumbnail = NULL)
 	{
-		return Upload_Server::combine_path($this->_path, $thumbnail, $this->_file);
+		return $this->path_server()->realpath($this->location($thumbnail));
+	}
+
+	public function url($thumbnail = NULL)
+	{
+		return $this->path_server()->webpath($this->location($thumbnail));
+	}
+
+	public function with()
+	{
+		return $this->model->{$this->name.'_width'};
+	}
+
+	public function height()
+	{
+		return $this->model->{$this->name.'_height'};
 	}
 
 }
