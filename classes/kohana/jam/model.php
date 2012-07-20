@@ -93,7 +93,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
 
-		$this->_meta->trigger_model('before_construct', $this, FALSE);
+		$this->_meta->trigger_model($this, 'before_construct', FALSE);
 
 		// Copy over the defaults into the original data.
 		$this->_original = $this->_meta->defaults();
@@ -112,7 +112,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		$this->_meta->trigger_model('model.after_construct', $this, FALSE);
+		$this->_meta->trigger_model($this, 'model.after_construct', FALSE);
 	}
 
 	/**

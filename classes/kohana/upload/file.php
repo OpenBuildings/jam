@@ -25,11 +25,36 @@ class Kohana_Upload_File {
 		return $filename;
 	}
 
-	public static function name($file = NULL, $mime_type = NULL, $url = NULL)
+	public static function is_filename($filename)
+	{
+		return (bool) pathinfo($filename, PATHINFO_EXTENSION);
+	}
+
+	public static function pick_filename($file, $url)
+	{
+		$query = parse_url($url, PHP_URL_QUERY);
+		parse_str($query, $query);
+		$url = basename(parse_url($url, PHP_URL_PATH));
+		$file = basename($file);
+
+		$candidates = array_merge(
+			array_values((array) $query),
+			(array) $url,
+			(array) $file
+		);
+
+		$candidates = array_filter($candidates, 'Upload_File::is_filename');
+		$candidates[] = $url ? $url : $file;
+
+		return Upload_File::sanitize(reset($candidates));
+	}
+
+	public static function normalize_extension($file = NULL, $mime_type = NULL, $url = NULL)
 	{
 		$ext = NULL;
-		$url = str_replace(' ', '%20', $url);
-		$filename = basename($url);
+		$filename = Upload_File::pick_filename($file, $url);
+
+		$base = pathinfo($filename, PATHINFO_FILENAME);
 
 		if ($mime_type)
 		{
@@ -51,14 +76,12 @@ class Kohana_Upload_File {
 			}
 		}
 
-		$filename = pathinfo($filename, Upload_Filename::sanitize($filename), PATHINFO_FILENAME);
-
 		if ( ! $ext)
 		{
 			$ext = 'jpg';
 		}
 		
-		return $filename.'.'.$ext;
+		return $base.'.'.$ext;
 	}
 
   /**
@@ -94,7 +117,7 @@ class Kohana_Upload_File {
 		curl_exec($curl);
 		fclose($handle);
 		
-		$filename = Upload_File::name($file, curl_getinfo($curl, CURLINFO_CONTENT_TYPE), curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+		$filename = Upload_File::normalize_extension($file, curl_getinfo($curl, CURLINFO_CONTENT_TYPE), curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
 
 		$result_file = Upload_File::combine($directory, $filename);
 		
@@ -105,7 +128,7 @@ class Kohana_Upload_File {
 
 	public static function from_upload(array $file, $directory)
 	{
-		if ($file['error'] !== UPLOAD_ERR_OK)
+		if ( ! Upload::not_empty($file))
 			return NULL;
 
 		$filename = Upload_File::sanitize($file['name']);
@@ -121,7 +144,7 @@ class Kohana_Upload_File {
 		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
 			return NULL;
 
-		$filename = Upload_File::name($file);
+		$filename = Upload_File::normalize_extension($file);
 		$result_file = Upload_File::combine($directory, $filename);
 
 		rename($file, $result_file);
@@ -164,11 +187,7 @@ class Kohana_Upload_File {
 
 	public static function source_type($source)
 	{
-		if (is_file($source))
-		{
-			return 'file';
-		}
-		elseif (Valid::url($source)) 
+		if (Valid::url($source)) 
 		{
 			return 'url';
 		}
@@ -183,6 +202,10 @@ class Kohana_Upload_File {
 		elseif (Upload::valid($source))
 		{
 			return 'upload';
+		}
+		elseif (is_file($source))
+		{
+			return 'file';
 		}
 		else
 		{
