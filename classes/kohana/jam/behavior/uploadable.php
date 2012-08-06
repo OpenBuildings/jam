@@ -12,6 +12,7 @@
 abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior 
 {	
 	public $_thumbnails = array();
+	public $_transformations = array();
 	public $_server = NULL;
 	public $_save_size = FALSE;
 	public $_path = NULL;
@@ -20,9 +21,10 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	{
 		parent::initialize($event, $model, $name);
 		
-		Jam::meta($model)->field($name, Jam::field('upload_image', array(
+		Jam::meta($model)->field($name, Jam::field('upload', array(
 			'path' => $this->_path, 
 			'thumbnails' => $this->_thumbnails, 
+			'transformations' => $this->_transformations, 
 			'server' => $this->_server, 
 			'save_size' => $this->_save_size
 		)));

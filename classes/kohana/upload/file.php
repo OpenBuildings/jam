@@ -98,10 +98,10 @@ class Kohana_Upload_File {
 
 		foreach ($args as $i => &$arg)
 		{
-			$arg = $i == 0 ? rtrim($arg, '/') : trim($arg, '/');
+			$arg = $i == 0 ? rtrim($arg, DIRECTORY_SEPARATOR) : trim($arg, DIRECTORY_SEPARATOR);
 		}
 		
-		return join('/', array_filter($args));
+		return join(DIRECTORY_SEPARATOR, array_filter($args));
 	}
 
 	public static function from_url($url, $directory)
@@ -221,25 +221,19 @@ class Kohana_Upload_File {
 
 	protected $_path;
 
-	protected $_transformations;
-
-	protected $_thumbnails;
-
 	protected $_temp;
 
 	protected $_filename;
 
-	public function __construct($source, $path, $server, array $transformations = array(), array $thumbnails = array())
+	protected $_transformations = array();
+
+	protected $_thumbnails = array();
+
+	protected $_aspect;
+
+	public function __construct($server)
 	{
-		$this->source($source);
-
 		$this->_server = $server;
-
-		$this->_path = $path;
-
-		$this->_transformations = $transformations;
-
-		$this->_thumbnails = $thumbnails;
 	}
 
 	public function source($source = NULL)
@@ -272,6 +266,50 @@ class Kohana_Upload_File {
 		}
 
 		return $this->_path;
+	}
+
+	public function transformations(array $transformations = NULL)
+	{
+		if ($transformations !== NULL)
+		{
+			$this->_transformations = $transformations;
+
+			return $this;
+		}
+
+		return $this->_transformations;
+	}
+
+	public function thumbnails(array $thumbnails = NULL)
+	{
+		if ($thumbnails !== NULL)
+		{
+			$this->_thumbnails = $thumbnails;
+
+			return $this;
+		}
+
+		return $this->_thumbnails;
+	}
+
+	public function set_size($width, $height)
+	{
+		$this->_aspect = new Image_Aspect($width, $height);
+	}
+
+	public function width()
+	{
+		return $this->aspect()->width();
+	}
+
+	public function height()
+	{
+		return $this->aspect()->height();
+	}
+
+	public function aspect()
+	{
+		return $this->_aspect;
 	}
 
 	public function temp()
@@ -373,16 +411,6 @@ class Kohana_Upload_File {
 	public function url($thumbnail = NULL)
 	{
 		return $this->path_server()->webpath($this->location($thumbnail));
-	}
-
-	public function with()
-	{
-		return $this->model->{$this->name.'_width'};
-	}
-
-	public function height()
-	{
-		return $this->model->{$this->name.'_height'};
 	}
 
 }

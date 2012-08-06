@@ -80,7 +80,25 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	public function upload_file($model, $value)
 	{
-		return new Upload_File($value, $this->path($model), $this->server, $this->transformations, $this->thumbnails);
+		$upload_file = new Upload_File($this->server, $this->path($model));
+
+		$upload_file->source($value);
+
+		if ($this->transformations)
+		{
+			$upload_file->transformations($this->transformations);
+		}
+
+		if ($this->thumbnails)
+		{
+			$upload_file->thumbnails($this->thumbnails);
+		}
+
+		if ($this->save_size)
+		{
+			$upload_file->set_size($model->{$this->name.'_height'}, $model->{$this->name.'_width'});
+		}
+
 	}
 
 	protected function path(Jam_Model $model)

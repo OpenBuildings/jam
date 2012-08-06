@@ -13,9 +13,33 @@ class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
 
 	public function setUp()
 	{
-		parent::setUp();
-
 		$this->test_local = join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'test_local')).DIRECTORY_SEPARATOR;
+
+		$this->environmentDefault = array(
+			'jam.upload.temp' => array(
+				'path' => join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'temp')),
+				'web' => '/temp/',
+			),
+			'jam.upload.servers' => array(
+				'test_local' => array(
+					'type' => 'local',
+					'params' => array(
+						'path' => $this->test_local,
+						'web' => 'upload',
+					),
+				),
+				'default' => array(
+					'type' => 'local',
+					'params' => array(
+						'path' => $this->test_local,
+						'web' => 'upload',
+					),
+				),			
+			),
+
+		);
+
+		parent::setUp();
 	}
 
 	public function data_sanitize()
@@ -92,6 +116,49 @@ class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
 		);
 	}
 
+	public function data_combine()
+	{
+		return array(
+			array(array('test', 'test2'), 'test'.DIRECTORY_SEPARATOR.'test2'),
+			array(array('test', 'test2'.DIRECTORY_SEPARATOR), 'test'.DIRECTORY_SEPARATOR.'test2'),
+			array(array('test'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.'test2'), 'test'.DIRECTORY_SEPARATOR.'test2'),
+			array(array('test'.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR.'test2'.DIRECTORY_SEPARATOR), 'test'.DIRECTORY_SEPARATOR.'test2'),
+			array(array(DIRECTORY_SEPARATOR.'test', DIRECTORY_SEPARATOR.'test2'), DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test2'),
+			array(array(DIRECTORY_SEPARATOR.'test', DIRECTORY_SEPARATOR.'test2', 'test3'), DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test2'.DIRECTORY_SEPARATOR.'test3'),
+			array(array(DIRECTORY_SEPARATOR.'test', DIRECTORY_SEPARATOR.'test2', 'test3', 'test4'), DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test2'.DIRECTORY_SEPARATOR.'test3'.DIRECTORY_SEPARATOR.'test4'),
+		);
+	}
+	
+	/**
+	 * @dataProvider data_combine
+	 */
+	public function test_combine($filename_parts, $combined_filename)
+	{
+		$this->assertEquals($combined_filename, call_user_func_array('Upload_File::combine', $filename_parts));
+	}
+
+	public function data_is_filename()
+	{
+		return array(
+			array('file.png', TRUE),
+			array('file.js', TRUE),
+			array('/to/file/file.png', TRUE),
+			array('http://example.com/file.png', TRUE),
+			array('http://example.com/page', FALSE),
+			array('/to/file/dir', FALSE),
+			array('page', FALSE),
+		);
+	}
+
+
+	/**
+	 * @dataProvider data_is_filename
+	 */
+	public function test_is_filename($is_filename, $is_filename)
+	{
+		$this->assertEquals($is_filename, Upload_File::is_filename($filename));
+	}
+
 	/**
 	 * @dataProvider data_normalize_extension
 	 */
@@ -103,5 +170,14 @@ class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
 		$this->assertEquals($expected_filename, $filename);
 	}
 
+	public function test_width_height_aspect()
+	{
+		$upload = new Upload_File('default');
+		$upload->set_size(100, 200);
+
+		$this->assertEquals(100, $upload->width());
+		$this->assertEquals(200, $upload->height());
+		$this->assertEquals(array(100, 200), $upload->aspect()->dims());
+	}
 
 }
