@@ -21,7 +21,7 @@ class Model_Test_Image extends Jam_Model {
 		// Set fields
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'file'            => Jam::field('string'),
+			'file'            => Jam::field('upload'),
 		));
 	}
 

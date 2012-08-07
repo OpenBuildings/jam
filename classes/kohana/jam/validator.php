@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Validator {
 			return TRUE;
 
 		
-		if (is_string($this->condition))
+		if (is_string($this->condition) AND strpos($this->condition, '::') === FALSE)
 		{
 			if (substr($this->condition, -2) == '()')
 			{

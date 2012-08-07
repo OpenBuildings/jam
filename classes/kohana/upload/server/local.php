@@ -39,17 +39,9 @@ class Kohana_Upload_Server_Local extends Upload_Server
 		}
 		elseif (is_dir($file))
 		{
-	    return self::rrmdir($file);
+	    return Upload_File::recursive_rmdir($file);
 		}
 	}
-
-	static public function rrmdir($path)
-	{
-	  return is_file($path)?
-	    @unlink($path):
-	    array_map('Upload_Server_Local::rrmdir',glob($path.'/*'))==@rmdir($path)
-	  ;
-	}	
 
 	public function mkdir($file)
 	{

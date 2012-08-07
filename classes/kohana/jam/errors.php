@@ -10,17 +10,11 @@
  */
 abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAccess {
 
-	public static function message($attribute, $error, $params)
+	public static function message($error_filename, $attribute, $error, $params)
 	{
-		if ($message = Kohana::message($this->_error_filename, "{$attribute}.{$error}"))
+		if ($message = Kohana::message($error_filename, "{$attribute}.{$error}"))
 		{
-			$converted_params = array();
-			foreach ($params as $name => $value) 
-			{
-				$converted_params[':'.$name] = $value;
-			}
 
-			$message = strtr($message, $converted_params);
 		}	
 		elseif ($message = Kohana::message('validators', $error))
 		{
@@ -28,12 +22,10 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		}
 		else
 		{
-			$message = $this->_error_filename."{$attribute}.{$error}";
+			return $error_filename."{$attribute}.{$error}";
 		}
 
-
-
-		return $message;
+		return strtr($message, $params);
 	}
 
 	/**
@@ -98,7 +90,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 			foreach ($this->_container[$attribute] as $error => $params) 
 			{
-				$messages[] = Jam_Errors::message($attribute, $error, Arr::merge($params, array('model' => $this->_model->meta()->model(), 'field' => $attribute)));
+				$messages[] = Jam_Errors::message($this->_error_filename, $attribute, $error, Arr::merge($params, array(':model' => $this->_model->meta()->model(), ':attribute' => $attribute)));
 			}
 
 			return $messages;

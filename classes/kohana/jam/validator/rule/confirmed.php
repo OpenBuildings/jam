@@ -8,15 +8,17 @@
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Kohana_Jam_Validator_Rule_Accepted extends Jam_Validator_Rule {
+class Kohana_Jam_Validator_Rule_Confirmed extends Jam_Validator_Rule {
 
-	public $accept = TRUE;
+	public $confirmation;
 
 	public function validate(Jam_Model $model, $attribute, $value)
 	{
-		if ($value != $this->accept)
+		$confirmation = $this->confirmation ? $this->confirmation : $attribute.'_confirmation';
+
+		if ($value !==  $model->$confirmation)
 		{
-			$model->errors()->add($attribute, 'accepted', array(':accept' => $this->accept));	
+			$model->errors()->add($attribute, 'confirmed', array(':confirmation' => $confirmation));
 		}
 	}
 }

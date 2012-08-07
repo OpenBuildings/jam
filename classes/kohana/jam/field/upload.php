@@ -11,6 +11,8 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @var  boolean  whether or not to delete the old file when a new file is added
 	 */
 	public $delete_file = TRUE;
+
+	public $save_size = FALSE;
 	
 	/**
 	 * @var  string  the server used to store the file
@@ -33,44 +35,69 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	public $thumbnails = array();
 
 
-	public function attribute_before_validate(Jam_Model $model, Upload_File $upload_file)
+	public function attribute_before_check($model, $upload_file)
 	{
 		$upload_file->save_to_temp();
 	}
 
-	public function attribute_get(Jam_Model $model, $value)
+	public function attribute_get($model, $value, $is_changed)
 	{
-		return $this->upload_file($model, $value);
-	}
+		if ($value instanceof Upload_File)
+			return $value;
+		
+		$upload_file = $this->upload_file($model);
 
-	public function attribute_set(Jam_Model $model, $value)
-	{
-		return $model->{$this->name}
-			->path($this->path($model))
-			->source($value);
-	}
-
-	public function attribute_before_save(Jam_Model $model, Upload_File $upload_file)
-	{
-		if ($this->delete_file AND $original = $model->original($this->name))
+		if ($model->loaded() AND ! $is_changed)
 		{
-			$this->upload_file($model, $original)->delete();
+			$upload_file->filename($value);
+		}
+		elseif ($value)
+		{
+			$upload_file->source($value);
 		}
 
-		$upload_file->save();
+		return $upload_file;
 	}
 
-	public function attribute_after_save(Jam_Model $model, Upload_File $upload_file)
+	public function attribute_set($model, $upload_file)
+	{
+		if ( ! ($upload_file instanceof Upload_File))
+		{
+			$upload_file = $this->attribute_get($model, $upload_file, FALSE);
+		}
+		
+		return $upload_file->path($this->path($model));
+	}
+
+	public function attribute_before_save($model, $upload_file)
+	{
+		if ($upload_file->source())
+		{
+			if ($this->delete_file AND $original = $model->original($this->name))
+			{
+				$this->upload_file($model)->filename($original)->delete();
+			}
+
+			$upload_file->save();
+		}
+	}
+
+	public function attribute_after_save($model, $upload_file)
 	{
 		$upload_file->cleanup();
 	}
 
-	public function attribute_convert(Jam_Model $model, Upload_File $value, $is_loaded)
+	public function attribute_convert($model, $upload_file, $is_loaded)
 	{
+		if ( ! ($upload_file instanceof Upload_File))
+		{
+			$upload_file = $this->attribute_get($model, $upload_file, FALSE);
+		}
+
 		return $upload_file->filename();
 	}
 
-	public function attribute_after_delete(Jam_Model $model, Upload_File $value)
+	public function attribute_after_delete($model, $upload_file)
 	{
 		if ($this->delete_file)
 		{
@@ -78,11 +105,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		}
 	}
 
-	public function upload_file($model, $value)
+	public function upload_file($model)
 	{
 		$upload_file = new Upload_File($this->server, $this->path($model));
-
-		$upload_file->source($value);
 
 		if ($this->transformations)
 		{
@@ -99,6 +124,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file->set_size($model->{$this->name.'_height'}, $model->{$this->name.'_width'});
 		}
 
+		return $upload_file;
 	}
 
 	protected function path(Jam_Model $model)

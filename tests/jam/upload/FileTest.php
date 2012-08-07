@@ -7,40 +7,7 @@
  * @group   jam.upload
  * @group   jam.upload.file
  */
-class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
-
-	public $test_local;
-
-	public function setUp()
-	{
-		$this->test_local = join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'test_local')).DIRECTORY_SEPARATOR;
-
-		$this->environmentDefault = array(
-			'jam.upload.temp' => array(
-				'path' => join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'temp')),
-				'web' => '/temp/',
-			),
-			'jam.upload.servers' => array(
-				'test_local' => array(
-					'type' => 'local',
-					'params' => array(
-						'path' => $this->test_local,
-						'web' => 'upload',
-					),
-				),
-				'default' => array(
-					'type' => 'local',
-					'params' => array(
-						'path' => $this->test_local,
-						'web' => 'upload',
-					),
-				),			
-			),
-
-		);
-
-		parent::setUp();
-	}
+class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 
 	public function data_sanitize()
 	{
@@ -154,7 +121,7 @@ class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
 	/**
 	 * @dataProvider data_is_filename
 	 */
-	public function test_is_filename($is_filename, $is_filename)
+	public function test_is_filename($filename, $is_filename)
 	{
 		$this->assertEquals($is_filename, Upload_File::is_filename($filename));
 	}
@@ -172,12 +139,123 @@ class Jam_Upload_FileTest extends Unittest_Jam_TestCase {
 
 	public function test_width_height_aspect()
 	{
-		$upload = new Upload_File('default');
+		$upload = new Upload_File('default', 'file');
+
+		$this->assertNull($upload->aspect());
 		$upload->set_size(100, 200);
 
 		$this->assertEquals(100, $upload->width());
 		$this->assertEquals(200, $upload->height());
 		$this->assertEquals(array(100, 200), $upload->aspect()->dims());
+	}
+
+	public function data_source_type()
+	{
+		$test_local = join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'test_local')).DIRECTORY_SEPARATOR;
+
+		return array(
+			array('http://example.com/file.png', 'url'),
+			array('http://sub.example.com/deep/nesting/file.png', 'url'),
+			array('php://input', 'stream'),
+			array('populate/test_upload_populate.txt', 'temp'),
+			array('populate/missing', FALSE),
+			array(array('error' => 0, 'name' => 'name', 'type' => 'text/plain', 'tmp_name' => '12345', 'size' => 10), 'upload'),
+			array(array('error' => 0, 'name' => 'name', 'type' => 'text/plain', 'tmp_name' => '12345'), FALSE),
+			array($test_local.'file'.DIRECTORY_SEPARATOR.'file1.txt', 'file'),
+			array($test_local.'file', FALSE),
+		);
+	}
+
+	/**
+	 * @dataProvider data_source_type
+	 */
+	public function test_source_type($source, $expected_type)
+	{
+		$upload = new Upload_File('default', 'file');
+		$this->assertEquals($expected_type, $upload->guess_source_type($source));
+	}
+
+	public function test_source()
+	{
+		$upload = new Upload_File('default', 'file');
+
+		$this->assertNull($upload->source());
+		$this->assertNull($upload->source_type());
+
+		$upload->source('http://example.com/file.png');
+
+		$this->assertEquals('http://example.com/file.png', $upload->source());
+		$this->assertEquals('url', $upload->source_type());
+
+		$upload->source('populate/test_upload_populate.txt');
+
+		$this->assertEquals('populate/test_upload_populate.txt', $upload->source());
+		$this->assertEquals('temp', $upload->source_type());
+		$this->assertEquals('populate', $upload->temp()->directory());
+	}
+
+	public function test_path()
+	{
+		$upload = new Upload_File('default', 'file');
+		$upload->filename('file1.txt');
+
+		$this->assertEquals('file', $upload->path());
+
+		$this->assertEquals('/upload/file/file1.txt', $upload->url());
+		$this->assertEquals('/upload/file/thumb/file1.txt', $upload->url('thumb'));
+		$this->assertFileExists($upload->file());
+		$this->assertEquals($this->test_local.'file'.DIRECTORY_SEPARATOR.'file1.txt', $upload->file());
+	}
+
+	public function test_temp_getter()
+	{
+		$upload = new Upload_File('default', 'file');
+
+		$this->assertInstanceOf('Upload_Temp', $upload->temp());
+		$this->assertNotNull($upload->temp()->directory());
+	}
+
+	public function test_save_and_delete()
+	{
+		$upload = new Upload_File('default', 'file');
+		$file = $this->test_temp.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'file_temp.txt';
+		
+		if ( ! file_exists(dirname($file)))
+		{
+			mkdir(dirname($file), 0777);
+		}
+		file_put_contents($file, 'temp');
+
+		$upload->source('test/file_temp.txt');
+
+		$upload->save();
+
+		$this->assertFileExists($upload->file());
+		$this->assertEquals(0, strpos($upload->file(), $this->test_local), 'The file should be in the local folder');
+
+		$upload->delete();
+
+		$this->assertFileNotExists($upload->file());
+	}
+
+	public function test_save_to_temp()
+	{
+		$upload = new Upload_File('default', 'file');
+		$file = $this->test_local.'file'.DIRECTORY_SEPARATOR.'file_temp.txt';
+
+		file_put_contents($file, 'temp');
+
+		$upload->source($file);
+		$this->assertEquals('file', $upload->source_type());
+
+		$upload->save_to_temp();
+
+		$this->assertFileExists($upload->file());
+		$this->assertEquals(0, strpos($upload->file(), $this->test_temp), 'The file should be in the temp folder');
+
+		$upload->cleanup();
+
+		$this->assertFileNotExists($upload->file());
 	}
 
 }

@@ -20,12 +20,12 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 	{
 		if ($this->regex !== NULL AND ! (preg_match($this->regex, $value)))
 		{
-			$model->errors()->add($attribute, 'format_regex', array('regex' => $this->regex));
+			$model->errors()->add($attribute, 'format_regex', array(':regex' => $this->regex));
 		}
 
 		if ($this->filter !== NULL AND ! (filter_var($value, $this->filter, $this->flag) !== FALSE))
 		{
-			$model->errors()->add($attribute, 'format_filter', array('filter' => $this->filter));
+			$model->errors()->add($attribute, 'format_filter', array(':filter' => $this->filter));
 		}
 	}
 }

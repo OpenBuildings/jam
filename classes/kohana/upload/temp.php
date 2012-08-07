@@ -18,7 +18,7 @@ class Kohana_Upload_Temp
 		// Store the config locally
 		$this->_config = Arr::merge(Kohana::$config->load("jam.upload.temp"), (array) $config);
 
-		if (($missing_keys = array_diff(array('path', 'web'), array_keys($config))))
+		if (($missing_keys = array_diff(array('path', 'web'), array_keys($this->_config))))
 			throw new Kohana_Exception("Missing config options :missing", array(":missing" => join(", ", $missing_keys)));
 	}
 
@@ -38,14 +38,40 @@ class Kohana_Upload_Temp
 		return $this->_directory;
 	}
 
+	public function directory_path()
+	{
+		$directory = $this->realpath($this->directory());
+
+		if ( ! is_dir($directory))
+		{
+			mkdir($directory, 0777);
+		}
+
+		return $directory;
+	}
+
+	public function clear()
+	{
+		if ($this->_directory)
+		{
+			Upload_File::recursive_rmdir($this->realpath($this->directory()));
+			$this->_directory = NULL;
+		}
+	}
+
+	public function valid($file)
+	{
+		return (substr_count($file, DIRECTORY_SEPARATOR) === 1 AND is_file($this->realpath($file)));
+	}
+
 	public function realpath($path)
 	{
-		return Upload_File::combine($this->_config['path'], $path)
+		return Upload_File::combine($this->_config['path'], $path);
 	}
 
 	public function webpath($path)
 	{
-		return Upload_File::combine($this->_config['web'], $path)
+		return Upload_File::combine($this->_config['web'], $path);
 	}
 
 }

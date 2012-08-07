@@ -180,7 +180,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed        $value
 	 * @return  mixed
 	 **/
-	public function attribute_get($model, $value)
+	public function attribute_get($model, $value, $is_changed)
 	{
 		return $value;
 	}
@@ -211,43 +211,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	{
 		$this->filters[] = array($filter_name, $values);
 		return $this;
-	}
-
-	/**
-	 * Callback for validating that a field is unique.
-	 *
-	 * @param   Validation   $data
-	 * @param   Jam_Model  $model
-	 * @param   string       $field
-	 * @param   string       $value
-	 * @return  void
-	 */
-	public function _is_unique(Validation $data, Jam_Model $model, $field, $value)
-	{
-		// According to the SQL standard NULL is not checked by the unique constraint
-		// We also skip this test if the value is the same as the default value
-		if ($value !== NULL AND $value !== $this->default)
-		{
-			// Build query
-			$query = Jam::query($model)->where($field, '=', $value);
-
-			if ($this->unique_scope)
-			{
-				foreach ( (array) $this->unique_scope as $field) 
-				{
-					$query->where($field, '=', $model->$field);
-				}
-			}
-
-			// Limit to one
-			$query->limit(1);
-
-			if ($query->count() AND ( ! $model->loaded() OR $query->select()->id() !== $model->id()))
-			{
-				// Add error if duplicate found
-				$data->error($field, 'unique');
-			}
-		}
 	}
 
 	/**

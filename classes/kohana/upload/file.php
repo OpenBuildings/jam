@@ -8,6 +8,58 @@
 */
 class Kohana_Upload_File {
 
+	/**
+	 * lixlpixel recursive PHP functions
+	 * recursive_remove_directory( directory to delete, empty )
+	 * expects path to directory and optional TRUE / FALSE to empty
+	 * 
+	 * @param  string  $directory 
+	 * @param  boolean $empty     
+	 * @return boolean
+	 */
+	public static function recursive_rmdir($directory, $empty = FALSE)
+	{
+		if (substr($directory, -1) == DIRECTORY_SEPARATOR)
+		{
+			$directory = substr($directory,0,-1);
+		}
+
+		if ( ! file_exists($directory) OR ! is_dir($directory))
+		{
+			return FALSE;
+		}
+		elseif (is_readable($directory))
+		{
+			$handle = opendir($directory);
+			while (FALSE !== ($item = readdir($handle)))
+			{
+				if ($item != '.' AND $item != '..')
+				{
+					$path = $directory.DIRECTORY_SEPARATOR.$item;
+
+					if (is_dir($path)) 
+					{
+						Upload_File::recursive_rmdir($path);
+					}
+					else
+					{
+						unlink($path);
+					}
+				}
+			}
+			closedir($handle);
+
+			if ($empty === FALSE)
+			{
+					if ( ! rmdir($directory))
+					{
+						return FALSE;
+					}
+			}
+		}
+		return TRUE;
+	}
+
 	static public function sanitize($filename)
 	{
 		// Transliterate strange chars
@@ -84,14 +136,14 @@ class Kohana_Upload_File {
 		return $base.'.'.$ext;
 	}
 
-  /**
-   * Create a filename path from function arguments with / based on the operating system
-   * @code
-   * $filename = file::combine('usr','local','bin'); // will be "user/local/bin"
-   * @endcode
-   * @return string
-   * @author Ivan Kerin
-   */
+	/**
+	 * Create a filename path from function arguments with / based on the operating system
+	 * @code
+	 * $filename = file::combine('usr','local','bin'); // will be "user/local/bin"
+	 * @endcode
+	 * @return string
+	 * @author Ivan Kerin
+	 */
 	public static function combine()
 	{
 		$args = func_get_args();
@@ -185,34 +237,6 @@ class Kohana_Upload_File {
 		$thumb->save($to, 95);
 	}
 
-	public static function source_type($source)
-	{
-		if (Valid::url($source)) 
-		{
-			return 'url';
-		}
-		elseif ($source == 'php://input')
-		{
-			return 'stream';
-		}
-		elseif (Upload_Temp::valid($source))
-		{
-			return 'temp';
-		}
-		elseif (Upload::valid($source))
-		{
-			return 'upload';
-		}
-		elseif (is_file($source))
-		{
-			return 'file';
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-
 	protected $_source;
 
 	protected $_source_type = NULL;
@@ -231,32 +255,47 @@ class Kohana_Upload_File {
 
 	protected $_aspect;
 
-	public function __construct($server)
+	public function __construct($server, $path)
 	{
 		$this->_server = $server;
+
+		$this->_path = $path;
 	}
 
-	public function source($source = NULL)
+	public function guess_source_type($source)
 	{
-		if ($source !== NULL)
+		if (is_array($source)) 
 		{
-			if ($this->_source_type = Upload_File::source_type($source))
-			{
-				$this->_source = $source;
-				$this->_filename = NULL;
-			}
-			else
-			{
-				$this->_source = NULL;
-				$this->_filename = $source;
-			}
-			return $this;
+			return Upload::valid($source) ? 'upload' : FALSE;
 		}
-
-		return $this->_source;
+		elseif ($source == 'php://input')
+		{
+			return 'stream';
+		}
+		elseif (Valid::url($source))
+		{
+			return 'url';
+		}
+		elseif ($this->temp()->valid($source))
+		{
+			return 'temp';
+		}
+		elseif (is_file($source))
+		{
+			return 'file';
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
-	public function path($path)
+	public function source_type()
+	{
+		return $this->_source_type;
+	}
+
+	public function path($path = NULL)
 	{
 		if ($path !== NULL)
 		{
@@ -266,6 +305,27 @@ class Kohana_Upload_File {
 		}
 
 		return $this->_path;
+	}
+
+	public function source($source = NULL)
+	{
+		if ($source !== NULL)
+		{
+			if ($this->_source_type = $this->guess_source_type($source))
+			{
+				$this->_source = $source;
+
+				if ($this->_source_type == 'temp')
+				{
+					$this->temp()->directory(dirname($source));
+					$this->filename(basename($source));
+				}
+			}
+
+			return $this;
+		}
+
+		return $this->_source;
 	}
 
 	public function transformations(array $transformations = NULL)
@@ -317,11 +377,6 @@ class Kohana_Upload_File {
 		if ( ! $this->_temp)
 		{
 			$this->_temp = new Upload_Temp();
-
-			if ($directory = Upload_Temp::check($this->_source))
-			{
-				$this->_temp->directory($directory);
-			}
 		}
 
 		return $this->_temp;
@@ -329,35 +384,39 @@ class Kohana_Upload_File {
 
 	public function server()
 	{
-		return Upload_Server::instance($this->server);
+		return Upload_Server::instance($this->_server);
 	}
 
-	public function filename()
+	public function filename($filename = NULL)
 	{
+		if ($filename !== NULL)
+		{
+			$this->_filename = $filename;
+
+			return $this;
+		}
+
 		return $this->_filename;
 	}
 
 	public function save_to_temp()
 	{
-		if ( ! $this->_source)
-			throw new Kohana_Exception("Cannot move file to temp directory, source does not exist");
+		if ( ! $this->source())
+			throw new Kohana_Exception("Cannot move file to temp directory, source does not exist, path :path, filename :filename", array(':path' => $this->path(), ':filename' => $this->filename()));
 
-		if ($type = $this->source_type())
-		{
-			$from_method = "from_$type";
-			$this->_filename = Upload_File::$from_method($this->_source, $this->temp->realpath());	
-		}
-		else
-		{
+		if ( ! $this->source_type())
 			throw new Kohana_Exception("Not a valid source for file input - :source", array(':source' => $this->_source));	
-		}
+
+		$from_method = "from_".$this->source_type();
+		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path());
+		$this->filename($filename);
 
 		if ($this->_transformations)
 		{
-			Upload_File::transform_image($this->file(), $this->file(), $this->_transformations);
+			Upload_File::transform_image($this->file(), $this->file(), $this->transformations());
 		}
 
-		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $transformations) 
 		{
 			Upload_File::transform_image($this->file(), $this->file($thumbnail), $transformations);	
 		}
@@ -365,52 +424,70 @@ class Kohana_Upload_File {
 
 	public function save()
 	{
-		$this->server()->save_from_local($this->location(), $this->file());
+		$this->server()->save_from_local($this->full_path(), $this->file());
 
-		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $transformations) 
 		{
-			$this->server()->save_from_local($this->location($thumbnail), $this->file($thumbnail));
+			$this->server()->save_from_local($this->full_path($thumbnail), $this->file($thumbnail));
 		}
+
+		$this->_source = NULL;
+		$this->_source_type = NULL;
 	}
 
 	public function cleanup()
 	{
-		$this->temp->clear();
+		$this->temp()->clear();
 	}
 
 	public function delete()
 	{
-		$this->server()->delete($this->location());
+		$this->server()->unlink($this->full_path());
 
-		foreach ($this->_thumbnails as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $transformations) 
 		{
-			$this->server()->delete($this->location($thumbnail));
+			$this->server()->unlink($this->full_path($thumbnail));
 		}
 
 		$this->cleanup();
 	}
 
-	public function location($thumbnail = NULL)
-	{
-		if ( ! $this->_source)
-			return Upload_File::combine($thumbnail, $this->_filename);
-
-		return Upload_File::combine($this->path(), $thumbnail, $this->_filename);
-	}
-
-	public function path_server()
-	{
-		return $this->_source ? $this->temp() : $this->server();	
-	}
-
 	public function file($thumbnail = NULL)
 	{
-		return $this->path_server()->realpath($this->location($thumbnail));
+		return $this->location('realpath', $thumbnail);
 	}
 
 	public function url($thumbnail = NULL)
 	{
-		return $this->path_server()->webpath($this->location($thumbnail));
+		return $this->location('webpath', $thumbnail);
 	}
 
+	protected function full_path($thumbnail = NULL)
+	{
+		return Upload_File::combine($this->path(), $thumbnail, $this->filename());
+	}
+
+	protected function location($method, $thumbnail = NULL)
+	{
+		$server = $this->_source ? $this->temp() : $this->server();
+
+		if ($this->_source)
+		{
+			return $this->temp()->$method(Upload_File::combine($this->temp()->directory(), $thumbnail, $this->filename()));
+		}
+		else
+		{
+			return $this->server()->$method($this->full_path($thumbnail));
+		}
+	}
+
+	public function is_empty()
+	{
+		return (bool) $this->filename();
+	}
+
+	public function __toString()
+	{
+		return $this->filename();
+	}
 }

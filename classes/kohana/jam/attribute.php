@@ -140,9 +140,9 @@ abstract class Kohana_Jam_Attribute {
 		return $this->extensions[$extension_name];
 	}
 
-	public function get(Jam_Model $model, $value)
+	public function get(Jam_Model $model, $value, $is_changed)
 	{
-		return $this->trigger('get', $model, $value);
+		return $this->trigger('get', $model, $value, $is_changed);
 	}
 
 	public function set($model, $value)
@@ -150,14 +150,14 @@ abstract class Kohana_Jam_Attribute {
 		return $this->trigger('set', $model, $value);
 	}
 
-	public function before_delete(Jam_Model $model, $value)
+	public function before_delete(Jam_Model $model, $value, $is_changed)
 	{
-		return $this->trigger('before_delete', $model, $value);
+		return $this->trigger('before_delete', $model, $value, $is_changed);
 	}
 
-	public function after_delete(Jam_Model $model, $value)
+	public function after_delete(Jam_Model $model, $value, $is_changed)
 	{
-		return $this->trigger('before_delete', $model, $value);
+		return $this->trigger('before_delete', $model, $value, $is_changed);
 	}
 
 	public function before_save(Jam_Model $model, $value, $is_changed)
@@ -170,14 +170,14 @@ abstract class Kohana_Jam_Attribute {
 		return $this->trigger('after_save', $model, $value, $is_changed);
 	}
 
-	public function before_check(Jam_Model $model, Jam_Validation $validation, $value)
+	public function before_check(Jam_Model $model, $value, $is_changed)
 	{
-		return $this->trigger('before_check', $model, $validation, $value);
+		return $this->trigger('before_check', $model, $value, $is_changed);
 	}
 
-	public function after_check(Jam_Model $model, Jam_Validation $validation, $value)
+	public function after_check(Jam_Model $model, $value, $is_changed)
 	{
-		return $this->trigger('after_check', $model, $validation, $value);
+		return $this->trigger('after_check', $model, $value, $is_changed);
 	}
 
 }

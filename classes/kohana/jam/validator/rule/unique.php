@@ -16,7 +16,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 	{
 		// According to the SQL standard NULL is not checked by the unique constraint
 		// We also skip this test if the value is the same as the default value
-		if ($value !== NULL AND $value !== $model->meta()->defaults($attribute))
+		if ($value !== $model->meta()->defaults($attribute))
 		{
 			// Build query
 			$query = Jam::query($model)->where($attribute, '=', $value);

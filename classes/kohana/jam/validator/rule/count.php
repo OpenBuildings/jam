@@ -25,22 +25,22 @@ class Kohana_Jam_Validator_Rule_Count extends Jam_Validator_Rule {
 
 		if ($this->minimum !== NULL AND ! ($count >= $this->minimum))
 		{
-			$model->errors()->add($attribute, 'count_minimum', array('minimum' => $this->minimum));
+			$model->errors()->add($attribute, 'count_minimum', array(':minimum' => $this->minimum));
 		}
 
 		if ($this->maximum !== NULL AND ! ($count <= $this->maximum))
 		{
-			$model->errors()->add($attribute, 'count_maximum', array('maximum' => $this->maximum));
+			$model->errors()->add($attribute, 'count_maximum', array(':maximum' => $this->maximum));
 		}
 
 		if ($this->within !== NULL AND ! ($count >= $this->within[0] AND $count <= $this->within[1]))
 		{
-			$model->errors()->add($attribute, 'count_within', array('minimum' => $this->within[0], 'maximum' => $this->within[1]));
+			$model->errors()->add($attribute, 'count_within', array(':minimum' => $this->within[0], ':maximum' => $this->within[1]));
 		}
 
 		if ($this->is !== NULL AND ! ($count == $this->is))
 		{
-			$model->errors()->add($attribute, 'count_is', array('is' => $this->is));
+			$model->errors()->add($attribute, 'count_is', array(':is' => $this->is));
 		}
 
 

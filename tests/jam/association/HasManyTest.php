@@ -414,14 +414,14 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 		);
 		
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[0]);
-		$this->assertEquals('file3.jpg', $test_post->test_images[0]->file);
+		$this->assertEquals('file3.jpg', (string) $test_post->test_images[0]->file);
 		$this->assertEquals(1, $test_post->test_images[0]->id());
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[1]);
-		$this->assertEquals('file1.jpg', $test_post->test_images[1]->file);
+		$this->assertEquals('file1.jpg', (string) $test_post->test_images[1]->file);
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[2]);
-		$this->assertEquals('file2.jpg', $test_post->test_images[2]->file);
+		$this->assertEquals('file2.jpg', (string) $test_post->test_images[2]->file);
 
 
 		$test_post->save();
@@ -430,26 +430,26 @@ class Jam_Association_HasManyTest extends Unittest_Jam_TestCase {
 
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[0]);
-		$this->assertEquals('file3.jpg', $test_post->test_images[0]->file);
+		$this->assertEquals('file3.jpg', (string) $test_post->test_images[0]->file);
 		$this->assertEquals(1, $test_post->test_images[0]->id());
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[1]);
-		$this->assertEquals('file1.jpg', $test_post->test_images[1]->file);
+		$this->assertEquals('file1.jpg', (string) $test_post->test_images[1]->file);
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[2]);
-		$this->assertEquals('file2.jpg', $test_post->test_images[2]->file);
+		$this->assertEquals('file2.jpg', (string) $test_post->test_images[2]->file);
 
 		$test_post = Jam::factory('test_post', 1);
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[0]);
-		$this->assertEquals('file3.jpg', $test_post->test_images[0]->file);
+		$this->assertEquals('file3.jpg', (string) $test_post->test_images[0]->file);
 		$this->assertEquals(1, $test_post->test_images[0]->id());
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[1]);
-		$this->assertEquals('file1.jpg', $test_post->test_images[1]->file);
+		$this->assertEquals('file1.jpg', (string) $test_post->test_images[1]->file);
 
 		$this->assertInstanceOf('Model_Test_Image', $test_post->test_images[2]);
-		$this->assertEquals('file2.jpg', $test_post->test_images[2]->file);
+		$this->assertEquals('file2.jpg', (string) $test_post->test_images[2]->file);
 	}
 
 	public function test_polymorphic_join()

@@ -266,7 +266,7 @@ abstract class Kohana_Jam_Meta {
 			$options = Arr::merge($options, $this->_with_options);
 		}
 
-		$this->validators[] = new Jam_Validator($fields, $options);
+		$this->_validators[] = new Jam_Validator($fields, $options);
 
 		return $this;
 	}
@@ -285,8 +285,9 @@ abstract class Kohana_Jam_Meta {
 
 	public function execute_validators(Jam_Model $model)
 	{
-		foreach ($this->validators as $validator) 
+		foreach ($this->_validators as $validator) 
 		{
+
 			$validator->validate_model($model);
 		}
 		return $this;
@@ -302,7 +303,7 @@ abstract class Kohana_Jam_Meta {
 			{
 				if ($model->changed($name))
 				{
-					$attribute->$event($model, $model->$name);
+					$attribute->$event($model, $model->$name, TRUE);
 				}
 			}
 		}

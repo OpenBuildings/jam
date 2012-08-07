@@ -30,6 +30,7 @@ class Model_Test_Element extends Jam_Model {
 		));
 
 		$meta
+			->validator('name', array('present' => TRUE))
 			->validator('name', 'email', 'url', array('count' => array('minimum' => 2)))
 			->validator('email', array('format' => array('filter' => FILTER_VALIDATE_EMAIL)))
 			->validator('url', array('format' => array('filter' => FILTER_VALIDATE_URL)))

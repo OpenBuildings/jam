@@ -259,7 +259,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 			else
 			{
-				return $association->get($this, NULL);
+				return $association->get($this, NULL, FALSE);
 			}
 		}
 		elseif ($field = $this->_meta->field($name))
@@ -269,7 +269,7 @@ abstract class Kohana_Jam_Model extends Model {
 
 			if (array_key_exists($name, $this->_changed))
 			{
-				return $field->get($this, $this->_changed[$name]);
+				return $field->get($this, $this->_changed[$name], TRUE);
 			}
 			else
 			{
@@ -299,7 +299,7 @@ abstract class Kohana_Jam_Model extends Model {
 
 		if ($field = $this->_meta->field($field_name))
 		{
-			return $field->get($this, $this->_original[$field_name]);
+			return $field->get($this, $this->_original[$field_name], FALSE);
 		}
 	}
 
@@ -458,11 +458,11 @@ abstract class Kohana_Jam_Model extends Model {
 		// Run validation only when new or changed
 		if ( ! $this->loaded() OR $this->changed())
 		{
-			$this->_meta->trigger_model($this, 'before_validate');
+			$this->_meta->trigger_model($this, 'before_check');
 
 			$this->_meta->execute_validators($this);
 
-			$this->_meta->trigger_model($this, 'after_validate');
+			$this->_meta->trigger_model($this, 'after_check');
 		}
 
 		$this->_is_validating = FALSE;
@@ -526,6 +526,7 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			if ( ! isset($this->_changed[$column])
 				AND $association = $this->_meta->association($column)
+				AND $association instanceof Jam_Association_Collection
 				AND $value->changed())
 			{
 				$this->_changed[$column] = $value;
@@ -540,7 +541,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->_meta->trigger_model('before_'.$event_type, $this, FALSE) === FALSE)
+		if ($this->_meta->trigger_model($this, 'before_'.$event_type, FALSE) === FALSE)
 		{
 			return $this;
 		}
@@ -603,7 +604,7 @@ abstract class Kohana_Jam_Model extends Model {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_model('after_'.$event_type, $this, FALSE);
+		$this->_meta->trigger_model($this, 'after_'.$event_type, FALSE);
 
 		$this->_meta->trigger_model($this, 'after_save');
 
@@ -646,7 +647,7 @@ abstract class Kohana_Jam_Model extends Model {
 		$this->clear();
 
 		// Set the flag indicatig the model has been successfully deleted
-		$this->_deleted = (bool) $result;
+		$this->_deleted = ($result !== FALSE);
 
 		return $this->_deleted;
 	}

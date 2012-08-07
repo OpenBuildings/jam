@@ -18,12 +18,12 @@ class Kohana_Jam_Validator_Rule_Choice extends Jam_Validator_Rule {
 	{
 		if ($this->in !== NULL AND ! (in_array($value, $this->in)))
 		{
-			$model->errors()->add($attribute, 'choice_in', array('in' => join(', ', $this->in)));
+			$model->errors()->add($attribute, 'choice_in', array(':in' => join(', ', $this->in)));
 		}
 
 		if ($this->not_in !== NULL AND ! ( ! in_array($value, $this->not_in)))
 		{
-			$model->errors()->add($attribute, 'choice_not_in', array('not_in' => join(', ', $this->not_in)));
+			$model->errors()->add($attribute, 'choice_not_in', array(':not_in' => join(', ', $this->not_in)));
 		}
 	}
 }
