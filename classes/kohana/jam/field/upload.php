@@ -35,9 +35,12 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	public $thumbnails = array();
 
 
-	public function attribute_before_check($model, $upload_file)
+	public function attribute_before_check($model, $upload_file, $is_changed)
 	{
-		$upload_file->save_to_temp();
+		if ($is_changed AND $upload_file->source())
+		{
+			$upload_file->save_to_temp();
+		}
 	}
 
 	public function attribute_get($model, $value, $is_changed)
@@ -46,12 +49,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			return $value;
 		
 		$upload_file = $this->upload_file($model);
+		$upload_file->filename($value);
 
-		if ($model->loaded() AND ! $is_changed)
-		{
-			$upload_file->filename($value);
-		}
-		elseif ($value)
+		if ($is_changed)
 		{
 			$upload_file->source($value);
 		}
@@ -63,15 +63,15 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	{
 		if ( ! ($upload_file instanceof Upload_File))
 		{
-			$upload_file = $this->attribute_get($model, $upload_file, FALSE);
+			$upload_file = $this->attribute_get($model, $upload_file, TRUE);
 		}
 		
 		return $upload_file->path($this->path($model));
 	}
 
-	public function attribute_before_save($model, $upload_file)
+	public function attribute_before_save($model, $upload_file, $is_changed)
 	{
-		if ($upload_file->source())
+		if ($is_changed AND $upload_file->source())
 		{
 			if ($this->delete_file AND $original = $model->original($this->name))
 			{
@@ -82,9 +82,12 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		}
 	}
 
-	public function attribute_after_save($model, $upload_file)
+	public function attribute_after_save($model, $upload_file, $is_changed)
 	{
-		$upload_file->cleanup();
+		if ($is_changed)
+		{
+			$upload_file->cleanup();
+		}
 	}
 
 	public function attribute_convert($model, $upload_file, $is_loaded)
@@ -97,11 +100,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file->filename();
 	}
 
-	public function attribute_after_delete($model, $upload_file)
+	public function attribute_after_delete($model, $key)
 	{
 		if ($this->delete_file)
 		{
-			$upload_file->delete();
+			$this->get($model)->delete();
 		}
 	}
 

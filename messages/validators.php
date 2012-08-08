@@ -3,4 +3,5 @@
 return array(
 	'present'       => ':attribute must not be blank',
 	'confirmed'     => ':attribute must be the same as :confirmation',
+	'length_minimum' => ':attribute must be longer than :minimum letters',
 );

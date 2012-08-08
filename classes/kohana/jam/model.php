@@ -458,11 +458,11 @@ abstract class Kohana_Jam_Model extends Model {
 		// Run validation only when new or changed
 		if ( ! $this->loaded() OR $this->changed())
 		{
-			$this->_meta->trigger_model($this, 'before_check');
+			$this->_meta->trigger_model($this, 'before_check', array('attributes' => TRUE));
 
 			$this->_meta->execute_validators($this);
 
-			$this->_meta->trigger_model($this, 'after_check');
+			$this->_meta->trigger_model($this, 'after_check', array('attributes' => TRUE));
 		}
 
 		$this->_is_validating = FALSE;
@@ -473,7 +473,7 @@ abstract class Kohana_Jam_Model extends Model {
 	public function check_insist()
 	{
 		if ( ! $this->check())
-			throw new Jam_Validation_Exception($this->_meta->errors_filename(), $this->_validation);
+			throw new Jam_Exception_Validation('There was a validation error: :errors', $this);
 		
 		return $this;
 	}
@@ -533,7 +533,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		if ($this->_meta->trigger_model($this, 'before_save') === FALSE)
+		if ($this->_meta->trigger_model($this, 'before_save', array('attributes' => TRUE)) === FALSE)
 		{
 			return $this;
 		}
@@ -541,7 +541,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->_meta->trigger_model($this, 'before_'.$event_type, FALSE) === FALSE)
+		if ($this->_meta->trigger_model($this, 'before_'.$event_type, array('attributes' => FALSE)) === FALSE)
 		{
 			return $this;
 		}
@@ -574,6 +574,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
+
 		// If we have a key, we're updating
 		if ($key)
 		{
@@ -595,25 +596,21 @@ abstract class Kohana_Jam_Model extends Model {
 			// Gotta make sure to set this
 			$key = $values[$this->_meta->primary_key()] = $id;
 		}
-		
+
 		// Re-set any saved values; they may have changed
-		foreach ($values as $column => $value)
-		{
-			$this->set($column, $value);
-		}
+		$this->set($values);
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_model($this, 'after_'.$event_type, FALSE);
+		$this->_meta->trigger_model($this, 'after_'.$event_type, array('attributes' => FALSE));
 
-		$this->_meta->trigger_model($this, 'after_save');
+		$this->_meta->trigger_model($this, 'after_save', array('attributes' => TRUE));
 
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
 
 		// We're good!
 		$this->_retrieved = $this->_changed = array();
-
 
 		$this->_is_touched = $this->_is_saving = FALSE;
 
@@ -628,26 +625,27 @@ abstract class Kohana_Jam_Model extends Model {
 	public function delete()
 	{
 		$result = FALSE;
+		$key = NULL;
 
 		// Are we loaded? Then we're just deleting this record
 		if ($this->_loaded)
 		{
 			$key = $this->_original[$this->_meta->primary_key()];
 
-			if (($result = $this->_meta->trigger_model($this, 'before_delete')) !== FALSE)
+			if (($result = $this->_meta->trigger_model($this, 'before_delete', array('value' => $key, 'attributes' => TRUE))) !== FALSE)
 			{
 				$result = Jam::query($this, $key)->delete();
 			}
 		}
 
 		// Trigger the after-delete
-		$result = $this->_meta->trigger_model($this, 'after_delete');
+		$this->_meta->trigger_model($this, 'after_delete', array('value' => $key, 'attributes' => TRUE));
 
 		// Clear the object so it appears deleted anyway
 		$this->clear();
 
 		// Set the flag indicatig the model has been successfully deleted
-		$this->_deleted = ($result !== FALSE);
+		$this->_deleted = $result;
 
 		return $this->_deleted;
 	}

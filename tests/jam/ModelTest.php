@@ -15,8 +15,8 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	public function provider_save_empty_model()
 	{
 		return array(
-			array(Jam::factory('test_author')),
-			array(Jam::factory('test_category')),
+			array('test_author'),
+			array('test_category'),
 		);
 	}
 	
@@ -28,17 +28,15 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	 * 
 	 * @dataProvider  provider_save_empty_model
 	 */
-	public function test_save_empty_model($model)
+	public function test_save_empty_model($model_name)
 	{
+		$model = Jam::factory($model_name);
 		$model->save();
 		
 		// Model should be saved, loaded, and have an id
 		$this->assertTrue($model->saved());
 		$this->assertTrue($model->loaded());
-		$this->assertGreaterThan(0, $model->id);
-		
-		// Cleanup
-		$this->assertTrue($model->delete());
+		$this->assertExists($model);
 	}
 	
 	/**
@@ -210,7 +208,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 		$video->file = '111';
 		$this->assertFalse($video->check());
 
-		$this->setExpectedException('Jam_Validation_Exception');
+		$this->setExpectedException('Jam_Exception_Validation');
 		$video->check_insist();
 	}
 }

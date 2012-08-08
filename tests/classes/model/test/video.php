@@ -29,6 +29,8 @@ class Model_Test_Video extends Jam_Model {
 			'id'              => Jam::field('primary'),
 			'file'            => Jam::field('string'),
 		));
+
+		$meta->validator('file', array('length' => array('minimum' => 4)));
 	}
 
 } // End Model_Test_Post

@@ -293,18 +293,17 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function trigger_model(Jam_Model $model, $event, $with_fields = TRUE)
+	public function trigger_model(Jam_Model $model, $event, $options)
 	{
 		$result = $this->_events->trigger('model.'.$event, $model);
 
-		if ($with_fields)
+		if (Arr::get($options, 'attributes'))
 		{
 			foreach ($this->attributes() as $name => $attribute)
 			{
-				if ($model->changed($name))
-				{
-					$attribute->$event($model, $model->$name, TRUE);
-				}
+				$value = isset($options['value']) ? $options['value'] : $model->$name;
+
+				$attribute->$event($model, $value, $model->changed($name));
 			}
 		}
 

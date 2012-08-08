@@ -72,7 +72,7 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		return $builder;
 	}
 
-	public function attribute_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $key)
 	{
 		Jam::query($this->through())
 			->where($this->through('our'), '=', $model->id())

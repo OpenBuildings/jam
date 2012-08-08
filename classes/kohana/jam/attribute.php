@@ -150,14 +150,14 @@ abstract class Kohana_Jam_Attribute {
 		return $this->trigger('set', $model, $value);
 	}
 
-	public function before_delete(Jam_Model $model, $value, $is_changed)
+	public function before_delete(Jam_Model $model, $key)
 	{
-		return $this->trigger('before_delete', $model, $value, $is_changed);
+		return $this->trigger('before_delete', $model, $key);
 	}
 
-	public function after_delete(Jam_Model $model, $value, $is_changed)
+	public function after_delete(Jam_Model $model, $key)
 	{
-		return $this->trigger('before_delete', $model, $value, $is_changed);
+		return $this->trigger('after_delete', $model, $key);
 	}
 
 	public function before_save(Jam_Model $model, $value, $is_changed)

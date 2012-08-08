@@ -175,12 +175,11 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 		$this->assertEquals($test_post->test_author_id, $test_author->id());
 	}
 
-	public function test_delete()
+	public function test_delete_normal()
 	{
 		$test_copyright = Jam::factory('test_copyright', 1);
 		$test_copyright_id = $test_copyright->id();
-		$test_image = $test_copyright->test_image;
-		$test_image_id = $test_image->id();
+		$test_image_id = $test_copyright->test_image->id();
 
 		$test_copyright->delete();
 		$this->assertNotExists('test_copyright', $test_copyright_id);

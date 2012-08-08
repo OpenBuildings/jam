@@ -488,6 +488,6 @@ class Kohana_Upload_File {
 
 	public function __toString()
 	{
-		return $this->filename();
+		return (string) $this->filename();
 	}
 }

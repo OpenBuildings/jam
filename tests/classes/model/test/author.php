@@ -16,8 +16,7 @@ class Model_Test_Author extends Jam_Model {
 			'test_post'        => Jam::association('hasone', array('inverse_of' => 'test_author')),
 			'test_posts'       => Jam::association('hasmany'),
 			'test_blogs_owned' => Jam::association('hasmany', array(
-				'foreign' => 'test_blogs',
-				'column'  => 'test_owner_id'
+				'foreign' => 'test_blog.test_owner_id',
 			)),
 			'test_categories'  => Jam::association('hasmany'),
 

@@ -79,10 +79,6 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	{
 		$messages = array();
 
-		$params = array(
-			'field'
-		);
-
 		if ($attribute !== NULL)
 		{
 			if (empty($this->_container[$attribute]))
@@ -102,6 +98,17 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		}
 
 		return $messages;
+	}
+
+	public function __toString()
+	{
+		$messages = array();
+		foreach ($this->messages() as $field => $messages) 
+		{
+			$messages[] = join(', ', $messages);
+		}
+
+		return join(', ', $messages);
 	}
 		
 

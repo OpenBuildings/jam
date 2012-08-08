@@ -119,12 +119,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $item;
 	}
 
-	public function attribute_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				$this->get($model, $key)->delete();
+				$this->attribute_get($model)->delete();
 			break;
 			case Jam_Association::ERASE:
 				$this->builder($model)->delete();

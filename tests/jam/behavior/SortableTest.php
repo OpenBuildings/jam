@@ -14,7 +14,7 @@ class Jam_Behavior_SortableTest extends Unittest_Jam_TestCase {
 	public function test_set()
 	{
 		$last = Jam::factory('test_video', 1);
-		$new = Jam::factory('test_video')->set('name', 'file3.jpg')->save();
+		$new = Jam::factory('test_video')->set('file', 'file3.jpg')->save();
 
 		$this->assertGreaterThan($last->position, $new->position);
 	}

@@ -24,7 +24,8 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 	{
 		$upload = $this->getMock('Upload_File', array('save_to_temp'), array('default', 'file'));
 		$upload->expects($this->once())->method('save_to_temp');
-		$this->field->attribute_before_check($this->model, $upload);
+		$upload->source('http://example.com/test.png');
+		$this->field->attribute_before_check($this->model, $upload, TRUE);
 	}
 
 	public function test_attribute_get()
@@ -33,12 +34,13 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('file1.png', $upload->filename());
+		$this->assertNull($upload->source());
 
 		$upload = $this->field->attribute_get($this->model, 'http://example.com/test.png', TRUE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('http://example.com/test.png', $upload->source());
-		$this->assertNull($upload->filename());
+		$this->assertEquals('http://example.com/test.png', $upload->filename());
 	}
 
 	public function test_attribute_set()
@@ -46,7 +48,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 		$upload = $this->field->attribute_set($this->model, 'http://example.com/test.png');
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('http://example.com/test.png', $upload->source());
-		$this->assertNull($upload->filename());
+		$this->assertEquals('http://example.com/test.png', $upload->filename());
 	}
 
 }

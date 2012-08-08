@@ -217,21 +217,18 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function attribute_before_save(Jam_Model $model, $new_item, $is_changed)
 	{
-		if ($is_changed)
+		if ($is_changed AND $new_item)
 		{
-			if ($new_item)
-			{
-				$this->preserve_item_changes($new_item);
-				$this->set($model, $new_item);
-			}
+			$this->preserve_item_changes($new_item);
+			$this->set($model, $new_item);
 		}
 	}
 
-	public function attribute_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $key)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
 		{
-			$model->{$this->name}->delete();
+			$this->attribute_get($model)->delete();
 		}
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{

@@ -21,7 +21,6 @@ class Model_Test_Post extends Jam_Model {
 			'test_blog'       => Jam::association('belongsto', array('inverse_of' => 'test_posts')),
 			'test_author'     => Jam::association('belongsto', array()),
 			'test_tags'       => Jam::association('hasmany', array(
-				'counter_cache' => TRUE,
 				'conditions' => array(
 					'where' => array(DB::expr('LEFT(test_tags.name, 2)'), '!=', "--")
 				),

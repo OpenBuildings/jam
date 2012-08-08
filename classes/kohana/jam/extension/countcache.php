@@ -32,7 +32,7 @@ class Kohana_Jam_Extension_CountCache extends Jam_Extension {
 		{
 			$attribute->bind('after.before_save', array($this, 'collect_original'));
 			$attribute->bind('after.after_save', array($this, 'update_inverse_association_count'));
-			$attribute->bind('after.delete', array($this, 'update_count_after_delete'));
+			$attribute->bind('after.before_delete', array($this, 'update_count_after_delete'));
 		}
 		elseif ($attribute instanceof Jam_Association_HasMany) 
 		{
@@ -67,7 +67,7 @@ class Kohana_Jam_Extension_CountCache extends Jam_Extension {
 	{
 		if ($assoc = $association->inverse_association() AND $assoc instanceof Jam_Association_HasMany AND $assoc->count_cache)
 		{
-			if ($value)
+			if ($value AND $value->loaded())
 			{
 				Jam_Extension_CountCache::update_count_cache($assoc, $value);
 			}

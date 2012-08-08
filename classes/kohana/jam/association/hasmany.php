@@ -96,12 +96,12 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $builder;
 	}
 
-	public function attribute_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $key)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				foreach ($this->get($model, $key) as $item) 
+				foreach ($this->attribute_get($model) as $item) 
 				{
 					$item->delete();
 				}
