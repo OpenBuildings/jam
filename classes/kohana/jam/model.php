@@ -93,7 +93,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
 
-		$this->_meta->trigger_model($this, 'before_construct', FALSE);
+		$this->_meta->trigger_model($this, 'before_construct', array("attributes" => FALSE));
 
 		// Copy over the defaults into the original data.
 		$this->_original = $this->_meta->defaults();
@@ -112,7 +112,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		$this->_meta->trigger_model($this, 'model.after_construct', FALSE);
+		$this->_meta->trigger_model($this, 'model.after_construct', array("attributes" => FALSE));
 	}
 
 	/**
@@ -547,7 +547,7 @@ abstract class Kohana_Jam_Model extends Model {
 		}
 
 		// Iterate through all fields in original in case any unchanged fields
-		// have save() behavior like timestamp updating...
+		// have convert() behavior like timestamp updating...
 		// 
 		
 		foreach ($this->_changed + $this->_original as $column => $value)
@@ -573,7 +573,6 @@ abstract class Kohana_Jam_Model extends Model {
 				}
 			}
 		}
-
 
 		// If we have a key, we're updating
 		if ($key)

@@ -119,7 +119,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $item;
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $is_changed)
 	{
 		switch ($this->dependent) 
 		{
@@ -148,13 +148,13 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
-	public function attribute_after_save(Jam_Model $model, $new_item, $is_changed)
+	public function attribute_after_save(Jam_Model $model, $is_changed)
 	{
 		if ($is_changed)
 		{
 			$nullify = $this->nullify_builder($model);
 
-			if ($new_item)
+			if ($new_item = $model->{$this->name})
 			{
 				$new_item->set($this->foreign['field'], $model->id());
 

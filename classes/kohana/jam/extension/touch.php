@@ -22,21 +22,21 @@ class Kohana_Jam_Extension_Touch extends Jam_Extension {
 		}
 	}
 
-	public function touch_collection(Jam_Attribute $attribute, Jam_Event_Data $data, Jam_Model $model)
+	public function touch_collection(Jam_Association $association, Jam_Event_Data $data, Jam_Model $model)
 	{
-		foreach ($model->{$attribute->name} as $item) 
+		foreach ($model->{$association->name} as $item) 
 		{								
-			$item->_touch_if_untouched($model, $attribute->touch);
+			$item->_touch_if_untouched($model, $association->touch);
 		}	
 	}
 
-	public function touch_model(Jam_Attribute $attribute, Jam_Event_Data $data, Jam_Model $model)
+	public function touch_model(Jam_Association $association, Jam_Event_Data $data, Jam_Model $model)
 	{
-		$item = $model->{$attribute->name};
+		$item = $model->{$association->name};
 
 		if ($item instanceof Jam_Model AND $item->loaded())
 		{
-			$item->_touch_if_untouched($model, $attribute->touch);
+			$item->_touch_if_untouched($model, $association->touch);
 		}
 	}
 }

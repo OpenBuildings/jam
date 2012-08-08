@@ -72,16 +72,16 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		return $builder;
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $is_changed)
 	{
 		Jam::query($this->through())
 			->where($this->through('our'), '=', $model->id())
 			->delete($model->meta()->db());
 	}
 
-	public function attribute_after_save(Jam_Model $model, $collection, $is_changed)
+	public function attribute_after_save(Jam_Model $model, $is_changed)
 	{
-		if ($is_changed AND $collection AND $collection->changed())
+		if ($is_changed  AND $collection = $model->{$this->name} AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 

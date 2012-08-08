@@ -99,7 +99,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			$meta->field($this->polymorphic, Jam::field('string'));
 		}
 
-				// Count Cache
+		// Count Cache
 		if ($this->inverse_of)
 		{
 			$this->extension('countcache', Jam::extension('countcache'));
@@ -215,16 +215,16 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $new_item;
 	}
 
-	public function attribute_before_save(Jam_Model $model, $new_item, $is_changed)
+	public function attribute_before_save(Jam_Model $model, $is_changed)
 	{
-		if ($is_changed AND $new_item)
+		if ($is_changed AND $new_item = $model->{$this->name})
 		{
 			$this->preserve_item_changes($new_item);
 			$this->set($model, $new_item);
 		}
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $key)
+	public function attribute_before_delete(Jam_Model $model, $is_changed, $key)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
 		{

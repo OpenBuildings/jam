@@ -71,7 +71,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	public function attribute_before_save($model, $upload_file, $is_changed)
 	{
-		if ($is_changed AND $upload_file->source())
+		if ($is_changed AND $upload_file = $model->{$this->name} AND$upload_file->source())
 		{
 			if ($this->delete_file AND $original = $model->original($this->name))
 			{
@@ -82,9 +82,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		}
 	}
 
-	public function attribute_after_save($model, $upload_file, $is_changed)
+	public function attribute_after_save($model, $is_changed)
 	{
-		if ($is_changed)
+		if ($is_changed AND $upload_file = $model->{$this->name})
 		{
 			$upload_file->cleanup();
 		}
@@ -100,11 +100,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file->filename();
 	}
 
-	public function attribute_after_delete($model, $key)
+	public function attribute_after_delete($model, $is_changed)
 	{
-		if ($this->delete_file)
+		if ($this->delete_file AND $upload_file = $model->{$this->name})
 		{
-			$this->get($model)->delete();
+			$upload_file->delete();
 		}
 	}
 

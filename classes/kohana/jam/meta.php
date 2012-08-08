@@ -287,7 +287,6 @@ abstract class Kohana_Jam_Meta {
 	{
 		foreach ($this->_validators as $validator) 
 		{
-
 			$validator->validate_model($model);
 		}
 		return $this;
@@ -301,9 +300,7 @@ abstract class Kohana_Jam_Meta {
 		{
 			foreach ($this->attributes() as $name => $attribute)
 			{
-				$value = isset($options['value']) ? $options['value'] : $model->$name;
-
-				$attribute->$event($model, $value, $model->changed($name));
+				$attribute->$event($model, $model->changed($name), Arr::get($options, 'value'));
 			}
 		}
 
