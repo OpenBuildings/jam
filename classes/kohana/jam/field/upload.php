@@ -12,6 +12,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 */
 	public $delete_file = TRUE;
 
+	/**
+	 * @var boolean save the sizes of the image when saving the field
+	 */
 	public $save_size = FALSE;
 	
 	/**
@@ -33,15 +36,6 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @var  array  specifications for all of the thumbnails that should be automatically generated when a new image is uploaded
 	 */
 	public $thumbnails = array();
-
-
-	public function attribute_before_check($model, $upload_file, $is_changed)
-	{
-		if ($is_changed AND $upload_file->source())
-		{
-			$upload_file->save_to_temp();
-		}
-	}
 
 	public function attribute_get($model, $value, $is_changed)
 	{
@@ -68,11 +62,27 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		
 		return $upload_file->path($this->path($model));
 	}
-
-	public function attribute_before_save($model, $upload_file, $is_changed)
+	
+	public function attribute_before_check($model, $is_changed)
 	{
-		if ($is_changed AND $upload_file = $model->{$this->name} AND$upload_file->source())
+		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
+			$upload_file->save_to_temp();
+		}
+	}
+
+	/**
+	 * Cleanup temporary file directories when the files are successfully saved
+	 * @param  Jam_Model $model      
+	 * @param  boolean $is_changed 
+	 */
+	public function attribute_after_save($model, $is_changed)
+	{
+		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
+		{
+			$uploaded->path($this->path($model));
+
+			// Delete the old file if there was one
 			if ($this->delete_file AND $original = $model->original($this->name))
 			{
 				$this->upload_file($model)->filename($original)->delete();
@@ -80,16 +90,19 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 			$upload_file->save();
 		}
-	}
 
-	public function attribute_after_save($model, $is_changed)
-	{
 		if ($is_changed AND $upload_file = $model->{$this->name})
 		{
 			$upload_file->cleanup();
 		}
 	}
 
+	/**
+	 * Get the filename to store in the database
+	 * @param  Jam_Model $model       
+	 * @param  Upload_File $upload_file 
+	 * @param  boolean $is_loaded   
+	 */
 	public function attribute_convert($model, $upload_file, $is_loaded)
 	{
 		if ( ! ($upload_file instanceof Upload_File))
@@ -100,6 +113,12 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file->filename();
 	}
 
+	/**
+	 * Remove files on model deletion
+	 * 
+	 * @param  Jam_Model $model      
+	 * @param  boolean $is_changed 
+	 */
 	public function attribute_after_delete($model, $is_changed)
 	{
 		if ($this->delete_file AND $upload_file = $model->{$this->name})
@@ -108,7 +127,13 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		}
 	}
 
-	public function upload_file($model)
+	/**
+	 * Get upload file object for a given model
+	 * 
+	 * @param  Jam_Model $model 
+	 * @return Upload_File        
+	 */
+	public function upload_file(Jam_Model $model)
 	{
 		$upload_file = new Upload_File($this->server, $this->path($model));
 
@@ -130,6 +155,13 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file;
 	}
 
+	/**
+	 * Get the localized path for a given model, so that there are less filename conflicts and files are easily located,
+	 * for example the default path is model/id so that Model_Image(1) images will be stored as images/1/file.jpg
+	 * 
+	 * @param  Jam_Model $model the model for the context
+	 * @return string           
+	 */
 	protected function path(Jam_Model $model)
 	{
 		$converted_params = array();
