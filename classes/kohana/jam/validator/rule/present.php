@@ -14,7 +14,11 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 
 	public function validate(Jam_Model $model, $attribute, $value)
 	{
-		if ( ! $value OR (($value instanceof Jam_Model) AND $value->loaded()) OR (($value instanceof Jam_Collection) AND ! count($value)))
+		if ( 
+			! $value
+			OR (($value instanceof Jam_Collection) AND ! count($value))
+			OR (($value instanceof Jam_Field_Upload) AND $value->is_empty())
+		)
 		{
 			$model->errors()->add($attribute, 'present');	
 		}

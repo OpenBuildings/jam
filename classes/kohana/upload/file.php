@@ -199,7 +199,7 @@ class Kohana_Upload_File {
 		$filename = Upload_File::normalize_extension($file);
 		$result_file = Upload_File::combine($directory, $filename);
 
-		rename($file, $result_file);
+		copy($file, $result_file);
 
 		return is_file($result_file) ? $filename : NULL;
 	}
@@ -222,19 +222,24 @@ class Kohana_Upload_File {
 
 	public static function transform_image($from, $to, array $transformations = array())
 	{
-		$thumb = Image::factory($from, Kohana::$config->load('jam.upload.image_driver'));
+		$image = Image::factory($from, Kohana::$config->load('jam.upload.image_driver'));
 
 		// Process tranformations
 		foreach ($transformations as $transformation => $params)
 		{
-			if ($transformation !== 'factory' OR $transformation !== 'save' OR $transformation !== 'render')
+			if ( ! in_array($transformation, array('factory', 'save', 'render')))
 			{
 				// Call the method excluding the factory, save and render methods
 				call_user_func_array(array($image, $transformation), $params);
 			}
 		}
 
-		$thumb->save($to, 95);
+		if ( ! file_exists(dirname($to)))
+		{
+			mkdir(dirname($to), 0777, TRUE);
+		}
+
+		$image->save($to, 95);
 	}
 
 	protected $_source;
@@ -357,14 +362,31 @@ class Kohana_Upload_File {
 		$this->_aspect = new Image_Aspect($width, $height);
 	}
 
+	public function constrained_dimensions($width = NULL, $height = NULL)
+	{
+		if ( ! $this->aspect())
+			return array('width' => NULL, 'height' => NULL);
+
+		if ($width === NULL AND $height === NULL)
+			return array('width' => $this->width(), 'height' => $this->height());
+
+		if ($height === NULL)
+			return Arr::extract($this->aspect()->width($width)->as_array(), array('width', 'height'));
+
+		if ($width === NULL)
+			return Arr::extract($this->aspect()->height($height)->as_array(), array('width', 'height'));
+
+		return Arr::extract($this->aspect()->constrain($width, $height)->as_array(), array('width', 'height'));
+	}
+
 	public function width()
 	{
-		return $this->aspect()->width();
+		return $this->aspect() ? $this->aspect()->width() : 0;
 	}
 
 	public function height()
 	{
-		return $this->aspect()->height();
+		return $this->aspect() ? $this->aspect()->height() : 0;
 	}
 
 	public function aspect()
@@ -416,9 +438,9 @@ class Kohana_Upload_File {
 			Upload_File::transform_image($this->file(), $this->file(), $this->transformations());
 		}
 
-		foreach ($this->thumbnails() as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
-			Upload_File::transform_image($this->file(), $this->file($thumbnail), $transformations);	
+			Upload_File::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
 		}
 	}
 
@@ -483,7 +505,7 @@ class Kohana_Upload_File {
 
 	public function is_empty()
 	{
-		return (bool) $this->filename();
+		return ! (bool) $this->filename();
 	}
 
 	public function __toString()

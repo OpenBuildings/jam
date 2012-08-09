@@ -20,6 +20,8 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 
 	public $less_than_or_equal_to;
 
+	public $between;
+
 	public $odd;
 
 	public $even;
@@ -61,6 +63,11 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 		if ($this->less_than_or_equal_to !== NULL AND ! ($value <= $this->less_than_or_equal_to))
 		{
 			$model->errors()->add($attribute, 'numeric_less_than_or_equal_to', array(':less_than_or_equal_to' => $this->less_than_or_equal_to));
+		}
+
+		if ($this->between !== NULL AND ! ($value >= $this->between[0] AND $value <= $this->between[1]))
+		{
+			$model->errors()->add($attribute, 'length_between', array(':minimum' => $this->between[0], ':maximum' => $this->between[1]));
 		}
 
 		if ($this->odd === TRUE AND ! ($value % 2 == 0))

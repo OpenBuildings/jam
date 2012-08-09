@@ -66,7 +66,7 @@ abstract class Kohana_Jam_Validator {
 		}
 		else
 		{
-			$result = call_user_func($this->condition, $model, $attributes);
+			$result = call_user_func($this->condition, $model, $this->attributes);
 		}
 		
 		return $this->condition_negative ? ! $result : $result;
@@ -82,7 +82,7 @@ abstract class Kohana_Jam_Validator {
 
 				foreach ($this->rules as $rule) 
 				{
-					if ($value !== NULL OR $rule->allow_null)
+					if ($value OR ! $rule->allow_null)
 					{
 						$rule->validate($model, $attribute, $value);
 					}

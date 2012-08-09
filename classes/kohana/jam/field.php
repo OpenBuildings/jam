@@ -31,16 +31,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	public $name;
 
 	/**
-	 * @var  boolean  whether or not the field should be unique
-	 */
-	public $unique = FALSE;
-
-	/**
-	 * @var  boolean  limit the uniqueness to a specified scope
-	 */
-	public $unique_scope = array();
-
-	/**
 	* @var  boolean  a primary key field.
 	*/
 	public $primary = FALSE;
@@ -136,13 +126,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		if ( ! $this->column)
 		{
 			$this->column = $name;
-		}
-
-		// Check as to whether we need to add
-		// some callbacks for shortcut properties
-		if ($this->unique === TRUE)
-		{
-			$this->rules[] = array(array(':field', '_is_unique'), array(':validation', ':model', ':field', ':value'));
 		}
 
 		if ($this->filters)

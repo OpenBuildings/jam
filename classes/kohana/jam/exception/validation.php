@@ -11,13 +11,20 @@
  */
 class Kohana_Jam_Exception_Validation extends Kohana_Exception {
 	
-	public $model;
+	protected $_model;
 	
 	function __construct($message, $model, $fields = NULL)
 	{
+		$this->_model = $model;
+		
 		$fields[':model'] = $this->model = $model;
 		$fields[':errors'] = (string) $model->errors();
 		
 		parent::__construct($message, $fields);
+	}
+
+	public function model()
+	{
+		return $this->_model;
 	}
 }

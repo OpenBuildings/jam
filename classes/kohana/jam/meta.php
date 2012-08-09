@@ -179,7 +179,7 @@ abstract class Kohana_Jam_Meta {
 		if ( ! $this->_errors_filename)
 		{
 			// Default errors filename to the model's name
-			$this->_errors_filename = 'validatior/'.$this->_model;
+			$this->_errors_filename = 'validators/'.$this->_model;
 		}
 
 		// Table should be a sensible default
@@ -289,13 +289,17 @@ abstract class Kohana_Jam_Meta {
 		{
 			$validator->validate_model($model);
 		}
+
+		if (method_exists($model, 'validate'))
+		{
+			$model->validate();
+		}
+		
 		return $this;
 	}
 
 	public function trigger_model(Jam_Model $model, $event, $options)
 	{
-		$result = $this->_events->trigger('model.'.$event, $model);
-
 		if (Arr::get($options, 'attributes'))
 		{
 			foreach ($this->attributes() as $name => $attribute)
@@ -304,7 +308,7 @@ abstract class Kohana_Jam_Meta {
 			}
 		}
 
-		return $result;
+		return $this->_events->trigger('model.'.$event, $model);
 	}
 
 	/**

@@ -20,7 +20,7 @@ class Kohana_Jam_Extension_Filters extends Jam_Extension {
 	 * @param  Jam_Builder $builder 
 	 * @return Jam_Builder
 	 */
-	public function run_filters(Jam_Association $attribute, Jam_Event_Data $data, $model, $original_value, $value)
+	public function run_filters(Jam_Attribute $attribute, Jam_Event_Data $data, $model, $original_value, $value)
 	{
 		$bound = array(
 			':model' => $model, 

@@ -24,12 +24,12 @@ class Jam_Validator_LengthTest extends Unittest_Jam_TestCase {
 			array('1234', array('maximum' => 4), 'length_maximum', TRUE),
 
 			// WITHIN
-			array('', array('within' => array(2, 4)), 'length_within', FALSE),
-			array('1', array('within' => array(2, 4)), 'length_within', FALSE),
-			array('123', array('within' => array(2, 4)), 'length_within', TRUE),
-			array('1234', array('within' => array(2, 4)), 'length_within', TRUE),
-			array('12345', array('within' => array(2, 4)), 'length_within', FALSE),
-			array('123456', array('within' => array(2, 4)), 'length_within', FALSE),
+			array('', array('between' => array(2, 4)), 'length_between', FALSE),
+			array('1', array('between' => array(2, 4)), 'length_between', FALSE),
+			array('123', array('between' => array(2, 4)), 'length_between', TRUE),
+			array('1234', array('between' => array(2, 4)), 'length_between', TRUE),
+			array('12345', array('between' => array(2, 4)), 'length_between', FALSE),
+			array('123456', array('between' => array(2, 4)), 'length_between', FALSE),
 
 			// IS
 			array('', array('is' => 4), 'length_is', FALSE),

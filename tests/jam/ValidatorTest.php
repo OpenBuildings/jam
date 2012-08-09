@@ -25,7 +25,7 @@ class Jam_ValidatorTest extends Unittest_Jam_TestCase {
 		$this->assertHasError($element, 'name', 'present');
 		$this->assertHasError($element, 'email', 'format_filter');
 		$this->assertHasError($element, 'amount', 'numeric_greater_than');
-		$this->assertHasError($element, 'description', 'length_within');
+		$this->assertHasError($element, 'description', 'length_between');
 	}
 
 	public function test_condition()

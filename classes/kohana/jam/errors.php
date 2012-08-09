@@ -22,7 +22,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		}
 		else
 		{
-			return $error_filename."{$attribute}.{$error}";
+			return $error_filename.":{$attribute}.{$error}";
 		}
 
 		return strtr($message, $params);
@@ -102,13 +102,13 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 	public function __toString()
 	{
-		$messages = array();
+		$all_messages = array();
 		foreach ($this->messages() as $field => $messages) 
 		{
-			$messages[] = join(', ', $messages);
+			$all_messages[] = join(', ', $messages);
 		}
 
-		return join(', ', $messages);
+		return join(', ', $all_messages);
 	}
 		
 

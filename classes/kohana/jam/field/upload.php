@@ -147,9 +147,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file->thumbnails($this->thumbnails);
 		}
 
-		if ($this->save_size)
+		if ($this->save_size AND $model->{$this->name.'_width'} AND  $model->{$this->name.'_height'})
 		{
-			$upload_file->set_size($model->{$this->name.'_height'}, $model->{$this->name.'_width'});
+			$upload_file->set_size($model->{$this->name.'_width'}, $model->{$this->name.'_height'});
 		}
 
 		return $upload_file;

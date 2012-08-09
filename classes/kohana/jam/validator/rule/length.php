@@ -14,7 +14,7 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 
 	public $maximum;
 
-	public $within;
+	public $between;
 
 	public $is;
 
@@ -33,9 +33,9 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 			$model->errors()->add($attribute, 'length_maximum', array(':maximum' => $this->maximum));
 		}
 
-		if ($this->within !== NULL AND ! ($length >= $this->within[0] AND $length <= $this->within[1]))
+		if ($this->between !== NULL AND ! ($length >= $this->between[0] AND $length <= $this->between[1]))
 		{
-			$model->errors()->add($attribute, 'length_within', array(':minimum' => $this->within[0], ':maximum' => $this->within[1]));
+			$model->errors()->add($attribute, 'length_between', array(':minimum' => $this->between[0], ':maximum' => $this->between[1]));
 		}
 
 		if ($this->is !== NULL AND ! ($length == $this->is))

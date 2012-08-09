@@ -112,7 +112,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		$this->_meta->trigger_model($this, 'model.after_construct', array("attributes" => FALSE));
+		$this->_meta->trigger_model($this, 'after_construct', array("attributes" => FALSE));
 	}
 
 	/**
@@ -473,7 +473,7 @@ abstract class Kohana_Jam_Model extends Model {
 	public function check_insist()
 	{
 		if ( ! $this->check())
-			throw new Jam_Exception_Validation('There was a validation error: :errors', $this);
+			throw new Jam_Exception_Validation('There was an error validating model :model: :errors', $this);
 		
 		return $this;
 	}
@@ -550,7 +550,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// have convert() behavior like timestamp updating...
 		// 
 		
-		foreach ($this->_changed + $this->_original as $column => $value)
+		foreach (array_merge($this->_original, $this->_changed) as $column => $value)
 		{
 			if ($field = $this->_meta->field($column))
 			{

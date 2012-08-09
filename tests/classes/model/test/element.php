@@ -35,7 +35,7 @@ class Model_Test_Element extends Jam_Model {
 			->validator('email', array('format' => array('filter' => FILTER_VALIDATE_EMAIL)))
 			->validator('url', array('format' => array('filter' => FILTER_VALIDATE_URL)))
 			->validator('amount', array('numeric' => array('greater_than' => 10, 'less_than' => 100)))
-			->validator('description', array('length' => array('within' => array(10, 1000))))
+			->validator('description', array('length' => array('between' => array(10, 1000))))
 			->validator('name', array('format' => array('filter' => FILTER_VALIDATE_IP), 'if' => 'name_is_ip'));
 
 		$meta

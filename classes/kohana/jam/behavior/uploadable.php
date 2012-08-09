@@ -37,7 +37,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		}
 	}
 
-	public function model_before_save(Jam_Model $model, Jam_Event_Data $data)
+	public function model_after_check(Jam_Model $model, Jam_Event_Data $data)
 	{
 		if ($model->changed($this->_name) AND is_file($model->{$this->_name}->file()))
 		{
