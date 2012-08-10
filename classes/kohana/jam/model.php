@@ -15,7 +15,6 @@
  */
 abstract class Kohana_Jam_Model extends Model {
 
-	public $todo_test = FALSE;
 	/**
 	 * @var  array  The original data set on the object
 	 */
@@ -94,7 +93,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
 
-		$this->_meta->trigger_model($this, 'before_construct', array("attributes" => FALSE));
+		$this->_meta->trigger_behavior_events($this, 'before_construct');
 
 		// Copy over the defaults into the original data.
 		$this->_original = $this->_meta->defaults();
@@ -113,7 +112,7 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		$this->_meta->trigger_model($this, 'after_construct', array("attributes" => FALSE));
+		$this->_meta->trigger_behavior_events($this, 'after_construct');
 	}
 
 	/**
@@ -459,11 +458,17 @@ abstract class Kohana_Jam_Model extends Model {
 		// Run validation only when new or changed
 		if ( ! $this->loaded() OR $this->changed())
 		{
-			$this->_meta->trigger_model($this, 'before_check', array('attributes' => TRUE));
+			$this->_meta->trigger_attribute_events($this, 'before_check');
+
+			$this->_meta->trigger_behavior_events($this, 'before_check');
+
 
 			$this->_meta->execute_validators($this);
 
-			$this->_meta->trigger_model($this, 'after_check', array('attributes' => TRUE));
+
+			$this->_meta->trigger_attribute_events($this, 'after_check');
+
+			$this->_meta->trigger_behavior_events($this, 'after_check');
 		}
 
 		$this->_is_validating = FALSE;
@@ -534,7 +539,9 @@ abstract class Kohana_Jam_Model extends Model {
 			}
 		}
 
-		if ($this->_meta->trigger_model($this, 'before_save', array('attributes' => TRUE)) === FALSE)
+		$this->_meta->trigger_attribute_events($this, 'before_save');
+
+		if ($this->_meta->trigger_behavior_events($this, 'before_save') === FALSE)
 		{
 			return $this;
 		}
@@ -542,7 +549,7 @@ abstract class Kohana_Jam_Model extends Model {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->_meta->trigger_model($this, 'before_'.$event_type, array('attributes' => FALSE)) === FALSE)
+		if ($this->_meta->trigger_behavior_events($this, 'before_'.$event_type) === FALSE)
 		{
 			return $this;
 		}
@@ -602,10 +609,13 @@ abstract class Kohana_Jam_Model extends Model {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_model($this, 'after_'.$event_type, array('attributes' => FALSE));
 
-		$this->_meta->trigger_model($this, 'after_save', array('attributes' => TRUE));
+		$this->_meta->trigger_attribute_events($this, 'after_save');
+		
+		$this->_meta->trigger_behavior_events($this, 'after_save');
 
+		$this->_meta->trigger_behavior_events($this, 'after_'.$event_type);
+		
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
 
@@ -632,14 +642,18 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			$key = $this->_original[$this->_meta->primary_key()];
 
-			if (($result = $this->_meta->trigger_model($this, 'before_delete', array('value' => $key, 'attributes' => TRUE))) !== FALSE)
+			$this->_meta->trigger_attribute_events($this, 'before_delete', $key);
+
+			if (($result = $this->_meta->trigger_behavior_events($this, 'before_delete', $key)) !== FALSE)
 			{
 				$result = Jam::query($this, $key)->delete();
 			}
 		}
 
 		// Trigger the after-delete
-		$this->_meta->trigger_model($this, 'after_delete', array('value' => $key, 'attributes' => TRUE));
+		$this->_meta->trigger_attribute_events($this, 'after_delete', $key);
+
+		$this->_meta->trigger_behavior_events($this, 'after_delete', $key);
 
 		// Clear the object so it appears deleted anyway
 		$this->clear();

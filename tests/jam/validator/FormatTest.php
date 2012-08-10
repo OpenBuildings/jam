@@ -18,7 +18,7 @@ class Jam_Validator_FormatTest extends Unittest_Jam_TestCase {
 			array('asd@asd$', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', FALSE),
 			array('test@example.com', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', TRUE),
 			array('@test.com', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', FALSE),
-
+			
 			// FILTER URL
 			array('asd', array('filter' => FILTER_VALIDATE_URL), 'format_filter', FALSE),
 			array('example.com', array('filter' => FILTER_VALIDATE_URL), 'format_filter', FALSE),
@@ -31,6 +31,24 @@ class Jam_Validator_FormatTest extends Unittest_Jam_TestCase {
 			array('95.87.212.88', array('filter' => FILTER_VALIDATE_IP), 'format_filter', TRUE),
 			array('192.168.1.1', array('filter' => FILTER_VALIDATE_IP), 'format_filter', TRUE),
 			array('192.168.1.1', array('filter' => FILTER_VALIDATE_IP, 'flag' => FILTER_FLAG_NO_PRIV_RANGE), 'format_filter', FALSE),
+
+			// EMAIL
+			array('asd', array('email' => TRUE), 'format_email', FALSE),
+			array('asd@asd$', array('email' => TRUE), 'format_email', FALSE),
+			array('test@example.com', array('email' => TRUE), 'format_email', TRUE),
+			array('@test.com', array('email' => TRUE), 'format_email', FALSE),
+
+			// URL
+			array('asd', array('url' => TRUE), 'format_url', FALSE),
+			array('example.com', array('url' => TRUE), 'format_url', FALSE),
+			array('http://example.com', array('url' => TRUE), 'format_url', TRUE),
+			array('//example.com', array('url' => TRUE), 'format_url', FALSE),
+
+			// IP
+			array('asd', array('ip' => TRUE), 'format_ip', FALSE),
+			array('1.1.1.1', array('ip' => TRUE), 'format_ip', TRUE),
+			array('95.87.212.88', array('ip' => TRUE), 'format_ip', TRUE),
+			array('192.168.1.1', array('ip' => TRUE), 'format_ip', TRUE),
 
 			// REGEX
 			array('asd', array('regex' => '/.{4}/'), 'format_regex', FALSE),

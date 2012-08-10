@@ -81,7 +81,7 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 
 	public function attribute_after_save(Jam_Model $model, $is_changed)
 	{
-		if ($is_changed  AND $collection = $model->{$this->name} AND $collection->changed())
+		if ($is_changed AND $collection = $model->{$this->name} AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 

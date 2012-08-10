@@ -24,8 +24,6 @@ class Kohana_Jam_Extension_CountCache extends Jam_Extension {
 		Jam::query($association->model, $model->id())->value($association->count_cache, $count)->update();
 	}
 
-
-
 	public function initialize(Jam_Attribute $attribute)
 	{
 		if ($attribute instanceof Jam_Association_BelongsTo)

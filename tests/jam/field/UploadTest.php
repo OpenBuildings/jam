@@ -47,9 +47,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 	public function test_attribute_set()
 	{
 		$upload = $this->field->attribute_set($this->model, 'http://example.com/test.png');
-		$this->assertInstanceOf('Upload_File', $upload);
-		$this->assertEquals('http://example.com/test.png', $upload->source());
-		$this->assertEquals('http://example.com/test.png', $upload->filename());
+		$this->assertEquals('http://example.com/test.png', $upload);
 	}
 
 }

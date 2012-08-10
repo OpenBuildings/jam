@@ -362,7 +362,7 @@ class Kohana_Upload_File {
 		$this->_aspect = new Image_Aspect($width, $height);
 	}
 
-	public function constrained_dimensions($width = NULL, $height = NULL)
+	public function constrained_dimensions($width = NULL, $height = NULL, $upscale = TRUE)
 	{
 		if ( ! $this->aspect())
 			return array('width' => NULL, 'height' => NULL);
@@ -375,6 +375,20 @@ class Kohana_Upload_File {
 
 		if ($width === NULL)
 			return Arr::extract($this->aspect()->height($height)->as_array(), array('width', 'height'));
+
+		if ( ! $upscale AND $this->width() < $width OR $this->height() < $height)
+		{
+			if ($width > $this->width())
+			{
+				$width = $this->width();
+				$height = $width / $this->aspect()->ratio();
+			}
+			elseif ($height > $this->height())
+			{
+				$height = $this->height();
+				$width = $width * $this->aspect()->ratio();
+			}
+		}
 
 		return Arr::extract($this->aspect()->constrain($width, $height)->as_array(), array('width', 'height'));
 	}
