@@ -479,9 +479,11 @@ class Kohana_Upload_File {
 		return $this->location('realpath', $thumbnail);
 	}
 
-	public function url($thumbnail = NULL)
+	public function url($thumbnail = NULL, $protocol = NULL)
 	{
-		return $this->location('webpath', $thumbnail);
+		$url = $this->location('webpath', $thumbnail);
+
+		return URL::site($url, $protocol);
 	}
 
 	protected function full_path($thumbnail = NULL)

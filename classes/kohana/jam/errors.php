@@ -86,7 +86,12 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 			foreach ($this->_container[$attribute] as $error => $params) 
 			{
-				$messages[] = Jam_Errors::message($this->_error_filename, $attribute, $error, Arr::merge($params, array(':model' => $this->_model->meta()->model(), ':attribute' => $attribute)));
+				$label =  $this->_model->meta()->attribute($attribute) ? $this->_model->meta()->attribute($attribute)->label : $attribute;
+
+				$messages[] = Jam_Errors::message($this->_error_filename, $attribute, $error, Arr::merge($params, array(
+					':model' => $this->_model->meta()->model(), 
+					':attribute' => $label
+				)));
 			}
 
 			return $messages;

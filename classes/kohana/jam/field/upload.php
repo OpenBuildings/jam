@@ -53,16 +53,6 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file;
 	}
 
-	public function attribute_set($model, $upload_file)
-	{
-		if ( ! ($upload_file instanceof Upload_File))
-		{
-			$upload_file = $this->attribute_get($model, $upload_file, TRUE);
-		}
-		
-		return $upload_file->path($this->path($model));
-	}
-	
 	public function attribute_before_check($model, $is_changed)
 	{
 		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
@@ -73,14 +63,14 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * Cleanup temporary file directories when the files are successfully saved
-	 * @param  Jam_Model $model      
+	 * @param  Jam_Model $model
 	 * @param  boolean $is_changed 
 	 */
 	public function attribute_after_save($model, $is_changed)
 	{
 		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
-			$uploaded->path($this->path($model));
+			$upload_file->path($this->path($model));
 
 			// Delete the old file if there was one
 			if ($this->delete_file AND $original = $model->original($this->name))
@@ -147,9 +137,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file->thumbnails($this->thumbnails);
 		}
 
-		if ($this->save_size AND $model->{$this->name.'_width'} AND  $model->{$this->name.'_height'})
+		if ($this->save_size AND $model->get($this->name.'_width') AND $model->get($this->name.'_height'))
 		{
-			$upload_file->set_size($model->{$this->name.'_width'}, $model->{$this->name.'_height'});
+			$upload_file->set_size($model->get($this->name.'_width'), $model->get($this->name.'_height'));
 		}
 
 		return $upload_file;

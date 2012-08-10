@@ -16,6 +16,12 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 
 	public $flag;
 
+	public $email;
+
+	public $url;
+
+	public $ip;
+
 	public function validate(Jam_Model $model, $attribute, $value)
 	{
 		if ($this->regex !== NULL AND ! (preg_match($this->regex, $value)))
@@ -26,6 +32,21 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 		if ($this->filter !== NULL AND ! (filter_var($value, $this->filter, $this->flag) !== FALSE))
 		{
 			$model->errors()->add($attribute, 'format_filter', array(':filter' => $this->filter));
+		}
+
+		if ($this->ip === TRUE AND ! (Valid::ip($value)))
+		{
+			$model->errors()->add($attribute, 'format_ip');
+		}
+
+		if ($this->url === TRUE AND ! (Valid::url($value)))
+		{
+			$model->errors()->add($attribute, 'format_url');
+		}
+
+		if ($this->email === TRUE AND ! (Valid::email($value)))
+		{
+			$model->errors()->add($attribute, 'format_email');
 		}
 	}
 }

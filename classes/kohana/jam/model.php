@@ -15,6 +15,7 @@
  */
 abstract class Kohana_Jam_Model extends Model {
 
+	public $todo_test = FALSE;
 	/**
 	 * @var  array  The original data set on the object
 	 */
@@ -129,7 +130,7 @@ abstract class Kohana_Jam_Model extends Model {
 	{
 		if ( ! array_key_exists($name, $this->_retrieved))
 		{
-			$this->_retrieved[$name] = $this->get($name);;
+			$this->_retrieved[$name] = $this->get($name);
 		}
 
 		return $this->_retrieved[$name];
