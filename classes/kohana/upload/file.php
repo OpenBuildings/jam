@@ -485,7 +485,7 @@ class Kohana_Upload_File {
 	 */
 	public function constrained_dimensions($width = NULL, $height = NULL, $upscale = TRUE)
 	{
-		if ( ! $this->aspect()->width() OR ! $this->aspect()->height())
+		if ( ! $this->width() OR ! $this->height())
 			return array('width' => NULL, 'height' => NULL);
 
 		if ($width === NULL AND $height === NULL)
@@ -506,7 +506,7 @@ class Kohana_Upload_File {
 	 */
 	public function width()
 	{
-		return $this->aspect()->width();
+		return $this->aspect() ? $this->aspect()->width() : 0;
 	}
 
 	/**
@@ -515,7 +515,7 @@ class Kohana_Upload_File {
 	 */
 	public function height()
 	{
-		return $this->aspect()->height();
+		return $this->aspect() ? $this->aspect()->height() : 0;
 	}
 
 	/**
@@ -524,9 +524,6 @@ class Kohana_Upload_File {
 	 */
 	public function aspect()
 	{
-		if ( ! $this->_aspect)
-			throw new Kohana_Exception("This file has no file or width set");
-
 		return $this->_aspect;
 	}
 

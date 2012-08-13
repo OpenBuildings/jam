@@ -39,7 +39,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	public function attribute_get($model, $upload_file, $is_changed)
 	{
-		if ( ! $upload_file)
+		if ( ! ($upload_file instanceof Upload_File))
 		{
 			$upload_file = $this->upload_file($model);
 		}
@@ -52,16 +52,24 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		if ( ! $is_changed)
 			return $this->upload_file($model)->filename($value);
 
-		$upload_file = $value instanceof Upload_File ? $value : $model->{$this->name};
-
-		if ($value)
+		if ($value instanceof Upload_File)
 		{
-			$upload_file->source($value);
-			$upload_file->filename($value);
+			$upload_file = $value;	
 		}
 		else
 		{
-			$upload_file->filename('');
+			$upload_file = $model->{$this->name};	
+
+			if ($value)
+			{
+				$upload_file->source($value);
+				$upload_file->filename($value);
+			}
+			else
+			{
+				$upload_file->filename('');
+			}
+
 		}
 
 		return $upload_file->path($this->path($model));

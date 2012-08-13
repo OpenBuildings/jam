@@ -49,6 +49,9 @@ class Kohana_Upload_File_Aspect extends Image_Aspect
 	{
 		if ( ! $this->_ratio)
 		{
+			if ( ! $this->width() OR ! $this->height())
+				throw new Kohana_Exception("Cannot get ratio with width or height = 0 (width: :width, height: :height)", array(':width' => (int) $this->width(), ':height' => (int) $this->height()));
+
 			$this->_ratio = $this->width() / $this->height();
 		}
 		return $this->_ratio;
