@@ -1,6 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
+ * This class is what the upload field accually returns 
+ * and has all the nesessary info and manipulation abilities to save / delete / validate itself
+ * 
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 OpenBuildings Inc.
@@ -60,6 +63,11 @@ class Kohana_Upload_File {
 		return TRUE;
 	}
 
+	/**
+	 * Method to make a filename safe for writing on the filesystem, removing all strange characters
+	 * @param  string $filename 
+	 * @return string
+	 */
 	static public function sanitize($filename)
 	{
 		// Transliterate strange chars
@@ -77,11 +85,22 @@ class Kohana_Upload_File {
 		return $filename;
 	}
 
+	/**
+	 * Check if a file looks like a filename ("file.ext")
+	 * @param  string  $filename 
+	 * @return boolean           
+	 */
 	public static function is_filename($filename)
 	{
 		return (bool) pathinfo($filename, PATHINFO_EXTENSION);
 	}
 
+	/**
+	 * Get a proper filename from file or url source, ordering them by usefulness and returning the most appropriate one
+	 * @param  string $file The full filename
+	 * @param  string $url  Source URL
+	 * @return string       
+	 */
 	public static function pick_filename($file, $url)
 	{
 		$query = parse_url($url, PHP_URL_QUERY);
@@ -101,6 +120,15 @@ class Kohana_Upload_File {
 		return Upload_File::sanitize(reset($candidates));
 	}
 
+	/**
+	 * Get the correct extension for the file from a varaiety of sources.
+	 * Any or all of the sources can be null. Uses .jpg by default
+	 * 
+	 * @param  string $file      phisical file location
+	 * @param  string $mime_type mimetype of the file
+	 * @param  string $url       source url
+	 * @return string            
+	 */
 	public static function normalize_extension($file = NULL, $mime_type = NULL, $url = NULL)
 	{
 		$ext = NULL;
@@ -108,16 +136,19 @@ class Kohana_Upload_File {
 
 		$base = pathinfo($filename, PATHINFO_FILENAME);
 
+		// Get extension from mimetype
 		if ($mime_type)
 		{
 			$ext = File::ext_by_mime($mime_type);
 		}
 		
+		// Get extension from the file itself
 		if ( ! $ext AND $file AND is_file($file))
 		{
 			$ext = File::ext_by_mime(File::mime($file));
 		}
 		
+		// Get the extension from the URL
 		if ( ! $ext)
 		{
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
@@ -156,6 +187,13 @@ class Kohana_Upload_File {
 		return join(DIRECTORY_SEPARATOR, array_filter($args));
 	}
 
+	/**
+	 * Download a file from a url to a specified directory, and return the new filename
+	 * 
+	 * @param  string $url       
+	 * @param  string $directory 
+	 * @return string            the resulting filename
+	 */
 	public static function from_url($url, $directory)
 	{
 		$url = str_replace(' ', '%20', $url);
@@ -178,6 +216,15 @@ class Kohana_Upload_File {
 		return is_file($result_file) ? $filename : NULL;
 	}
 
+	/**
+	 * Download a file from a standard PHP upload array, 
+	 * and place it in the specified directory, 
+	 * returning the new filename.
+	 * 
+	 * @param  array  $file      PHP FILE array
+	 * @param  string $directory destination directory
+	 * @return string            resulting filename
+	 */
 	public static function from_upload(array $file, $directory)
 	{
 		if ( ! Upload::not_empty($file))
@@ -191,6 +238,13 @@ class Kohana_Upload_File {
 		return is_file($result_file) ? $filename : NULL;
 	}
 
+	/**
+	 * Download a file from the filesystem. This is for testing only
+	 * 
+	 * @param  string $file      
+	 * @param  string $directory 
+	 * @return string            
+	 */
 	public static function from_file($file, $directory)
 	{
 		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
@@ -204,22 +258,45 @@ class Kohana_Upload_File {
 		return is_file($result_file) ? $filename : NULL;
 	}
 
-	public static function from_stream($file, $directory)
+	/**
+	 * Download a file from the request body (stream)
+	 * 
+	 * @param  stream $file      
+	 * @param  string $directory 
+	 * @return bool
+	 */
+	public static function from_stream($stream, $directory)
 	{
-		$input = fopen('php://input', "r");
-		$hamdle = fopen($file, 'w');
-		$realSize = stream_copy_to_stream($input, $hamdle);
-		fclose($input);
-		fclose($hamdle);
+		$result_file = Upload_File::combine($directory, uniqid());
+
+		$stream_handle = fopen($stream, "r");
+		$result_handle = fopen($result_file, 'w');
+		$realSize = stream_copy_to_stream($stream_handle,  $result_handle);
+		fclose($stream_handle);
+		fclose($result_handle);
 
 		return is_file($result_file);
 	}
 
+	/**
+	 * A no op if the file has already been uploaded to the temp directory 
+	 * 
+	 * @param  string $file      
+	 * @param  string $directory 
+	 * @return string            
+	 */
 	public static function from_temp($file, $directory)
 	{
 		return Upload_Temp::preloaded_filename($file);
 	}
 
+	/**
+	 * Perform transformations on an image and store it at a different location (or overwrite existing)
+	 * 
+	 * @param  string $from            
+	 * @param  string $to              
+	 * @param  array  $transformations 
+	 */
 	public static function transform_image($from, $to, array $transformations = array())
 	{
 		$image = Image::factory($from, Kohana::$config->load('jam.upload.image_driver'));
@@ -244,7 +321,7 @@ class Kohana_Upload_File {
 
 	protected $_source;
 
-	protected $_source_type = NULL;
+	protected $_source_type;
 
 	protected $_server;
 
@@ -267,6 +344,11 @@ class Kohana_Upload_File {
 		$this->_path = $path;
 	}
 
+	/**
+	 * Geuss the source type based on the source i
+	 * @param  mixed $source 
+	 * @return string         upload, stream, url, tmp, file, FALSE
+	 */
 	public function guess_source_type($source)
 	{
 		if (is_array($source)) 
@@ -295,11 +377,20 @@ class Kohana_Upload_File {
 		}
 	}
 
+	/**
+	 * Get the source type 
+	 * @return string upload, stream, url, tmp, file, FALSE
+	 */
 	public function source_type()
 	{
 		return $this->_source_type;
 	}
 
+	/**
+	 * Get / Set the path for the image on the server
+	 * @param  string $path 
+	 * @return string|Upload_File       
+	 */
 	public function path($path = NULL)
 	{
 		if ($path !== NULL)
@@ -312,6 +403,12 @@ class Kohana_Upload_File {
 		return $this->_path;
 	}
 
+	/**
+	 * Get / Set the source. Automatically set the source_type
+	 * 
+	 * @param  mixed $source 
+	 * @return mixed         
+	 */
 	public function source($source = NULL)
 	{
 		if ($source !== NULL)
@@ -333,6 +430,11 @@ class Kohana_Upload_File {
 		return $this->_source;
 	}
 
+	/**
+	 * Get / Set transformations
+	 * @param  array $transformations 
+	 * @return array|Upload_File                  
+	 */
 	public function transformations(array $transformations = NULL)
 	{
 		if ($transformations !== NULL)
@@ -345,6 +447,12 @@ class Kohana_Upload_File {
 		return $this->_transformations;
 	}
 
+
+	/**
+	 * Get / Set thumbnails
+	 * @param  array $thumbnails 
+	 * @return array|Upload_File                  
+	 */
 	public function thumbnails(array $thumbnails = NULL)
 	{
 		if ($thumbnails !== NULL)
@@ -357,11 +465,24 @@ class Kohana_Upload_File {
 		return $this->_thumbnails;
 	}
 
+	/**
+	 * Set the width and the height
+	 * 
+	 * @param integer $width  
+	 * @param integer $height 
+	 */
 	public function set_size($width, $height)
 	{
 		$this->_aspect = new Image_Aspect($width, $height);
 	}
 
+	/**
+	 * @depricated 
+	 * @param  integer  $width   
+	 * @param  integer  $height  
+	 * @param  boolean $upscale 
+	 * @return array           
+	 */
 	public function constrained_dimensions($width = NULL, $height = NULL, $upscale = TRUE)
 	{
 		if ( ! $this->aspect())
@@ -376,38 +497,40 @@ class Kohana_Upload_File {
 		if ($width === NULL)
 			return Arr::extract($this->aspect()->height($height)->as_array(), array('width', 'height'));
 
-		if ( ! $upscale AND $this->width() < $width OR $this->height() < $height)
-		{
-			if ($width > $this->width())
-			{
-				$width = $this->width();
-				$height = $width / $this->aspect()->ratio();
-			}
-			elseif ($height > $this->height())
-			{
-				$height = $this->height();
-				$width = $width * $this->aspect()->ratio();
-			}
-		}
-
-		return Arr::extract($this->aspect()->constrain($width, $height)->as_array(), array('width', 'height'));
+		return Arr::extract($this->aspect()->constrain($width, $height, $upscale)->as_array(), array('width', 'height'));
 	}
 
+	/**
+	 * Get the width of the image
+	 * @return integer 
+	 */
 	public function width()
 	{
 		return $this->aspect() ? $this->aspect()->width() : 0;
 	}
 
+	/**
+	 * Get the height of the image
+	 * @return integer 
+	 */
 	public function height()
 	{
 		return $this->aspect() ? $this->aspect()->height() : 0;
 	}
 
+	/**
+	 * Get the Image_Aspect for the image or NULL if there are no width / height
+	 * @return Image_Aspect|NULL
+	 */
 	public function aspect()
 	{
 		return $this->_aspect;
 	}
 
+	/**
+	 * Get the Upload_Temp object. Create it if it's not already created
+	 * @return Upload_Temp 
+	 */
 	public function temp()
 	{
 		if ( ! $this->_temp)
@@ -418,11 +541,20 @@ class Kohana_Upload_File {
 		return $this->_temp;
 	}
 
+	/**
+	 * Get the upload server
+	 * @return Upload_Server 
+	 */
 	public function server()
 	{
 		return Upload_Server::instance($this->_server);
 	}
 
+	/**
+	 * Get / Set the current filename
+	 * @param  string $filename 
+	 * @return string|Upload_File           
+	 */
 	public function filename($filename = NULL)
 	{
 		if ($filename !== NULL)
@@ -435,6 +567,9 @@ class Kohana_Upload_File {
 		return $this->_filename;
 	}
 
+	/**
+	 * Save the current source to the temp folder
+	 */
 	public function save_to_temp()
 	{
 		if ( ! $this->source())
@@ -444,7 +579,7 @@ class Kohana_Upload_File {
 			throw new Kohana_Exception("Not a valid source for file input - :source", array(':source' => $this->_source));	
 
 		$from_method = "from_".$this->source_type();
-		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path());
+		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
 		$this->filename($filename);
 
 		if ($this->_transformations)
@@ -457,7 +592,7 @@ class Kohana_Upload_File {
 			Upload_File::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
 		}
 	}
-
+ 
 	public function save()
 	{
 		$this->server()->save_from_local($this->full_path(), $this->file());
