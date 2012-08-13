@@ -579,7 +579,7 @@ class Kohana_Upload_File {
 			throw new Kohana_Exception("Cannot move file to temp directory, source does not exist, path :path, filename :filename", array(':path' => $this->path(), ':filename' => $this->filename()));
 
 		if ( ! $this->source_type())
-			throw new Kohana_Exception("Not a valid source for file input - :source", array(':source' => $this->_source));	
+			throw new Kohana_Exception("Not a valid source for file input - :source_type for source :source", array(':source_type' => $this->source_type(), ':source' => $this->source()));	
 
 		$from_method = "from_".$this->source_type();
 		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
