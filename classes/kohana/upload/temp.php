@@ -50,6 +50,11 @@ class Kohana_Upload_Temp
 		return $directory;
 	}
 
+	public function directory_url()
+	{
+		return $this->webpath($this->directory());
+	}
+
 	public function clear()
 	{
 		if ($this->_directory)

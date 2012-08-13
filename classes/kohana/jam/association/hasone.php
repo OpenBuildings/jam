@@ -99,7 +99,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $foreign_model;
 	}
 
-	public function attribute_set(Jam_Model $model, $value)
+	public function attribute_set(Jam_Model $model, $value, $is_changed)
 	{
 		$item = $this->model_from_array($value);
 		return $this->assign_relation($model, $item);

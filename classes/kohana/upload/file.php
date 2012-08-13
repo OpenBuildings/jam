@@ -265,9 +265,9 @@ class Kohana_Upload_File {
 	 * @param  string $directory 
 	 * @return bool
 	 */
-	public static function from_stream($stream, $directory)
+	public static function from_stream($stream, $directory, $filename = NULL)
 	{
-		$result_file = Upload_File::combine($directory, uniqid());
+		$result_file = Upload_File::combine($directory, $filename ? $filename : uniqid());
 
 		$stream_handle = fopen($stream, "r");
 		$result_handle = fopen($result_file, 'w');
@@ -471,9 +471,9 @@ class Kohana_Upload_File {
 	 * @param integer $width  
 	 * @param integer $height 
 	 */
-	public function set_size($width, $height)
+	public function set_size($model, $width_attribute, $height_attribute)
 	{
-		$this->_aspect = new Image_Aspect($width, $height);
+		$this->_aspect = new Upload_File_Aspect($model, $width_attribute, $height_attribute);
 	}
 
 	/**
@@ -485,7 +485,7 @@ class Kohana_Upload_File {
 	 */
 	public function constrained_dimensions($width = NULL, $height = NULL, $upscale = TRUE)
 	{
-		if ( ! $this->aspect())
+		if ( ! $this->aspect()->width() OR ! $this->aspect()->height())
 			return array('width' => NULL, 'height' => NULL);
 
 		if ($width === NULL AND $height === NULL)
@@ -506,7 +506,7 @@ class Kohana_Upload_File {
 	 */
 	public function width()
 	{
-		return $this->aspect() ? $this->aspect()->width() : 0;
+		return $this->aspect()->width();
 	}
 
 	/**
@@ -515,7 +515,7 @@ class Kohana_Upload_File {
 	 */
 	public function height()
 	{
-		return $this->aspect() ? $this->aspect()->height() : 0;
+		return $this->aspect()->height();
 	}
 
 	/**
@@ -524,6 +524,9 @@ class Kohana_Upload_File {
 	 */
 	public function aspect()
 	{
+		if ( ! $this->_aspect)
+			throw new Kohana_Exception("This file has no file or width set");
+
 		return $this->_aspect;
 	}
 
@@ -587,17 +590,27 @@ class Kohana_Upload_File {
 			Upload_File::transform_image($this->file(), $this->file(), $this->transformations());
 		}
 
+		$this->generate_thumbnails();
+	}
+
+	public function generate_thumbnails()
+	{
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
-			Upload_File::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
+			if ( ! is_file($this->file($thumbnail)))
+			{
+				Upload_File::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
+			}
 		}
 	}
  
 	public function save()
 	{
+		$this->generate_thumbnails();
+		
 		$this->server()->save_from_local($this->full_path(), $this->file());
 
-		foreach ($this->thumbnails() as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
 			$this->server()->save_from_local($this->full_path($thumbnail), $this->file($thumbnail));
 		}
@@ -642,6 +655,9 @@ class Kohana_Upload_File {
 
 	protected function location($method, $thumbnail = NULL)
 	{
+		if ( ! $this->filename())
+			return NULL;
+
 		$server = $this->_source ? $this->temp() : $this->server();
 
 		if ($this->_source)
@@ -656,7 +672,7 @@ class Kohana_Upload_File {
 
 	public function is_empty()
 	{
-		return ! (bool) $this->filename();
+		return ! $this->filename() AND ! $this->source();
 	}
 
 	public function __toString()

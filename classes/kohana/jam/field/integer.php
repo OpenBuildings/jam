@@ -21,7 +21,7 @@ abstract class Kohana_Jam_Field_Integer extends Jam_Field {
 	 * @param   mixed  $value
 	 * @return  int
 	 */
-	public function attribute_set($model, $value)
+	public function attribute_set($model, $value, $is_changed)
 	{
 		list($value, $return) = $this->_default($value);
 

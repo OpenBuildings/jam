@@ -37,20 +37,34 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 */
 	public $thumbnails = array();
 
-	public function attribute_get($model, $value, $is_changed)
+	public function attribute_get($model, $upload_file, $is_changed)
 	{
-		if ($value instanceof Upload_File)
-			return $value;
+		if ( ! $upload_file)
+		{
+			$upload_file = $this->upload_file($model);
+		}
 		
-		$upload_file = $this->upload_file($model);
-		$upload_file->filename($value);
+		return	$upload_file->path($this->path($model));
+	}
 
-		if ($is_changed)
+	public function attribute_set($model, $value, $is_changed)
+	{
+		if ( ! $is_changed)
+			return $this->upload_file($model)->filename($value);
+
+		$upload_file = $value instanceof Upload_File ? $value : $model->{$this->name};
+
+		if ($value)
 		{
 			$upload_file->source($value);
+			$upload_file->filename($value);
+		}
+		else
+		{
+			$upload_file->filename('');
 		}
 
-		return $upload_file;
+		return $upload_file->path($this->path($model));
 	}
 
 	public function attribute_before_check($model, $is_changed)
@@ -95,12 +109,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 */
 	public function attribute_convert($model, $upload_file, $is_loaded)
 	{
-		if ( ! ($upload_file instanceof Upload_File))
-		{
-			$upload_file = $this->attribute_get($model, $upload_file, FALSE);
-		}
-
-		return $upload_file->filename();
+		return $upload_file ? $upload_file->filename() : $upload_file;
 	}
 
 	/**
@@ -137,9 +146,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file->thumbnails($this->thumbnails);
 		}
 
-		if ($this->save_size AND $model->get($this->name.'_width') AND $model->get($this->name.'_height'))
+		if ($this->save_size)
 		{
-			$upload_file->set_size($model->get($this->name.'_width'), $model->get($this->name.'_height'));
+			$upload_file->set_size($model, $this->name.'_width', $this->name.'_height');
 		}
 
 		return $upload_file;

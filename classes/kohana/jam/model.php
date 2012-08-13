@@ -373,7 +373,7 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			if ($field = $this->_meta->association($key))
 			{
-				$this->_changed[$field->name] = $field->set($this, $value);
+				$this->_changed[$field->name] = $field->set($this, $value, TRUE);
 				$this->_saved = FALSE;
 			}
 			else
@@ -389,7 +389,7 @@ abstract class Kohana_Jam_Model extends Model {
 					continue;
 				}
 
-				$this->_changed[$field->name] = $field->set($this, $value);
+				$this->_changed[$field->name] = $field->set($this, $value, TRUE);
 			}
 
 			// Invalidate the cache
@@ -424,7 +424,7 @@ abstract class Kohana_Jam_Model extends Model {
 		{
 			if ($field = $this->_meta->field($key))
 			{
-				$this->_original[$field->name] = $field->set($this, $value);
+				$this->_original[$field->name] = $field->set($this, $value, FALSE);
 			}
 			// Unmapped data
 			else
@@ -608,7 +608,6 @@ abstract class Kohana_Jam_Model extends Model {
 		$this->set($values);
 
 		$this->_loaded = $this->_saved = TRUE;
-
 
 		$this->_meta->trigger_attribute_events($this, 'after_save');
 		

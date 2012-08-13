@@ -172,7 +172,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $foreign_model;
 	}
 
-	public function attribute_set(Jam_Model $model, $new_item)
+	public function attribute_set(Jam_Model $model, $new_item, $is_changed)
 	{
 		if ($new_item)
 		{
@@ -220,7 +220,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		if ($is_changed AND $new_item = $model->{$this->name})
 		{
 			$this->preserve_item_changes($new_item);
-			$this->set($model, $new_item);
+			$this->set($model, $new_item, TRUE);
 		}
 	}
 

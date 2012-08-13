@@ -29,25 +29,31 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 		$this->field->attribute_before_check($this->model, TRUE);
 	}
 
-	public function test_attribute_get()
+	public function test_attribute_set()
 	{
-		$upload = $this->field->attribute_get($this->model, 'file1.png', FALSE);
+		$upload = $this->field->attribute_set($this->model, 'file1.png', FALSE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('file1.png', $upload->filename());
 		$this->assertNull($upload->source());
 
-		$upload = $this->field->attribute_get($this->model, 'http://example.com/test.png', TRUE);
+		$upload = $this->field->attribute_set($this->model, 'http://example.com/test.png', TRUE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('http://example.com/test.png', $upload->source());
 		$this->assertEquals('http://example.com/test.png', $upload->filename());
 	}
 
-	public function test_attribute_set()
+	public function test_save()
 	{
-		$upload = $this->field->attribute_set($this->model, 'http://example.com/test.png');
-		$this->assertEquals('http://example.com/test.png', $upload);
+		$image = Jam::factory('test_image');
+
+		$image->file = Upload_File::combine($this->test_local, 'source', 'logo.gif');
+		$image->save();
+
+		$this->assertFileExists($image->file->file());
+		
+		unlink($image->file->file());
 	}
 
 }

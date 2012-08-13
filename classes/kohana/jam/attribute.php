@@ -145,9 +145,9 @@ abstract class Kohana_Jam_Attribute {
 		return $this->trigger('get', $model, $value, $is_changed);
 	}
 
-	public function set($model, $value)
+	public function set($model, $value, $is_changed)
 	{
-		return $this->trigger('set', $model, $value);
+		return $this->trigger('set', $model, $value, $is_changed);
 	}
 
 	public function before_delete(Jam_Model $model, $is_changed)

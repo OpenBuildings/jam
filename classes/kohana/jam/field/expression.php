@@ -44,7 +44,7 @@ abstract class Kohana_Jam_Field_Expression extends Jam_Field {
 	 * @param   mixed   $value
 	 * @return  mixed
 	 */
-	public function attribute_set(Jam_Meta $meta, $model, $value)
+	public function attribute_set($model, $value, $is_changed)
 	{
 		if (isset($this->cast))
 		{

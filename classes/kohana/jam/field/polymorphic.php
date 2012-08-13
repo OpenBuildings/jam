@@ -38,7 +38,7 @@ abstract class Kohana_Jam_Field_Polymorphic extends Jam_Field_String {
 	 * @param   mixed   $value
 	 * @return  string
 	 */
-	public function attribute_set($value)
+	public function attribute_set($model, $value, $is_changed)
 	{
 		list($value, $return) = $this->_default($value);
 

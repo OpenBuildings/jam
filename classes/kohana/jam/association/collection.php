@@ -43,12 +43,12 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	public function attribute_get(Jam_Model $model)
 	{
 		if ( ! $model->loaded())
-			return $this->set($model, array());
+			return $this->set($model, array(), TRUE);
 
 		return $this->builder($model)->select_all()->_parent_association($model, $this);
 	}
 
-	public function attribute_set(Jam_Model $model, $value)
+	public function attribute_set(Jam_Model $model, $value, $is_changed)
 	{
 		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
