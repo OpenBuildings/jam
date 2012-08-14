@@ -28,60 +28,49 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertEquals($sanitized_filename, Upload_File::sanitize($filename));
 	}
 
-	public function data_pick_filename()
+	public function data_filenames_candidates_from_url()
 	{
 		return array(
-			array('/var/logo.gif', NULL, 'logo.gif'),
-			array('/var/logo.png', NULL, 'logo.png'),
-			array('/var/logo.tiff', 'http://example.com/logo.png', 'logo.png'),
-			array('/var/logo.tiff', 'http://example.com/logo.jpg?test=1', 'logo.jpg'),
-			array('/var/logo.tiff', 'http://example.com/file?test=logo.gif', 'logo.gif'),
-			array('/var/logo.tiff', 'http://example.com/file?test=logo.png&post=get', 'logo.png'),
-			array('/var/logo.tiff', 'http://example.com/file.php?test=logo.png&post=get', 'logo.png'),
-			array('/var/logo.tiff', 'http://example.com/file', 'logo.tiff'),
-			array('/var/logo.gif', 'http://example.com/file.gif', 'file.gif'),
+			array('http://example.com/logo.png', array('logo.png')),
+			array('http://example.com/logo.jpg?test=1', array('1', 'logo.jpg')),
+			array('http://example.com/file?test=logo.gif', array('logo.gif', 'file')),
+			array('http://example.com/file?test=logo.png&post=get', array('logo.png', 'get', 'file')),
+			array('http://example.com/file.php?test=logo.png&post=get', array('logo.png', 'get', 'file.php'))
 		);
 	}
 
 	/**
-	 * @dataProvider data_pick_filename
+	 * @dataProvider data_filenames_candidates_from_url
 	 */
-	public function test_pick_filename($file, $url, $filename)
+	public function test_filenames_candidates_from_url($url, $filename_candidates)
 	{
-		$this->assertEquals($filename, Upload_File::pick_filename($file, $url));
+		$this->assertEquals($filename_candidates, Upload_File::filenames_candidates_from_url($url));
 	}
 
-	public function data_normalize_extension()
+	public function data_filename_from_url()
 	{
 		return array(
-			// FROM FILE
-			array('name/logo.gif', NULL, NULL, 'logo.gif'),
-			array('name/logo_gif', NULL, NULL, 'logo-gif.gif'),
-			array('name/logo.png', NULL, NULL, 'logo.png'),
-			array('name/logo_png', NULL, NULL, 'logo-png.png'),
-			array('name/logo.jpg', NULL, NULL, 'logo.jpg'),
-			array('name/logo_jpg', NULL, NULL, 'logo-jpg.jpg'),
-			array('name/test.txt', NULL, NULL, 'test.txt'),
-			array('name/test_txt', NULL, NULL, 'test-txt.txt'),
-
-			// FROM MIME
-			array('logo', 'image/gif', NULL, 'logo.gif'),
-			array('logo', 'image/png', NULL, 'logo.png'),
-			array('logo', 'image/jpeg', NULL, 'logo.jpg'),
-			array('logo', 'image/jpg', NULL, 'logo.jpg'),
-			array('logo', 'text/plain', NULL, 'logo.txt'),
-			array('logo', 'image/gif', 'http://example.com/logo.php?query=param', 'logo.gif'),
-
 			// FROM URL
-			array(NULL, NULL, 'http://example.com/logo.gif', 'logo.gif'),
-			array(NULL, NULL, 'http://example.com/logo.png', 'logo.png'),
-			array(NULL, NULL, 'http://example.com/logo.jpg?query=param', 'logo.jpg'),
-			array(NULL, NULL, 'http://example.com/logo?query=test&post=1', 'logo.jpg'),
-			array(NULL, NULL, 'http://example.com/logo?file=logo.json', 'logo.json'),
-			array(NULL, NULL, 'http://example.com/logo.php?file=logo.gif', 'logo.gif'),
-			array(NULL, NULL, 'http://example.com/test', 'test.jpg'),
+			array('http://example.com/logo.gif', 'image/gif', '/logo\.gif$/'),
+			array('http://example.com/logo.php', 'image/png', '/logo\.png$/'),
+			array('http://example.com/logo.jpg?query=param', 'image/jpeg', '/logo\.jpg$/'),
+			array('http://example.com/logo?query=test&post=1', 'image/jpg', '/.+\.jpg$/'),
+			array('http://example.com/logo?file=logo.json', NULL, '/logo\.json$/'),
+			array('http://example.com/logo.php?file=logo.gif', NULL, '/logo\.gif$/'),
+			array('http://example.com/test', NULL, '/.+\.jpg$/'),
 		);
 	}
+
+		/**
+	 * @dataProvider data_filename_from_url
+	 */
+	public function test_filename_from_url($url, $mime, $expected_regexp)
+	{
+		$filename = Upload_File::filename_from_url($url, $mime);
+
+		$this->assertRegExp($expected_regexp, $filename);
+	}
+
 
 	public function data_combine()
 	{
@@ -126,16 +115,6 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertEquals($is_filename, Upload_File::is_filename($filename));
 	}
 
-	/**
-	 * @dataProvider data_normalize_extension
-	 */
-	public function test_normalize_extension($file, $mime, $url, $expected_filename)
-	{
-		$file = $file ? $this->test_local.$file : NULL;
-		$filename = Upload_File::normalize_Extension($file, $mime, $url);
-
-		$this->assertEquals($expected_filename, $filename);
-	}
 
 	public function test_width_height_aspect()
 	{

@@ -96,75 +96,46 @@ class Kohana_Upload_File {
 	}
 
 	/**
-	 * Get a proper filename from file or url source, ordering them by usefulness and returning the most appropriate one
-	 * @param  string $file The full filename
-	 * @param  string $url  Source URL
-	 * @return string       
+	 * Return possible filenames from a given url. 
+	 * Filenames can be in the query or the url of the file itself
+	 * @param  string $url 
+	 * @return array      
 	 */
-	public static function pick_filename($file, $url)
+	public static function filenames_candidates_from_url($url)
 	{
 		$query = parse_url($url, PHP_URL_QUERY);
 		parse_str($query, $query);
-		$url = basename(parse_url($url, PHP_URL_PATH));
-		$file = basename($file);
 
-		$candidates = array_merge(
-			array_values((array) $query),
-			(array) $url,
-			(array) $file
-		);
+		$filename_candidates = array_values( (array) $query);
 
-		$candidates = array_filter($candidates, 'Upload_File::is_filename');
-		$candidates[] = $url ? $url : $file;
+		$url_filename = basename(parse_url($url, PHP_URL_PATH));
 
-		return Upload_File::sanitize(reset($candidates));
+		$filename_candidates[] = $url_filename;
+
+		return $filename_candidates;
 	}
 
 	/**
-	 * Get the correct extension for the file from a varaiety of sources.
-	 * Any or all of the sources can be null. Uses .jpg by default
-	 * 
-	 * @param  string $file      phisical file location
-	 * @param  string $mime_type mimetype of the file
-	 * @param  string $url       source url
+	 * Detirmine the filename from the url
+	 * @param  string $url       
+	 * @param  string $mime_type 
 	 * @return string            
 	 */
-	public static function normalize_extension($file = NULL, $mime_type = NULL, $url = NULL)
+	public static function filename_from_url($url, $mime_type = NULL)
 	{
-		$ext = NULL;
-		$filename = Upload_File::pick_filename($file, $url);
+		$filename_candidates = Upload_File::filenames_candidates_from_url($url);
+		$filename_candidates = array_filter($filename_candidates, 'Upload_File::is_filename');
+		$file = count($filename_candidates) ? reset($filename_candidates) : uniqid();
 
-		$base = pathinfo($filename, PATHINFO_FILENAME);
+		$extension_candiates = array(
+			File::ext_by_mime($mime_type),
+			pathinfo($file, PATHINFO_EXTENSION),
+			'jpg',
+		);
+		$extension_candiates = array_filter($extension_candiates);
+		$extension = reset($extension_candiates);
 
-		// Get extension from mimetype
-		if ($mime_type)
-		{
-			$ext = File::ext_by_mime($mime_type);
-		}
-		
-		// Get extension from the file itself
-		if ( ! $ext AND $file AND is_file($file))
-		{
-			$ext = File::ext_by_mime(File::mime($file));
-		}
-		
-		// Get the extension from the URL
-		if ( ! $ext)
-		{
-			$ext = pathinfo($filename, PATHINFO_EXTENSION);
-			if ($ext)
-			{
-				$filename = substr($filename, 0, - strlen($ext) - 1);
-				$ext = preg_replace('/(\?[^?]+|\&.+)$/', '', $ext);
-			}
-		}
-
-		if ( ! $ext)
-		{
-			$ext = 'jpg';
-		}
-		
-		return $base.'.'.$ext;
+		return Upload_File::sanitize(pathinfo($file, PATHINFO_FILENAME)).'.'.$extension;
 	}
 
 	/**
@@ -210,7 +181,7 @@ class Kohana_Upload_File {
 		$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 		$url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 		
-		$filename = Upload_File::normalize_extension($file, $mime_type, $url);
+		$filename = Upload_File::filename_from_url($url, $mime_type);
 
 		$result_file = Upload_File::combine($directory, $filename);
 		
@@ -253,7 +224,7 @@ class Kohana_Upload_File {
 		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
 			return NULL;
 
-		$filename = Upload_File::normalize_extension($file);
+		$filename = Upload_File::sanitize($file);
 		$result_file = Upload_File::combine($directory, $filename);
 
 		copy($file, $result_file);
