@@ -9,6 +9,11 @@
  */
 class Kohana_Upload_Temp
 {
+	public static function factory(array $config = NULL)
+	{
+		return new Upload_Temp($config);
+	}
+
 	protected $_directory;
 
 	protected $_config;

@@ -539,7 +539,7 @@ class Kohana_Upload_File {
 	{
 		if ( ! $this->_temp)
 		{
-			$this->_temp = new Upload_Temp();
+			$this->_temp = Upload_Temp::factory();
 		}
 
 		return $this->_temp;
