@@ -13,7 +13,7 @@
 		- [format](#format)
 		- [length](#length)
 		- [numeric](#numeric)
-- [present](#present)
+		- [present](#present)
 		- [unique](#unique)
 	- [Conditional Validation](#conditional-validation)
 		- [Using a model method or attribute with 'if' and 'unless'](#using-a-model-method-or-attribute-with-'if'-and-'unless')
