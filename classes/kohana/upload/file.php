@@ -645,7 +645,7 @@ class Kohana_Upload_File {
 		return URL::site($url, $protocol);
 	}
 
-	protected function full_path($thumbnail = NULL)
+	public function full_path($thumbnail = NULL)
 	{
 		return Upload_File::combine($this->path(), $thumbnail, $this->filename());
 	}
