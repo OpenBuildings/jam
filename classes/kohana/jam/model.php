@@ -818,6 +818,11 @@ abstract class Kohana_Jam_Model extends Model {
 		return $this->_meta;
 	}
 
+	public function unmapped($name)
+	{
+		return isset($this->_unmapped[$name]);
+	}
+
 	public function is_touched($value = NULL)
 	{
 		return $this->_is_touched;

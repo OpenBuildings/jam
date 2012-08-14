@@ -16,9 +16,9 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	public function provider_builder()
 	{
 		return array(
-			array(array('test_post', 1, 'test_categories'), 3),
-			array(array('test_post', 2, 'test_categories'), 1),
-			array(array('test_post', 555, 'test_categories'), 0),
+			array(array('test_post', 1, 'test_categories'), 3, NULL),
+			array(array('test_post', 2, 'test_categories'), 1, NULL),
+			array(array('test_post', 555, 'test_categories'), 0, 'Kohana_Exception'),
 		);
 	}
 	
@@ -27,8 +27,12 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	 * 
 	 * @dataProvider  provider_builder
 	 */
-	public function test_builder($args, $count)
+	public function test_builder($args, $count, $expected_exception)
 	{
+		if ($expected_exception)
+		{
+			$this->setExpectedException($expected_exception);
+		}
 		$builder = Jam::factory($args[0], $args[1])->builder($args[2]);
 
 		$this->assertInstanceOf('Jam_Builder', $builder);

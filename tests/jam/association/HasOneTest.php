@@ -46,7 +46,7 @@ class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
 
 		if ( ! $model->loaded())
 		{
-			$this->setExpectedException('Jam_Exception_NotLoaded');
+			$this->setExpectedException('Kohana_Exception');
 		}
 
 		$builder = $model->builder($args[2]);

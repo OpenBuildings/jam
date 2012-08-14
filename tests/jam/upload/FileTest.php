@@ -146,7 +146,7 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$upload = new Upload_File('default', 'file');
 
 		$this->assertNull($upload->aspect());
-		$upload->set_size($model, 'file_width', 'file_height');
+		$upload->set_model_with_dimensions($model, 'file_width', 'file_height');
 
 		$this->assertEquals(100, $upload->width());
 		$this->assertEquals(200, $upload->height());

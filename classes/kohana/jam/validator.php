@@ -76,7 +76,7 @@ abstract class Kohana_Jam_Validator {
 	{
 		foreach ($this->attributes as $attribute) 
 		{
-			if (( ! $model->loaded() OR $model->changed($attribute)) AND $this->condition_met($model))
+			if (( ! $model->loaded() OR $model->changed($attribute) OR $model->unmapped($attribute)) AND $this->condition_met($model))
 			{
 				$value = $model->$attribute;
 
