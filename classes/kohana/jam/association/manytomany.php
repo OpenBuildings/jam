@@ -64,6 +64,9 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 
 	public function attribute_builder(Jam_Model $model)
 	{
+		if ( ! $model->loaded())
+			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
+
 		$builder = Jam::query($this->foreign())
 			->join($this->through())
 			->on($this->through('foreign'), '=', $this->foreign('field'))
@@ -74,9 +77,12 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 
 	public function attribute_before_delete(Jam_Model $model, $is_changed)
 	{
-		Jam::query($this->through())
-			->where($this->through('our'), '=', $model->id())
-			->delete($model->meta()->db());
+		if ($model->loaded())
+		{
+			Jam::query($this->through())
+				->where($this->through('our'), '=', $model->id())
+				->delete($model->meta()->db());
+		}
 	}
 
 	public function attribute_after_save(Jam_Model $model, $is_changed)

@@ -287,7 +287,7 @@ class Kohana_Upload_File {
 	 */
 	public static function from_temp($file, $directory)
 	{
-		return Upload_Temp::preloaded_filename($file);
+		return basename($file);
 	}
 
 	/**
@@ -471,7 +471,7 @@ class Kohana_Upload_File {
 	 * @param integer $width  
 	 * @param integer $height 
 	 */
-	public function set_size($model, $width_attribute, $height_attribute)
+	public function set_model_with_dimensions($model, $width_attribute, $height_attribute)
 	{
 		$this->_aspect = new Upload_File_Aspect($model, $width_attribute, $height_attribute);
 	}
@@ -506,7 +506,7 @@ class Kohana_Upload_File {
 	 */
 	public function width()
 	{
-		return $this->aspect() ? $this->aspect()->width() : 0;
+		return $this->_aspect ? $this->_aspect->width() : 0;
 	}
 
 	/**
@@ -515,7 +515,7 @@ class Kohana_Upload_File {
 	 */
 	public function height()
 	{
-		return $this->aspect() ? $this->aspect()->height() : 0;
+		return $this->_aspect ? $this->_aspect->height() : 0;
 	}
 
 	/**
@@ -524,7 +524,11 @@ class Kohana_Upload_File {
 	 */
 	public function aspect()
 	{
-		return $this->_aspect;
+		if ($this->_aspect)
+		{
+			return clone $this->_aspect->reset();
+		}
+		return NULL;
 	}
 
 	/**
@@ -590,6 +594,11 @@ class Kohana_Upload_File {
 		$this->generate_thumbnails();
 	}
 
+	/**
+	 * Generate the thumbnails if they are not generated
+	 * 
+	 * @return Upload_File $this
+	 */
 	public function generate_thumbnails()
 	{
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
@@ -599,8 +608,15 @@ class Kohana_Upload_File {
 				Upload_File::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
 			}
 		}
+
+		return $this;
 	}
  
+ 	/**
+ 	 * Save the file by moving it from temporary to the upload server
+ 	 * Generate the thumbnails if nesessary
+ 	 * @return Upload_File $this
+ 	 */
 	public function save()
 	{
 		$this->generate_thumbnails();
@@ -614,13 +630,25 @@ class Kohana_Upload_File {
 
 		$this->_source = NULL;
 		$this->_source_type = NULL;
+
+		return $this;
 	}
 
-	public function cleanup()
+	/**
+	 * Clear temporary files
+	 * @return Upload_File $this
+	 */
+	public function clear()
 	{
 		$this->temp()->clear();
+
+		return $this;
 	}
 
+	/**
+	 * Delete the current file on the server and clear temporary files
+	 * @return Upload_File $this
+	 */
 	public function delete()
 	{
 		$this->server()->unlink($this->full_path());
@@ -630,14 +658,27 @@ class Kohana_Upload_File {
 			$this->server()->unlink($this->full_path($thumbnail));
 		}
 
-		$this->cleanup();
+		$this->clear();
+
+		return $this;
 	}
 
+	/**
+	 * Get the current filename (temp or server)
+	 * @param  string $thumbnail 
+	 * @return string            
+	 */
 	public function file($thumbnail = NULL)
 	{
 		return $this->location('realpath', $thumbnail);
 	}
 
+	/**
+	 * Get the current url (temp or server)
+	 * @param  string $thumbnail 
+	 * @param  mixed $protocol  
+	 * @return string            
+	 */
 	public function url($thumbnail = NULL, $protocol = NULL)
 	{
 		$url = $this->location('webpath', $thumbnail);
@@ -645,6 +686,11 @@ class Kohana_Upload_File {
 		return URL::site($url, $protocol);
 	}
 
+	/**
+	 * Get the full path with the filename 
+	 * @param  string $thumbnail 
+	 * @return string            
+	 */
 	public function full_path($thumbnail = NULL)
 	{
 		return Upload_File::combine($this->path(), $thumbnail, $this->filename());
@@ -667,6 +713,10 @@ class Kohana_Upload_File {
 		}
 	}
 
+	/**
+	 * Check if its empty (no filename or source)
+	 * @return boolean 
+	 */
 	public function is_empty()
 	{
 		return ! $this->filename() AND ! $this->source();

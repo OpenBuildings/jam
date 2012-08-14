@@ -74,7 +74,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function attribute_builder(Jam_Model $model)
 	{
-		$model->loaded_insist();
+		if ( ! $model->loaded())
+			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
+
+
 		$builder = Jam::query($this->foreign())
 			->limit(1)
 			->where($this->foreign('field'), '=', $model->id());

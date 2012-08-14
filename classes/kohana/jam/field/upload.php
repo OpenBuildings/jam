@@ -105,7 +105,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 		if ($is_changed AND $upload_file = $model->{$this->name})
 		{
-			$upload_file->cleanup();
+			$upload_file->clear();
 		}
 	}
 
@@ -156,7 +156,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 		if ($this->save_size)
 		{
-			$upload_file->set_size($model, $this->name.'_width', $this->name.'_height');
+			$upload_file->set_model_with_dimensions($model, $this->name.'_width', $this->name.'_height');
 		}
 
 		return $upload_file;

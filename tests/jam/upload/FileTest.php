@@ -257,7 +257,7 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertFileExists($upload->file());
 		$this->assertEquals(0, strpos($upload->file(), $this->test_temp), 'The file should be in the temp folder');
 
-		$upload->cleanup();
+		$upload->clear();
 
 		$this->assertFileNotExists($upload->file());
 	}

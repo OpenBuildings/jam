@@ -40,9 +40,11 @@ class Kohana_Upload_File_Aspect extends Image_Aspect
 		return parent::height($new_height);
 	}
 
-	public function reload()
+	public function reset()
 	{
 		$this->_width = $this->_height = NULL;
+		
+		return $this;
 	}
 
 	public function ratio()
