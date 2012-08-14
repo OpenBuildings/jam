@@ -17,8 +17,8 @@ class Kohana_Jam_Exception_Validation extends Kohana_Exception {
 	{
 		$this->_model = $model;
 		
-		$fields[':model'] = $this->model = $model;
-		$fields[':errors'] = (string) $model->errors();
+		$fields[':model'] = $model->meta()->model;
+		$fields[':errors'] = $model->errors();
 		
 		parent::__construct($message, $fields);
 	}
@@ -26,5 +26,10 @@ class Kohana_Jam_Exception_Validation extends Kohana_Exception {
 	public function model()
 	{
 		return $this->_model;
+	}
+
+	public function errors()
+	{
+		return $this->_model->errors();
 	}
 }
