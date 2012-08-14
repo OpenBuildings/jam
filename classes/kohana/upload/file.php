@@ -206,8 +206,11 @@ class Kohana_Upload_File {
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_exec($curl);
 		fclose($handle);
+
+		$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+		$url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 		
-		$filename = Upload_File::normalize_extension($file, curl_getinfo($curl, CURLINFO_CONTENT_TYPE), curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+		$filename = Upload_File::normalize_extension($file, $mime_type, $url);
 
 		$result_file = Upload_File::combine($directory, $filename);
 		
