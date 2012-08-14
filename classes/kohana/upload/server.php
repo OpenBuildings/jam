@@ -238,10 +238,11 @@ abstract class Kohana_Upload_Server
 	 * Return a publicly accessable location of a file
 	 *
 	 * @param string $file
+	 * @param string|boolean $protocol
 	 * @return string
 	 * @author Ivan K
 	 **/	
-	abstract public function webpath($file);
+	abstract public function webpath($file, $protocol = NULL);
 
 		
 }

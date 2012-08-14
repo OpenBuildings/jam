@@ -125,9 +125,9 @@ class Kohana_Upload_Server_Local extends Upload_Server
 		return str_replace('\\', '/', rtrim($this->_config['path'], '/').'/'.$file);
 	}
 
-	public function webpath($file)
+	public function webpath($file, $protocol = NULL)
 	{
-		return rtrim($this->_config['web'], '/').'/'.$file;
+		return URL::site(rtrim($this->_config['web'], '/').'/'.$file, $protocol);
 	}	
 
 	public function is_writable($file)

@@ -136,8 +136,8 @@ class Kohana_Upload_Server_Rackspace extends Upload_Server
 		//throw new Kohana_Exception("Rackspace driver does not have real system paths");
 	}
 
-	public function webpath($file)
+	public function webpath($file, $protocol = NULL)
 	{
-		return rtrim($this->_config['cdn'], '/').'/'.$file;
+		return ($protocol ? rtrim($this->_config['cdn'], '/').'/' : '').$file;
 	}		
 }

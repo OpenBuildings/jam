@@ -681,9 +681,7 @@ class Kohana_Upload_File {
 	 */
 	public function url($thumbnail = NULL, $protocol = NULL)
 	{
-		$url = $this->location('webpath', $thumbnail);
-
-		return URL::site($url, $protocol);
+		return $this->location('webpath', $thumbnail, $protocol);
 	}
 
 	/**
@@ -696,7 +694,7 @@ class Kohana_Upload_File {
 		return Upload_File::combine($this->path(), $thumbnail, $this->filename());
 	}
 
-	protected function location($method, $thumbnail = NULL)
+	protected function location($method, $thumbnail = NULL, $protocol = NULL)
 	{
 		if ( ! $this->filename())
 			return NULL;
@@ -709,7 +707,7 @@ class Kohana_Upload_File {
 		}
 		else
 		{
-			return $this->server()->$method($this->full_path($thumbnail));
+			return $this->server()->$method($this->full_path($thumbnail), $protocol);
 		}
 	}
 
