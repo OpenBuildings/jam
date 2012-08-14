@@ -16,7 +16,7 @@ class Kohana_Jam_Validator_Rule_Confirmed extends Jam_Validator_Rule {
 	{
 		$confirmation = $this->confirmation ? $this->confirmation : $attribute.'_confirmation';
 
-		if ($value !==  $model->$confirmation)
+		if ($model->$confirmation AND $value !== $model->$confirmation)
 		{
 			$model->errors()->add($attribute, 'confirmed', array(':confirmation' => $confirmation));
 		}

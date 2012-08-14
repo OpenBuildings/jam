@@ -14,6 +14,7 @@ class Jam_Validator_PresentTest extends Unittest_Jam_TestCase {
 	{
 		return array(
 			array('', FALSE),
+			array('  ', FALSE),
 			array(NULL, FALSE),
 			array(0, FALSE),
 			array(1, TRUE),

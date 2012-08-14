@@ -26,7 +26,7 @@ Jam
 
 * [Getting Started](/OpenBuildings/Jam/blob/master/guide/jam/getting-started.md)
 * [Writing Models & Builders](/OpenBuildings/Jam/blob/master/guide/jam/models-and-builders.md)
-* [Validations](/OpenBuildings/Jam/blob/master/guide/jam/validations.md)
+* [Validators](/OpenBuildings/Jam/blob/master/guide/jam/validators.md)
 * [Fields](/OpenBuildings/Jam/blob/master/guide/jam/fields.md)
 * [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/uploads.md)
 * [Associations](/OpenBuildings/Jam/blob/master/guide/jam/associations.md)
