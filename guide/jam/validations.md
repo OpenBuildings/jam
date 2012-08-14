@@ -148,7 +148,7 @@ echo $post->set('title', 'New Post')->check();
 // Will return FALSE
 echo $post->set('title', NULL)->check();
 
-// Will rise a Jam_Validation_Exception with access to the errors and validation object
+// Will rise a Jam_Exception_Validation with access to the model
 $post->set('title', NULL)->check_insist();
 
 ?>

@@ -447,7 +447,7 @@ abstract class Kohana_Jam_Model extends Model {
 	/**
 	 * Validates the current model's data
 	 *
-	 * @throws  Jam_Validation_Exception
+	 * @throws  Jam_Exception_Validation
 	 * @param   Validation|null   $extra_validation
 	 * @return  Kohana_Jam_Model
 	 */
@@ -479,7 +479,7 @@ abstract class Kohana_Jam_Model extends Model {
 	public function check_insist()
 	{
 		if ( ! $this->check())
-			throw new Jam_Exception_Validation('There was an error validating model :model: :errors', $this);
+			throw new Jam_Exception_Validation('There was an error validating the :model: :errors', $this);
 		
 		return $this;
 	}
