@@ -25,7 +25,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 			{
 				foreach ( (array) $this->scope as $scope_attribute) 
 				{
-					$query->where($attribute, '=', $model->$scope_attribute);
+					$query->where($scope_attribute, '=', $model->$scope_attribute);
 				}
 			}
 
