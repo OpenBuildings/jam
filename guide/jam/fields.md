@@ -104,19 +104,9 @@ The following properties apply to nearly all fields.
 
 `column` — The name of the database column to use for this field. If this isn't given, the field name will be used.
 
-## Validation properties
-
-The following properties are available to all of the field types and mostly relate to validation. There is a more in-depth discussion of these properties on [Validations](/OpenBuildings/Jam/blob/master/guide/jam/validations.md).
-
-`unique` — A shortcut property for validating that the field's data is unique in the database.
-
-`unique_scope` — You can limit the uniqueness of the each model to a field or an array of field so only fields are the same will they be considered for uniqeness.
-
 `label` — The label to use for the field when validating.
 
 `filters` — Filters to apply to data before validating it.
-
-`rules` — Rules to use to validate the data with.
 
 
 ## Field Types
@@ -131,24 +121,6 @@ Represents a boolean. In the database, it is usually represented by a `tinyint`.
  * `false` - What to save `FALSE` as in the database.
 
 > __Be careful__ An exception will be thrown if you try to set `convert_empty` to `TRUE` on this field.
-
-#### Jam::field('enum')
-
-Represents an enumerated list. Keep in mind that this field accepts any value passed to it, and it is not until you `validate()` the model that you will know whether or not the value is valid or not.
-
-If you `allow_null` on this field, `NULL` will be added to the choices array if it isn't currently in it. Similarly, if `NULL` is in the choices array `allow_null` will be set to `TRUE`.
-
- * `choices` — An array of valid choices.
-
-Example:
-
-```php
-<?php
-	'field' => Jam::field('enum', array(
-		'choices' => array('big', 'small', 'medium'),
-	))
-?>
-```
 
 #### Jam::field('float')
 
@@ -189,11 +161,6 @@ The timestamp can be used to store date / datetime columns in the database
 	))
 ?>
 ``` 
-
-#### Jam::field('email')
-
-Represents an email. This automatically sets a validation rule that verifies it is a valid email address.
-
 #### Jam::field('expression')
 
 This field is a rather abstract type that allows you to pull a database expression back on SELECTs. Simply set your `column` to any `DB::expr()`.
@@ -292,7 +259,7 @@ Jam::field('image', array(
  * `types` — Valid file extensions that the file may have. Defaults to allowing JPEGs, GIFs, and PNGs.
 
 
-#### Jam::field('upload'), Jam::field('upload_image')
+#### Jam::field('upload')
 
 Those are the same as as file / image but have a more sophisticated functionality - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database. 
 

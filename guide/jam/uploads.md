@@ -5,7 +5,6 @@
 		- [Upload_Server_Ftp](#upload_server_ftp)
 		- [Upload_Server_Rackspace](#upload_server_rackspace)
 		- [Jam_Field_Upload](#jam_field_upload)
-		- [Jam_Field_Upload_Image](#jam_field_upload_image)
 	- [Forms](#forms)
 
 # Jam Upload Fields
