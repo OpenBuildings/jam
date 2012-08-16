@@ -31,6 +31,12 @@ class Jam_Behavior_NestedTest extends Unittest_Jam_TestCase {
 
 		$top = Jam::query('test_category')->root()->select_all()->ids();
 		$this->assertEquals(array(1, 2, 4), $top);
+
+		$top = Jam::query('test_category')->root(TRUE)->select_all()->ids();
+		$this->assertEquals(array(1, 2, 4), $top);
+
+		$top = Jam::query('test_category')->root(FALSE)->select_all()->ids();
+		$this->assertEquals(array(3), $top);
 	}
 
 	public function test_children()

@@ -38,9 +38,17 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	 * @param Jam_Event_Data $data    
 	 * @return Jam_Builder
 	 */
-	public function builder_call_root(Jam_Builder $builder, Jam_Event_Data $data)
-	{														
-		$data->return = $builder->where_open()->where($this->_field, '=', 0)->or_where($this->_field, 'IS', NULL)->where_close();
+	public function builder_call_root(Jam_Builder $builder, Jam_Event_Data $data, $is_root = TRUE)
+	{
+		if ($is_root)
+		{
+			$data->return = $builder->where_open()->where($this->_field, '=', 0)->or_where($this->_field, 'IS', NULL)->where_close();
+		}
+		else
+		{
+			$data->return = $builder->where($this->_field, '!=', 0)->where($this->_field, 'IS NOT', NULL);	
+		}
+		
 		$data->stop = TRUE;
 	}
 	
