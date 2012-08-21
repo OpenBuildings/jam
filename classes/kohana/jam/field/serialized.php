@@ -14,6 +14,16 @@
  */
 abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 
+	public $method = 'native';
+
+	public function initialize(Jam_Meta $meta, $model, $name)
+	{
+		parent::initialize($meta, $model, $name);
+
+		if ( ! in_array($this->method, array('native', 'json')))
+			throw new Kohana_Exception("Invalid serialization method ':method', can use only 'native' and 'json'", array(':method' => $this->method));
+	}
+
 	/**
 	 * Unserializes data as soon as it comes in.
 	 *
@@ -28,7 +38,7 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 
 		if ( ! $return)
 		{
-		 	if (is_string($value) AND ($new_value = @unserialize($value)) !== FALSE)
+		 	if (is_string($value) AND ($new_value = $this->unserialize($value)) !== FALSE)
 			{
 				$value = $new_value;
 			}
@@ -52,7 +62,31 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 			return NULL;
 		}
 
-		return @serialize($value);
+		return $this->serialize($value);
+	}
+
+	public function serialize($value)
+	{
+		switch ($this->method) 
+		{
+			case 'native':	
+				return serialize($value);
+
+			case 'json':	
+				return json_encode($value);
+		}
+	}
+
+	public function unserialize($value)
+	{
+		switch ($this->method) 
+		{
+			case 'native':	
+				return unserialize($value);
+
+			case 'json':	
+				return json_decode($value, TRUE);
+		}
 	}
 
 } // Kohana_Jam_Field_Serialized
