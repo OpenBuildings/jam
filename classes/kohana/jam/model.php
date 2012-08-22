@@ -458,6 +458,8 @@ abstract class Kohana_Jam_Model extends Model {
 		// Run validation only when new or changed
 		if ( ! $this->loaded() OR $this->changed())
 		{
+			$this->_move_retrieved_to_changed();
+			
 			$this->_meta->trigger_attribute_events($this, 'before_check');
 
 			$this->_meta->trigger_behavior_events($this, 'before_check');
@@ -505,6 +507,19 @@ abstract class Kohana_Jam_Model extends Model {
 		return $this->_errors;
 	}
 
+	protected function _move_retrieved_to_changed()
+	{
+		foreach ($this->_retrieved as $column => $value) 
+		{
+			if ( ! isset($this->_changed[$column])
+				AND $association = $this->_meta->association($column)
+				AND $association instanceof Jam_Association_Collection
+				AND $value->changed())
+			{
+				$this->_changed[$column] = $value;
+			}
+		}
+	}
 
 	/**
 	 * Creates or updates the current record.
@@ -518,6 +533,8 @@ abstract class Kohana_Jam_Model extends Model {
 
 		$key = $this->_original[$this->_meta->primary_key()];
 		
+		$this->_move_retrieved_to_changed();
+
 		// Run validation
 		if ($validate !== FALSE)
 		{
@@ -526,18 +543,6 @@ abstract class Kohana_Jam_Model extends Model {
 
 		// These will be processed later
 		$values = $saveable = array();
-
-
-		foreach ($this->_retrieved as $column => $value) 
-		{
-			if ( ! isset($this->_changed[$column])
-				AND $association = $this->_meta->association($column)
-				AND $association instanceof Jam_Association_Collection
-				AND $value->changed())
-			{
-				$this->_changed[$column] = $value;
-			}
-		}
 
 		$this->_meta->trigger_attribute_events($this, 'before_save');
 

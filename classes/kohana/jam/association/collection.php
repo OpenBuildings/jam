@@ -59,9 +59,10 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		if ($is_changed)
 		{
 			$collection = $model->{$this->name};
+
 			foreach ($collection as $i => $item)
 			{
-				if ( ! $item->deleted() AND is_numeric($i))
+				if (is_object($item) AND ! $item->deleted() AND is_numeric($i))
 				{
 					$this->assign_relation($model, $item);
 					if ( ! $item->check())
