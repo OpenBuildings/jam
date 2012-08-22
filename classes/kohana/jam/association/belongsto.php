@@ -115,7 +115,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	{
 		if ($is_changed AND $model->{$this->name} AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
 		{
-			$model->errors()->add($this->name, 'association');
+			$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
 		}
 	}
 
