@@ -88,7 +88,7 @@ class Kohana_Jam_Extension_CountCache extends Jam_Extension {
 
 	public function update_model_count(Jam_Association $association, Jam_Event_Data $data, Jam_Model $model, $is_changed)
 	{
-		if ($model->{$association->name})
+		if ($model->{$association->name} AND ! $model->changed($association->count_cache))
 		{
 			$model->{$association->count_cache} = count($model->{$association->name});
 		}
