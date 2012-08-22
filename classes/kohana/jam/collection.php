@@ -70,7 +70,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 	 */
 	public function __construct($result, $model = NULL)
 	{
-		if ($result instanceof Jam_Collection OR is_array($result) OR is_numeric($result) OR ! $result)
+		if ($result instanceof Jam_Collection OR $result instanceof Jam_Model OR is_array($result) OR is_numeric($result) OR ! $result)
 		{
 			$this->result($this->_convert_to_array($result));
 		}
