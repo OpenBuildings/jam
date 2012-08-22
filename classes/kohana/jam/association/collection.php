@@ -53,6 +53,26 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
 	}
+
+	public function attribute_after_check(Jam_Model $model, $is_changed)
+	{
+		if ($is_changed)
+		{
+			$collection = $model->{$this->name};
+			foreach ($collection as $i => $item)
+			{
+				if ( ! $item->deleted() AND is_numeric($i))
+				{
+					$this->assign_relation($model, $item);
+					if ( ! $item->check())
+					{
+						$model->errors()->add($this->name, 'association', array(':errors' => $item->errors()));
+					}
+					$collection[$i] = $item;
+				}
+			}	
+		}
+	}
 	
 	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
 	{

@@ -25,4 +25,5 @@ return array(
 	'numeric_odd'                      => ':attribute must be an odd number',
 	'numeric_even'                     => ':attribute must be an even number',
 	'numeric_only_integer'             => ':attribute must be an integer ',
+	'association'                      => 'There were errors in :attribute: :errors',
 );

@@ -151,6 +151,15 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
+	public function attribute_after_check(Jam_Model $model, $is_changed)
+	{
+		if ($is_changed AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
+		{
+			$model->errors()->add($this->name, 'association');
+		}
+	}
+
+
 	public function attribute_after_save(Jam_Model $model, $is_changed)
 	{
 		if ($is_changed)
