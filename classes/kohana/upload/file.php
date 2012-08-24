@@ -224,7 +224,7 @@ class Kohana_Upload_File {
 		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
 			return NULL;
 
-		$filename = Upload_File::sanitize($file);
+		$filename = Upload_File::sanitize(basename($file));
 		$result_file = Upload_File::combine($directory, $filename);
 
 		copy($file, $result_file);
@@ -560,12 +560,15 @@ class Kohana_Upload_File {
 		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
 		$this->filename($filename);
 
-		if ($this->_transformations)
+		if (($this->_transformations OR $this->_thumbnails) AND getimagesize($this->file()))
 		{
-			Upload_File::transform_image($this->file(), $this->file(), $this->transformations());
-		}
+			if ($this->_transformations)
+			{
+				Upload_File::transform_image($this->file(), $this->file(), $this->transformations());
+			}
 
-		$this->generate_thumbnails();
+			$this->generate_thumbnails();
+		}
 	}
 
 	/**
@@ -593,8 +596,11 @@ class Kohana_Upload_File {
  	 */
 	public function save()
 	{
-		$this->generate_thumbnails();
-		
+		if ($this->_thumbnails AND getimagesize($this->file()))
+		{
+			$this->generate_thumbnails();
+		}
+			
 		$this->server()->save_from_local($this->full_path(), $this->file());
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
