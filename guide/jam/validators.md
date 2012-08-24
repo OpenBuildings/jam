@@ -342,7 +342,6 @@ class Model_User extends Jam_Model {
 ?>
 ```
 
-
 ### length
 
 This validator checks the length of the attributes’ values. It provides a variety of options, so you can specify length constraints in different ways:
