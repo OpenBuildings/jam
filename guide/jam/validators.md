@@ -20,6 +20,7 @@
 		- [Using a Callable with 'if' and 'unless'](#using-a-callable-with-'if'-and-'unless')
 		- [Grouping conditional validations](#grouping-conditional-validations)
 	- [Performing Custom Validations](#performing-custom-validations)
+	- [Models only for validation](#models-only-for-validation)
 
 # Validations Overview
 
@@ -604,3 +605,64 @@ class Model_User extends Jam_Model {
 }
 ?>
 ```
+
+## Models only for validation
+
+Sometimes you want to use validation, but without accually having a database table to store the model information in. You can create models that don't have any connection to a database (no save() and delete() methods), but can use all the validations. Jam_Model accually extends Jam_Validated, which encapsulates all the logic that is not associatited with the database, so you can extend it instead of Jam_Model, and use it as if its is a Jam_Model itself. 
+
+For example we want to have a login form, but we only want to validate it, without storing anithing in the DB. We just create a Model_Session:
+
+```php
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+class Model_Session extends Jam_Validated {
+
+	public $login_on_check;
+
+	public static function initialize(Jam_Meta $meta)
+	{
+
+		$meta->fields(array(
+			'email' => Jam::field('string'),
+			'password' => Jam::field('string'),
+			'remember_me' => Jam::field('boolean'),
+		));
+
+		$meta
+			->validator('email', 'password', array('present' => TRUE));
+	}
+
+	public function validate()
+	{
+		if ($this->login_on_check AND $this->is_valid() AND ! $this->login())
+		{
+			$this->errors()->add('email', 'login');
+		}
+	}
+
+	public function login()
+	{
+		return Auth::instance()->login($this->email, $this->password, $this->remember_me);
+	}
+
+}
+?>
+```
+
+We even encapsulte the logging in logic with this model allowing us to validate the form and login with one call to `$session->check()`.
+Also we can easily use Jam_Form and its methods to build the form and use all the error messages from it.
+
+```
+<?php echo Form::open('/login') ?>
+	<?php echo $form->row('input', 'email') ?>
+	<?php echo $form->row('input', 'passowrd') ?>
+
+	<div class="remember-row">
+		<?php echo $form->row('checkbox', 'remember_me', array('label' => 'Remember me')) ?>
+	</div>
+
+	<?php echo Form::button('submit', 'Login') ?>
+
+<?php echo Form::close() ?>
+```
+
