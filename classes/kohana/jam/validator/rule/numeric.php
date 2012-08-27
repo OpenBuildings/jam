@@ -28,7 +28,7 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 
 	public $only_integer;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ( ! is_numeric($value))
 		{

@@ -252,7 +252,7 @@ abstract class Kohana_Jam {
 		if (class_exists($class))
 		{
 			// Prevent accidentally trying to load ORM or Sprig models
-			if ( ! is_subclass_of($class, "Jam_Model"))
+			if ( ! is_subclass_of($class, "Jam_Validated"))
 			{
 				return FALSE;
 			}
@@ -277,12 +277,12 @@ abstract class Kohana_Jam {
 	/**
 	 * Returns the class name of a model
 	 *
-	 * @param   string|Jam_Model  $model
+	 * @param   string|Jam_Validated  $model
 	 * @return  string
 	 */
 	public static function class_name($model)
 	{
-		if ($model instanceof Jam_Model)
+		if ($model instanceof Jam_Validated)
 		{
 			return strtolower(get_class($model));
 		}
@@ -295,12 +295,12 @@ abstract class Kohana_Jam {
 	/**
 	 * Returns the model name of a class
 	 *
-	 * @param   string|Jam_Model  $model
+	 * @param   string|Jam_Validated  $model
 	 * @return  string
 	 */
 	public static function model_name($model)
 	{
-		if ($model instanceof Jam_Model)
+		if ($model instanceof Jam_Validated)
 		{
 			$model = get_class($model);
 		}

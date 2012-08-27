@@ -22,7 +22,7 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 
 	public $ip;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ($this->regex !== NULL AND ! (preg_match($this->regex, $value)))
 		{

@@ -46,7 +46,7 @@ abstract class Kohana_Jam_Validator {
 		}
 	}
 
-	public function condition_met(Jam_Model $model)
+	public function condition_met(Jam_Validated $model)
 	{
 		if ( ! $this->condition)
 			return TRUE;
@@ -72,11 +72,11 @@ abstract class Kohana_Jam_Validator {
 		return $this->condition_negative ? ! $result : $result;
 	}
 
-	public function validate_model(Jam_Model $model)
+	public function validate_model(Jam_Validated $model)
 	{
 		foreach ($this->attributes as $attribute) 
 		{
-			if (( ! $model->loaded() OR $model->changed($attribute) OR $model->unmapped($attribute)) AND $this->condition_met($model))
+			if (($model instanceof Jam_Model AND ! $model->loaded() OR $model->changed($attribute) OR $model->unmapped($attribute)) AND $this->condition_met($model))
 			{
 				$value = $model->$attribute;
 

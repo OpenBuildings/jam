@@ -18,7 +18,7 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 
 	public $is;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		$length = mb_strlen($value);
 		$params = (array) $this;

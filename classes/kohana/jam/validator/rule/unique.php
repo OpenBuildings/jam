@@ -12,7 +12,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 
 	public $scope;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		// According to the SQL standard NULL is not checked by the unique constraint
 		// We also skip this test if the value is the same as the default value

@@ -33,7 +33,7 @@ class Kohana_Jam_Validator_Rule_Uploaded extends Jam_Validator_Rule {
 		return $extensions;
 	}
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ( ! $value->is_empty() AND $value->source())
 		{

@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	 * @param  mixed  $result
 	 * @param  mixed  $model
 	 */
-	public function __construct(Jam_Model $model, $error_filename)
+	public function __construct(Jam_Validated $model, $error_filename)
 	{
 		$this->_model = $model;
 		$this->_error_filename = $error_filename;

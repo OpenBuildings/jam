@@ -283,7 +283,7 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function execute_validators(Jam_Model $model)
+	public function execute_validators(Jam_Validated $model)
 	{
 		foreach ($this->_validators as $validator) 
 		{
@@ -298,7 +298,7 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function trigger_attribute_events(Jam_Model $model, $event, $value = NULL)
+	public function trigger_attribute_events(Jam_Validated $model, $event, $value = NULL)
 	{
 		foreach ($this->attributes() as $name => $attribute)
 		{
@@ -306,7 +306,7 @@ abstract class Kohana_Jam_Meta {
 		}
 	}
 
-	public function trigger_behavior_events(Jam_Model $model, $event)
+	public function trigger_behavior_events(Jam_Validated $model, $event)
 	{
 		return $this->_events->trigger('model.'.$event, $model);
 	}

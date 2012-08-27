@@ -65,6 +65,8 @@ abstract class Kohana_Jam_Validated extends Model {
 
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
+
+		$this->_original = $this->_meta->defaults();
 	}
 
 	/**
@@ -190,7 +192,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function __toString()
 	{
-		return (string) get_class($this).'('.($this->id() ? $this->id() : 'NULL').')';
+		return (string) get_class($this).'('.($this->is_valid() ? 'Valid' : 'Not Valid').')';
 	}
 
 	/**

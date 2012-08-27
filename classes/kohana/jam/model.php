@@ -433,4 +433,19 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		return $this->_meta->association_insist($name)->create($this, $attributes);
 	}
+
+	/**
+	 * Returns a string representation of the model in the
+	 * form of `Model_Name (id)` or `Model_Name (NULL)` if
+	 * the model is not loaded.
+	 *
+	 * This is designed to be useful for debugging.
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return (string) get_class($this).'('.($this->loaded() ? $this->id() : 'NULL').')';
+	}
+
 }  // End Kohana_Jam_Model

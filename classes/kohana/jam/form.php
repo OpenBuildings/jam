@@ -97,7 +97,7 @@ abstract class Kohana_Jam_Form {
 	 */
 	protected $_meta;
 
-	function __construct(Jam_Model $model)
+	function __construct(Jam_Validated $model)
 	{
 		$this->_object = $model;
 		$this->_meta = Jam::meta($model);
@@ -120,7 +120,7 @@ abstract class Kohana_Jam_Form {
 	}
 
 	/**
-	 * @return Jam_Model this form is bound to
+	 * @return Jam_Validated this form is bound to
 	 */
 	public function object()
 	{

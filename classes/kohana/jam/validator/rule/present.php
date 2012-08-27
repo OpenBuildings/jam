@@ -12,7 +12,7 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 
 	public $allow_null = FALSE;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ( 
 			! $value

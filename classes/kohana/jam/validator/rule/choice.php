@@ -14,7 +14,7 @@ class Kohana_Jam_Validator_Rule_Choice extends Jam_Validator_Rule {
 
 	public $not_in;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ($this->in !== NULL AND ! (in_array($value, $this->in)))
 		{

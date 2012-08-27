@@ -26,7 +26,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * @param array  $attributes html attributes for the input field
 	 * @return string
 	 */
-	public function row($type, $name, array $options = array(), array $attributes = array())
+	public function row($type, $name, array $options = array(), array $attributes = array(), $template = NULL)
 	{
 		$errors = $this->errors($name);
 
@@ -44,7 +44,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 			':field' => $field,
 		);
 
-		return strtr($this->template, $slots);
+		return strtr($template ? $template : $this->template, $slots);
 	}
 
 	/**

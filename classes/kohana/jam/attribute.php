@@ -140,7 +140,7 @@ abstract class Kohana_Jam_Attribute {
 		return $this->extensions[$extension_name];
 	}
 
-	public function get(Jam_Model $model, $value, $is_changed)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		return $this->trigger('get', $model, $value, $is_changed);
 	}
@@ -170,12 +170,12 @@ abstract class Kohana_Jam_Attribute {
 		return $this->trigger('after_save', $model, $is_changed);
 	}
 
-	public function before_check(Jam_Model $model, $is_changed)
+	public function before_check(Jam_Validated $model, $is_changed)
 	{
 		return $this->trigger('before_check', $model, $is_changed);
 	}
 
-	public function after_check(Jam_Model $model, $is_changed)
+	public function after_check(Jam_Validated $model, $is_changed)
 	{
 		return $this->trigger('after_check', $model, $is_changed);
 	}

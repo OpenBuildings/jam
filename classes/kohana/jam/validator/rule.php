@@ -23,6 +23,6 @@ abstract class Kohana_Jam_Validator_Rule {
 		}
 	}
 
-	abstract public function validate(Jam_Model $model, $attribute, $value);
+	abstract public function validate(Jam_Validated $model, $attribute, $value);
 
 }

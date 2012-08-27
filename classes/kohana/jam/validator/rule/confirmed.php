@@ -12,7 +12,7 @@ class Kohana_Jam_Validator_Rule_Confirmed extends Jam_Validator_Rule {
 
 	public $confirmation;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		$confirmation = $this->confirmation ? $this->confirmation : $attribute.'_confirmation';
 

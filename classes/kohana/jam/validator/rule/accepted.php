@@ -12,7 +12,7 @@ class Kohana_Jam_Validator_Rule_Accepted extends Jam_Validator_Rule {
 
 	public $accept = TRUE;
 
-	public function validate(Jam_Model $model, $attribute, $value)
+	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ($value != $this->accept)
 		{
