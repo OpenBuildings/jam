@@ -4,9 +4,9 @@
  * Resource_Jam_Exception_Sluggable class
  * Jam Sluggable Exception
  *
- * @package    OpenBuildings/jam
+ * @package    Despark/jam
  * @author     Yasen Yanev
- * @copyright  (c) 2012 OpenBuildings Inc.
+ * @copyright  (c) 2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Sluggable extends Kohana_Exception {

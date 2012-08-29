@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * @package    OpenBuildings/jam-upload
+ * @package    Despark/jam-upload
  * @author     Ivan Kerin
- * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 abstract class Kohana_Jam_Field_Upload extends Jam_Field {

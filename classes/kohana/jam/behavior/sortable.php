@@ -6,7 +6,7 @@
  * @package    Jam
  * @category   Behavior
  * @author     Ivan Kerin
- * @copyright  (c) 2011-2012 OpenBuildings Inc.
+ * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 class Kohana_Jam_Behavior_Sortable extends Jam_Behavior 

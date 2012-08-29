@@ -35,6 +35,6 @@ Jam
 
 --------
 
-Jam was developed by [OpenBuildings](http://openbuildings.com) Team as part of the [Clippings](http://clippings.com) Project, and is with the same license as the original Jam - [ISC](http://www.opensource.org/licenses/isc-license.txt)
+Jam was developed by [Despark](http://despark.com) Team as part of the [Clippings](http://clippings.com) Project, and is with the same license as the original Jam - [ISC](http://www.opensource.org/licenses/isc-license.txt)
 
 The guide itself is heavily influenced by [Rails Guides](http://guides.rubyonrails.org/) - they did amazing work of creating an accessible documentation and as I'm not much of a writer I've tried to follow their example as much as possible.

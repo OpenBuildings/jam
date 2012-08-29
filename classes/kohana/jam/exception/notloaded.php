@@ -4,9 +4,9 @@
  * Resource_Jam_Exception_NotLoaded class
  * Jam NotLoaded Exception
  *
- * @package    OpenBuildings/http-resource
+ * @package    Despark/http-resource
  * @author     Haralan Dobrev
- * @copyright  (c) 2012 OpenBuildings Inc.
+ * @copyright  (c) 2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_NotLoaded extends Kohana_Exception {

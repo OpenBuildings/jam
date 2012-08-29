@@ -12,7 +12,7 @@
  * @author     Yasen Yanev
  * @author     Ivan Kerin
  * @author     Haralan Dobrev
- * @copyright  (c) 2012 OpenBuildings Inc.
+ * @copyright  (c) 2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  * @version 1.0
  */

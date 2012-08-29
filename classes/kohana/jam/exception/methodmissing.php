@@ -5,7 +5,7 @@
  *
  * @package    Jam
  * @author     Ivan Kerin
- * @copyright  (c) 2012 OpenBuildings Inc.
+ * @copyright  (c) 2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_MethodMissing extends Kohana_Exception {

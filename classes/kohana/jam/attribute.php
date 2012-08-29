@@ -5,7 +5,7 @@
  * @package    Jam
  * @category   Attribute
  * @author     Ivan Kerin
- * @copyright  (c) 2012 OpenBuildings Ltd.
+ * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Attribute {
