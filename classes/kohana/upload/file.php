@@ -150,7 +150,7 @@ class Kohana_Upload_File {
 	{
 		$args = func_get_args();
 
-		foreach ($args as $i => &$arg)
+		foreach ($args as $i => & $arg)
 		{
 			$arg = $i == 0 ? rtrim($arg, DIRECTORY_SEPARATOR) : trim($arg, DIRECTORY_SEPARATOR);
 		}
