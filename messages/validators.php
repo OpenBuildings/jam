@@ -32,4 +32,9 @@ return array(
 	'uploaded_maximum_width'           => ':attribute\'s width must be smaller than :maximum_width',
 	'uploaded_maximum_height'          => ':attribute\'s height must be smaller than :maximum_height',
 	'association'                      => 'There were errors in :attribute: :errors',
+	'format_email'                     => ':attribute must be a valid email address',
+	'format_url'                       => ':attribute must be a valid URL',
+	'format_ip'                        => ':attribute must be a valid IP address',
+	'format_regex'                     => ':attribute is invalid',
+	'format_filter'                    => ':attribute is invalid',
 );

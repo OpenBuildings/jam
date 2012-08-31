@@ -15,8 +15,6 @@
 			- [Jam::field('timestamp')](#jam::field'timestamp')
 			- [Jam::field('email')](#jam::field'email')
 			- [Jam::field('expression')](#jam::field'expression')
-			- [Jam::field('file')](#jam::field'file')
-			- [Jam::field('image')](#jam::field'image')
 			- [Jam::field('upload'), Jam::field('upload_image')](#jam::field'upload'-jam::field'upload_image')
 			- [Jam::field('password')](#jam::field'password')
 			- [Jam::field('serialized')](#jam::field'serialized')
@@ -38,14 +36,9 @@ class Model_Post extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->fields(array(
-			'id'              => Jam::field('primary'),
-			'title'           => Jam::field('string', array(
-				'unique' => TRUE,
-				'rules' => array(
-					array('not_empty')
-				),
-			)),
-			'content'         => Jam::field('text'),
+			'id'      => Jam::field('primary'),
+			'title'   => Jam::field('string')
+			'content' => Jam::field('text'),
 		));
 	}
 }
@@ -67,12 +60,7 @@ class Model_Post extends Jam_Model {
 	{
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'title'           => Jam::field('string', array(
-				'unique' => TRUE,
-				'rules' => array(
-					array('not_empty')
-				),
-			)),
+			'title'           => Jam::field('string')
 		));
 
 		$meta->field('content', Jam::field('text'));
@@ -189,79 +177,9 @@ This should be defined in the `cast` property:
 
 > __Be careful__ Keep in mind that aliasing breaks down in Database_Expressions.
 
-#### Jam::field('file')
-
-Represents a file upload. Pass a valid file upload to this and it will be saved automatically in the location you specify.
-
-In the database, the filename is saved, which you can use in your application logic.
-
-To make this field required use the `Upload::not_empty` rule instead of the simple `not_empty`.
-
-You must be careful not to pass `NULL` or some other value to this field if you do not want the current filename to be overwritten.
-
- * `path` — This must point to a valid, writable directory to save the file to.
- * `delete_file` — If this value is `TRUE` file is automatically deleted upon deletion. The default is `FALSE`.
- * `delete_old_file` — Whether or not to delete the old file when a new one is successfully uploaded. Defaults to `FALSE`.
- * `types` — Valid file extensions that the file may have.
-
-#### Jam::field('image')
-
-Represents an image upload. This behaves almost exactly the same as Jam::field('File') except it allows to transform the original image and create unlimited number of different thumbnails.
-
-To make this field required use the `Upload::not_empty` rule instead of the simple `not_empty`.
-
-Here is an example where you resize the original image and create a thumbnail.
-
-```php
-<?php 
-Jam::field('image', array(
-	// where to save the original image
-	'path'			  => 'upload/images/',
-	// transformations for the original image, refer to the Image module on available methods
-	'transformations' => array(
-		'resize' => array(1600, 1600, Image::AUTO),  // width, height, master dimension
-	),
-	// desired quality of the saved image, default 100
-	'quality'		  => 75,
-	// define your thumbnails here, if saving the thumbnail to the original's directory don't forget to set a prefix
-	'thumbnails'      => array (
-		// 1st thumbnail
-		array(
-			// where to save the thumbnail
-			'path'   => 'upload/images/thumbs/',
-			// prefix for the thumbnail filename
-			'prefix' => 'thumb_',
-			// transformations for the thumbnail, refer to the Image module on available methods
-			'transformations' => array(
-				'resize' => array(500, 500, Image::AUTO),  // width, height, master dimension
-				'crop'   => array(100, 100, NULL, NULL),   // width, height, offset_x, offset_y
-			),
-			// desired quality of the saved thumbnail, default 100
-			'quality' => 50,
-		),
-		// 2nd thumbnail
-		array(
-			// ...
-		),
-	)
-));
-?>
-```
-
-> __Be careful__ The transformation steps will be performed in the order you specify them in the array.
-
- * `path` — This must point to a valid, writable directory to save the original image to.
- * `transformations` — Transformations for the image, refer to the Image module on available methods.
- * `quality` — desired quality of the saved image between 0 and 100, defaults to 100.
- * `driver` — image driver to use, default is `NULL` which will result in using [Image::$default_driver](../api/Image#property:default_driver)
- * `delete_old_file` — Whether or not to delete the old files when a new image is successfully uploaded. Defaults to `FALSE`.
- * `delete_file` — If this value is `TRUE` image and thumbnails are automatically deleted upon deletion. The default is `FALSE`.
- * `types` — Valid file extensions that the file may have. Defaults to allowing JPEGs, GIFs, and PNGs.
-
-
 #### Jam::field('upload')
 
-Those are the same as as file / image but have a more sophisticated functionality - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database. 
+You can use this field to store images and files, with some special features - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database. 
 
 You can read more about it in [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/upload.md) section.
 
@@ -274,6 +192,8 @@ Represents an password. This automatically sets a validation callback that hashe
 #### Jam::field('serialized')
 
 Represents any serialized data. Any serialized data in the database is unserialized before it's retrieved. Likewise, any data set on the field is serialized before it's saved.
+
+* `method` — 'native' or 'json' - use other methods to serialze the data. Defaults to 'native'
 
 #### Jam::field('slug')
 
