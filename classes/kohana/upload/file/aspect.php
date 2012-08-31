@@ -12,7 +12,9 @@ class Kohana_Upload_File_Aspect extends Image_Aspect
 	protected $_model;
 	protected $_width_attribute;
 	protected $_height_attribute;
-
+	protected $_default_width;
+	protected $_default_height;
+	
 	function __construct(Jam_Model $model, $width_attribute, $height_attribute)
 	{
 		$this->_model = $model;
@@ -23,18 +25,26 @@ class Kohana_Upload_File_Aspect extends Image_Aspect
 	public function width($new_width = NULL)
 	{
 		if ( ! $this->_width)
-		{
-			$this->_width = $this->_model->{$this->_width_attribute};
+		{			
+			$this->_width = $this->_model->{$this->_width_attribute} ? $this->_model->{$this->_width_attribute} : $this->_default_width;
 		}
 
 		return parent::width($new_width);
 	}
 
+	public function default_dims($width, $height)
+	{
+		$this->_default_width = $width;
+		$this->_default_height = $height;
+		
+		return $this;
+	}
+	
 	public function height($new_height = NULL)
 	{
 		if ( ! $this->_height)
 		{
-			$this->_height = $this->_model->{$this->_height_attribute};
+			$this->_height = $this->_model->{$this->_height_attribute} ? $this->_model->{$this->_height_attribute} : $this->_default_height;
 		}
 
 		return parent::height($new_height);
