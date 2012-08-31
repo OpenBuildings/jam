@@ -96,20 +96,22 @@ class AspectTest extends Unittest_TestCase {
 	public function data_constrain()
 	{
 		return array(
-			array(100, 500, 100, 100, array('width' => 20, 'height' => 100, 'x' => 40, 'y' => 0)),
-			array(500, 200, 100, 100, array('width' => 100, 'height' => 40, 'x' => 0, 'y' => 30)),
-			array(300, 300, 100, 100, array('width' => 100, 'height' => 100, 'x' => 0, 'y' => 0)),
+			array(100, 500, 100, 100, TRUE, array('width' => 20, 'height' => 100, 'x' => 40, 'y' => 0)),
+			array(500, 200, 100, 100, TRUE, array('width' => 100, 'height' => 40, 'x' => 0, 'y' => 30)),
+			array(300, 300, 100, 100, TRUE, array('width' => 100, 'height' => 100, 'x' => 0, 'y' => 0)),
+			array(600, 900, 800, 600, FALSE, array('width' => 400, 'height' => 600, 'x' => 200, 'y'=> 0)),
+			array(600, 900, 1000, 2000, FALSE, array('width' => 600, 'height' => 900, 'x' => 200, 'y' => 550	))
 		);
 	}
 
 	/**
 	 * @dataProvider data_constrain
 	 */
-	public function test_constrain($width, $height, $constrain_width, $constrain_height, $expected)
+	public function test_constrain($width, $height, $constrain_width, $constrain_height, $upscale, $expected)
 	{
 		$aspect = new Aspect($width, $height);
 
-		$aspect->constrain($constrain_width, $constrain_height);
+		$aspect->constrain($constrain_width, $constrain_height, $upscale);
 
 		$this->assertEquals($expected, $aspect->as_array());
 	}

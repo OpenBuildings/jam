@@ -208,31 +208,31 @@ class Kohana_Aspect {
 	public function constrain($width, $height, $upscale = TRUE)
 	{
 		$this->_x = $this->_y = 0;
-
-		if ( ! $upscale AND (($this->width() < $width) OR ($this->height() < $height)))
+		
+		$is_aspect_smaller =  ($width / $height) < $this->ratio();
+		
+		if ( $upscale)
 		{
-			if ($width > $this->width())
+			($is_aspect_smaller) ? $this->width($width) : $this->height($height);			
+		}
+		else
+		{
+			if ($is_aspect_smaller)
 			{
-				$width = $this->width();
-				$height = $width / $this->ratio();
+				$original_height = $this->height();			
+				$this->width(min($width, $this->width()));				
+				$this->height(min($original_height, $this->height()));				
 			}
-			elseif ($height > $this->height())
+			else
 			{
-				$height = $this->height();
-				$width = $width * $this->ratio();
-			}
+				$original_width = $this->width();
+				$this->height(min($height, $this->height()));
+				$this->width(min($original_width, $this->width()));
+			}	
 		}
-
-		if (($width / $height) < $this->ratio()) 
-		{
-			$this->width($width);
-			$this->_y = ($height - $this->height()) / 2.0;
-		}
-		else 
-		{
-			$this->height($height);
-			$this->_x = ($width - $this->width()) / 2.0;
-		}
+						
+		$this->_x = ($width - $this->width()) / 2.0;
+		$this->_y = ($height - $this->height()) / 2.0;
 
 		return $this;
 	}
