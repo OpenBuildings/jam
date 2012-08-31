@@ -126,9 +126,10 @@ class Kohana_Upload_File {
 		$filename_candidates = Upload_File::filenames_candidates_from_url($url);
 		$filename_candidates = array_filter($filename_candidates, 'Upload_File::is_filename');
 		$file = count($filename_candidates) ? reset($filename_candidates) : uniqid();
+		$extensions = File::exts_by_mime($mime_type);
 
 		$extension_candiates = array(
-			File::ext_by_mime($mime_type),
+			(is_array($extensions) ? end($extensions) : $extensions),
 			pathinfo($file, PATHINFO_EXTENSION),
 			'jpg',
 		);
@@ -221,7 +222,7 @@ class Kohana_Upload_File {
 	 */
 	public static function from_file($file, $directory)
 	{
-		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING)
+		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING OR strpos($file, DOCROOT) === 0)
 			return NULL;
 
 		$filename = Upload_File::sanitize(basename($file));
@@ -311,11 +312,16 @@ class Kohana_Upload_File {
 
 	protected $_aspect;
 
-	public function __construct($server, $path)
+	public function __construct($server, $path, $filename = NULL)
 	{
 		$this->_server = $server;
 
 		$this->_path = $path;
+
+		if ($filename !== NULL)
+		{
+			$this->_filename = $filename;
+		}
 	}
 
 	/**
@@ -569,6 +575,7 @@ class Kohana_Upload_File {
 
 			$this->generate_thumbnails();
 		}
+		return $this;
 	}
 
 	/**
