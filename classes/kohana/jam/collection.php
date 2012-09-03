@@ -466,7 +466,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 			}
 			else
 			{
-				throw new Kohana_Exception("Checking for id can be done only with numeric, Jam_Model or array of values");
+				throw new Kohana_Exception("Checking for id can be done only with numeric, Jam_Model or array of values, was :values", array(':values' => $values));
 			}
 		}
 
