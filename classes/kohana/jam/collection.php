@@ -688,4 +688,15 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		}
 	}
 
+	public function save()
+	{
+		if ( ! $this->_association OR ! $this->_parent)
+			throw new Kohana_Exception('Can only save associations');
+			
+		if ($this->changed())
+		{
+			$this->_association->after_save($this->_parent, TRUE);
+		}
+	}
+
 } // End Kohana_Jam_Collection
