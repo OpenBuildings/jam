@@ -150,26 +150,41 @@ class Kohana_Image_Aspect extends Aspect
 		return array('width' => $this->width(), 'height' => $this->height(), 'top' => $this->y(), 'left' => $this->x(), 'clip' => $this->clip());
 	}
 
-	public function style($unit = 'px')
+	public function style($unit = 'px', $only = array())
 	{
-		return join('; ', array(
-			'width: '.Image_Aspect::to_css_style($this->width(), $unit),
-			'height: '.Image_Aspect::to_css_style($this->height(), $unit),
-			'top: '.Image_Aspect::to_css_style($this->y(), $unit),
-			'left: '.Image_Aspect::to_css_style($this->x(), $unit),
-			'clip: rect('.Image_Aspect::to_css_style($this->clip(), $unit).')',
-		));
+		$properties = array(
+			'width' => Image_Aspect::to_css_style($this->width(), $unit),
+			'height' => Image_Aspect::to_css_style($this->height(), $unit),
+			'top' => Image_Aspect::to_css_style($this->y(), $unit),
+			'left' => Image_Aspect::to_css_style($this->x(), $unit),
+			'clip' => 'rect('.Image_Aspect::to_css_style($this->clip(), $unit).')'
+		);
+		
+		if ( ! empty($only))
+		{			
+			$properties = array_filter(Arr::extract($properties, $only));			
+		}
+						
+		return join('; ', array_map(function($v, $k){ return $k.':'.$v; }, array_values($properties), array_keys($properties)));		
 	}
 
-	public function canvas_style($unit = 'px')
+	public function canvas_style($unit = 'px', $only = array())
 	{
-		return join('; ', array(
-			'top: '.Image_Aspect::to_css_style($this->canvas_y(), $unit),
-			'left: '.Image_Aspect::to_css_style($this->canvas_x(), $unit),
-			'width: '.Image_Aspect::to_css_style($this->canvas_width(), $unit),
-			'height: '.Image_Aspect::to_css_style($this->canvas_height(), $unit),
-		));
+		$properties = array(
+			'top' => Image_Aspect::to_css_style($this->canvas_y(), $unit),
+			'left' => Image_Aspect::to_css_style($this->canvas_x(), $unit),
+			'width' => Image_Aspect::to_css_style($this->canvas_width(), $unit),
+			'height' => Image_Aspect::to_css_style($this->canvas_height(), $unit)
+		);
+		
+		if ( ! empty($only))
+		{			
+			$properties = array_filter(Arr::extract($properties, $only));			
+		}
+				
+		return join('; ', array_map(function($v, $k){ return $k.':'.$v; }, array_values($properties), array_keys($properties)));		
 	}
+		
 
 	public function position_style($unit = 'px')
 	{
