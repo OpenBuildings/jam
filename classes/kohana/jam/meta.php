@@ -427,7 +427,7 @@ abstract class Kohana_Jam_Meta {
 	 * @param   mixed        $field    the field alias or object
 	 * @return  Jam_Field|Jam_Meta|null
 	 */
-	public function field($name, $field = NULL)
+	public function field($name, $field = NULL, $prepend = FALSE)
 	{
 		if ($field === NULL)
 		{
@@ -445,7 +445,14 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		// Set the field
-		$this->_fields[$name] = $field;
+		if ($prepend)
+		{
+			$this->_fields = array($name => $field) + $this->_fields;
+		}
+		else
+		{
+			$this->_fields[$name] = $field;
+		}
 
 		// Return Jam_Meta
 		return $this;
@@ -500,7 +507,7 @@ abstract class Kohana_Jam_Meta {
 	 * @param   mixed        $association    the association alias or object
 	 * @return  Jam_Association|Jam_Meta|null
 	 */
-	public function association($name, $association = NULL)
+	public function association($name, $association = NULL, $prepend = FALSE)
 	{
 		if ($association === NULL)
 		{
@@ -518,7 +525,14 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		// Set the association
-		$this->_associations[$name] = $association;
+		if ($prepend)
+		{
+			$this->_associations = array($name => $association) + $this->_associations;
+		}
+		else
+		{
+			$this->_associations[$name] = $association;
+		}
 
 		// Return Jam_Meta
 		return $this;
