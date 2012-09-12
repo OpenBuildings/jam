@@ -17,6 +17,8 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 */
 	public $polymorphic = FALSE;
 
+	public $polymorphic_default_model = NULL;
+
 	/**
 	 * The name of the actual field holding the id of the associated model. Defaults to
 	 * <name>_id
@@ -152,7 +154,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	protected function builder_polymorphic(Jam_Model $model)
 	{
-		$parent_model = $model->{$this->polymorphic};
+		$parent_model = $model->{$this->polymorphic} ? $model->{$this->polymorphic} : $this->polymorphic_default_model;
 
 		if ( ! $parent_model)
 			return NULL;

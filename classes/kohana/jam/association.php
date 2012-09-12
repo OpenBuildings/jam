@@ -104,15 +104,26 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 		if ($this->is_polymorphic() AND $this instanceof Jam_Association_BelongsTo)
 		{
 			if ( ! is_array($array))
-				throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 
-					array(':model' => $this->model, ':name' => $this->name));
-				
-			$foreign_model = key($array);
-			$array = reset($array);
+			{
+				if ($this->polymorphic_default_model)
+				{
+					$foreign_model = $this->polymorphic_default_model;
+				}
+				else
+				{
+					throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 
+						array(':model' => $this->model, ':name' => $this->name));
+				}
+			}
+			else
+			{
+				$foreign_model = key($array);
+				$array = reset($array);
 
-			if ( ! Jam::meta($foreign_model))
-				throw new Kohana_Exception('Model :model, association :name is polymorphic and in mass assignment, model ":new_model" does not exist or the array is not constructed properly ( must be array("model" => aray("fields"...)) )', 
-					array(':model' => $this->model, ':name' => $this->name, ':new_model' => $foreign_model));
+				if ( ! Jam::meta($foreign_model))
+					throw new Kohana_Exception('Model :model, association :name is polymorphic and in mass assignment, model ":new_model" does not exist or the array is not constructed properly ( must be array("model" => aray("fields"...)) )', 
+						array(':model' => $this->model, ':name' => $this->name, ':new_model' => $foreign_model));
+			}
 		}
 		else
 		{
