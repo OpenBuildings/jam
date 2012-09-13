@@ -239,21 +239,6 @@ class Jam_Association_BelongsToTest extends Unittest_Jam_TestCase {
 		$this->assertTrue($test_image->test_holder->loaded());
 		$this->assertEquals(1, $test_image->test_holder->id());
 	}
-	
-	public function test_touch()
-	{
-		$test_tag = Jam::factory('test_tag', 1);
-		$post = $test_tag->test_post;
-		$this->assertEquals(1264985737, $post->updated);
-		
-		$test_tag->name .= '_edited';
-		$test_tag->save();
-		
-		$post = Jam::factory('test_tag', 1)->test_post;
-		
-		$this->assertGreaterThan(1264985737, $post->updated);
-		
-	}
 
 	public function test_polymorphic_model_set()
 	{
