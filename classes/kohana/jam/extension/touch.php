@@ -10,6 +10,8 @@
  */
 class Kohana_Jam_Extension_Touch extends Jam_Extension {
 
+	public $through;
+
 	public function initialize(Jam_Attribute $attribute)
 	{
 		if ($attribute instanceof Jam_Association_Collection)
@@ -25,8 +27,15 @@ class Kohana_Jam_Extension_Touch extends Jam_Extension {
 	public function touch_collection(Jam_Association $association, Jam_Event_Data $data, Jam_Model $model)
 	{
 		foreach ($model->{$association->name} as $item) 
-		{								
-			$item->_touch_if_untouched($model, $association->touch);
+		{
+			if ($this->through)
+			{
+				$item = $item->{$this->through};
+			}
+			if ($item AND $item->loaded())
+			{
+				$item->meta()->events()->trigger('model.touched', $item, array($association));
+			}
 		}	
 	}
 
@@ -36,7 +45,7 @@ class Kohana_Jam_Extension_Touch extends Jam_Extension {
 
 		if ($item instanceof Jam_Model AND $item->loaded())
 		{
-			$item->_touch_if_untouched($model, $association->touch);
+			$item->meta()->events()->trigger('model.touched', $item, array($association));
 		}
 	}
 }

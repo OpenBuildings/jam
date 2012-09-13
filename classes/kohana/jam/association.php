@@ -80,9 +80,7 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 
 		if ($this->touch)
 		{
-			$this->touch = ($this->touch === TRUE) ? 'updated_at' : $this->touch;
-
-			$this->extension('touch', Jam::extension('touch'));
+			$this->extension('touch', Jam::extension('touch', $this->touch));
 		}
 
 		$this->extension('general', Jam::extension('general'));

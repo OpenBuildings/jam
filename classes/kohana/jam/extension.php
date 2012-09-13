@@ -19,9 +19,12 @@ abstract class Kohana_Jam_Extension {
 	 */
 	public function __construct($options = array())
 	{
-		foreach ($options as $key => $option)
+		if (is_array($options))
 		{
-			$this->$key = $option;
+			foreach ($options as $key => $option)
+			{
+				$this->$key = $option;
+			}
 		}
 	}
 	
