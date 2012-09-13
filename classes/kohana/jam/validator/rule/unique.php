@@ -30,7 +30,6 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 			}
 
 			$query->limit(1);
-			
 
 			if ($query->count() AND ( ! $model->loaded() OR $query->select()->id() !== $model->id()))
 			{
