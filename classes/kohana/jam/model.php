@@ -36,11 +36,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 protected $_deleted = FALSE;
 
 	/**
-	 * @var Boolean use this to prevent multiple touches
-	 */
-	protected $_is_touched = FALSE;
-
-	/**
 	 * Constructor.
 	 *
 	 * A key can be passed to automatically load a model by its
@@ -271,7 +266,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// We're good!
 		$this->_retrieved = $this->_changed = array();
 
-		$this->_is_touched = $this->_is_saving = FALSE;
+		$this->_is_saving = FALSE;
 
 		return $this;
 	}
@@ -326,7 +321,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$this->_loaded =
 			$this->_saved  = TRUE;
-			$this->_is_touched = FALSE;
 
 			parent::revert();
 		}
@@ -342,7 +336,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function clear()
 	{
 		$this->_loaded =
-		$this->_is_touched =
 		$this->_saved  = FALSE;
 
 		parent::clear();
@@ -396,27 +389,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function deleted()
 	{
 		return $this->_deleted;
-	}
-
-	public function is_touched($value = NULL)
-	{
-		return $this->_is_touched;
-	}
-
-	public function _touch_if_untouched(Jam_Model $sender, $field)
-	{
-		if ( ! $this->_is_touched)
-		{
-			$this->touch($sender, $field);
-			$this->_is_touched = TRUE;
-		}
-	}
-
-	public function touch(Jam_Model $sender, $field)
-	{
-		Jam::query($this->meta()->model(), $this->id())
-			->value($field, $this->meta()->field($field)->convert(NULL, NULL, TRUE))
-			->update();
 	}
 
 	public function builder($name)
