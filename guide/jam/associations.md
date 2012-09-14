@@ -327,6 +327,30 @@ If you have an instance of the Model_Picture, you can get to its parent via $pic
 └─────────────────────────┴─────────┘
 </pre>
 
+If your polymorphic association is mainly conserned with a single table, and only occasionaly goes to other tables, you can take advantage of that using the "polymorphic_default_model" - by setting that you can use this as a normal belongsto association but can assign differnet models to it.
+
+```php
+<?php 
+class Model_Picture extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('imageable', Jam::association('belongsto', array('polymorphic' => TRUE, 'polymorphic_default_model' => 'product')));
+		// ...
+	}
+}
+
+$picture = Jam::factory('picture', 1);
+
+// Set the imagable just by ID, the _model will be set with the default
+$picture->imagable = 1;
+$picture->save();
+
+// You can join them up as if its a normal belongs to association
+Jam::query('picture')->join_association('imagable')->select_all();
+?>
+```
+
 ## Self Joins
 
 In designing a data model, you will sometimes find a model that should have a relation to itself. For example, you may want to store all employees in a single database model, but be able to trace relationships such as between manager and subordinates. This situation can be modeled with self-joining associations:

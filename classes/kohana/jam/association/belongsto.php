@@ -17,6 +17,10 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 */
 	public $polymorphic = FALSE;
 
+	/**
+	 * Default value for polymorphic model column. Allowes using polymorphic associations as normal belnogs to
+	 * @var string
+	 */
 	public $polymorphic_default_model = NULL;
 
 	/**
@@ -133,6 +137,8 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function join_polymorphic(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{
+		$alias = $alias ? $alias : $this->polymorphic_default_model;
+
 		if ( ! $alias)
 			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
 

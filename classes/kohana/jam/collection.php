@@ -688,15 +688,32 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		}
 	}
 
+	/**
+	 * Save the contents of the association, without touching the parent model
+	 * @return Jam_Collection $this
+	 */
 	public function save()
 	{
 		if ( ! $this->_association OR ! $this->_parent)
 			throw new Kohana_Exception('Can only save associations');
+
+		if ( ! $this->_parent->loaded)
+			throw new Kohana_Exception('The parent model must be loaded (saved)');
 			
 		if ($this->changed())
 		{
 			$this->_association->after_save($this->_parent, TRUE);
 		}
+
+		return $this;
 	}
 
+	/**
+	 * Return the builder responsible for this collection. Modifying it will have effect if you do this before iterating/changing through the collection
+	 * @return Jam_Builder 
+	 */
+	public function builder()
+	{
+		return $this->_builder;
+	}
 } // End Kohana_Jam_Collection
