@@ -14,7 +14,7 @@ In order to use Jam::field('upload'), you first have to configure where to save 
 The default configuration file:
 
 ```php
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 
 return array(
 	'jam' => array(
