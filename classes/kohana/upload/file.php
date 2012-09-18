@@ -566,7 +566,7 @@ class Kohana_Upload_File {
 		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
 		$this->filename($filename);
 
-		if (($this->_transformations OR $this->_thumbnails) AND getimagesize($this->file()))
+		if (($this->_transformations OR $this->_thumbnails) AND @ getimagesize($this->file()))
 		{
 			if ($this->_transformations)
 			{
@@ -603,7 +603,7 @@ class Kohana_Upload_File {
  	 */
 	public function save()
 	{
-		if ($this->_thumbnails AND getimagesize($this->file()))
+		if ($this->_thumbnails AND @ getimagesize($this->file()))
 		{
 			$this->generate_thumbnails();
 		}

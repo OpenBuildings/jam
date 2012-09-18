@@ -47,23 +47,26 @@ class Kohana_Jam_Validator_Rule_Uploaded extends Jam_Validator_Rule {
 			}
 			elseif ($this->minimum_width OR $this->minimum_height OR $this->maximum_width OR $this->maximum_height)
 			{
-				list($width, $height) = getimagesize($value->file());
-
-				if ($this->minimum_width AND $width < $this->minimum_width)
+				$dims = @ getimagesize($value->file());
+				if ($dims)
 				{
-					$model->errors()->add($attribute, 'uploaded_minimum_width', array(':minimum_width' => $this->minimum_width));		
-				}
-				if ($this->minimum_height AND $height < $this->minimum_height)
-				{
-					$model->errors()->add($attribute, 'uploaded_minimum_height', array(':minimum_height' => $this->minimum_height));		
-				}
-				if ($this->maximum_width AND $width > $this->maximum_width)
-				{
-					$model->errors()->add($attribute, 'uploaded_maximum_width', array(':maximum_width' => $this->maximum_width));		
-				}
-				if ($this->maximum_height AND $height > $this->maximum_height)
-				{
-					$model->errors()->add($attribute, 'uploaded_maximum_height', array(':maximum_height' => $this->maximum_height));		
+					list($width, $height) = $dims;
+					if ($this->minimum_width AND $width < $this->minimum_width)
+					{
+						$model->errors()->add($attribute, 'uploaded_minimum_width', array(':minimum_width' => $this->minimum_width));		
+					}
+					if ($this->minimum_height AND $height < $this->minimum_height)
+					{
+						$model->errors()->add($attribute, 'uploaded_minimum_height', array(':minimum_height' => $this->minimum_height));		
+					}
+					if ($this->maximum_width AND $width > $this->maximum_width)
+					{
+						$model->errors()->add($attribute, 'uploaded_maximum_width', array(':maximum_width' => $this->maximum_width));		
+					}
+					if ($this->maximum_height AND $height > $this->maximum_height)
+					{
+						$model->errors()->add($attribute, 'uploaded_maximum_height', array(':maximum_height' => $this->maximum_height));		
+					}
 				}
 			}
 		}

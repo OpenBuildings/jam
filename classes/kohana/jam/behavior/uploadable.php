@@ -41,11 +41,15 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	{
 		if ($model->changed($this->_name) AND is_file($model->{$this->_name}->file()))
 		{
-			list($model->{$this->_name.'_width'}, $model->{$this->_name.'_height'}) = getimagesize($model->{$this->_name}->file());
-			
-			if ($model->{$this->_name.'_width'} AND $model->{$this->_name.'_height'})
+			$dims = @ getimagesize($model->{$this->_name}->file());
+			if ($dims)
 			{
-				$model->is_portrait = (bool) (($model->{$this->_name.'_width'} / $model->{$this->_name.'_height'}) < 1);
+				list($model->{$this->_name.'_width'}, $model->{$this->_name.'_height'}) = $dims;
+				
+				if ($model->{$this->_name.'_width'} AND $model->{$this->_name.'_height'})
+				{
+					$model->is_portrait = (bool) (($model->{$this->_name.'_width'} / $model->{$this->_name.'_height'}) < 1);
+				}
 			}
 		}
 	}
