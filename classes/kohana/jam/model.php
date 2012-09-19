@@ -161,6 +161,23 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		}
 	}
 
+	public function update_fields($values, $value = NULL)
+	{
+		if ( ! $this->loaded())
+			throw new Kohana_Exception('Model must be loaded to use update_fields method');
+		
+		if ( ! is_array($values))
+		{
+			$values = array($values => $value);
+		}
+
+		Jam::query($this, $model->id())
+			->set($values)
+			->update();
+
+		return $this;
+	}
+
 	/**
 	 * Creates or updates the current record.
 	 *
