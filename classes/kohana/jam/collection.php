@@ -697,7 +697,7 @@ abstract class Kohana_Jam_Collection implements Iterator, Countable, SeekableIte
 		if ( ! $this->_association OR ! $this->_parent)
 			throw new Kohana_Exception('Can only save associations');
 
-		if ( ! $this->_parent->loaded)
+		if ( ! $this->_parent->loaded())
 			throw new Kohana_Exception('The parent model must be loaded (saved)');
 			
 		if ($this->changed())
