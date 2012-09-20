@@ -56,7 +56,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 	{
 		foreach ($children as $model => $associations) 
 		{
-			if ($result = Jam_Behavior_Cascade::_get_current_children_of_parent($current, $parent, $associations))
+			if ($result = Jam_Behavior_Cascade::_get_current_children_of_parent($current, $model, $associations))
 				return $result;
 		}
 		return NULL;
