@@ -45,6 +45,8 @@ abstract class Kohana_Jam_Event {
 	public function bind($event, $callback)
 	{
 		$this->_events[$event][] = $callback;
+		
+		return $this;
 	}
 
 	/**
