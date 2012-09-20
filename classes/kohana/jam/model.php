@@ -171,7 +171,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			$values = array($values => $value);
 		}
 
-		Jam::query($this, $model->id())
+		Jam::query($this, $this->id())
 			->set($values)
 			->update();
 
@@ -189,7 +189,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$this->_is_saving = TRUE;
 
 		$key = $this->_original[$this->_meta->primary_key()];
-		
+
 		$this->_move_retrieved_to_changed();
 
 		// Run validation
