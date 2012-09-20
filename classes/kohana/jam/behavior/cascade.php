@@ -43,7 +43,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 			{
 				$child_model = $association->foreign['model'];
 				$child_children = is_numeric($association_name) ? array() : $association_children;
-				$result = Jam_Behavior_Cascade::get_current_children($current, $child_children, $child_model);
+				$result = Jam_Behavior_Cascade::_get_current_children_of_parent($current, $child_model, $child_children);
 
 				if ($result !== NULL)
 					return $result;
