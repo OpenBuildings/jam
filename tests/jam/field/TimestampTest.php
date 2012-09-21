@@ -10,6 +10,31 @@
  */
 class Jam_Field_TimestampTest extends Unittest_TestCase {
 
+	public function test_shift_timezone()
+	{
+		$date = 1268649900;
+		$sofia_date = Jam_Field_Timestamp::shift_timezone($date, new DateTimeZone('UTC'), new DateTimeZone('Europe/Sofia'));
+
+		$this->assertEquals($date + 3600*2, $sofia_date);
+	}
+
+	public function test_default_timezone()
+	{
+		$this->assertEquals(date_default_timezone_get(), Jam_Field_Timestamp::default_timezone()->getName());
+	}
+
+	public function test_master_timezone()
+	{
+		$this->assertEquals('UTC', Jam_Field_Timestamp::master_timezone()->getName());	
+	}
+
+	public function test_date()
+	{
+		$date = date('c');
+		
+		Jam_Field_Timestamp::default_timezone()
+	}
+
 	/**
 	 * Provider for test_format
 	 */
