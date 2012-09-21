@@ -20,6 +20,7 @@
  */
 abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 
+	
 	/**
 	 * @var  int  default is NULL, which implies no date
 	 */
@@ -51,9 +52,30 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 
 		if ( ! isset($options['default']) AND ! $this->allow_null)
 		{
-			// Having a format implies we're saving a string, so we want a proper default
+			// Having a implies saving we're format a string, so we want a proper default
 			$this->default = $this->format ? '' : 0;
 		}
+	}
+
+
+	public function attribute_get($model, $value, $is_loaded)
+	{
+		if (Jam_Timezone::instance()->is_active())
+		{
+			if ( ! is_numeric($value) AND FALSE !== strtotime($value))
+			{
+				$value = strtotime($value);
+			}
+
+			$value = Jam_Timestamp::instance()->convert($value, Jam_Timestamp::MASTER, Jam_Timestamp::USER);
+
+			if ($this->format AND is_numeric($value))
+			{
+				$value = date($this->format, $value);
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -70,7 +92,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 		// Do we need to provide a default since we're creating or updating
 		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
 		{
-			$value = time();
+			$value = Jam_Timestamp::time();
 		}
 		else
 		{
@@ -83,22 +105,21 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 			{
 				$value = $to_time;
 			}
-		}
 
-		// Convert if necessary
-		if ($this->format)
-		{
-			// Does it need converting?
 			if ( ! is_numeric($value) AND FALSE !== strtotime($value))
 			{
 				$value = strtotime($value);
 			}
 
-			if (is_numeric($value))
-			{
-				$value = date($this->format, $value);
-			}
+			$value = Jam_Timestamp::instance()->convert($value, Jam_Timestamp::USER, Jam_Timestamp::MASTER);
 		}
+
+		// Convert if necessary
+		if ($this->format AND is_numeric($value))
+		{
+			$value = date($this->format, $value);
+		}
+
 
 		return $value;
 	}
