@@ -10,31 +10,6 @@
  */
 class Jam_Field_TimestampTest extends Unittest_TestCase {
 
-	public function test_shift_timezone()
-	{
-		$date = 1268649900;
-		$sofia_date = Jam_Field_Timestamp::shift_timezone($date, new DateTimeZone('UTC'), new DateTimeZone('Europe/Sofia'));
-
-		$this->assertEquals($date + 3600*2, $sofia_date);
-	}
-
-	public function test_default_timezone()
-	{
-		$this->assertEquals(date_default_timezone_get(), Jam_Field_Timestamp::default_timezone()->getName());
-	}
-
-	public function test_master_timezone()
-	{
-		$this->assertEquals('UTC', Jam_Field_Timestamp::master_timezone()->getName());	
-	}
-
-	public function test_date()
-	{
-		$date = date('c');
-		
-		Jam_Field_Timestamp::default_timezone()
-	}
-
 	/**
 	 * Provider for test_format
 	 */
@@ -57,7 +32,19 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$this->assertSame($field->convert(NULL, $value, FALSE), $expected);
+		$this->assertSame($field->convert(Jam::factory('test_post'), $value, FALSE), $expected);
+	}
+
+	public function test_timezone()
+	{
+		$field = new Jam_Field_Timestamp(array('format' => 'Y-m-d H:i:s'));
+		$field->timezone = new Jam_Timezone();
+		$field->timezone
+			->user_timezone('Europe/Sofia')
+			->default_timezone('Europe/Moscow');
+
+		$this->assertEquals("2010-03-15 03:45:00", $field->convert(Jam::factory('test_post'), "2010-03-15 05:45:00", FALSE), 'Should set modified data to the database');
+		$this->assertEquals("2010-03-15 05:45:00", $field->get(Jam::factory('test_post'), "2010-03-15 03:45:00", FALSE), 'Should load modified from the database');
 	}
 	
 	/**

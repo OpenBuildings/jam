@@ -19,7 +19,6 @@
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
-
 	
 	/**
 	 * @var  int  default is NULL, which implies no date
@@ -42,6 +41,12 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	public $format = NULL;
 
 	/**
+	 * Jam_Timezone object for manipulating timezones
+	 * @var Jam_Timezone
+	 */
+	public $timezone = NULL;
+
+	/**
 	 * Sets the default to 0 if we have no format, or an empty string otherwise.
 	 *
 	 * @param  array  $options
@@ -55,19 +60,20 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 			// Having a implies saving we're format a string, so we want a proper default
 			$this->default = $this->format ? '' : 0;
 		}
+		$this->timezone = Jam_Timezone::instance();
 	}
 
 
 	public function attribute_get($model, $value, $is_loaded)
 	{
-		if (Jam_Timezone::instance()->is_active())
+		if ($this->timezone->is_active() AND ! $is_loaded)
 		{
 			if ( ! is_numeric($value) AND FALSE !== strtotime($value))
 			{
 				$value = strtotime($value);
 			}
 
-			$value = Jam_Timestamp::instance()->convert($value, Jam_Timestamp::MASTER, Jam_Timestamp::USER);
+			$value = $this->timezone->convert($value, Jam_Timezone::MASTER_TIMEZONE, Jam_Timezone::USER_TIMEZONE);
 
 			if ($this->format AND is_numeric($value))
 			{
@@ -92,7 +98,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 		// Do we need to provide a default since we're creating or updating
 		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
 		{
-			$value = Jam_Timestamp::time();
+			$value = $this->timezone->time();
 		}
 		else
 		{
@@ -106,12 +112,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 				$value = $to_time;
 			}
 
-			if ( ! is_numeric($value) AND FALSE !== strtotime($value))
-			{
-				$value = strtotime($value);
-			}
-
-			$value = Jam_Timestamp::instance()->convert($value, Jam_Timestamp::USER, Jam_Timestamp::MASTER);
+			$value = $this->timezone->convert($value, Jam_Timezone::USER_TIMEZONE, Jam_Timezone::MASTER_TIMEZONE);
 		}
 
 		// Convert if necessary

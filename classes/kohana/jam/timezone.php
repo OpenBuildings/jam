@@ -10,9 +10,9 @@
  */
 abstract class Kohana_Jam_Timezone {
 
-	const DEFAULT = 'default';
-	const MASTER = 'master';
-	const USER = 'user';
+	const DEFAULT_TIMEZONE = 'default_timezone';
+	const MASTER_TIMEZONE = 'master_timezone';
+	const USER_TIMEZONE = 'user_timezone';
 
 	protected static $_instance;
 
@@ -27,69 +27,81 @@ abstract class Kohana_Jam_Timezone {
 
 	public static function shift($value, DateTimeZone $timezone_from, DateTimeZone $timezone_to)
 	{
-		$time = new DateTime("@{$value}", $timezone_from);
+		$time = new DateTime();
+		$time->setTimestamp($value);
 
-		return $value + $timezone_to->getOffset($time);
+		return $value + $timezone_to->getOffset($time) - $timezone_from->getOffset($time);
 	}
 
-	protected $_user = NULL;
-	protected $_master = NULL;
-	protected $_default = NULL;
+	protected $_user_timezone = NULL;
+	protected $_master_timezone = NULL;
+	protected $_default_timezone = NULL;
 
-	public function master()
+	public function master_timezone($timezone = NULL)
 	{
-		if ( ! $this->_master)
+		if ($timezone !== NULL)
 		{
-			$this->_master = new DateTimeZone('UTC');
-		}
-
-		return $this->_master;
-	}
-
-	public function default()
-	{
-		if ( ! $this->_default)
-		{
-			$this->_default = new DateTimeZone(date_default_timezone_get());
-		}
-
-		return $this->_default;
-	}
-
-	public function user($user_timezone = NULL)
-	{
-		if ($user_timezone)
-		{
-			$this->_user = new DateTimeZone($user_timezone);
+			$this->_master_timezone = new DateTimeZone($timezone);
 			return $this;
 		}
 
-		return $this->_user;
+		if ( ! $this->_master_timezone)
+		{
+			$this->_master_timezone = new DateTimeZone('UTC');
+		}
+
+		return $this->_master_timezone;
+	}
+
+	public function default_timezone($timezone = NULL)
+	{
+		if ($timezone !== NULL)
+		{
+			$this->_default_timezone = new DateTimeZone($timezone);
+			return $this;
+		}
+
+		if ( ! $this->_default_timezone)
+		{
+			$this->_default_timezone = new DateTimeZone(date_default_timezone_get());
+		}
+
+		return $this->_default_timezone;
+	}
+
+	public function user_timezone($timezone = NULL)
+	{
+		if ($timezone !== NULL)
+		{
+			$this->_user_timezone = new DateTimeZone($timezone);
+			return $this;
+		}
+
+		return $this->_user_timezone;
 	}
 
 	public function is_active()
 	{
-		return $this->_user !== NULL
+		return $this->_user_timezone !== NULL;
 	}
 
 	public function date($format, $time = NULL)
 	{
 		if ( ! $this->is_active())
-			return date($format, $time);
+			return ($time !== NULL) ? date($format, $time) : date($format);
 
-		$time = $time 
-			? Jam_Timezone::shift($time, $this->default(), $this->master())
-			: $this->time();
-		
+		$time = ($time !== NULL) ? $time : time();
+		$time = Jam_Timezone::shift($time, $this->default_timezone(), $this->master_timezone());
+
 		return date($format, $time);
 	}
 
-	public static function time()
+	public function time()
 	{
 		if ( ! $this->is_active())
 			return time();
 		
-		return Jam_Timezone::shift(time(), $this->default(), $this->master());
+		return Jam_Timezone::shift(time(), $this->default_timezone(), $this->master_timezone());
 	}
 
 
