@@ -60,7 +60,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 			// Having a implies saving we're format a string, so we want a proper default
 			$this->default = $this->format ? '' : 0;
 		}
-		
+
 		if ( ! $this->timezone)
 		{
 			$this->timezone = Jam_Timezone::instance();
