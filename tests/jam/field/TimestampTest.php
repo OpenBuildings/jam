@@ -15,11 +15,11 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function provider_format()
 	{
-		$field = new Jam_Field_Timestamp(array('format' => 'Y-m-d H:i:s'));
+		$field = new Jam_Field_Timestamp(array('format' => 'Y-m-d H:i:s', 'timezone' => new Jam_Timezone()));
 		
 		return array(
 			array($field, "2010-03-15 05:45:00", "2010-03-15 05:45:00"),
-			array($field, 1268649900, "2010-03-15 05:45:00"),
+			array($field, 1268657100, "2010-03-15 05:45:00"),
 		);
 	}
 	
@@ -32,7 +32,7 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$this->assertSame($field->convert(Jam::factory('test_post'), $value, FALSE), $expected);
+		$this->assertSame($expected, $field->convert(Jam::factory('test_post'), $value, FALSE));
 	}
 
 	public function test_timezone()
