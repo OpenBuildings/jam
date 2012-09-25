@@ -32,7 +32,7 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$this->assertSame($expected, $field->convert(Jam::factory('test_post'), $value, FALSE));
+		$this->assertSame($expected, $field->convert(NULL, $value, FALSE));
 	}
 
 	public function test_timezone()
@@ -52,32 +52,19 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_auto_create_and_update()
 	{
-		$post = Jam::factory('test_post')
-			->set(array(
-				'name' => 'test post',
-				'slug' => 'test-post',
-			));
+		$normal = new Jam_Field_Timestamp(array('timezone' => new Jam_Timezone()));
+		$auto_create = new Jam_Field_Timestamp(array('auto_now_create' => TRUE, 'timezone' => new Jam_Timezone()));
+		$auto_update = new Jam_Field_Timestamp(array('auto_now_update' => TRUE, 'timezone' => new Jam_Timezone()));
+		$default_date = 1268657100;
 
-		// Save time so we can sanity check the created timestamp
-		$time = time();
-		$post->save();
+		$this->assertEquals($default_date, $normal->convert(NULL, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
+		$this->assertEquals($default_date, $normal->convert(NULL, $default_date, FALSE), 'Should not generate a new date on normal timestamp');
 
-		// Test timestamp has been set on create
-		$this->assertInternalType('integer', $post->created);
-		$this->assertGreaterThanOrEqual($time, $post->created);
+		$this->assertGreaterThan($default_date, $auto_create->convert(NULL, $default_date, FALSE), 'Should generate a new date on create');		
+		$this->assertEquals($default_date, $auto_create->convert(NULL, $default_date, TRUE), 'Should not generate a new date on update');		
 
-		// Store created so we can prove it doesn't change on update
-		$created = $post->created;
-
-		sleep(1); // Wait one second to ensure the next tests are valid
-		$post->save();
-
-		$this->assertInternalType('integer', $post->updated);
-		$this->assertGreaterThan($post->created, $post->updated);
-		$this->assertEquals($created, $post->created);
-
-		// Clean up to ensure other tests don't fail
-		 $post->delete();
+		$this->assertEquals($default_date, $auto_update->convert(NULL, $default_date, FALSE), 'Should generate a new date on create');		
+		$this->assertGreaterThan($default_date, $auto_update->convert(NULL, $default_date, TRUE), 'Should not generate a new date on update');
 	}
 
 } // End Jam_Field_TimestampTest
