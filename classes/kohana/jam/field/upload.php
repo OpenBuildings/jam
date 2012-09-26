@@ -193,6 +193,10 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 					$converted_params[$param] = ($model->loaded()) ? $model->id() : 'new';
 				break;
 
+				case ':id_group':
+					$converted_params[$param] = ($model->loaded()) ? ceil($model->id() / 10000) : 'new';
+				break;
+
 				default:
 					$converted_params[$param] = $model->{str_replace(':','', $param)};
 			}
