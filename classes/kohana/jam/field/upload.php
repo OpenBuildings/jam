@@ -117,7 +117,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 */
 	public function attribute_convert($model, $upload_file, $is_loaded)
 	{
-		return $upload_file ? $upload_file->filename() : $upload_file;
+		return ($upload_file AND $upload_file !== $this->default) ? $upload_file->filename() : $upload_file;
 	}
 
 	/**
