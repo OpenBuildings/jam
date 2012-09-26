@@ -77,7 +77,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 				$value = strtotime($value);
 			}
 			
-			if (is_numeric($value))
+			if (is_numeric($value) AND $value)
 			{
 				$value = $this->timezone->convert($value, Jam_Timezone::MASTER_TIMEZONE, Jam_Timezone::USER_TIMEZONE);
 			}
@@ -119,7 +119,10 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 				$value = $to_time;
 			}
 
-			$value = $this->timezone->convert($value, Jam_Timezone::USER_TIMEZONE, Jam_Timezone::MASTER_TIMEZONE);
+			if (is_numeric($value) AND $value)
+			{
+				$value = $this->timezone->convert($value, Jam_Timezone::USER_TIMEZONE, Jam_Timezone::MASTER_TIMEZONE);
+			}
 		}
 
 		// Convert if necessary
