@@ -136,7 +136,7 @@ class Kohana_Aspect {
 	 */
 	public function is_portrait()
 	{
-		return $this->_ratio < 1;
+		return $this->ratio() < 1;
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Kohana_Aspect {
 	 */
 	public function is_landscape()
 	{
-		return $this->_ratio >= 1;
+		return $this->ratio() >= 1;
 	}
 
 	/**
