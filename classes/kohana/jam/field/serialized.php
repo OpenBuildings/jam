@@ -72,6 +72,9 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 			case 'native':	
 				return serialize($value);
 
+			case 'csv':
+				return join(',', $value);
+
 			case 'json':	
 				return json_encode($value);
 		}
@@ -83,6 +86,9 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 		{
 			case 'native':	
 				return unserialize($value);
+
+			case 'csv':
+				return explode(',', $value);
 
 			case 'json':	
 				return json_decode($value, TRUE);
