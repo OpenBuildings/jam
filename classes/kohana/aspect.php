@@ -211,9 +211,16 @@ class Kohana_Aspect {
 		
 		$is_aspect_smaller =  ($width / $height) < $this->ratio();
 		
-		if ( $upscale)
+		if ($upscale)
 		{
-			($is_aspect_smaller) ? $this->width($width) : $this->height($height);			
+			if ($is_aspect_smaller)
+			{
+				$this->width($width);
+			}
+			else
+			{
+				$this->height($height);
+			}
 		}
 		else
 		{
