@@ -84,6 +84,7 @@ class Kohana_Aspect {
 		{
 			$this->_width = $new_height * $this->ratio();
 			$this->_height = $new_height;
+			return $this;
 		}
 
 		return $this->_height;
@@ -184,8 +185,15 @@ class Kohana_Aspect {
 	 * Return an array (width, height)
 	 * @return array
 	 */
-	public function dims()
+	public function dims($width = NULL, $height = NULL)
 	{
+		if ($width !== NULL AND $height !== NULL)
+		{
+			$this->_width = $width;
+			$this->_height = $height;
+			
+			$this->_ratio = $width / $height;
+		}
 		return array($this->width(), $this->height());
 	}
 	
@@ -193,8 +201,13 @@ class Kohana_Aspect {
 	 * Return an array (x, y)
 	 * @return array 
 	 */
-	public function pos()
+	public function pos($x = NULL, $y = NULL)
 	{
+		if ($x !== NULL AND $y !== NULL)
+		{
+			$this->_x = $x;
+			$this->_y = $y;
+		}
 		return array($this->x(), $this->y());
 	}
 	
