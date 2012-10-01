@@ -120,4 +120,18 @@ abstract class Kohana_Jam_Timezone {
 		return Jam_Timezone::shift($value, $this->$from(), $this->$to());
 	}
 
+	public function to_db($value, $from = 'user_timezone')
+	{
+		if ( ! $this->is_active())
+			return $value;
+
+		if ( ! is_numeric($value))
+		{
+			$value = strtotime($value);
+		}
+		
+		$value = $this->convert($value, $from, Jam_Timezone::MASTER_TIMEZONE);
+		return date('Y-m-d H:i:s', $value);
+	}
+
 } // End Kohana_Jam_Field
