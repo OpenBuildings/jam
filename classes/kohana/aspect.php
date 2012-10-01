@@ -10,6 +10,12 @@
  */
 class Kohana_Aspect {
 
+	const NO_UPSCALE = 0;
+	const UPSCALE = 1;
+	const SHRINK = 2;
+	const SHRINK_WIDTH = 4;
+	const SHRINK_HEIGHT = 8;
+
 	public static function factory($width, $height)
 	{
 		return new Aspect($width, $height);
@@ -218,13 +224,13 @@ class Kohana_Aspect {
 	 * @param bool    $upscale
 	 * @return Aspect
 	 */
-	public function constrain($width, $height, $upscale = TRUE)
+	public function constrain($width, $height, $flags = Aspect::UPSCALE)
 	{
 		$this->_x = $this->_y = 0;
 		
 		$is_aspect_smaller =  ($width / $height) < $this->ratio();
 		
-		if ($upscale)
+		if (Aspect::UPSCALE & $flags)
 		{
 			if ($is_aspect_smaller)
 			{
@@ -249,6 +255,16 @@ class Kohana_Aspect {
 				$this->height(min($height, $this->height()));
 				$this->width(min($original_width, $this->width()));
 			}	
+		}
+
+		if (Aspect::SHRINK & $flags OR Aspect::SHRINK_WIDTH & $flags)
+		{
+			$width = $this->width();
+		}
+
+		if (Aspect::SHRINK & $flags OR Aspect::SHRINK_HEIGHT & $flags)
+		{
+			$height = $this->height();
 		}
 						
 		$this->_x = ($width - $this->width()) / 2.0;
