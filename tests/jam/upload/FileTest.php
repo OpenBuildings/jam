@@ -115,23 +115,6 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertEquals($is_filename, Upload_File::is_filename($filename));
 	}
 
-
-	public function test_width_height_aspect()
-	{
-		$model = Jam::factory('test_image', 1);
-		$model->file_width = 100;
-		$model->file_height = 200;
-
-		$upload = new Upload_File('default', 'file');
-
-		$this->assertNull($upload->aspect());
-		$upload->set_model_with_dimensions($model, 'file_width', 'file_height');
-
-		$this->assertEquals(100, $upload->width());
-		$this->assertEquals(200, $upload->height());
-		$this->assertEquals(array(100, 200), $upload->aspect()->dims());
-	}
-
 	public function data_source_type()
 	{
 		$test_local = join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'test_local')).DIRECTORY_SEPARATOR;
