@@ -310,8 +310,6 @@ class Kohana_Upload_File {
 
 	protected $_thumbnails = array();
 
-	protected $_aspect;
-
 	public function __construct($server, $path, $filename = NULL)
 	{
 		$this->_server = $server;
@@ -443,72 +441,6 @@ class Kohana_Upload_File {
 		}
 
 		return $this->_thumbnails;
-	}
-
-	/**
-	 * Set the width and the height
-	 * 
-	 * @param integer $width  
-	 * @param integer $height 
-	 */
-	public function set_model_with_dimensions($model, $width_attribute, $height_attribute)
-	{
-		$this->_aspect = new Upload_File_Aspect($model, $width_attribute, $height_attribute);
-	}
-
-	/**
-	 * @depricated 
-	 * @param  integer  $width   
-	 * @param  integer  $height  
-	 * @param  boolean $upscale 
-	 * @return array           
-	 */
-	public function constrained_dimensions($width = NULL, $height = NULL, $upscale = TRUE)
-	{
-		if ( ! $this->width() OR ! $this->height())
-			return array('width' => NULL, 'height' => NULL);
-
-		if ($width === NULL AND $height === NULL)
-			return array('width' => $this->width(), 'height' => $this->height());
-
-		if ($height === NULL)
-			return Arr::extract($this->aspect()->width($width)->as_array(), array('width', 'height'));
-
-		if ($width === NULL)
-			return Arr::extract($this->aspect()->height($height)->as_array(), array('width', 'height'));
-
-		return Arr::extract($this->aspect()->constrain($width, $height, $upscale)->as_array(), array('width', 'height'));
-	}
-
-	/**
-	 * Get the width of the image
-	 * @return integer 
-	 */
-	public function width()
-	{
-		return $this->_aspect ? $this->_aspect->width() : 0;
-	}
-
-	/**
-	 * Get the height of the image
-	 * @return integer 
-	 */
-	public function height()
-	{
-		return $this->_aspect ? $this->_aspect->height() : 0;
-	}
-
-	/**
-	 * Get the Image_Aspect for the image or NULL if there are no width / height
-	 * @return Image_Aspect|NULL
-	 */
-	public function aspect()
-	{
-		if ($this->_aspect)
-		{
-			return clone $this->_aspect->reset();
-		}
-		return NULL;
 	}
 
 	/**
