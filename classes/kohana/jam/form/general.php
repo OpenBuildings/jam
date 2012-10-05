@@ -137,7 +137,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	{
 		$value = Arr::get($options, 'value');
 
-		if ( ! $value)
+		if ($value === NULL)
 			throw new Kohana_Exception("form widget 'radio' needs a 'value' option");
 
 		if ( ! isset($attributes['id']))
@@ -147,7 +147,30 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return Form::radio($attributes['name'], $value, $this->object()->$name == $value, $attributes);	
+		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name) == Jam_Form::list_id($value), $attributes);	
+	}
+
+	public function radios($name, array $options = array(), array $attributes = array())
+	{
+		$attributes = $this->default_attributes($name, $attributes);
+
+		if ( ! isset($options['choices']))
+			throw new Kohana_Exception("Select tag widget requires a 'choices' option");
+
+		$choices = Jam_Form::list_choices($options['choices']);
+
+		$radios = array();
+
+		foreach ($choices as $key => $title)
+		{
+			$id = $attributes['id'].'_'.$key;
+			$radios[] = 
+				'<li>'
+					.$this->radio($name, array('value' => $key), array('id' => $id))
+					.$this->label($name, $title, array('id' => $id))
+				.'</li>';
+		}
+		return "<ul ".HTML::attributes($attributes).">".join("\n", $radios)."</ul>";
 	}
 
 	/**
@@ -214,7 +237,6 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 			throw new Kohana_Exception("Select tag widget requires a 'choices' option");
 
 		$choices = Jam_Form::list_choices($options['choices']);
-
 
 		if ($blank = Arr::get($options, 'include_blank'))
 		{
