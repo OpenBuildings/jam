@@ -170,6 +170,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$values = array($values => $value);
 		}
+		
+		$this->set($values);
 
 		Jam::query($this, $this->id())
 			->set($values)
