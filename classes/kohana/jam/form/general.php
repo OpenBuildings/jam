@@ -28,7 +28,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 */
 	public function row($type, $name, array $options = array(), array $attributes = array(), $template = NULL)
 	{
-		$errors = $this->errors($name);
+		$errors = Arr::get($options, 'errors', $this->errors($name));
 
 		$field = call_user_func(array($this, $type), $name, $options, $attributes);
 

@@ -148,7 +148,14 @@ abstract class Kohana_Jam_Form {
 
 		if ($index !== NULL)
 		{
-			$object = $object[$index];
+			if ($object[$index])
+			{
+				$object = $object[$index];
+			}
+			else
+			{
+				$object = $this->object()->build($name);
+			}
 		}
 
 		$new_prefix = Jam_Form::generate_prefix($this->prefix(), $name, $index);
