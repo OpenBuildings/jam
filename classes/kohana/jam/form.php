@@ -148,7 +148,7 @@ abstract class Kohana_Jam_Form {
 
 		if ($index !== NULL)
 		{
-			if ($object[$index])
+			if (is_numeric($index) AND $object[$index])
 			{
 				$object = $object[$index];
 			}

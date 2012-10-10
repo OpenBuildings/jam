@@ -150,12 +150,33 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name) == Jam_Form::list_id($value), $attributes);	
 	}
 
+	public function checkboxes($name, array $options = array(), array $attributes = array())
+	{
+		$attributes = $this->default_attributes($name, $attributes);
+
+		if ( ! isset($options['choices']))
+			throw new Kohana_Exception("Checkboxes tag widget requires a 'choices' option");
+
+		$choices = Jam_Form::list_choices($options['choices']);
+		$values = (array) Jam_Form::list_choices($this->object()->$name);
+		$html = '';
+
+		foreach ($choices as $key => $title)
+		{
+			$id = $attributes['id'].'_'.$key;
+			$html .= '<li>'
+				.Form::label($id, Form::checkbox($attributes['name']."[]", $key, array_key_exists($key, $values), array("id" => $id))."<span>$title</span>")
+			.'</li>';
+		}
+		return "<ul ".HTML::attributes($attributes).">$html</ul>";
+	}
+
 	public function radios($name, array $options = array(), array $attributes = array())
 	{
 		$attributes = $this->default_attributes($name, $attributes);
 
 		if ( ! isset($options['choices']))
-			throw new Kohana_Exception("Select tag widget requires a 'choices' option");
+			throw new Kohana_Exception("Radios tag widget requires a 'choices' option");
 
 		$choices = Jam_Form::list_choices($options['choices']);
 
