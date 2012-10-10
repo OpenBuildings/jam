@@ -15,7 +15,22 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * The template for a single html row
 	 * @var string
 	 */
-	public $template = '<div class="row :name-field :type-field :with-errors">:label<div class="input"><div class="field-wrapper">:field:errors</div>:help</div></div>';
+	protected $_template = '<div class="row :name-field :type-field :with-errors">:label<div class="input"><div class="field-wrapper">:field:errors</div>:help</div></div>';
+	
+	/**
+	 * Getter / setter for the template
+	 * @param  string|null $template 
+	 * @return Jam_Form|string           
+	 */
+	public function template($template = NULL)
+	{
+		if ($template !== NULL)
+		{
+			$this->_template = $template;
+			return $this;
+		}
+		return $this->_template;
+	}
 
 	/**
 	 * Generate a html row with the input field, label, help and error messages
@@ -44,7 +59,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 			':field' => $field,
 		);
 
-		return strtr($template ? $template : $this->template, $slots);
+		return strtr($template ? $template : $this->template(), $slots);
 	}
 
 	/**
@@ -92,7 +107,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	}
 
 	/**
-	 * HTML input hidden field
+	 * HTML input hidden field 
 	 * 
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    Not Used - for compatibility
@@ -103,7 +118,27 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	{
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return Form::hidden($attributes['name'], $this->object()->$name, $attributes);
+		return Form::hidden($attributes['name'], Jam_Form::list_id($this->object()->$name), $attributes);
+	}
+
+
+	/**
+	 * HTML input hidden field for multiple values, renders all the nesessary hidden fields
+	 * @param  string $name       
+	 * @param  array  $options    Not Used - for compatibility
+	 * @param  array  $attributes HTML attributes for all the fields
+	 * @return string             
+	 */
+	public function hidden_list($name, array $options = array(), array $attributes = array())
+	{
+		$attributes = $this->default_attributes($name, $attributes);
+		$ids = Jam_Form::list_id($this->object()->$name);
+		$html = '';
+		foreach ($ids as $index => $id) 
+		{
+			$html .= Form::hidden($attributes['name']."[$index]", $id, $attributes);
+		}
+		return $html;
 	}
 
 	/**
