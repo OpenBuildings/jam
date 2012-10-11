@@ -174,6 +174,7 @@ class Kohana_Upload_File {
 		$file = Upload_File::combine($directory, uniqid());
 		$handle = fopen($file, 'w');
 
+		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_FILE, $handle);
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_exec($curl);
