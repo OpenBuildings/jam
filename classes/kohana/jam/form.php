@@ -61,8 +61,9 @@ abstract class Kohana_Jam_Form {
 	 * Get the id or list of ids of an object (Jam_Model / Jam_Colleciton respectively)
 	 * 
 	 * @param int|array $id 
+	 * @param bool $force_single if a value is an array get the first value
 	 */
-	static public function list_id($id)
+	static public function list_id($id, $force_single = FALSE)
 	{
 		if ($id instanceof Jam_Model)
 		{
@@ -71,6 +72,11 @@ abstract class Kohana_Jam_Form {
 		elseif ($id instanceof Jam_Collection) 
 		{
 			$id = $id->ids();
+		}
+		
+		if ($force_single AND is_array($id))
+		{
+			$id = reset($id);
 		}
 		
 		return $id;

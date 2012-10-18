@@ -182,7 +182,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name) == Jam_Form::list_id($value), $attributes);	
+		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name, TRUE) == Jam_Form::list_id($value), $attributes);	
 	}
 
 	public function checkboxes($name, array $options = array(), array $attributes = array())
