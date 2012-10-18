@@ -244,7 +244,7 @@ class Kohana_Upload_File {
 	public static function from_stream($stream, $directory, $filename = NULL)
 	{
 		$result_file = Upload_File::combine($directory, $filename ? $filename : uniqid());
-
+		
 		$stream_handle = fopen($stream, "r");
 		$result_handle = fopen($result_file, 'w');
 		$realSize = stream_copy_to_stream($stream_handle,  $result_handle);
