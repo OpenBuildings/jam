@@ -369,6 +369,11 @@ abstract class Kohana_Jam {
 		}
 	}
 
+	public static function permit(array $permit = array(), array $data = array())
+	{
+		return Jam_Validator_Attributes::factory($permit)->data($data)->clean();
+	}
+
 	public static function form($model, $class = NULL)
 	{
 		if ($class === NULL)
