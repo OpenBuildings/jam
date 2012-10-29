@@ -43,7 +43,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		{
 			$upload_file = $this->upload_file($model);
 		}
-		
+
 		return	$upload_file->path($this->path($model));
 	}
 
