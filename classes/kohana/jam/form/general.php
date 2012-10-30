@@ -233,7 +233,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * HTML input file field
 	 * 
 	 * @param string $name       the name of the Jam_Model attribute
-	 * @param array  $options    Not Used - for compatibility
+	 * @param array  $options    temp_source = TRUE, set this to add a spection hidden input to preserve the file upload on fiald validation
 	 * @param array  $attributes HTML attributes for the field
 	 * @return string
 	 */
@@ -241,7 +241,12 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	{
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return Form::file($attributes['name'], $attributes);
+		return 
+			(Arr::get($options, 'temp_source', FALSE) 
+				? Form::hidden($attributes['name'], $this->object()->$name->temp_source()) 
+				: ''
+			)
+			.Form::file($attributes['name'], $attributes);
 	}
 
 	/**

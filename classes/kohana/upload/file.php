@@ -170,6 +170,9 @@ class Kohana_Upload_File {
 	{
 		$url = str_replace(' ', '%20', $url);
 
+		if ( ! Valid::url($url))
+			return FALSE;
+
 		$curl = curl_init($url);
 		$file = Upload_File::combine($directory, uniqid());
 		$handle = fopen($file, 'w');
@@ -189,7 +192,7 @@ class Kohana_Upload_File {
 		
 		rename($file, $result_file);
 		
-		return is_file($result_file) ? $filename : NULL;
+		return is_file($result_file) ? $filename : FALSE;
 	}
 
 	/**
@@ -203,15 +206,15 @@ class Kohana_Upload_File {
 	 */
 	public static function from_upload(array $file, $directory)
 	{
-		if ( ! Upload::not_empty($file))
-			return NULL;
+		if ( ! (Upload::not_empty($file) AND Upload::valid($file)))
+			return FALSE;
 
 		$filename = Upload_File::sanitize($file['name']);
 		$result_file = Upload_File::combine($directory, $filename);
 
 		move_uploaded_file($file['tmp_name'], $result_file);
 
-		return is_file($result_file) ? $filename : NULL;
+		return is_file($result_file) ? $filename : FALSE;
 	}
 
 	/**
@@ -224,14 +227,14 @@ class Kohana_Upload_File {
 	public static function from_file($file, $directory)
 	{
 		if ( ! is_file($file) OR Kohana::$environment !== Kohana::TESTING OR strpos($file, DOCROOT) === 0)
-			return NULL;
+			return FALSE;
 
 		$filename = Upload_File::sanitize(basename($file));
 		$result_file = Upload_File::combine($directory, $filename);
 
 		copy($file, $result_file);
 
-		return is_file($result_file) ? $filename : NULL;
+		return is_file($result_file) ? $filename : FALSE;
 	}
 
 	/**
@@ -310,6 +313,9 @@ class Kohana_Upload_File {
 	protected $_transformations = array();
 
 	protected $_thumbnails = array();
+
+	protected $_extracted_from_source = FALSE;
+
 
 	public function __construct($server, $path, $filename = NULL)
 	{
@@ -395,6 +401,7 @@ class Kohana_Upload_File {
 			if ($this->_source_type = $this->guess_source_type($source))
 			{
 				$this->_source = $source;
+				$this->_extracted_from_source = FALSE;
 
 				if ($this->_source_type == 'temp')
 				{
@@ -495,9 +502,14 @@ class Kohana_Upload_File {
 		if ( ! $this->source_type())
 			throw new Kohana_Exception("Not a valid source for file input - :source_type for source :source", array(':source_type' => $this->source_type(), ':source' => $this->source()));	
 
-		$from_method = "from_".$this->source_type();
-		$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
-		$this->filename($filename);
+		if ( ! $this->_extracted_from_source)
+		{
+			$from_method = "from_".$this->source_type();
+			$filename = Upload_File::$from_method($this->source(), $this->temp()->directory_path(), $this->filename());
+			$this->filename($filename);
+
+			$this->_extracted_from_source = TRUE;
+		}
 
 		if (($this->_transformations OR $this->_thumbnails) AND @ getimagesize($this->file()))
 		{
@@ -614,6 +626,14 @@ class Kohana_Upload_File {
 		return Upload_File::combine($this->path(), $thumbnail, $this->filename());
 	}
 
+	public function temp_source()
+	{
+		if ( ! $this->_source OR ! $this->filename())
+			return NULL;
+
+		return $this->temp()->directory().'/'.$this->filename();
+	}
+
 	protected function location($method, $thumbnail = NULL, $protocol = NULL)
 	{
 		if ( ! $this->filename())
@@ -637,7 +657,7 @@ class Kohana_Upload_File {
 	 */
 	public function is_empty()
 	{
-		return ! $this->filename() AND ! $this->source();
+		return ! $this->filename();
 	}
 
 	public function __toString()

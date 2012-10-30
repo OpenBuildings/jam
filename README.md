@@ -32,6 +32,7 @@ Jam
 * [Associations](/OpenBuildings/Jam/blob/master/guide/jam/associations.md)
 * [Builder](/OpenBuildings/Jam/blob/master/guide/jam/builder.md)
 * [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md)
+* [Form Builder](/OpenBuildings/Jam/blob/master/guide/jam/form-builder.md)
 
 --------
 
