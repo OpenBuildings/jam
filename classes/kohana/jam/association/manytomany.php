@@ -11,6 +11,7 @@
 abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collection {
 
 	public $through;
+	public $through_dependent = TRUE;
 
 	/**
 	 * Automatically sets foreign to sensible defaults.
@@ -77,7 +78,7 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 
 	public function attribute_before_delete(Jam_Model $model, $is_changed)
 	{
-		if ($model->loaded())
+		if ($model->loaded() AND $this->through_dependent)
 		{
 			Jam::query($this->through())
 				->where($this->through('our'), '=', $model->id())

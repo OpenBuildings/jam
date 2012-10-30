@@ -82,8 +82,6 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	{
 		if ( ! $model->_real_delete)
 		{
-			$data->stop = TRUE;
-
 			foreach ($model->meta()->associations() as $association)
 			{
 				$association->delete($model, $model->id());
