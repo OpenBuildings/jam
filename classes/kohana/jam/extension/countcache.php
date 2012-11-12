@@ -52,7 +52,7 @@ class Kohana_Jam_Extension_CountCache extends Jam_Extension {
 
 	public function update_count_after_delete(Jam_Association $association, Jam_Event_Data $data, Jam_Model $model)
 	{
-		if ($assoc = $association->inverse_association() AND $assoc instanceof Jam_Association_BelongsTo AND $assoc->count_cache)
+		if ($assoc = $association->inverse_association() AND isset($assoc->count_cache) AND $assoc->count_cache)
 		{	
 			if ($model->{$association->column})
 			{
