@@ -69,3 +69,12 @@ CREATE TABLE test_categories_test_posts (
   test_category_id INTEGER NOT NULL,
   test_post_id INTEGER NOT NULL
 );
+
+DROP TABLE IF EXISTS test_uploads;
+
+CREATE TABLE test_uploads (
+  id INTEGER PRIMARY KEY,
+  file TEXT NULL,
+  file2 TEXT NULL,
+);
+

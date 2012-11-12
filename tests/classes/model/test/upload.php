@@ -21,8 +21,7 @@ class Model_Test_Upload extends Jam_Model {
 			'file2'       => Jam::field('upload', array(
 				'server' => 'test_local',
 				'path' => 'test/:model/:model:id',
-			)),
-
+			))
 		 ));
 	}
 

@@ -16,6 +16,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	public $_server = NULL;
 	public $_save_size = FALSE;
 	public $_path = NULL;
+	public $_dynamic_server = NULL;
 
 	public function initialize(Jam_Event $event, $model, $name) 
 	{
@@ -27,12 +28,20 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 			Jam::meta($model)->field($name.'_height', Jam::field('integer'));
 			Jam::meta($model)->field('is_portrait', Jam::field('boolean'));
 		}
+
+		if ($this->_dynamic_server)
+		{
+			$this->_dynamic_server = $this->_dynamic_server === TRUE ? $name.'_server' : $this->_dynamic_server;
+
+			Jam::meta($model)->field($this->_dynamic_server, Jam::field('string', array('default' => $this->_server)));
+		}
 		
 		Jam::meta($model)->field($name, Jam::field('upload', array(
 			'path' => $this->_path, 
 			'thumbnails' => $this->_thumbnails, 
 			'transformations' => $this->_transformations, 
 			'server' => $this->_server, 
+			'dynamic_server' => $this->_dynamic_server,
 			'save_size' => $this->_save_size
 		)));	
 	}
@@ -54,4 +63,15 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		}
 	}
 	
+	public function model_call_change_upload_server(Jam_Model $model, Jam_Event_Data $data, $name, $server)
+	{
+		if ($this->_name == $name)
+		{
+			if ($old_server = $model->{$this->_dynamic_server} AND $old_server !== $server)
+			{
+				$model->{$this->_name}->move_to_server($server);
+				$model->update_fields($this->_dynamic_server, $server);
+			}	
+		}
+	}
 }

@@ -204,6 +204,33 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertFileNotExists($upload->file());
 	}
 
+	public function test_move_to_server()
+	{
+		$upload = new Upload_File('test_local', 'file');
+		$file = $this->test_local.'test'.DIRECTORY_SEPARATOR.'file_temp.txt';
+		
+		if ( ! file_exists(dirname($file)))
+		{
+			mkdir(dirname($file), 0777);
+		}
+		file_put_contents($file, 'temp');
+
+		$upload->path('test')->filename('file_temp.txt');
+
+		$upload->move_to_server('test_local2');
+
+		$new_file = $this->test_local2.'test'.DIRECTORY_SEPARATOR.'file_temp.txt';
+
+		$this->assertFileNotExists($file);
+		$this->assertFileExists($new_file);
+
+		$this->assertEquals($new_file, $upload->file());
+		
+		rmdir($this->test_local.'test');
+		unlink($new_file);
+		rmdir($this->test_local2.'test');
+	}
+
 	public function test_save_to_temp()
 	{
 		$upload = new Upload_File('default', 'file');
@@ -223,5 +250,4 @@ class Jam_Upload_FileTest extends Unittest_Jam_Upload_TestCase {
 
 		$this->assertFileNotExists($upload->file());
 	}
-
 }

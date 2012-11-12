@@ -43,9 +43,9 @@ class Kohana_Upload_Temp
 		return $this->_directory;
 	}
 
-	public function directory_path()
+	public function directory_path($thumbnail = NULL)
 	{
-		$directory = $this->realpath($this->directory());
+		$directory = $this->realpath($this->directory(), $thumbnail);
 
 		if ( ! is_dir($directory))
 		{
@@ -55,9 +55,9 @@ class Kohana_Upload_Temp
 		return $directory;
 	}
 
-	public function directory_url()
+	public function directory_url($thumbnail = NULL)
 	{
-		return $this->webpath($this->directory());
+		return $this->webpath($this->directory(), $thumbnail);
 	}
 
 	public function clear()
@@ -74,14 +74,14 @@ class Kohana_Upload_Temp
 		return (substr_count($file, DIRECTORY_SEPARATOR) === 1 AND is_file($this->realpath($file)));
 	}
 
-	public function realpath($path)
+	public function realpath($path, $thumbnail = NULL)
 	{
-		return Upload_File::combine($this->_config['path'], $path);
+		return Upload_File::combine($this->_config['path'], $path, $thumbnail);
 	}
 
-	public function webpath($path)
+	public function webpath($path, $thumbnail = NULL)
 	{
-		return Upload_File::combine($this->_config['web'], $path);
+		return Upload_File::combine($this->_config['web'], $path, $thumbnail);
 	}
 
 }

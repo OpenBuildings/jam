@@ -73,3 +73,12 @@ CREATE TABLE test_categories_test_posts (
   test_category_id bigint NOT NULL,
   test_post_id bigint NOT NULL
 );
+
+DROP TABLE IF EXISTS test_uploads;
+
+CREATE TABLE test_uploads (
+  id serial,
+  "file" varchar(255) NOT NULL,
+  "file2" varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);

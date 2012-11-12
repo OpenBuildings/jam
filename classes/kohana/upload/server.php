@@ -174,7 +174,7 @@ abstract class Kohana_Upload_Server
 	 * @return bool
 	 * @author Ivan K
 	 **/
-	abstract public function save_from_local($file, $local_file, $remove_file = true);
+	abstract public function save_from_local($file, $local_file, $remove_file = TRUE);
 
 	/**
 	 * Copy a file from the server to a local file

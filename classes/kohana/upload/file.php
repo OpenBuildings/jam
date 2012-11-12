@@ -319,8 +319,7 @@ class Kohana_Upload_File {
 
 	public function __construct($server, $path, $filename = NULL)
 	{
-		$this->_server = $server;
-
+		$this->server($server);
 		$this->_path = $path;
 
 		if ($filename !== NULL)
@@ -386,6 +385,29 @@ class Kohana_Upload_File {
 		}
 
 		return $this->_path;
+	}
+
+	public function move_to_server($new_server)
+	{
+		$file = Upload_File::combine($this->temp()->directory_path(), $this->filename());
+
+		$this->server()->move_to_local($this->full_path(), $file);
+
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		{
+			$thumbnail_file = Upload_File::combine($this->temp()->directory_path($thumbnail), $this->filename());
+			$this->server()->move_to_local($this->full_path($thumbnail), $thumbnail_file);
+		}
+
+		$this->server($new_server);
+
+		$this->server()->save_from_local($this->full_path(), $file);
+
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		{
+			$thumbnail_file = Upload_File::combine($this->temp()->directory_path($thumbnail), $this->filename());
+			$this->server()->save_from_local($this->full_path($thumbnail), $thumbnail_file);
+		}
 	}
 
 	/**
@@ -469,8 +491,14 @@ class Kohana_Upload_File {
 	 * Get the upload server
 	 * @return Upload_Server 
 	 */
-	public function server()
+	public function server($server = NULL)
 	{
+		if ($server !== NULL)
+		{
+			$this->_server = $server;
+			return $this;
+		}
+
 		return Upload_Server::instance($this->_server);
 	}
 

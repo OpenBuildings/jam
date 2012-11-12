@@ -33,6 +33,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	public $transformations = array();
 
 	/**
+	 * @var bool|string the field that has the data which server we are using at the moment
+	 */
+	public $dynamic_server = NULL;
+
+	/**
 	 * @var  array  specifications for all of the thumbnails that should be automatically generated when a new image is uploaded
 	 */
 	public $thumbnails = array();
@@ -44,7 +49,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file = $this->upload_file($model);
 		}
 
-		return	$upload_file->path($this->path($model));
+		return $upload_file
+			->server($this->dynamic_server ? $model->{$this->dynamic_server} : $this->server)
+			->path($this->path($model));
 	}
 
 	public function attribute_set($model, $value, $is_changed)
@@ -92,7 +99,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	{
 		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
-			$upload_file->path($this->path($model));
+			$upload_file
+				->server($this->dynamic_server ? $model->{$this->dynamic_server} : $this->server)
+				->path($this->path($model));
 
 			// Delete the old file if there was one
 			if ($this->delete_file AND $original = $model->original($this->name))
