@@ -14,18 +14,24 @@ class Kohana_Upload_Temp
 		return new Upload_Temp($config);
 	}
 
-	protected $_directory;
-
-	protected $_config;
-
-	public function __construct(array $config = NULL)
+	public static function config($name = NULL)
 	{
-		// Store the config locally
-		$this->_config = Arr::merge(Kohana::$config->load("jam.upload.temp"), (array) $config);
-
-		if (($missing_keys = array_diff(array('path', 'web'), array_keys($this->_config))))
-			throw new Kohana_Exception("Missing config options :missing", array(":missing" => join(", ", $missing_keys)));
+		if ($name !== NULL)
+		{
+			return Kohana::$config->load("jam.upload.temp.{$name}");
+		}
+		else
+		{
+			return Kohana::$config->load("jam.upload.temp");
+		}
 	}
+
+	public static function valid($file)
+	{
+		return (substr_count($file, DIRECTORY_SEPARATOR) === 1 AND is_file(Upload_Util::combine(Upload_Temp::config('path'), $file)));
+	}
+
+	protected $_directory;
 
 	public function directory($directory = NULL)
 	{
@@ -64,24 +70,19 @@ class Kohana_Upload_Temp
 	{
 		if ($this->_directory)
 		{
-			Upload_File::recursive_rmdir($this->realpath($this->directory()));
+			Upload_Util::rmdir($this->realpath($this->directory()));
 			$this->_directory = NULL;
 		}
 	}
 
-	public function valid($file)
-	{
-		return (substr_count($file, DIRECTORY_SEPARATOR) === 1 AND is_file($this->realpath($file)));
-	}
-
 	public function realpath($path, $thumbnail = NULL)
 	{
-		return Upload_File::combine($this->_config['path'], $path, $thumbnail);
+		return Upload_Util::combine(Upload_Temp::config('path'), $path, $thumbnail);
 	}
 
 	public function webpath($path, $thumbnail = NULL)
 	{
-		return Upload_File::combine($this->_config['web'], $path, $thumbnail);
+		return Upload_Util::combine(Upload_Temp::config('web'), $path, $thumbnail);
 	}
 
 }
