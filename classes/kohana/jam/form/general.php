@@ -193,7 +193,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 			throw new Kohana_Exception("Checkboxes tag widget requires a 'choices' option");
 
 		$choices = Jam_Form::list_choices($options['choices']);
-		$values = (array) Jam_Form::list_choices($this->object()->$name);
+		$values = Arr::get($options, 'value', (array) Jam_Form::list_choices($this->object()->$name));
 		$html = '';
 
 		foreach ($choices as $key => $title)

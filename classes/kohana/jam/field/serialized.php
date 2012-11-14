@@ -20,7 +20,7 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 	{
 		parent::initialize($meta, $model, $name);
 
-		if ( ! in_array($this->method, array('native', 'json')))
+		if ( ! in_array($this->method, array('native', 'json', 'csv')))
 			throw new Kohana_Exception("Invalid serialization method ':method', can use only 'native' and 'json'", array(':method' => $this->method));
 	}
 
