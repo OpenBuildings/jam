@@ -45,9 +45,9 @@ class Kohana_Upload_Server_Local extends Upload_Server
 
 	private function permissions($file)
 	{
-		if (isset($this->_config['chown']) AND $this->_config['chown'])
+		if (isset($this->_config['group']) AND $this->_config['group'])
 		{
-			chown($this->realpath($file), $this->_config['web']);
+			chgrp($this->realpath($file), $this->_config['group']);
 		}
 	}
 
@@ -57,7 +57,7 @@ class Kohana_Upload_Server_Local extends Upload_Server
 
 		if ($result)
 		{
-			$this->permissions($this->realpath($file));
+			$this->permissions($file);
 		}
 
 		return $result;
@@ -107,7 +107,7 @@ class Kohana_Upload_Server_Local extends Upload_Server
 
 		if ($result)
 		{
-			$this->permissions($this->realpath($file));
+			$this->permissions($file);
 			return $result;
 		}
 
