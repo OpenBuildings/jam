@@ -369,6 +369,16 @@ abstract class Kohana_Jam {
 		}
 	}
 
+	public static function select($model)
+	{
+		if ($meta = Jam::meta($model))
+		{
+			$model = $meta->model();
+		}
+
+		return new Jam_Query_Builder_Select($model);
+	}
+
 	public static function permit(array $permit = array(), array $data = array())
 	{
 		return Jam_Validator_Attributes::factory($permit)->data($data)->clean();

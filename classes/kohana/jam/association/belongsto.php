@@ -31,23 +31,11 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	public $column = '';
 
 	/**
-	 * Default value of the column in the database
 	 * @var integer
 	 */
-	public $default = NULL;
+	public $primary_key = ':primary_key';
 
-	/**
-	 * Should we allow NULL values for the foreign key
-	 * @var boolean
-	 */
-	public $allow_null = TRUE;
-
-	/**
-	 * Whether empty values for the foreign key should be converted to NULL
-	 * @var boolean
-	 */
-	public $convert_empty = TRUE;
-	
+	public $foreign_key = ':foreign_key';
 
 	/**
 	 * Automatically sets foreign to sensible defaults.
@@ -81,13 +69,10 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 					':name' => ':name'
 				));
 		
-		/**
-		 * Assign the accual field in the database. Default value can be set with $this->default
-		 */
 		$meta->field($this->column, Jam::field('integer', array(
-			'default' => $this->default,
-			'allow_null' => $this->allow_null,
-			'convert_empty' => $this->convert_empty
+			'default' => NULL,
+			'allow_null' => TRUE,
+			'convert_empty' => TRUE
 		)));
 
 
@@ -125,25 +110,33 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		}
 	}
 
-	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function join(Jam_Query_Builder_Join $join)
+	{
+		return $join
+			->context($this->meta())
+			->on($this->primary_key, '=', $this->foreign_key);
+
+	}
+
+	public function attribute_join($alias = NULL, $type = NULL)
 	{
 		if ($this->is_polymorphic())
-			return $this->join_polymorphic($builder, $alias, $type);
+			return $this->join_polymorphic($alias, $type);
 
-		return $builder
-			->join($this->foreign(NULL, $alias), $type)
+		return Jam_Query_Builder_Join::factory($this->foreign(NULL, $alias), $type)
+			->context(Jam::meta($this->model))
 			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
 	}
 
-	public function join_polymorphic(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function join_polymorphic($alias = NULL, $type = NULL)
 	{
 		$alias = $alias ? $alias : $this->polymorphic_default_model;
 
 		if ( ! $alias)
 			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
 
-		return $builder
-			->join($alias, $type)
+		return Jam_Query_Builder_Join::factory($alias, $type)
+			->context(Jam::meta($this->model))
 			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column)
 			->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
 	}
