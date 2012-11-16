@@ -68,7 +68,7 @@ class Kohana_Upload_Util {
 		$transfered_bytes = stream_copy_to_stream($stream_handle,  $result_handle);
 		
 		if ((int) $transfered_bytes <= 0)
-			throw new Kohana_Exception('No data (:t) was transfered from :stream to :directory ', array(':stream' => $stream, ':directory' => $directory));
+			throw new Kohana_Exception('No data (:t) was transfered from :stream to :file ', array(':stream' => $stream, ':file' => $file));
 
 		fclose($stream_handle);
 		fclose($result_handle);
