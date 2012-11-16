@@ -39,7 +39,7 @@ class Kohana_Upload_Server_Local extends Upload_Server
 		}
 		elseif (is_dir($file))
 		{
-	    return Upload_File::recursive_rmdir($file);
+	    return Upload_Util::rmdir($file);
 		}
 	}
 

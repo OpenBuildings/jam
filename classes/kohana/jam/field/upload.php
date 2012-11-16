@@ -73,7 +73,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			}
 			elseif ($value)
 			{
-				$upload_file->source($value);
+				if (Upload_Source::valid($value))
+				{
+					$upload_file->source($value);
+				}
+				
 				$upload_file->filename($value);
 			}
 
