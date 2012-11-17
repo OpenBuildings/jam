@@ -15,6 +15,8 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 	public $foreign_default = 0;
 
+	public $foreign_key = NULL;
+
 	public $count_cache = NULL;
 
 	/**
@@ -39,6 +41,11 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		}
 
 		parent::initialize($meta, $model, $name);
+
+		if ( ! $this->foreign_key)
+		{
+			$this->foreign_key = $this->model.'_id';
+		}
 
 		// Polymorphic associations
 		if ($this->as)
@@ -67,6 +74,13 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 			$this->extension('countcache', Jam::extension('countcache'));
 		}
 	}
+
+	public function join($table, $type = NULL)
+	{
+		return Jam_Query_Builder_Join::factory($table, $type)
+			->on($this->foreign_key, '=', ':primary_key');
+	}
+
 
 	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{

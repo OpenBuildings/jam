@@ -11,37 +11,48 @@
  */
 abstract class Kohana_Jam_Query_Builder {
 
-	public static function resolve_attribute_name($field, $default_model = NULL)
+	public static function resolve_attribute_name($column, $model = NULL)
 	{
-		if ($field instanceof Database_Expression)
-			return $field;
-
-		if (strpos($field, '.') !== FALSE)
+		if (is_array($column))
 		{
-			list($table, $column) = explode('.', $field);
-			$meta = Jam::meta($table);
-			$table = $meta->table();
+			list($column, $alias) = $column;	
+		}
+
+		if ( ! ($column instanceof Database_Expression) AND $column !== '*')
+		{
+			if (strpos($column, '.') !== FALSE)
+			{
+				list($model, $column) = explode('.', $column);
+			}
+
+			if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($model)))
+			{
+				$column = Jam_Query_Builder::resolve_meta_attribute($column, $meta);
+			}
+
+			if ($model)
+			{
+				if (is_array($model))
+				{
+					$model = $model[1];
+				}
+				elseif ($meta) 
+				{
+					$model = $meta->table();
+				}
+
+				$column = $model.'.'.$column;
+			}
+		}
+
+		if ( ! empty($alias))
+		{
+			return array($column, $alias);
 		}
 		else
 		{
-			if (is_array($default_model))
-			{
-				list($default_model, $table) = $this->default_model;
-				$meta = Jam::meta($default_model);
-			}
-			else
-			{
-				$meta = Jam::meta($default_model);
-				$table = $meta->table();
-			}
+			return $column;
 		}
-
-		if ($meta)
-		{
-			$column = Jam_Query_Builder::resolve_meta_attribute($column, $meta);
-		}
-
-		return $table.'.'.$column;
 	}
 
 	public static function resolve_table_alias($model)
@@ -61,27 +72,42 @@ abstract class Kohana_Jam_Query_Builder {
 		return $model;
 	}
 
-	public static function aliased_meta($model)
+	public static function resolve_join($table, $type = NULL, $context_model = NULL)
 	{
-		return Jam::meta(is_array($model) ? $model[0] : $model);
+		if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($context_model)))
+		{
+			if ($association = $meta->association(Jam_Query_Builder::aliased_model($table)))
+			{
+				if (is_array($association))
+				{
+					$table[0] = $association->foreign_model;
+				}
+				else
+				{
+					$table = $association->foreign_model;
+				}
+
+				return $association
+					->join($table, $type)
+					->context_model($context_model);
+			}
+		}
+
+		return Jam_Query_Builder_Join::factory($table, $type)
+			->context_model($context_model);
+	}
+
+	public static function aliased_model($model)
+	{
+		return is_array($model) ? $model[0] : $model;
 	}
 
 	public static function resolve_meta_attribute($attribute, Jam_Meta $meta)
 	{
-		if (($pos = strpos($attribute, ':')) > 0)
-		{
-			$meta = Jam::meta(substr($attribute, 0, $pos));
-			$attribute = substr($attribute, $pos);
-		}
-
 		switch ($attribute) 
 		{
 			case ':primary_key':
 				$attribute = $meta->primary_key();
-			break;
-
-			case ':foreign_key':
-				$attribute = $meta->foreign_key();
 			break;
 
 			case ':name_key':

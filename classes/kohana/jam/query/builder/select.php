@@ -58,14 +58,14 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 			$this->_select[] = $this->meta()->table().'.*';
 		}
 
-		foreach ($this->_form as & $form)
+		foreach ($this->_from as & $from)
 		{
-			$form = Jam_Query_Builder::resolve_table_alias($form);
+			$from = Jam_Query_Builder::resolve_table_alias($from);
 		}
 
 		foreach ($this->_select as & $attribute)
 		{
-			$attribute = Jam_Query_Builder::resolve_attribute_name($form);
+			$attribute = Jam_Query_Builder::resolve_attribute_name($attribute);
 		}
 
 		return parent::compile($db);
@@ -73,9 +73,21 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function join($model, $type = NULL)
 	{
-		$this->_join[] = $this->_last_join = Jam_Query_Builder_Join::factory($model, $type, $this->model());
+		$join = Jam_Query_Builder::resolve_join($model, $type, $this->model());
+
+		$this->_join[is_array($model) ? join(':', $model) : $model] = $this->_last_join = $join;
 
 		return $this;
+	}
+
+	public function join_nested($model, $type = NULL)
+	{
+		$join = Jam_Query_Builder::resolve_join($model, $type, $this->model())
+			->end($this);
+
+		$this->_join[is_array($model) ? join(':', $model) : $model] = $join;
+
+		return $join;
 	}
 
 	protected function _compile_conditions(Database $db, array $conditions)
@@ -89,6 +101,15 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		}
 
 		return parent::_compile_conditions($db, $conditions);
+	}
+
+	public function select_count($column = '*')
+	{
+		$column = Jam_Query_Builder::resolve_attribute_name($column);
+
+		$this->select(array(DB::expr('COUNT('.$column.')'), 'total'));
+
+		return $this;
 	}
 
 	/**

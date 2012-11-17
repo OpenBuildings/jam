@@ -13,6 +13,10 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 	public $through;
 	public $through_dependent = TRUE;
 
+	public $foreign_key = NULL;
+	public $association_foreign_key = NULL;
+	public $join_table = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -52,7 +56,33 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		}
 
 		parent::initialize($meta, $model, $name);
+
+		if ( ! $this->join_table)
+		{
+			$this->join_table = Jam_Association_Collection::guess_through_table($this->foreign_model, $this->model);
+		}
+
+		if ( ! $this->foreign_key)
+		{
+			$this->foreign_key = $this->model.'_id';
+		}
+
+		if ( ! $this->association_foreign_key)
+		{
+			$this->association_foreign_key = $this->foreign_model.'_id';
+		}
 	}
+
+	public function join($table, $type = NULL)
+	{
+		return Jam_Query_Builder_Join::factory($table, $type)
+			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
+			->join_nested($this->join_table)
+				->context_model($this->model)
+				->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
+			->end();
+	}
+
 
 	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
 	{

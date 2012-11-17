@@ -30,12 +30,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 */
 	public $column = '';
 
-	/**
-	 * @var integer
-	 */
-	public $primary_key = ':primary_key';
-
-	public $foreign_key = ':foreign_key';
+	public $foreign_key = NULL;
 
 	/**
 	 * Automatically sets foreign to sensible defaults.
@@ -79,6 +74,11 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		// We initialize a bit earlier as we want to modify the $fthis->oreign array
 		parent::initialize($meta, $model, $name);
 
+		if ( ! $this->foreign_key)
+		{
+			$this->foreign_key = $this->foreign_model.'_id';
+		}
+
 		if ($this->is_polymorphic())
 		{
 			if ( ! is_string($this->polymorphic))
@@ -110,12 +110,10 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		}
 	}
 
-	public function join(Jam_Query_Builder_Join $join)
+	public function join($table, $type = NULL)
 	{
-		return $join
-			->context($this->meta())
-			->on($this->primary_key, '=', $this->foreign_key);
-
+		return Jam_Query_Builder_Join::factory($table, $type)
+			->on(':primary_key', '=', $this->foreign_key);
 	}
 
 	public function attribute_join($alias = NULL, $type = NULL)

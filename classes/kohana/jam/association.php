@@ -20,6 +20,8 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	 */
 	public $foreign = '';
 
+	public $foreign_model = NULL;
+
 	/**
 	 * This is used to define the inverse association (has_many/has_one -> belongs_to)
 	 * 
@@ -70,6 +72,11 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	public function initialize(Jam_Meta $meta, $model, $name)
 	{
 		parent::initialize($meta, $model, $name);
+
+		if ( ! $this->foreign_model)
+		{
+			$this->foreign_model = Inflector::singular($name);
+		}
 
 		if ( ! is_string($this->foreign))
 			throw new Kohana_Exception("Cannot initialize association :association for model :model: foreign field must be a string",
@@ -153,18 +160,7 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 		return FALSE;
 	}
 
-	/**
-	 * Help the builder join the association
-	 * 
-	 * @param  Jam_Builder $builder
-	 * @param  string $alias
-	 * @param  string $type To be used by all joins
-	 * @return $this             
-	 */
-	public function join(Jam_Builder $builder, $alias = NULL, $type = NULL)
-	{
-		return $this->trigger('join', $builder, $alias, $type);
-	}
+	abstract public function join($table, $type = NULL);
 
 	/**
 	 * Create the builder required to load the associated models

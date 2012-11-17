@@ -16,60 +16,21 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		return new Jam_Query_Builder_Join($model, $type);
 	}
 
-	/**
-	 * @var  Jam_Meta  The meta object (if found) that is attached to this builder
-	 */
-	protected $_meta;
-
 	protected $_joins = array();
 
 	protected $_context_model = NULL;
 	
 	protected $_end = NULL;
 
-	public function __construct($model, $type = NULL)
-	{
-		$this->_meta = Jam_Query_Builder::aliased_meta($model))
-
-		parent::__construct($table, $type);
-	}
-
-	public function context_model($context_model = NULL)
-	{
-		if ($context_model !== NULL)
-		{
-			$this->_context_model = $context_model;
-			return $this;
-		}
-		return $this->_context_model;
-	}
-
-	public function end(Database_Builder $end = NULL)
-	{
-		if ($end !== NULL)
-		{
-			$this->_end = $end;
-			return $this;
-		}
-		return $this->_end;
-	}
-
-	public function meta()
-	{
-		return $this->_meta;
-	}
-
 	public function join($model, $type = NULL)
 	{
-		$this->_joins[] = Jam_Query_Builder_Join::factory($model, $type)
-			->context_model($this->meta()->model());
+		$this->_joins[] = Jam_Query_Builder::resolve_join($model, $type, $this->_table);
 		return $this;
 	}
 
 	public function join_nested($model, $type = NULL)
 	{
-		$join = Jam_Query_Builder_Join::factory($model, $type)
-			->context_model($this->meta()->model())
+		$join = Jam_Query_Builder::resolve_join($model, $type, $this->_table)
 			->end($this);
 
 		$this->_joins[] = $join;
@@ -78,17 +39,9 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 
 	public function compile(Database $db)
 	{
-		$db = Database::instance($this->meta()->db());
-
-		if (empty($this->_on) AND $context_model = $this->context_model())
+		if ($this->context_model() AND $meta = Jam::meta(Jam_Query_Builder::aliased_model($this->context_model())))
 		{
-			$context_meta = Jam_Query_Builder::aliased_meta($context_model);
-
-			if ($association = $context_meta->association())
-			{
-				$this->_table = $association->model();
-				$association->join($this);
-			}
+			$db = Database::instance($meta->db());
 		}
 
 		if ( ! empty($this->_on))
@@ -117,6 +70,26 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		}
 
 		return parent::compile($db).$additional_joins;
+	}
+
+	public function context_model($context_model = NULL)
+	{
+		if ($context_model !== NULL)
+		{
+			$this->_context_model = $context_model;
+			return $this;
+		}
+		return $this->_context_model;
+	}
+
+	public function end(Database_Query_Builder $end = NULL)
+	{
+		if ($end !== NULL)
+		{
+			$this->_end = $end;
+			return $this;
+		}
+		return $this->_end;
 	}
 
 } // End Kohana_Jam_Association

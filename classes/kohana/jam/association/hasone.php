@@ -14,6 +14,8 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public $foreign_default = 0;
 
+	public $foreign_key = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -37,6 +39,11 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		parent::initialize($meta, $model, $name);
 
+		if ( ! $this->foreign_key)
+		{
+			$this->foreign_key = $this->model.'_id';
+		}
+
 		if ($this->as)
 		{
 			if ( ! is_string($this->as))
@@ -55,6 +62,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	public function is_polymorphic()
 	{
 		return (bool) $this->as;
+	}
+
+	public function join($table, $type = NULL)
+	{
+		return Jam_Query_Builder_Join::factory($table, $type)
+			->on($this->foreign_key, '=', ':primary_key');
 	}
 
 
