@@ -51,6 +51,11 @@ abstract class Kohana_Jam_Meta {
 	protected $_foreign_key = '';
 
 	/**
+	 * @var string The method needed to get the item
+	 */
+	protected $_unique_key = '';
+
+	/**
 	 * @var  string  The polymorphic key for the model tree.
 	 */
 	protected $_polymorphic_key = NULL;
@@ -698,6 +703,29 @@ abstract class Kohana_Jam_Meta {
 		}
 
 		return $this->_foreign_key;
+	}
+
+	/**
+	 * Gets the unique key basend on a model method
+	 *
+	 * @param   string  $value
+	 * @return  string
+	 */
+	public function unique_key($value = NULL)
+	{
+		if (is_callable($value))
+		{
+			return $this->set('unique_key', $value);
+		}
+
+		if ($this->_unique_key)
+		{
+			return call_user_func($this->_unique_key, $value);
+		}
+		else
+		{
+			return (is_numeric($value) OR $value === NULL) ? $this->primary_key() : $this->name_key();
+		}
 	}
 
 	/**

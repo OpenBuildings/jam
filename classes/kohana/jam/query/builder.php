@@ -11,7 +11,7 @@
  */
 abstract class Kohana_Jam_Query_Builder {
 
-	public static function resolve_attribute_name($column, $model = NULL)
+	public static function resolve_attribute_name($column, $model = NULL, $value = NULL)
 	{
 		if (is_array($column))
 		{
@@ -27,7 +27,7 @@ abstract class Kohana_Jam_Query_Builder {
 
 			if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($model)))
 			{
-				$column = Jam_Query_Builder::resolve_meta_attribute($column, $meta);
+				$column = Jam_Query_Builder::resolve_meta_attribute($column, $meta, $value);
 			}
 
 			if ($model)
@@ -102,7 +102,7 @@ abstract class Kohana_Jam_Query_Builder {
 		return is_array($model) ? $model[0] : $model;
 	}
 
-	public static function resolve_meta_attribute($attribute, Jam_Meta $meta)
+	public static function resolve_meta_attribute($attribute, Jam_Meta $meta, $value = NULL)
 	{
 		switch ($attribute) 
 		{
@@ -112,6 +112,10 @@ abstract class Kohana_Jam_Query_Builder {
 
 			case ':name_key':
 				$attribute = $meta->name_key();
+			break;
+
+			case ':unique_key':
+				$attribute = $meta->unique_key($value);
 			break;
 		}
 

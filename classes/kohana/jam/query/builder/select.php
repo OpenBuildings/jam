@@ -96,7 +96,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		{
 			foreach ($group as & $condition) 
 			{
-				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->model());
+				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->model(), $condition[2]);
 			}
 		}
 
@@ -105,9 +105,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function select_count($column = '*')
 	{
-		$column = Jam_Query_Builder::resolve_attribute_name($column);
+		$db = Database::instance($this->meta()->db());
 
-		$this->select(array(DB::expr('COUNT('.$column.')'), 'total'));
+		$column = Jam_Query_Builder::resolve_attribute_name($column, $this->model());
+
+		$this->select(array(DB::expr('COUNT('.$db->quote_column($column).')'), 'total'));
 
 		return $this;
 	}
@@ -184,6 +186,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		$this->_meta->events()->bind_callbacks('builder', $callbacks);
 		return $this;
+	}
+
+	public function as_array()
+	{
+		
 	}
 
 } // End Kohana_Jam_Association

@@ -63,7 +63,7 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 
 		$select->select_count(':name_key');
 
-		$this->assertEquals('SELECT COUNT(name) AS `total` FROM `test_posts`', (string) $select);	
+		$this->assertEquals('SELECT COUNT(`test_posts`.`name`) AS `total` FROM `test_posts`', (string) $select);	
 	}
 
 	public function test_nested_join()
@@ -87,4 +87,5 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`) JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`)', (string) $select);	
 	}
+
 }
