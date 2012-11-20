@@ -21,11 +21,11 @@
 
 ### Prerequisite Database Table
 
-Creating the database table. To work with the ORM we need a table to actually relate to. You can create a table by a lot of means, the easiest is by downloading [OpenBuildings/timestamped-migrations](https://github.com/OpenBuildings/timestamped-migrations) module (And the associated [Kohana-Minion](https://github.com/kohana/minion/tree/k3.2-v1.0).
+Creating the database table. To work with the ORM we need a table to actually relate to. You can create a table by a lot of means, the easiest is by downloading [OpenBuildings/timestamped-migrations](https://github.com/OpenBuildings/timestamped-migrations) module and the associated [Kohana-Minion](https://github.com/kohana/minion/tree/k3.2-v1.0).
 
 From there you write
 
- minion db:generate --name=create_table_posts
+	./minion db:generate --name=create_table_posts
 
 Modifiy the resulting migration file to look like this
 
@@ -41,7 +41,7 @@ class Create_Table_Images extends Migration
 			'title' => 'string',
 			'content' => 'text',
 			'created_at' => 'timestamp'
-		) );
+		));
 	}
 	
 	public function down()
@@ -54,9 +54,8 @@ class Create_Table_Images extends Migration
 	
 Then run the migration with
 
-```
-minion db:migrate
-```
+	./minion db:migrate
+
 
 ### The Model File
 
@@ -254,9 +253,8 @@ Now that you've seen what a model looks like, it's time to add a second model to
 
 ### The database migration
 
-```
-minion db:generate --name=create_table_comments
-```
+	./minion db:generate --name=create_table_comments
+
 
 With this content:
 
@@ -272,7 +270,7 @@ class Create_Table_Comments extends Migration
 			'body' => 'text',
 			'post_id' => 'integer',
 			'created_at' => 'timestamp',
-		) );
+		));
 	}
 	
 	public function down()
@@ -285,9 +283,7 @@ class Create_Table_Comments extends Migration
 
 And we run the migration with:
 
-```
-minion db:migrate
-```
+	./minion db:migrate
 
 
 ### Associating of the models
