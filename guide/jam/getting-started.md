@@ -21,11 +21,11 @@
 
 ### Prerequisite Database Table
 
-Creating the database table. To work with the ORM we need a table to actually relate to. You can create a table by a lot of means, the easiest is by downloading "OpenBuildings/kohana-cli" and "OpenBuildings/timestamped-migrations" Kohana modules.
+Creating the database table. To work with the ORM we need a table to actually relate to. You can create a table by a lot of means, the easiest is by downloading [OpenBuildings/timestamped-migrations](https://github.com/OpenBuildings/timestamped-migrations) module (And the associated [Kohana-Minion](https://github.com/kohana/minion/tree/k3.2-v1.0).
 
 From there you write
 
- kohana db:generate create_table_posts
+ minion db:generate --name=create_table_posts
 
 Modifiy the resulting migration file to look like this
 
@@ -55,7 +55,7 @@ class Create_Table_Images extends Migration
 Then run the migration with
 
 ```
-kohana db:migrate
+minion db:migrate
 ```
 
 ### The Model File
@@ -99,28 +99,23 @@ class Model_Post extends Jam_Model {
 	{
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'name'            => Jam::field('string', array(
-				'rules' => array(
-					array('not_null')
-				)
-			)),
-			'title'           => Jam::field('string', array(
-				'rules' => array(
-					array('not_null')
-					array('min_length', array(':value', 5))
-				)
-			)),
+			'name'            => Jam::field('string'),
+			'title'           => Jam::field('string'),
 			'content'         => Jam::field('text'),
 			'created_at'      => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
 			)),	
 		));
+
+		$meta
+			->valodator('name', 'title', array('present' => TRUE))
+			->validator('title', array('length' => array('minimum' => 5)));
 	}
 }
 ?>
 ```
 
-These changes will ensure that all posts have a name and a title, and that the title is at least five characters long. Jam can validate a variety of conditions in a model, including the presence or uniqueness of columns, their format, and the existence of associated objects. Validations are covered in detail in [Validations](validations.md)
+These changes will ensure that all posts have a name and a title, and that the title is at least five characters long. Jam can validate a variety of conditions in a model, including the presence or uniqueness of columns, their format, and the existence of associated objects. Validations are covered in detail in [Validators](/OpenBuildings/Jam/blob/master/guide/jam/validators.md)
 
 
 ## Controllers and views
@@ -260,7 +255,7 @@ Now that you've seen what a model looks like, it's time to add a second model to
 ### The database migration
 
 ```
-kohana db:generate create_table_comments
+minion db:generate --name=create_table_comments
 ```
 
 With this content:
@@ -291,7 +286,7 @@ class Create_Table_Comments extends Migration
 And we run the migration with:
 
 ```
-kohana db:migrate
+minion db:migrate
 ```
 
 
@@ -311,6 +306,10 @@ class Model_Comment extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
+		$meta->associations(array(
+			'post' => Jam::association('belongsto')
+		));
+
 		$meta->fields(array(
 			'id'                => Jam::field('primary'),
 			'commenter'         => Jam::field('string'),
@@ -318,10 +317,6 @@ class Model_Comment extends Jam_Model {
 			'created_at'        => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
 			)),	
-		));
-
-		$meta->associations(array(
-			'post' => Jam::association('belongsto')
 		));
 	}
 }
@@ -337,28 +332,24 @@ class Model_Post extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
+		$meta->associations(array(
+			'comments' => Jam::association('hasmany')
+		));
+
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
-			'name'            => Jam::field('string', array(
-				'rules' => array(
-					array('not_null')
-				)
-			)),
-			'title'           => Jam::field('string', array(
-				'rules' => array(
-					array('not_null')
-					array('min_length', array(':value', 5))
-				)
-			)),
+			'name'            => Jam::field('string'),
+			'title'           => Jam::field('string'),
 			'content'         => Jam::field('text'),
 			'created_at'      => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
 			)),	
 		));
 
-		$meta->associations(array(
-			'comments' => Jam::association('hasmany')
-		));
+		$meta
+			->valodator('name', 'title', array('present' => TRUE))
+			->validator('title', array('length' => array('minimum' => 5)));
+
 
 	}
 }
