@@ -30,20 +30,19 @@ class Kohana_Upload_Util {
 		curl_exec($curl);
 		fclose($handle);
 
-		if ($filename)
+		if ($filename === NULL)
 		{
-			
-		}
-		elseif (isset($headers['Content-Disposition']) AND preg_match($headers['Content-Disposition'], '/^filename=\"?(.*)\"?$/', $matches))
-		{
-			$filename = $matches[1];
-		}
-		else
-		{
-			$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-			$url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-			
-			$filename = Upload_Util::filename_from_url($url, $mime_type);
+			if (isset($headers['Content-Disposition']) AND preg_match($headers['Content-Disposition'], '/^filename=\"?(.*)\"?$/', $matches))
+			{
+				$filename = $matches[1];
+			}
+			else
+			{
+				$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+				$url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+				
+				$filename = Upload_Util::filename_from_url($url, $mime_type);
+			}
 		}
 
 		$result_file = Upload_Util::combine($directory, $filename);
