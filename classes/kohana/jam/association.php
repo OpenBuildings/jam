@@ -15,11 +15,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	const ERASE    = 'erase';
 	const DELETE   = 'delete';
 
-	/**
-	 * @var string the foreign relationship model and field - model or model.field
-	 */
-	public $foreign = '';
-
 	public $foreign_model = NULL;
 
 	/**

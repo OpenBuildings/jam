@@ -154,7 +154,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function __isset($name)
 	{
-		return (bool) ($this->_meta->attribute($name) OR array_key_exists($name, $this->_unmapped));
+		return (bool) ($this->_meta->field($name) OR array_key_exists($name, $this->_unmapped));
 	}
 
 	/**
@@ -169,13 +169,8 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function __unset($name)
 	{
-		if ($this->_meta->attribute($name))
-		{
-			// Ensure changed and retrieved data is cleared
-			// This effectively clears the cache and any changes
-			unset($this->_changed[$name]);
-			unset($this->_retrieved[$name]);
-		}
+		unset($this->_changed[$name]);
+		unset($this->_retrieved[$name]);
 
 		// We can safely delete this no matter what
 		unset($this->_unmapped[$name]);
@@ -203,20 +198,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function get($name)
 	{
-		if ($association = $this->_meta->association($name))
-		{
-			$name = $association->name;
-
-			if (array_key_exists($name, $this->_changed))
-			{
-				return $this->_changed[$name];
-			}
-			else
-			{
-				return $association->get($this, NULL, FALSE);
-			}
-		}
-		elseif ($field = $this->_meta->field($name))
+		if ($field = $this->_meta->field($name))
 		{
 			// Alias the name to its actual name
 			$name = $field->name;
@@ -325,13 +307,13 @@ abstract class Kohana_Jam_Validated extends Model {
 
 		foreach ($values as $key => $value)
 		{
-			if ($attribute = $this->_meta->attribute($key))
+			if ($field = $this->_meta->field($key))
 			{
-				$this->_changed[$attribute->name] = $attribute->set($this, $value, TRUE);
+				$this->_changed[$field->name] = $field->set($this, $value, TRUE);
 
-				if (array_key_exists($attribute->name, $this->_retrieved))
+				if (array_key_exists($field->name, $this->_retrieved))
 				{
-					unset($this->_retrieved[$attribute->name]);
+					unset($this->_retrieved[$field->name]);
 				}
 			}
 			else

@@ -55,20 +55,24 @@ abstract class Kohana_Jam_Query_Builder {
 		}
 	}
 
-	public static function resolve_table_alias($model)
+	public static function set_table_name($model, $table)
 	{
 		if (is_array($model))
 		{
-			if ($meta = Jam::meta($model[0]))
-			{
-				$model[0] = $meta->table();
-			}
+			$model[0] = $table;
 		}
-		elseif ($meta = Jam::meta($model))
+		else
 		{
-			$model = $meta->table();
+			$model = $table;
 		}
+	}
 
+	public static function resolve_table_alias($model)
+	{
+		if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($model)))
+		{
+			$model = Jam_Query_Builder::set_table_name($model, $meta->table());
+		}
 		return $model;
 	}
 
@@ -78,18 +82,7 @@ abstract class Kohana_Jam_Query_Builder {
 		{
 			if ($association = $meta->association(Jam_Query_Builder::aliased_model($table)))
 			{
-				if (is_array($association))
-				{
-					$table[0] = $association->foreign_model;
-				}
-				else
-				{
-					$table = $association->foreign_model;
-				}
-
-				return $association
-					->join($table, $type)
-					->context_model($context_model);
+				return $association->join($table, $type);
 			}
 		}
 

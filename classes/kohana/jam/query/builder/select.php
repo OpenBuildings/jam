@@ -187,10 +187,4 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		$this->_meta->events()->bind_callbacks('builder', $callbacks);
 		return $this;
 	}
-
-	public function as_array()
-	{
-		
-	}
-
 } // End Kohana_Jam_Association

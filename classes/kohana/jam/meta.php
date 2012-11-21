@@ -577,17 +577,6 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function attribute($name)
-	{
-		return Arr::get($this->_associations, $name, Arr::get($this->_fields, $name));
-	}
-
-	public function attributes()
-	{
-		return $this->_associations + $this->_fields;
-	}
-
-
 	/**
 	 * Returns the defaults for the object.
 	 *

@@ -101,6 +101,59 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		return $this;
 	}
+
+	/**
+	 * Gets the value for a field.
+	 *
+	 * @param   string       $name The field's name
+	 * @return  array|mixed
+	 */
+	public function get($name)
+	{
+		if ($association = $this->_meta->association($name))
+		{
+			$name = $association->name;
+
+			if (array_key_exists($name, $this->_changed))
+			{
+				return $this->_changed[$name];
+			}
+			else
+			{
+				return $association->get($this, NULL, FALSE);
+			}
+		}
+		elseif (isset($this->_unmapped[$name]))
+		{
+			return parent::get($name);
+		}
+	}
+
+	public function __isset($name)
+	{
+		return (bool) ($this->_meta->association($name) OR parent::__isset($name));
+	}
+
+	public function set($values, $value = NULL)
+	{
+		// Accept set('name', 'value');
+		if ( ! is_array($values))
+		{
+			$values = array($values => $value);
+		}
+
+		foreach ($values as $key => $value)
+		{
+			if ($association = $this->_meta->association($key))
+			{
+				$this->_changed[$association->name] = $association->set($this, $value, TRUE);
+
+				unset($this->_retrieved[$attribute->name]);
+			}
+		}
+
+		return parent::set($values);
+	}
 	
 	/**
 	 * Clears the object and loads an array of values into the object.
@@ -400,21 +453,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function deleted()
 	{
 		return $this->_deleted;
-	}
-
-	public function builder($name)
-	{
-		return $this->_meta->association_insist($name)->builder($this);
-	}
-
-	public function build($name, array $attributes = NULL)
-	{
-		return $this->_meta->association_insist($name)->build($this, $attributes);
-	}
-
-	public function create($name, array $attributes = NULL)
-	{
-		return $this->_meta->association_insist($name)->create($this, $attributes);
 	}
 
 	/**

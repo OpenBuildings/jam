@@ -41,17 +41,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 */
 	public function initialize(Jam_Meta $meta, $model, $name)
 	{
-		// Default to the name of the column
-		if (empty($this->foreign))
-		{
-			$this->foreign = $name.'.:primary_key';
-		}
-		// Is it model.field?
-		elseif (FALSE === strpos($this->foreign, '.'))
-		{
-			$this->foreign = $this->foreign.'.:primary_key';
-		}
-
 		// Default to the foreign model's primary key
 		if (empty($this->column))
 		{
@@ -85,7 +74,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			{
 				$this->polymorphic = $name.'_model';
 			}
-			$this->foreign['model'] = $this->polymorphic;
 
 			$meta->field($this->polymorphic, Jam::field('string'));
 		}
@@ -112,67 +100,58 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 
 	public function join($table, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($table, $type)
+		if ($this->is_polymorphic())
+		{
+			$foreign_model = is_array($table) ? $table[1] : $this->polymorphic_default_model;
+
+			if ( ! $foreign_model)
+				throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
+
+			$join = Jam_Query_Builder_Join::factory($foreign_model, $type)
+				->on($this->polymorphic, '=', DB::expr("'$foreign_model'"));
+		}
+		else
+		{
+			$join = Jam_Query_Builder_Join::factory($table, $type);
+		}
+
+		return $join
+			->context_model($this->model)
 			->on(':primary_key', '=', $this->foreign_key);
 	}
 
-	public function attribute_join($alias = NULL, $type = NULL)
+	public function query_builder(Jam_Model $model)
+	{
+		$builder = new Jam_Query_Builder_Collection($this->foreign_model($model));
+
+		return $builder
+			->limit(1)
+			->where(':primary_key', '=', $model->id());
+	}
+
+	public function foreign_model(Jam_Model $model)
 	{
 		if ($this->is_polymorphic())
-			return $this->join_polymorphic($alias, $type);
+		{
+			$foreign_model = $model->{$this->polymorphic} ? $model->{$this->polymorphic} : $this->polymorphic_default_model;
 
-		return Jam_Query_Builder_Join::factory($this->foreign(NULL, $alias), $type)
-			->context(Jam::meta($this->model))
-			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column);
-	}
+			if ( ! $foreign_model)
+				throw new Kohana_Exception('Could not find the foreign_model of the polymorphic association');
+		}
+		else
+		{
+			$foreign_model = $this->foreign_model;
+		}
 
-	public function join_polymorphic($alias = NULL, $type = NULL)
-	{
-		$alias = $alias ? $alias : $this->polymorphic_default_model;
-
-		if ( ! $alias)
-			throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
-
-		return Jam_Query_Builder_Join::factory($alias, $type)
-			->context(Jam::meta($this->model))
-			->on($this->foreign('field', $alias), '=', $this->model.'.'.$this->column)
-			->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
-	}
-
-	public function builder(Jam_Model $model)
-	{
-		if ($this->is_polymorphic())
-			return $this->builder_polymorphic($model);
-
-		return Jam::query($this->foreign())
-			->limit(1)
-			->where($this->foreign('field'), '=', $model->{$this->column});
-	}
-
-	protected function builder_polymorphic(Jam_Model $model)
-	{
-		$parent_model = $model->{$this->polymorphic} ? $model->{$this->polymorphic} : $this->polymorphic_default_model;
-
-		if ( ! $parent_model)
-			return NULL;
-
-		$builder = Jam::query($parent_model)
-			->limit(1)
-			->select_column(array("$parent_model.*"))
-			->where($parent_model.'.'.$this->foreign['field'], '=', $model->{$this->column});
-
-		return $builder;
+		return $foreign_model;
 	}
 
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		if ($builder = $this->builder($model))
-			return $builder->find();
+		$item = $this->query_builder($model)->offsetGet(0);
 
-		if ($this->is_polymorphic())
+		if ( ! $item)
 			return NULL;
-
-		$foreign_model = Jam::factory($this->foreign());
 
 		$this->assign_relation($foreign_model);
 
@@ -213,13 +192,6 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		$item = parent::assign_relation($model, $item);
 		$model->set($this->name, $item);
 		return $item;
-	}
-
-	public function create(Jam_Model $model, array $attributes = NULL)
-	{
-		$new_item = parent::create($model, $attributes);
-		$model->set($this->column, $new_item->id());
-		return $new_item;
 	}
 
 	public function model_before_save(Jam_Model $model)
