@@ -119,18 +119,13 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
 		if ( ! $this->column)
 		{
 			$this->column = $name;
-		}
-
-		if ($this->filters)
-		{
-			$this->extension('filters', Jam::extension('filters'));
 		}
 	}
 
@@ -143,6 +138,14 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 **/
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
+		if ( ! empty($this->filters))
+		{
+			foreach ($this->filters as $filter => $arguments) 
+			{
+				$value = $this->run_filter($model, $value, $filter, $arguments);
+			}
+		}
+
 		list($value, $return) = $this->_default($value);
 
 		return $value;
@@ -218,5 +221,30 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		}
 
 		return array($value, $return);
+	}
+
+	public function run_filter(Jam_Attribute $model, $value, $filter, array $arguments = array())
+	{
+		$bound = array(
+			':model' => $model, 
+			':field' => $this->name, 
+			':value' => $value,
+		);
+
+		$arguments = $arguments ? $arguments : array(':value');
+
+		foreach ($arguments as & $argument)
+		{
+			if (is_string($argument) AND array_key_exists($argument, $bound))
+			{
+				// Replace with bound value
+				$argument = $bound[$argument];
+			}
+		}
+
+		$value = call_user_func_array($filter, $arguments);
+		
+
+		return $value;
 	}
 } // End Kohana_Jam_Field

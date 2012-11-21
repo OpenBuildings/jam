@@ -51,6 +51,36 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);	
 	}
 
+	public function test_having()
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->having('test_post.test_author_id', '=', 10);
+
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` HAVING `test_posts`.`test_author_id` = 10', (string) $select);	
+	}
+
+	public function test_where()
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->where('test_post.test_author_id', '=', 10);
+
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`test_author_id` = 10', (string) $select);	
+	}
+
+	public function test_order_by()
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->order_by('test_post.test_author_id', 'DESC');
+
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);	
+	}
+
 	public function test_select_count()
 	{
 		$select = new Jam_Query_Builder_Select('test_post');

@@ -75,6 +75,29 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	}
 
 	/**
+	 * Gets the value for a field.
+	 *
+	 * @param   string       $name The field's name
+	 * @return  array|mixed
+	 */
+	public function get($name)
+	{
+		if ($association = $this->_meta->association($name))
+		{
+			$name = $association->name;
+
+			return $association->get($this, Arr::get($this->_changed, $name), isset($this->_changed));
+		}
+
+		return parent::get($name);
+	}
+
+	public function __isset($name)
+	{
+		return ($this->_meta->association($name) OR parent::__isset($name));
+	}
+
+	/**
 	 * Sets the value of a field.
 	 *
 	 * You can pass an array of key => value pairs
@@ -90,50 +113,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * @param   string        $value
 	 * @return  Jam_Model
 	 */
-	public function set($values, $value = NULL)
-	{
-		parent::set($values, $value);
-
-		if ($this->_saved AND $this->changed())
-		{
-			$this->_saved = FALSE;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Gets the value for a field.
-	 *
-	 * @param   string       $name The field's name
-	 * @return  array|mixed
-	 */
-	public function get($name)
-	{
-		if ($association = $this->_meta->association($name))
-		{
-			$name = $association->name;
-
-			if (array_key_exists($name, $this->_changed))
-			{
-				return $this->_changed[$name];
-			}
-			else
-			{
-				return $association->get($this, NULL, FALSE);
-			}
-		}
-		elseif (isset($this->_unmapped[$name]))
-		{
-			return parent::get($name);
-		}
-	}
-
-	public function __isset($name)
-	{
-		return (bool) ($this->_meta->association($name) OR parent::__isset($name));
-	}
-
 	public function set($values, $value = NULL)
 	{
 		// Accept set('name', 'value');
@@ -152,7 +131,14 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			}
 		}
 
-		return parent::set($values);
+		parent::set($values);
+
+		if ($this->_saved AND $this->changed())
+		{
+			$this->_saved = FALSE;
+		}
+
+		return $this;
 	}
 	
 	/**
@@ -256,7 +242,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// These will be processed later
 		$values = $saveable = array();
 
-		if ($this->_meta->trigger_behavior_events($this, 'before_save') === FALSE)
+		if ($this->_meta->trigger_behavior_events($this, 'before_save', $this->_changed) === FALSE)
 		{
 			return $this;
 		}
@@ -264,7 +250,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->_meta->trigger_behavior_events($this, 'before_'.$event_type) === FALSE)
+		if ($this->meta()->trigger_behavior_events($this, 'before_'.$event_type, $this->_changed) === FALSE)
 		{
 			return $this;
 		}
@@ -275,7 +261,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 		foreach (array_merge($this->_original, $this->_changed) as $column => $value)
 		{
-			if ($field = $this->_meta->field($column))
+			if ($field = $this->meta()->field($column))
 			{
 				// Only save in_db values
 				if ($field->in_db)
@@ -324,14 +310,13 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_behavior_events($this, 'after_save');
+		$this->_meta->trigger_behavior_events($this, 'after_save', $this->_changed);
 
-		$this->_meta->trigger_behavior_events($this, 'after_'.$event_type);
+		$this->_meta->trigger_behavior_events($this, 'after_'.$event_type, $this->_changed);
 		
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
 
-		// We're good!
 		$this->_retrieved = $this->_changed = array();
 
 		$this->_is_saving = FALSE;

@@ -16,16 +16,17 @@ class Model_Test_Author extends Jam_Model {
 			'test_post'        => Jam::association('hasone', array('inverse_of' => 'test_author')),
 			'test_posts'       => Jam::association('hasmany'),
 			'test_blogs_owned' => Jam::association('hasmany', array(
-				'foreign' => 'test_blog.test_owner_id',
+				'foreign_model' => 'test_blog',
+				'foreign_key' => 'test_owner_id',
 			)),
 			'test_categories'  => Jam::association('hasmany'),
 
 			// Relationship with non-standard naming
 			'permission' => Jam::association('belongsto', array(
-				'foreign' => 'test_position',
-				'column'  => 'test_position_id',
+				'foreign_model' => 'test_position',
+				'foreign_key'  => 'test_position_id',
 			)),
-			'styles' => Jam::association('taxonomy_terms', array('vocabulary' => 'Styles', 'vocabulary_model' => 'test_vocabulary', 'through' => 'test_terms_items', 'foreign' => 'test_term.id'))
+			'styles' => Jam::association('taxonomy_terms', array('vocabulary' => 'Styles', 'vocabulary_model' => 'test_vocabulary', 'through' => 'test_terms_items', 'foreign_model' => 'test_term'))
 		));
 
 		// Define fields

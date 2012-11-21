@@ -19,13 +19,14 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 
 		Jam::meta($model)->associations(array(
 			'parent' => Jam::association('belongsto', array(
-				'foreign' => $model,
-				'column' => $this->_field,
+				'foreign_model' => $model,
+				'foreign_key' => $this->_field,
 				'default' => 0,
 				'inverse_of' => 'children'
 			)),
 			'children' => Jam::association('hasmany', array(
-				'foreign' => $model.'.'.$this->_field,
+				'foreign_model' => $model,
+				'foreign_key' => $this->_field,
 				'inverse_of' => 'parent'
 			)),
 		));

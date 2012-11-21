@@ -9,6 +9,11 @@
  */
 abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collection {
 
+	public static function factory($model)
+	{
+		return new Jam_Query_Builder_Dynamic($model);
+	}
+
 	protected function _convert()
 	{
 		if ( ! $this->result() instanceof Jam_Query_Builder_Dynamic_Result)

@@ -32,7 +32,7 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 	{
 		$join = Jam_Query_Builder::resolve_join($model, $type, $this->_table)
 			->end($this);
-
+			
 		$this->_joins[] = $join;
 		return $join;
 	}
@@ -52,7 +52,6 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 				$condition[2] = Jam_Query_Builder::resolve_attribute_name($condition[2], $this->context_model());
 			}
 		}
-
 		$this->_table = Jam_Query_Builder::resolve_table_alias($this->_table);
 
 		if ( ! empty($this->_using))

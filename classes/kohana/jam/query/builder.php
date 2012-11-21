@@ -65,6 +65,7 @@ abstract class Kohana_Jam_Query_Builder {
 		{
 			$model = $table;
 		}
+		return $model;
 	}
 
 	public static function resolve_table_alias($model)
@@ -82,12 +83,16 @@ abstract class Kohana_Jam_Query_Builder {
 		{
 			if ($association = $meta->association(Jam_Query_Builder::aliased_model($table)))
 			{
-				return $association->join($table, $type);
+				return $association->join(is_array($table) ? $table[1] : NULL, $type);
 			}
 		}
 
-		return Jam_Query_Builder_Join::factory($table, $type)
-			->context_model($context_model);
+		$join = Jam_Query_Builder_Join::factory($table, $type);
+		if ($context_model)
+		{
+			$join->context_model($context_model);
+		}
+		return $join;
 	}
 
 	public static function aliased_model($model)

@@ -95,11 +95,6 @@ abstract class Kohana_Jam_Meta {
 	protected $_errors_filename = NULL;
 
 	/**
-	 * @var  array  A list of columns and how they relate to fields
-	 */
-	protected $_columns = array();
-
-	/**
 	 * @var  array  Default data for each field
 	 */
 	protected $_defaults = array();
@@ -129,6 +124,8 @@ abstract class Kohana_Jam_Meta {
 	 */
 	public function __construct($model)
 	{
+		$this->_model = $model;
+
 		// Set up event system
 		$this->_events = new Jam_Event($model);
 	}
@@ -178,7 +175,6 @@ abstract class Kohana_Jam_Meta {
 
 		// Ensure certain fields are not overridden
 		$this->_model       = $model;
-		$this->_columns     =
 		$this->_defaults    = array();
 
 		if ( ! $this->_errors_filename)
@@ -225,12 +221,12 @@ abstract class Kohana_Jam_Meta {
 
 		foreach ($this->_associations as $column => & $association)
 		{
-			$association->initialize($this, $model, $column);
+			$association->initialize($this, $column);
 		}
 
 		foreach ($this->_fields as $column => & $field)
 		{
-			$field->initialize($this, $model, $column);
+			$field->initialize($this, $column);
 			$this->_defaults[$column] = $field->default;
 		}
 

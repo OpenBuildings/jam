@@ -51,6 +51,14 @@ class Jam_Query_Builder_JoinTest extends Unittest_TestCase {
 		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_blogs`.`test_author_id`)', (string) $join);
 	}
 
+	public function test_join_single()
+	{
+		$join = Jam_Query_Builder_Join::factory('test_post')
+			->join('test_author');
+
+		$this->assertEquals('JOIN `test_posts` ON () JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $join);
+	}
+
 	public function test_joins()
 	{
 		$join = Jam_Query_Builder_Join::factory('test_post')

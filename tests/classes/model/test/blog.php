@@ -13,9 +13,9 @@ class Model_Test_Blog extends Jam_Model {
 		$meta->db(Unittest_Jam_Testcase::$database_connection);
 
 		$meta->associations(array(
-			'test_owner'             => Jam::association('belongsto', array('foreign' => 'test_author', 'column' => 'test_owner_id')),
+			'test_owner'             => Jam::association('belongsto', array('foreign_model' => 'test_author', 'column' => 'test_owner_id')),
 			'test_featured_category' => Jam::association('hasone', array(
-				'foreign' => 'test_category',
+				'foreign_model' => 'test_category',
 				'conditions' => array(
 					'where' => array('test_category.is_featured', '=', TRUE),
 					'limit' => array(1)

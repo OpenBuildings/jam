@@ -49,12 +49,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	 * @var boolean
 	 */
 	public $required = FALSE;
-	
-	/**
-	 * Indicates whether the foreign model should be touched (updated) after the association has been updated.
-	 * @var boolean
-	 */
-	public $touch = FALSE;
 
 	/**
 	 * Default initialize set model, name and foreign variables
@@ -64,21 +58,20 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	 * @param  string     $name    the name of the association 
 	 * @return NULL            
 	 */
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
-		if ( ! $this->foreign_model)
+		if ( ! $this->is_polymorphic())
 		{
-			$this->foreign_model = Inflector::singular($name);
+			if ( ! $this->foreign_model)
+			{
+				$this->foreign_model = Inflector::singular($name);
+			}
+
+			// if ( ! Jam::meta($this->foreign_model))
+			// 	throw new Kohana_Exception('Foreign model ":foreign_model" does not exist for association :name, model :model', array(':model' => $this->model, ':name' => $name, ':foreign_model' => $this->foreign_model));
 		}
-
-		if ( ! is_string($this->foreign))
-			throw new Kohana_Exception("Cannot initialize association :association for model :model: foreign field must be a string",
-				array(':association' => $name, ':model' => $model));
-
-		// Convert $this->foreign to an array for easier access
-		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
 
 		// if ($this->touch)
 		// {
@@ -156,7 +149,13 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	}
 
 	abstract public function join($table, $type = NULL);
-	abstract public function builder(Jam_Model $model);
+
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		return $value;
+	}
+
+
 
 	/**
 	 * This method is executed for each child model so that it's values are properly assigned
@@ -168,47 +167,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	public function assign_relation(Jam_Model $model, $item)
 	{
 		return $this->assign_inverse($model, $item);
-	}
-
-	/**
-	 * This method is used to create a child model, that is connected to the parent model with the association
-	 * @param  Jam_Model $model      parent model
-	 * @param  array       $attributes attributes to set for the new model
-	 * @return Jam_Model             
-	 */
-	public function build(Jam_Model $model, array $attributes = NULL)
-	{
-		return $this->assign_relation($model, Jam::factory($this->foreign())->set($attributes));
-	}
-
-	/**
-	 * The same as build, but save the model to the database
-	 * @param  Jam_Model $model      parent model
-	 * @param  array       $attributes attributes to set for the new model
-	 * @return Jam_Model             
-	 */
-	public function create(Jam_Model $model, array $attributes = NULL)
-	{
-		return $this->build($model, $attributes)->save();
-	}
-
-	/**
-	 * Used to easily get field names for the builder
-	 * @param  string $field_name name of the foreign field
-	 * @return string
-	 */
-	public function foreign($field_name = NULL, $alias = NULL)
-	{
-		if ($field_name)
-		{
-			$model = $alias ? $alias : $this->foreign['model'];
-			return $model.'.'.Arr::get($this->foreign, $field_name, $field_name);
-		}
-		else
-		{
-			return $alias ? array($this->foreign['model'], $alias) : $this->foreign['model'];
-		}
-		
 	}
 
 	/**

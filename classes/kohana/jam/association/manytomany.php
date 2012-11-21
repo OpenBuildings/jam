@@ -24,38 +24,38 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 	 * @param   string  $name
 	 * @return  void
 	 */
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		if (empty($this->foreign))
-		{
-			$foreign_model = Inflector::singular($name);
-			$this->foreign = $foreign_model.'.'.Jam::meta($foreign_model)->primary_key();
-		}
-		// Is it model.field?
-		elseif (is_string($this->foreign) AND FALSE === strpos($this->foreign, '.'))
-		{
-			$foreign_model = $this->foreign;
-			$this->foreign = $this->foreign.'.'.Jam::meta($foreign_model)->primary_key();
-		}
+		// if (empty($this->foreign))
+		// {
+		// 	$foreign_model = Inflector::singular($name);
+		// 	$this->foreign = $foreign_model.'.'.Jam::meta($foreign_model)->primary_key();
+		// }
+		// // Is it model.field?
+		// elseif (is_string($this->foreign) AND FALSE === strpos($this->foreign, '.'))
+		// {
+		// 	$foreign_model = $this->foreign;
+		// 	$this->foreign = $this->foreign.'.'.Jam::meta($foreign_model)->primary_key();
+		// }
 
-		// Create the default through connection
-		if (empty($this->through) OR is_string($this->through))
-		{
-			if (empty($this->through))
-			{
-				$this->through = Jam_Association_Collection::guess_through_table($foreign_model, $model);
-			}
+		// // Create the default through connection
+		// if (empty($this->through) OR is_string($this->through))
+		// {
+		// 	if (empty($this->through))
+		// 	{
+		// 		$this->through = Jam_Association_Collection::guess_through_table($foreign_model, $meta->model());
+		// 	}
 
-			$this->through = array(
-				'model' => $this->through,
-				'fields' => array(
-					'our' => $meta->foreign_key(),
-					'foreign' => Jam::meta($foreign_model)->foreign_key(),
-				)
-			);
-		}
+		// 	$this->through = array(
+		// 		'model' => $this->through,
+		// 		'fields' => array(
+		// 			'our' => $meta->foreign_key(),
+		// 			'foreign' => Jam::meta($foreign_model)->foreign_key(),
+		// 		)
+		// 	);
+		// }
 
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
 		if ( ! $this->join_table)
 		{

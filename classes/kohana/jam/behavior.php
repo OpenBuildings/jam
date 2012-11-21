@@ -66,29 +66,6 @@ abstract class Kohana_Jam_Behavior {
 		$this->_name  = $name;
 		$this->_model = $model;
 		
-		$this->_discover_events($event);
+		$event->discover_events($this);
 	}
-	
-	/**
-	 * Simple method for auto-discovering events on the behavior.
-	 * 
-	 * Only methods prefixed with either builder_ or model_
-	 * will be considered. 
-	 * 
-	 * @param   Jam_Event  $event
-	 * @return  void
-	 */
-	protected function _discover_events(Jam_Event $event)
-	{
-		foreach (get_class_methods($this) as $method)
-		{
-			if (($ns = substr($method, 0, 5)) === 'model' 
-			OR  ($ns = substr($method, 0, 4)) === 'meta'
-			OR  ($ns = substr($method, 0, 7)) === 'builder')
-			{
-				$event->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($this, $method));
-			}
-		}
-	}
-
 } // End Kohana_Jam_Behavior

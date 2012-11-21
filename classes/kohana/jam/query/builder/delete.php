@@ -9,11 +9,11 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Select {
+abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_Delete {
 
 	public static function factory($model)
 	{
-		return new Jam_Query_Builder_Select($model);
+		return new Jam_Query_Builder_Delete($model);
 	}
 
 	/**
@@ -43,7 +43,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		if ( ! $model)
 		{
-			throw new Kohana_Exception('Jam_Query_Builder_Select requires model to be set in the constructor');
+			throw new Kohana_Exception('Jam_Query_Builder_Delete requires model to be set in the constructor');
 		}
 
 		$this->_meta  = Jam::meta($model);
@@ -93,26 +93,6 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		$this->_join[is_array($model) ? join(':', $model) : $model] = $join;
 
 		return $join;
-	}
-
-	protected function _compile_order_by(Database $db, array $order_by)
-	{
-		foreach ($order_by as & $order) 
-		{
-			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->model());
-		}
-
-		return parent::_compile_order_by($db, $order_by);
-	}
-
-	protected function _compile_group_by(Database $db, array $group_by)
-	{
-		foreach ($group_by as & $group) 
-		{
-			$group = Jam_Query_Builder::resolve_attribute_name($group, $this->model());
-		}
-
-		return parent::_compile_group_by($db, $conditions);
 	}
 
 	protected function _compile_conditions(Database $db, array $conditions)

@@ -25,11 +25,11 @@ abstract class Kohana_Jam_Field_Polymorphic extends Jam_Field_String {
 	 * @param   string  $column
 	 * @return  void
 	 */
-	public function initialize(Jam_Meta $meta, $model, $column)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		parent::initialize($meta, $model, $column);
+		parent::initialize($meta, $name);
 		
-		$this->default = $model;
+		$this->default = $this->model;
 	}
 
 	/**

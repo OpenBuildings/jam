@@ -54,20 +54,7 @@ abstract class Kohana_Jam_Attribute {
 		}
 		elseif ($options !== NULL)
 		{
-			throw new Kohana_Exception("Jam_Attribute options must be either array of options");
-		}
-	}
-
-	protected function _discover_events(Jam_Event $event)
-	{
-		foreach (get_class_methods($this) as $method)
-		{
-			if (($ns = substr($method, 0, 5)) === 'model' 
-			OR  ($ns = substr($method, 0, 4)) === 'meta'
-			OR  ($ns = substr($method, 0, 7)) === 'builder')
-			{
-				$event->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($this, $method));
-			}
+			throw new Kohana_Exception("Jam_Attribute options must be an array of options");
 		}
 	}
 
@@ -79,10 +66,10 @@ abstract class Kohana_Jam_Attribute {
 	 * @param   string  $column
 	 * @return  void
 	 **/
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
 		// This will come in handy for setting complex relationships
-		$this->model = $model;
+		$this->model = $meta->model();
 
 		// This is for naming form fields
 		$this->name = $name;
@@ -93,7 +80,7 @@ abstract class Kohana_Jam_Attribute {
 			$this->label = Inflector::humanize($name);
 		}
 
-		$this->_discover_events($meta->events());
+		$meta->events()->discover_events($this);
 	}
 
 	abstract public function get(Jam_Validated $model, $value, $is_changed);

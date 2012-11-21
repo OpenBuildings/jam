@@ -14,14 +14,16 @@
  */
 abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 
+	public static $allowed = array('native', 'json', 'csv');
+
 	public $method = 'native';
 
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
-		if ( ! in_array($this->method, array('native', 'json')))
-			throw new Kohana_Exception("Invalid serialization method ':method', can use only 'native' and 'json'", array(':method' => $this->method));
+		if ( ! in_array($this->method, Jam_Field_Serialized::$allowed))
+			throw new Kohana_Exception("Unnown serialization method ':method', can use only :allowed", array(':method' => $this->method, ':allowed' => Jam_Field_Serialized::$allowed));
 	}
 
 	/**

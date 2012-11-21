@@ -49,6 +49,19 @@ abstract class Kohana_Jam_Event {
 		return $this;
 	}
 
+	public function discover_events($from)
+	{
+		foreach (get_class_methods($from) as $method)
+		{
+			if (($ns = substr($method, 0, 5)) === 'model' 
+			OR  ($ns = substr($method, 0, 4)) === 'meta'
+			OR  ($ns = substr($method, 0, 7)) === 'builder')
+			{
+				$this->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($from, $method));
+			}
+		}
+	}
+
 	/**
 	 * Triggers an event.
 	 *

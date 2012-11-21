@@ -7,8 +7,13 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Select implements Countable{
+abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Select implements Countable, ArrayAccess, Iterator{
 
+	public static function factory($model)
+	{
+		return new Jam_Query_Builder_Collection($model);
+	}
+	
 	protected $_result;
 	protected $_model;
 
@@ -47,34 +52,6 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		return $model;
 	}
 
-	public function count()
-	{
-		return $this->result()->count();
-	}
-
-	public function offsetGet($offset)
-	{
-		$value = $this->result()->offsetGet($offset);
-		if ( ! $value)
-			return NULL;
-
-		return $this->_load_model($value);
-	}
-
-	public function offsetExists($offset)
-	{
-		return $this->result()->offsetExists($offset);
-	}
-
-	public function offsetSet($offset, $value)
-	{
-		throw new Kohana_Exception('Database results are read-only');
-	}
-
-	public function offsetUnset($offset)
-	{
-		throw new Kohana_Exception('Database results are read-only');
-	}
 
 	public function as_array($key = NULL, $value = NULL)
 	{
@@ -95,4 +72,102 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		return $this->as_array(NULL, ':primary_key');
 	}
 
+	/**
+	 * Implement Countable
+	 * @return int 
+	 */
+	public function count()
+	{
+		return $this->result()->count();
+	}
+
+	/**
+	 * Implement ArrayAccess
+	 * 
+	 * @param  int $offset 
+	 * @return Jam_Model         
+	 */
+	public function offsetGet($offset)
+	{
+		$value = $this->result()->offsetGet($offset);
+		if ( ! $value)
+			return NULL;
+
+		return $this->_load_model($value);
+	}
+
+	/**
+	 * Implement ArrayAccess
+	 * 
+	 * @param  int $offset 
+	 * @return boolean         
+	 */
+	public function offsetExists($offset)
+	{
+		return $this->result()->offsetExists($offset);
+	}
+
+	/**
+	 * Implement ArrayAccess
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Exception('Database results are read-only');
+	}
+
+	/**
+	 * Implement ArrayAccess
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new Kohana_Exception('Database results are read-only');
+	}
+
+
+	/**
+	 * Implement Iterator
+	 */
+	public function rewind()
+	{
+		$this->result()->rewind();
+	}
+
+	/**
+	 * Implement Iterator
+	 * @return  Jam_Model 
+	 */
+	public function current()
+	{
+		$value = $this->result()->current();
+		if ( ! $value)
+			return NULL;
+
+		return $this->_load_model($value);
+	}
+
+	/**
+	 * Implement Iterator
+	 * @return  int
+	 */
+	public function key()
+	{
+		return $this->result()->key();
+	}
+
+	/**
+	 * Implement Iterator
+	 */
+	public function next()
+	{
+		$this->result()->next();
+	}
+
+	/**
+	 * Implement Iterator
+	 * @return  bool
+	 */
+	public function valid()
+	{
+		return $this->result()->valid();
+	}
 } // End Kohana_Jam_Association

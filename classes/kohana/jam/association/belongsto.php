@@ -8,7 +8,7 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
+abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Indicates whether this is a polymorphic association. Will add the polymorphic field,
@@ -18,18 +18,10 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	public $polymorphic = FALSE;
 
 	/**
-	 * Default value for polymorphic model column. Allowes using polymorphic associations as normal belnogs to
-	 * @var string
-	 */
-	public $polymorphic_default_model = NULL;
-
-	/**
 	 * The name of the actual field holding the id of the associated model. Defaults to
 	 * <name>_id
 	 * @var string
 	 */
-	public $column = '';
-
 	public $foreign_key = NULL;
 
 	/**
@@ -39,34 +31,26 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 	 * @param   string  $name
 	 * @return  void
 	 */
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
-		// Default to the foreign model's primary key
-		if (empty($this->column))
-		{
-			$this->column = $name.'_id';
-		}
-		
-		if ($this->column === $name)
-			throw new Kohana_Exception("In association :name for model :model - invalid column name. Field and Association cannot be the same name", array(
-					':model' => $model,
-					':name' => ':name'
-				));
-		
-		$meta->field($this->column, Jam::field('integer', array(
-			'default' => NULL,
-			'allow_null' => TRUE,
-			'convert_empty' => TRUE
-		)));
-
-
-		// We initialize a bit earlier as we want to modify the $fthis->oreign array
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
 		if ( ! $this->foreign_key)
 		{
-			$this->foreign_key = $this->foreign_model.'_id';
+			$this->foreign_key = $name.'_id';
 		}
+
+		if ($this->foreign_key === $name)
+			throw new Kohana_Exception('In association ":name" for model ":model" - invalid foreign_key name. Field and Association cannot be the same name', array(
+					':model' => $this->model,
+					':name' => $name,
+				));
+		
+		$meta->field($this->foreign_key, Jam::field('integer', array(
+			'default' => NULL,
+			'allow_null' => TRUE,
+			'convert_empty' => TRUE,
+		)));
 
 		if ($this->is_polymorphic())
 		{
@@ -75,7 +59,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 				$this->polymorphic = $name.'_model';
 			}
 
-			$meta->field($this->polymorphic, Jam::field('string'));
+			$meta->field($this->polymorphic, Jam::field('string', array('convert_empty' => TRUE)));
 		}
 
 		// Count Cache
@@ -90,29 +74,32 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return (bool) $this->polymorphic;
 	}
 
-	public function model_after_check(Jam_Model $model, $is_changed)
+	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($is_changed AND $model->{$this->name} AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
+		if ($value = Arr::get($changed, $this->name) AND $this->_new_model_data($value))
 		{
-			$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
+			if ( ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
+			{
+				$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
+			}
 		}
 	}
 
-	public function join($table, $type = NULL)
+	public function join($alias, $type = NULL)
 	{
 		if ($this->is_polymorphic())
 		{
-			$foreign_model = is_array($table) ? $table[1] : $this->polymorphic_default_model;
+			$foreign_model = $alias;
 
 			if ( ! $foreign_model)
 				throw new Kohana_Exception('Jam does not join automatically polymorphic belongsto associations!');
 
 			$join = Jam_Query_Builder_Join::factory($foreign_model, $type)
-				->on($this->polymorphic, '=', DB::expr("'$foreign_model'"));
+				->on(DB::expr("'$foreign_model'"), '=', $this->polymorphic);
 		}
 		else
 		{
-			$join = Jam_Query_Builder_Join::factory($table, $type);
+			$join = Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type);
 		}
 
 		return $join
@@ -120,86 +107,100 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			->on(':primary_key', '=', $this->foreign_key);
 	}
 
-	public function query_builder(Jam_Model $model)
+	protected function _parse_value($value)
 	{
-		$builder = new Jam_Query_Builder_Collection($this->foreign_model($model));
+		if ( ! $value)
+		{
+			return array(NULL, NULL);
+		}			
+		elseif ($value instanceof Jam_Validated) 
+		{
+			return array($value->id(), $value->meta()->model());
+		}
+		elseif (is_integer($value) OR is_string($value)) 
+		{
+			return array($value, $this->foreign_model);
+		}
+		elseif (array($value)) 
+		{
+			if ($this->is_polymorphic())
+			{
+				$foreign_model = key($value);
+				$value = current($value);
 
-		return $builder
-			->limit(1)
-			->where(':primary_key', '=', $model->id());
+				if (is_integer($value) OR is_string($value))
+					return array($value, $foreign_model);
+			}
+			else
+			{
+				$foreign_model = $this->foreign_model;
+			}
+
+			$key = Arr::get($value, Jam::meta($foreign_model)->primary_key());
+			return array($key, $foreign_model);	
+		}
 	}
 
-	public function foreign_model(Jam_Model $model)
+	protected function _new_model_data(Jam_Validated $model, $value)
 	{
 		if ($this->is_polymorphic())
 		{
-			$foreign_model = $model->{$this->polymorphic} ? $model->{$this->polymorphic} : $this->polymorphic_default_model;
-
-			if ( ! $foreign_model)
-				throw new Kohana_Exception('Could not find the foreign_model of the polymorphic association');
+			return (is_array($value) AND is_array(current($value))) ? current($value) : NULL;
 		}
 		else
 		{
-			$foreign_model = $this->foreign_model;
+			return is_array($value) ? $value : NULL;
 		}
+	}
 
-		return $foreign_model;
+	protected function _find_item($foreign_model, $key)
+	{
+		return Jam_Query_Builder_Collection::factory($foreign_model)->limit(1)->where(':unique_key', '=', $key)->current();
+	}
+
+	protected function _delete_item($foreign_model, $key)
+	{
+		return Jam_Query_Builder_Delete::factory($foreign_model)->limit(1)->where(':unique_key', '=', $key)->execute();
 	}
 
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		$item = $this->query_builder($model)->offsetGet(0);
+		if ($value instanceof Jam_Validated OR ! $value)
+			return $value;
 
-		if ( ! $item)
-			return NULL;
+		list($key, $foreign_model) = $this->_parse_value($value);
 
-		$this->assign_relation($foreign_model);
+		$item = $this->_find_item($foreign_model, $key);
 
-		return $foreign_model;
-	}
-
-	public function set(Jam_Validated $model, $new_item, $is_changed)
-	{
-		if ($new_item)
+		if ($value = $this->_new_model_data($model, $value))
 		{
-			$new_item = $this->model_from_array($new_item);
-
-			if ($this->is_polymorphic())
-			{
-				$model->set($this->polymorphic, $new_item->meta()->model());
-			}
-
-			if ($new_item->loaded())
-			{
-				$model->set($this->column, $new_item->id());
-			}
+			$item->set($value);
 		}
-		else
-		{
-			$model->set($this->column, NULL);
-
-			if ($this->polymorphic)
-			{
-				$model->set($this->polymorphic, NULL);
-			}
-		}
-
-		return $new_item;
-	}
-
-	public function assign_relation(Jam_Model $model, $item)
-	{
-		$item = parent::assign_relation($model, $item);
-		$model->set($this->name, $item);
 		return $item;
 	}
 
-	public function model_before_save(Jam_Model $model)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		if ($model->changed($this->name) AND $new_item = $model->{$this->name})
+		list($key, $foreign_model) = $this->_parse_value($value);
+
+		if ($this->is_polymorphic())
 		{
-			$this->preserve_item_changes($new_item);
-			$this->set($model, $new_item, TRUE);
+			$model->{$this->polymorphic} = $foreign_model;
+		}
+
+		if (is_numeric($key) OR $key === NULL)
+		{
+			$model->{$this->foreign_key} = $key;
+		}
+
+		return $value;
+	}
+
+	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $changed)
+	{
+		if ($value = Arr::get($changed, $this->name) AND $this->_new_model_data($value))
+		{
+			$this->set($model, $model->{$this->name}->save(), TRUE);
 		}
 	}
 
@@ -211,7 +212,9 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		}
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{
-			$this->builder($model)->delete();	
+			$foreign_model = $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
+
+			$this->_delete_item($foreign_model, $model->{$this->foreign_key});	
 		}
 	}
-} // End Kohana_Jam_Association_BelongsTo
+}

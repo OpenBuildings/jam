@@ -23,21 +23,21 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	 * @param   string  $name
 	 * @return  void
 	 */
-	public function initialize(Jam_Meta $meta, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
 		// Empty? The model defaults to the the singularized name
 		// of this field, and the field defaults to this field's model's foreign key
 		if (empty($this->foreign))
 		{
-			$this->foreign = Inflector::singular($name).'.'.Jam::meta($model)->foreign_key();
+			$this->foreign = Inflector::singular($name).'.'.Jam::meta($meta->model())->foreign_key();
 		}
 		// We have a model? Default the field to this field's model's foreign key
 		elseif (FALSE === strpos($this->foreign, '.'))
 		{
-			$this->foreign = $this->foreign.'.'.Jam::meta($model)->foreign_key();
+			$this->foreign = $this->foreign.'.'.Jam::meta($meta->model())->foreign_key();
 		}
 
-		parent::initialize($meta, $model, $name);
+		parent::initialize($meta, $name);
 
 		if ( ! $this->foreign_key)
 		{
