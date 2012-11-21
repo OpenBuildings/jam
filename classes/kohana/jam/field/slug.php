@@ -40,7 +40,7 @@ abstract class Kohana_Jam_Field_Slug extends Jam_Field_String {
 	 * @uses     UTF8::transliterate_to_ascii
 	 * @credits  Kohana-Team
 	 */
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		list($value, $return) = $this->_default($value);
 

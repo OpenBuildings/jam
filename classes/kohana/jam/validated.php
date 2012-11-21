@@ -363,17 +363,9 @@ abstract class Kohana_Jam_Validated extends Model {
 		// Run validation only when new or changed
 		if ($this->changed() OR $force)
 		{
-			// $this->_move_retrieved_to_changed();
-			
-			$this->_meta->trigger_attribute_events($this, 'before_check');
-
 			$this->_meta->trigger_behavior_events($this, 'before_check');
 
-
 			$this->_meta->execute_validators($this);
-
-
-			$this->_meta->trigger_attribute_events($this, 'after_check');
 
 			$this->_meta->trigger_behavior_events($this, 'after_check');
 		}

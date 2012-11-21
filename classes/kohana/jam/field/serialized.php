@@ -32,7 +32,7 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 	 * @param   mixed  $value
 	 * @return  mixed
 	 */
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		list($value, $return) = $this->_default($value);
 
@@ -55,7 +55,7 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 	 * @param   boolean      $loaded
 	 * @return  null|string
 	 */
-	public function attribute_convert($model, $value, $is_loaded)
+	public function convert(Jam_Validated $model, $value, $is_loaded)
 	{
 		if ($this->allow_null AND $value === NULL)
 		{

@@ -85,7 +85,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $join;
 	}
 
-	public function attribute_builder(Jam_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		if ( ! $model->loaded())
 			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
@@ -103,14 +103,14 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
-	public function attribute_get(Jam_Model $model)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		$foreign_model = $model->loaded() ? $this->builder($model)->select() : Jam::factory($this->foreign());
 
 		return $this->assign_relation($model, $foreign_model);
 	}
 
-	public function attribute_set(Jam_Model $model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		$item = $this->model_from_array($value);
 		return $this->assign_relation($model, $item);
@@ -130,12 +130,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $item;
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $is_changed)
+	public function model_before_delete(Jam_Model $model)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				$this->attribute_get($model)->delete();
+				$model->{$this->name}->delete();
 			break;
 			case Jam_Association::ERASE:
 				$this->builder($model)->delete();
@@ -159,18 +159,18 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $builder;
 	}
 
-	public function attribute_after_check(Jam_Model $model, $is_changed)
+	public function model_after_check(Jam_Model $model)
 	{
-		if ($is_changed AND $model->{$this->name} AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
+		if ($model->changed($this->name) AND $model->{$this->name} AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
 		{
 			$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
 		}
 	}
 
 
-	public function attribute_after_save(Jam_Model $model, $is_changed)
+	public function model_after_save(Jam_Model $model)
 	{
-		if ($is_changed)
+		if ($model->changed($this->name))
 		{
 			$nullify = $this->nullify_builder($model);
 

@@ -11,10 +11,6 @@
  */
 class Kohana_Jam_Field_Weblink extends Jam_Field_String {
 
-	public $rules = array(array(
-		'Valid::url'
-	));
-
 	/**
 	 * Add http:// if it's not present upon save.
 	 *
@@ -23,14 +19,14 @@ class Kohana_Jam_Field_Weblink extends Jam_Field_String {
 	 * @param  boolean $loaded
 	 * @return string the new url
 	 */
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($value AND ! preg_match('|^http(s)?://|i', $value))
 		{
 			$value = "http://".$value;
 		}
 
-		return parent::attribute_set($model, $value, $is_changed);
+		return parent::set($model, $value, $is_changed);
 	}
 
 } // End Jam_Field_Weblink

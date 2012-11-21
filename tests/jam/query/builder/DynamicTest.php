@@ -40,6 +40,12 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->assertEquals(array('id' => 4, 'name' => 'Cleaner'), $this->collection->offsetGet(3)->as_array());
 
 		$this->assertCount(count($this->data) + 1, $this->collection);
+
+		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
+
+		$this->collection->offsetSet(NULL, $additional);
+
+		$this->assertSame($additional, $this->collection->offsetGet(4));
 	}
 
 	public function test_load_model()

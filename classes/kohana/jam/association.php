@@ -85,12 +85,12 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 		// Convert $this->foreign to an array for easier access
 		$this->foreign = array_combine(array('model', 'field'), explode('.', $this->foreign));
 
-		if ($this->touch)
-		{
-			$this->extension('touch', Jam::extension('touch', $this->touch));
-		}
+		// if ($this->touch)
+		// {
+		// 	$this->extension('touch', Jam::extension('touch', $this->touch));
+		// }
 
-		$this->extension('general', Jam::extension('general'));
+		// $this->extension('general', Jam::extension('general'));
 	}
 
 	/**
@@ -161,22 +161,7 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	}
 
 	abstract public function join($table, $type = NULL);
-
-	/**
-	 * Create the builder required to load the associated models
-	 * 
-	 * @param  Jam_Model $model parent model
-	 * @return Jam_Builder             
-	 */
-	public function builder(Jam_Model $model)
-	{
-		return $this->trigger('builder', $model);
-	}
-
-	public function delete(Jam_Model $model, $value)
-	{
-		return $this->trigger('delete', $model, $value);
-	}
+	abstract public function builder(Jam_Model $model);
 
 	/**
 	 * This method is executed for each child model so that it's values are properly assigned

@@ -71,7 +71,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 			$meta->field($this->count_cache, Jam::field('integer', array('default' => 0, 'allow_null' => FALSE)));
 
-			$this->extension('countcache', Jam::extension('countcache'));
+			// $this->extension('countcache', Jam::extension('countcache'));
 		}
 	}
 
@@ -96,7 +96,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $join;
 	}
 
-	public function attribute_builder(Jam_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		if ( ! $model->loaded())
 			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
@@ -112,12 +112,12 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		return $builder;
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $is_changed)
+	public function model_before_delete(Jam_Model $model)
 	{
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				foreach ($this->attribute_get($model) as $item) 
+				foreach ($model->{$this->name} as $item) 
 				{
 					$item->delete();
 				}
@@ -145,9 +145,9 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 	}
 
 
-	public function attribute_after_save(Jam_Model $model, $is_changed)
+	public function model_after_save(Jam_Model $model)
 	{
-		if ($is_changed AND $collection = $model->{$this->name} AND $collection->changed())
+		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 

@@ -26,18 +26,18 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 		$upload->expects($this->once())->method('save_to_temp');
 		$upload->source('http://example.com/test.png');
 		$this->model->file = $upload;
-		$this->field->attribute_before_check($this->model, TRUE);
+		$this->field->model_before_check($this->model);
 	}
 
 	public function test_attribute_set()
 	{
-		$upload = $this->field->attribute_set($this->model, 'file1.png', FALSE);
+		$upload = $this->field->set($this->model, 'file1.png', FALSE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('file1.png', $upload->filename());
 		$this->assertNull($upload->source());
 
-		$upload = $this->field->attribute_set($this->model, 'http://example.com/test.png', TRUE);
+		$upload = $this->field->set($this->model, 'http://example.com/test.png', TRUE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('http://example.com/test.png', $upload->source());

@@ -29,12 +29,12 @@ abstract class Kohana_Jam_Field_Password extends Jam_Field_String {
 	 * @param  bool        $loaded 
 	 * @return string
 	 */
-	public function attribute_convert($model, $value, $is_loaded)
+	public function convert(Jam_Validated $model, $value, $is_loaded)
 	{
 		$hashed = call_user_func($this->hash_with, $value);
 
 		// Do not re hash passwords hashed passwords or empty values
-		return (strlen($value) == strlen($hashed) OR ! $value) ? $value : $hashed;
+		return (strlen($value) === strlen($hashed) OR ! $value) ? $value : $hashed;
 	}
 
 } // End Kohana_Jam_Field_Password

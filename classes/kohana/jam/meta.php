@@ -303,14 +303,6 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function trigger_attribute_events(Jam_Validated $model, $event, $value = NULL)
-	{
-		foreach ($this->attributes() as $name => $attribute)
-		{
-			$attribute->$event($model, $model->changed($name), $value);
-		}
-	}
-
 	public function trigger_behavior_events(Jam_Validated $model, $event)
 	{
 		return $this->_events->trigger('model.'.$event, $model);

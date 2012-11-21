@@ -68,7 +68,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	}
 
 
-	public function attribute_get($model, $value, $is_loaded)
+	public function get(Jam_Validated $model, $value, $is_loaded)
 	{
 		if ($this->timezone->is_active() AND ! $is_loaded)
 		{
@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	 * @param   boolean      $is_loaded
 	 * @return  int|string
 	 */
-	public function attribute_convert($model, $value, $is_loaded)
+	public function convert(Jam_Validated $model, $value, $is_loaded)
 	{
 		// Do we need to provide a default since we're creating or updating
 		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))

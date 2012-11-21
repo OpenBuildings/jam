@@ -93,7 +93,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		// Count Cache
 		if ($this->inverse_of)
 		{
-			$this->extension('countcache', Jam::extension('countcache'));
+			// $this->extension('countcache', Jam::extension('countcache'));
 		}
 	}
 
@@ -102,7 +102,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return (bool) $this->polymorphic;
 	}
 
-	public function attribute_after_check(Jam_Model $model, $is_changed)
+	public function model_after_check(Jam_Model $model, $is_changed)
 	{
 		if ($is_changed AND $model->{$this->name} AND ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
 		{
@@ -139,7 +139,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 			->on($this->polymorphic, '=', DB::expr('"'.$alias.'"'));
 	}
 
-	public function attribute_builder(Jam_Model $model)
+	public function builder(Jam_Model $model)
 	{
 		if ($this->is_polymorphic())
 			return $this->builder_polymorphic($model);
@@ -164,7 +164,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $builder;
 	}
 
-	public function attribute_get(Jam_Model $model)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($builder = $this->builder($model))
 			return $builder->find();
@@ -179,7 +179,7 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $foreign_model;
 	}
 
-	public function attribute_set(Jam_Model $model, $new_item, $is_changed)
+	public function set(Jam_Validated $model, $new_item, $is_changed)
 	{
 		if ($new_item)
 		{
@@ -222,20 +222,20 @@ abstract class Kohana_Jam_Association_BelongsTo extends Jam_Association {
 		return $new_item;
 	}
 
-	public function attribute_before_save(Jam_Model $model, $is_changed)
+	public function model_before_save(Jam_Model $model)
 	{
-		if ($is_changed AND $new_item = $model->{$this->name})
+		if ($model->changed($this->name) AND $new_item = $model->{$this->name})
 		{
 			$this->preserve_item_changes($new_item);
 			$this->set($model, $new_item, TRUE);
 		}
 	}
 
-	public function attribute_before_delete(Jam_Model $model, $is_changed, $key)
+	public function model_before_delete(Jam_Model $model)
 	{
 		if ($this->dependent == Jam_Association::DELETE)
 		{
-			$this->attribute_get($model)->delete();
+			$model->{$this->name}->delete();
 		}
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{

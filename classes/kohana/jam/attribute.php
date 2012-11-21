@@ -58,6 +58,19 @@ abstract class Kohana_Jam_Attribute {
 		}
 	}
 
+	protected function _discover_events(Jam_Event $event)
+	{
+		foreach (get_class_methods($this) as $method)
+		{
+			if (($ns = substr($method, 0, 5)) === 'model' 
+			OR  ($ns = substr($method, 0, 4)) === 'meta'
+			OR  ($ns = substr($method, 0, 7)) === 'builder')
+			{
+				$event->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($this, $method));
+			}
+		}
+	}
+
 	/**
 	 * This is called after construction so that fields can finish
 	 * constructing themselves with a copy of the column it represents.
@@ -79,105 +92,12 @@ abstract class Kohana_Jam_Attribute {
 		{
 			$this->label = Inflector::humanize($name);
 		}
+
+		$this->_discover_events($meta->events());
 	}
 
-	public function trigger($method, $arg0, $arg1 = NULL, $arg2 = NULL)
-	{
-		$method_name = 'attribute_'.$method;
-		$return = NULL;
+	abstract public function get(Jam_Validated $model, $value, $is_changed);
 
-		$arguments = func_get_args();
-		$arguments = array_slice($arguments, 1);
-
-		if ($this->_events)
-		{
-			$this->_events->trigger('before.'.$method, $this, $arguments);
-		}
-
-		if (method_exists($this, $method_name))
-		{
-			$return = $this->$method_name($arg0, $arg1, $arg2);
-		}
-
-		if ($this->_events)
-		{
-			array_push($arguments, $return);
-			$event_return = $this->_events->trigger('after.'.$method, $this, $arguments);
-			
-			if ($event_return !== NULL)
-			{
-				$return = $event_return;
-			}
-		}
-
-		return $return;
-	}
-
-	public function bind($event, $callback)
-	{
-		if ( ! $this->_events)
-		{
-			$this->_events = new Jam_Event($this->name);
-		}
-
-		$this->_events->bind($event, $callback);
-
-		return $this;
-	}
-
-	public function extension($extension_name, Jam_Extension $extension = NULL)
-	{
-		if ($extension !== NULL)
-		{
-			if (isset($this->extensions[$extension_name]))
-				throw new Kohana_Exception('The extension :extension_name has already been added to :class (:name)', array(':extension_name' => $extension_name, ':class' => get_class($this), ':name' => $this->name));
-
-			$this->extensions[$extension_name] = $extension;
-			$extension->initialize($this);
-			return $this;
-		}
-
-		return $this->extensions[$extension_name];
-	}
-
-	public function get(Jam_Validated $model, $value, $is_changed)
-	{
-		return $this->trigger('get', $model, $value, $is_changed);
-	}
-
-	public function set($model, $value, $is_changed)
-	{
-		return $this->trigger('set', $model, $value, $is_changed);
-	}
-
-	public function before_delete(Jam_Model $model, $is_changed)
-	{
-		return $this->trigger('before_delete', $model, $is_changed);
-	}
-
-	public function after_delete(Jam_Model $model, $is_changed)
-	{
-		return $this->trigger('after_delete', $model, $is_changed);
-	}
-
-	public function before_save(Jam_Model $model, $is_changed)
-	{
-		return $this->trigger('before_save', $model, $is_changed);
-	}
-
-	public function after_save(Jam_Model $model, $is_changed)
-	{
-		return $this->trigger('after_save', $model, $is_changed);
-	}
-
-	public function before_check(Jam_Validated $model, $is_changed)
-	{
-		return $this->trigger('before_check', $model, $is_changed);
-	}
-
-	public function after_check(Jam_Validated $model, $is_changed)
-	{
-		return $this->trigger('after_check', $model, $is_changed);
-	}
+	abstract public function set(Jam_Validated $model, $value, $is_changed);
 
 }

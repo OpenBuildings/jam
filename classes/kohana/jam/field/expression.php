@@ -44,7 +44,7 @@ abstract class Kohana_Jam_Field_Expression extends Jam_Field {
 	 * @param   mixed   $value
 	 * @return  mixed
 	 */
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if (isset($this->cast))
 		{

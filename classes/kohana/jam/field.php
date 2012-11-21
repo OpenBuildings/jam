@@ -134,13 +134,6 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		}
 	}
 
-
-	public function convert($model, $value, $is_loaded)
-	{
-		return $this->trigger('convert', $model, $value, $is_loaded);
-	}
-
-
 	/**
 	 * Sets a particular value processed according
 	 * to the class's standards.
@@ -148,7 +141,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed  $value
 	 * @return  mixed
 	 **/
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		list($value, $return) = $this->_default($value);
 
@@ -163,7 +156,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed        $value
 	 * @return  mixed
 	 **/
-	public function attribute_get($model, $value, $is_changed)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		return $value;
 	}
@@ -179,7 +172,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   bool         $loaded
 	 * @return  mixed
 	 */
-	public function attribute_convert($model, $value, $is_loaded)
+	public function convert(Jam_Validated $model, $value, $is_loaded)
 	{
 		return $value;
 	}

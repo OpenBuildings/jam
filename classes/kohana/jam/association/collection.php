@@ -40,7 +40,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
-	public function attribute_get(Jam_Model $model)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		if ( ! $model->loaded())
 			return $this->set($model, array(), TRUE);
@@ -48,15 +48,15 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return $this->builder($model)->select_all()->_parent_association($model, $this);
 	}
 
-	public function attribute_set(Jam_Model $model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
 		return $new_collection->_parent_association($model, $this);
 	}
 
-	public function attribute_after_check(Jam_Model $model, $is_changed)
+	public function model_after_check(Jam_Model $model)
 	{
-		if ($is_changed)
+		if ($model->changed($this->name))
 		{
 			$collection = $model->{$this->name};
 

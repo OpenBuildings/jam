@@ -32,19 +32,21 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$this->assertSame($expected, $field->convert(NULL, $value, FALSE));
+		$model = Jam::factory('test_position');
+		$this->assertSame($expected, $field->convert($model, $value, FALSE));
 	}
 
 	public function test_timezone()
 	{
+		$model = Jam::factory('test_position');
 		$field = new Jam_Field_Timestamp(array('format' => 'Y-m-d H:i:s'));
 		$field->timezone = new Jam_Timezone();
 		$field->timezone
 			->user_timezone('Europe/Sofia')
 			->default_timezone('Europe/Moscow');
 
-		$this->assertEquals("2010-03-15 03:45:00", $field->convert(Jam::factory('test_post'), "2010-03-15 05:45:00", FALSE), 'Should set modified data to the database');
-		$this->assertEquals("2010-03-15 05:45:00", $field->get(Jam::factory('test_post'), "2010-03-15 03:45:00", FALSE), 'Should load modified from the database');
+		$this->assertEquals("2010-03-15 03:45:00", $field->convert($model, "2010-03-15 05:45:00", FALSE), 'Should set modified data to the database');
+		$this->assertEquals("2010-03-15 05:45:00", $field->get($model, "2010-03-15 03:45:00", FALSE), 'Should load modified from the database');
 	}
 	
 	/**
@@ -57,14 +59,16 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 		$auto_update = new Jam_Field_Timestamp(array('auto_now_update' => TRUE, 'timezone' => new Jam_Timezone()));
 		$default_date = 1268657100;
 
-		$this->assertEquals($default_date, $normal->convert(NULL, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
-		$this->assertEquals($default_date, $normal->convert(NULL, $default_date, FALSE), 'Should not generate a new date on normal timestamp');
+		$model = Jam::factory('test_position');
 
-		$this->assertGreaterThan($default_date, $auto_create->convert(NULL, $default_date, FALSE), 'Should generate a new date on create');		
-		$this->assertEquals($default_date, $auto_create->convert(NULL, $default_date, TRUE), 'Should not generate a new date on update');		
+		$this->assertEquals($default_date, $normal->convert($model, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
+		$this->assertEquals($default_date, $normal->convert($model, $default_date, FALSE), 'Should not generate a new date on normal timestamp');
 
-		$this->assertEquals($default_date, $auto_update->convert(NULL, $default_date, FALSE), 'Should generate a new date on create');		
-		$this->assertGreaterThan($default_date, $auto_update->convert(NULL, $default_date, TRUE), 'Should not generate a new date on update');
+		$this->assertGreaterThan($default_date, $auto_create->convert($model, $default_date, FALSE), 'Should generate a new date on create');		
+		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, TRUE), 'Should not generate a new date on update');		
+
+		$this->assertEquals($default_date, $auto_update->convert($model, $default_date, FALSE), 'Should generate a new date on create');		
+		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
 	}
 
 } // End Jam_Field_TimestampTest

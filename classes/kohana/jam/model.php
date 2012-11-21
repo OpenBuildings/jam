@@ -203,8 +203,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// These will be processed later
 		$values = $saveable = array();
 
-		$this->_meta->trigger_attribute_events($this, 'before_save');
-
 		if ($this->_meta->trigger_behavior_events($this, 'before_save') === FALSE)
 		{
 			return $this;
@@ -273,8 +271,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_attribute_events($this, 'after_save');
-		
 		$this->_meta->trigger_behavior_events($this, 'after_save');
 
 		$this->_meta->trigger_behavior_events($this, 'after_'.$event_type);
@@ -305,8 +301,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$key = $this->_original[$this->_meta->primary_key()];
 
-			$this->_meta->trigger_attribute_events($this, 'before_delete', $key);
-
 			if (($result = $this->_meta->trigger_behavior_events($this, 'before_delete', $key)) !== FALSE)
 			{
 				$result = Jam::query($this, $key)->delete();
@@ -314,8 +308,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		}
 
 		// Trigger the after-delete
-		$this->_meta->trigger_attribute_events($this, 'after_delete', $key);
-
 		$this->_meta->trigger_behavior_events($this, 'after_delete', $key);
 
 		// Clear the object so it appears deleted anyway

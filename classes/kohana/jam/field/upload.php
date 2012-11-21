@@ -42,7 +42,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 */
 	public $thumbnails = array();
 
-	public function attribute_get($model, $upload_file, $is_changed)
+	public function get(Jam_Validated $model, $upload_file, $is_changed)
 	{
 		if ( ! ($upload_file instanceof Upload_File))
 		{
@@ -54,7 +54,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			->path($this->path($model));
 	}
 
-	public function attribute_set($model, $value, $is_changed)
+	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if ( ! $is_changed)
 			return $this->upload_file($model)->filename($value);
@@ -82,9 +82,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file->path($this->path($model));
 	}
 
-	public function attribute_before_check($model, $is_changed)
+	public function model_before_check(Jam_Model $model)
 	{
-		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
+		if ($model->changed($this->name) AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
 			$upload_file->save_to_temp();
 		}
@@ -95,9 +95,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param  Jam_Model $model
 	 * @param  boolean $is_changed 
 	 */
-	public function attribute_after_save($model, $is_changed)
+	public function model_after_save(Jam_Model $model)
 	{
-		if ($is_changed AND $upload_file = $model->{$this->name} AND $upload_file->source())
+		if ($model->changed($this->name) AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
 			$upload_file
 				->server($this->dynamic_server ? $model->{$this->dynamic_server} : $this->server)
@@ -112,7 +112,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			$upload_file->save();
 		}
 
-		if ($is_changed AND $upload_file = $model->{$this->name})
+		if ($model->changed($this->name) AND $upload_file = $model->{$this->name})
 		{
 			$upload_file->clear();
 		}
@@ -124,7 +124,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param  Upload_File $upload_file 
 	 * @param  boolean $is_loaded   
 	 */
-	public function attribute_convert($model, $upload_file, $is_loaded)
+	public function convert(Jam_Validated $model, $upload_file, $is_loaded)
 	{
 		return ($upload_file AND $upload_file !== $this->default) ? $upload_file->filename() : $upload_file;
 	}
@@ -135,7 +135,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param  Jam_Model $model      
 	 * @param  boolean $is_changed 
 	 */
-	public function attribute_after_delete($model, $is_changed)
+	public function model_after_delete(Jam_Validated $model)
 	{
 		if ($this->delete_file AND $upload_file = $model->{$this->name})
 		{

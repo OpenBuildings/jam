@@ -80,7 +80,6 @@ class Jam_FieldTest extends Unittest_TestCase {
 				array(
 					'default'    => '',
 					'allow_null' => FALSE,
-					'rules'      => array(array('Valid::url')),
 					'null_set'   => ''
 				)
 			),
@@ -91,7 +90,6 @@ class Jam_FieldTest extends Unittest_TestCase {
 				array(
 					'default'    => '',
 					'allow_null' => FALSE,
-					'rules'      => array(array('Valid::url')),
 					'null_set'   => ''
 				)	
 			)
@@ -104,7 +102,9 @@ class Jam_FieldTest extends Unittest_TestCase {
 	 * @dataProvider provider_construction
 	 */
 	public function test_construction(Jam_Field $field, $expected)
-	{	
+	{
+		$model = Jam::factory('test_position');
+
 		// Ensure the following properties have been set
 		foreach ($expected as $key => $value)
 		{
@@ -117,12 +117,12 @@ class Jam_FieldTest extends Unittest_TestCase {
 		// Ensure that null values are handled properly
 		if ($field->allow_null)
 		{
-			$this->assertSame($field->set(NULL, NULL, TRUE), NULL, 
+			$this->assertSame($field->set($model, NULL, TRUE), NULL, 
 				'Field must return NULL when given NULL since `allow_null` is TRUE');
 		}
 		else
 		{
-			$this->assertSame($field->set(NULL, NULL, TRUE), $expected['null_set'],
+			$this->assertSame($field->set($model, NULL, TRUE), $expected['null_set'],
 				'Since `allow_null` is FALSE, field must return expected value when given NULL');
 		}
 		
@@ -138,7 +138,7 @@ class Jam_FieldTest extends Unittest_TestCase {
 			// Test setting a few empty values
 			foreach (array(NULL, FALSE, '', '0', 0) as $value)
 			{
-				$this->assertSame($field->set(NULL, $value, TRUE), $field->empty_value);
+				$this->assertSame($field->set($model, $value, TRUE), $field->empty_value);
 			}
 		}
 	}
@@ -201,7 +201,8 @@ class Jam_FieldTest extends Unittest_TestCase {
 	 */
 	public function test_set($field, $value, $expected)
 	{
-		$this->assertSame($expected, $field->set(NULL, $value, TRUE));
+		$model = Jam::factory('test_position');
+		$this->assertSame($expected, $field->set($model, $value, TRUE));
 	}
 
 }
