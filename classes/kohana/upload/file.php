@@ -59,16 +59,22 @@ class Kohana_Upload_File {
 	public function move_to_server($new_server)
 	{
 		$file = Upload_Util::combine($this->temp()->directory_path(), $this->filename());
+		$old_file = $this->full_path();
 
-		if ( ! $this->server()->is_file($this->full_path()))
-			throw new Kohana_Exception('File '.$this->full_path().' does not exist');
+		if ( ! $this->server()->is_file($old_file))
+			throw new Kohana_Exception('File '.$old_file.' does not exist');
 
-		$this->server()->move_to_local($this->full_path(), $file);
+		$this->server()->move_to_local($old_file, $file);
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
 			$thumbnail_file = Upload_Util::combine($this->temp()->directory_path($thumbnail), $this->filename());
-			$this->server()->move_to_local($this->full_path($thumbnail), $thumbnail_file);
+			$old_thumbnail_file = $this->full_path($thumbnail);
+			
+			if ( ! $this->server()->is_file($old_thumbnail_file))
+				throw new Kohana_Exception('File '.$old_thumbnail_file.' does not exist');
+
+			$this->server()->move_to_local($old_thumbnail_file, $thumbnail_file);
 		}
 
 		$this->server($new_server);
