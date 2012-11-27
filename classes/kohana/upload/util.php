@@ -32,7 +32,7 @@ class Kohana_Upload_Util {
 
 		if ($filename === NULL)
 		{
-			if (isset($headers['Content-Disposition']) AND preg_match($headers['Content-Disposition'], '/^filename=\"?(.*)\"?$/', $matches))
+			if (isset($headers['Content-Disposition']) AND preg_match('/^filename="?(.*)"?$/', $headers['Content-Disposition'], $matches))
 			{
 				$filename = $matches[1];
 			}
