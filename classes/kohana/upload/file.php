@@ -60,8 +60,8 @@ class Kohana_Upload_File {
 	{
 		$file = Upload_Util::combine($this->temp()->directory_path(), $this->filename());
 
-		if ( ! $this->server()->is_file($file))
-			throw new Kohana_Exception('File '.$file.' does not exist');
+		if ( ! $this->server()->is_file($this->full_path()))
+			throw new Kohana_Exception('File '.$this->full_path().' does not exist');
 
 		$this->server()->move_to_local($this->full_path(), $file);
 
