@@ -14,48 +14,43 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return new Jam_Query_Builder_Dynamic($model);
 	}
 
-	protected function _convert()
+	protected $_changed = FALSE;
+
+	public function result(Database_Result $result = NULL)
 	{
-		if ( ! $this->result() instanceof Jam_Query_Builder_Dynamic_Result)
+		if ($result !== NULL)
 		{
-			$this->result(new Jam_Query_Builder_Dynamic_Result($this->result()->as_array(), NULL, FALSE));
+			$this->_result = $result;
+			return $this;
 		}
-		return $this;
+
+		if ( ! $this->_result)
+		{
+			$this->_result = new Jam_Query_Builder_Dynamic_Result($this->execute()->as_array(), NULL, FALSE);
+		}
+
+		return $this->_result;
 	}
 
-	protected function _load_by_key($value)
+	protected function _find_item($key)
 	{
-		$select = new Jam_Query_Builder_Select($this->meta()->model());
-
-		$model = $select
-			->where(':unique_key', '=', $value)
-			->limit(1)
-			->execute()
-			->current();
+		return Jam::factory($this->meta()->model(), $key);
 	}
 
 	protected function _load_model($value)
 	{
-		if ($value instanceof Jam_Model)
-		{
-			$model = $value;
-		}			
-		else
-		{
-			if ( ! is_array($value))
-			{
-				$value = $this->_load_by_key($value);
-			}
-
-			$model = parent::_load_model($value);
-		}
-
-		return $model;
+		if ($value instanceof Jam_Model OR ! $value)
+			return $value;
+					
+		if ( ! is_array($value))
+			return $this->_find_item($value);
+			
+		return parent::_load_model($value);
 	}
 
 	protected function _convert_to_array($items)
 	{
-		if ($items instanceof Jam_Query_Builder_Dynamic)
+		if ($items instanceof Jam_Query_Builder_Collection)
 		{
 			$array = $items->as_array();
 		}
@@ -73,21 +68,16 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 	protected function _id($value)
 	{
 		if ($value instanceof Jam_Model)
-		{
 			return $value->id();
-		}
-		elseif (is_numeric($value)) 
-		{
+
+		if (is_numeric($value)) 
 			return (int) $value;
-		}
-		else 
-		{
-			if ( ! is_array($value))
-			{
-				$value = $this->_load_by_key($value);
-			}
+
+		if (is_string($value))
+			return $this->_find_item($value)->id();
+
+		if (array($value))
 			return (int) Arr::get($value, $this->meta()->primary_key());
-		}
 	}
 
 	public function offsetGet($offset)
@@ -95,19 +85,24 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		$model = parent::offsetGet($offset);
 		if ($model)
 		{
-			$this->offsetSet($offset, $model);		
+			$this->offsetSet($offset, $model);
 		}
 		return $model;
 	}
 
 	public function offsetSet($offset, $value)
 	{
-		$this->_convert()->result()->force_offsetSet($offset, $value);
+		if (is_array($value))
+		{
+			$key = Arr::get($value, $this->meta()->primary_key());
+			$value = $this->_find_item($key)->set($value);
+		}
+		$this->result()->force_offsetSet($offset, $value);
 	}
 
 	public function offsetUnset($offset)
 	{
-		$this->_convert()->result()->force_offsetUnset($offset);
+		$this->result()->force_offsetUnset($offset);
 	}
 
 	public function search($item)
@@ -142,6 +137,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		foreach ($items as $item) 
 		{
 			$this->offsetSet($this->search($item), $item);
+			$this->_changed = TRUE;
 		}
 
 		return $this;
@@ -156,12 +152,29 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 			if (($offset = $this->search($item)) !== NULL)
 			{
 				$this->offsetUnset($offset);
+				$this->_changed = TRUE;
 			}
 		}
 
 		return $this;
 	}
 
+	public function changed()
+	{
+		return $this->_changed;
+	}
 
-
+	public function preserve_changed()
+	{
+		if ($this->changed())
+		{
+			foreach ($this->result() as $offset => $item) 
+			{
+				if ( $item instanceof Jam_Model AND ! $item->deleted() AND ( ! $item->loaded() OR $item->changed()))
+				{
+					$item->save();
+				}
+			}
+		}
+	}
 } // End Kohana_Jam_Association

@@ -64,9 +64,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return (bool) $this->as;
 	}
 
-	public function join($table, $type = NULL)
+	public function join($alias, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($table, $type)
+		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+			->context_model($this->model)
 			->on($this->foreign_key, '=', ':primary_key');
 	}
 

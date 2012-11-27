@@ -73,9 +73,10 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		}
 	}
 
-	public function join($table, $type = NULL)
+	public function join($alias, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($table, $type)
+		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+			->context_model($this->model)
 			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
 			->join_nested($this->join_table)
 				->context_model($this->model)

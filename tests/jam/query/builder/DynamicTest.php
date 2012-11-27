@@ -24,9 +24,9 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 			array('id' => 3, 'name' => 'Manager'),
 		);
 
-		$this->result = new Database_Result_Cached($this->data, '', FALSE);
+		$this->result = new Jam_Query_Builder_Dynamic_Result($this->data, '', FALSE);
 
-		$this->collection = new Jam_Query_Builder_Dynamic('test_position');
+		$this->collection = $this->getMock('Jam_Query_Builder_Dynamic', array('_find_item'), array('test_position'));
 		$this->collection->result($this->result);
 	}
 
@@ -48,30 +48,23 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->assertSame($additional, $this->collection->offsetGet(4));
 	}
 
-	public function test_load_model()
+	public function test_offsetGet()
 	{
-		$collection = $this->getMock('Jam_Query_Builder_Dynamic', array('_load_by_key'), array('test_position'));
-		$collection->result($this->result);
+		$model = Jam::factory('test_position');
+		$this->collection->result(new Jam_Query_Builder_Dynamic_Result(array_merge($this->data, array(5, $model)), '', FALSE));
 
-		$collection
-			->expects($this->once())
-			->method('_load_by_key')
-			->with($this->equalTo(8))
-			->will($this->returnValue(array('id' => 9, 'name' => 'Dynamic')));
+		$this->assertInstanceOf('Model_Test_Position', $this->collection[0]);
+		$this->assertEquals($this->data[0], $this->collection[0]->as_array());
 
-		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
+		$this->assertSame($model, $this->collection[4]);
 
-		$this->assertFalse($collection->offsetExists(3));
-		$collection->offsetSet(NULL, $additional);
-		$this->assertInstanceOf('Jam_Model', $collection->offsetGet(3));
-		$this->assertEquals(array('id' => 8, 'name' => 'Additional'), $collection->offsetGet(3)->as_array());
+		$this->collection
+			->expects($this->at(0))
+			->method('_find_item')
+			->with($this->equalTo(5))
+			->will($this->returnValue($model));
 
-		$this->assertFalse($collection->offsetExists(4));
-		$collection->offsetSet(NULL, 8);
-		$this->assertInstanceOf('Jam_Model', $collection->offsetGet(4));
-		$this->assertEquals(array('id' => 9, 'name' => 'Dynamic'), $collection->offsetGet(4)->as_array());
-
-		$this->assertCount(count($this->data) + 2, $collection);
+		$this->assertSame($model, $this->collection[3]);
 	}
 
 	public function test_offsetUnset()
@@ -85,24 +78,23 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_search()
 	{
-		$collection = $this->getMock('Jam_Query_Builder_Dynamic', array('_load_by_key'), array('test_position'));
-		$collection->result($this->result);
+		$this->collection->result($this->result);
 
 		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
 
-		$collection
+		$this->collection
 			->expects($this->once())
-			->method('_load_by_key')
+			->method('_find_item')
 			->with($this->equalTo('Additional'))
-			->will($this->returnValue($additional->as_array()));
+			->will($this->returnValue($additional));
 
-		$collection->offsetSet(NULL, $additional);
+		$this->collection->offsetSet(NULL, $additional);
 
-		$this->assertEquals(1, $collection->search(2), 'Search for model with id 2');
-		$this->assertEquals(3, $collection->search(8), 'Search for model with id 8 (additional)');
-		$this->assertEquals(3, $collection->search($additional), 'Search for model with the object additional');
-		$this->assertEquals(3, $collection->search(array('id' => 8)), 'Search for model with id 8 (additional)');
-		$this->assertEquals(3, $collection->search('Additional'), 'Search for model with name key Additional (additional)');
+		$this->assertEquals(1, $this->collection->search(2), 'Search for model with id 2');
+		$this->assertEquals(3, $this->collection->search(8), 'Search for model with id 8 (additional)');
+		$this->assertEquals(3, $this->collection->search($additional), 'Search for model with the object additional');
+		$this->assertEquals(3, $this->collection->search(array('id' => 8)), 'Search for model with id 8 (additional)');
+		$this->assertEquals(3, $this->collection->search('Additional'), 'Search for model with name key Additional (additional)');
 	}
 
 	public function test_ids()
@@ -116,31 +108,28 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_has()
 	{
-		$collection = $this->getMock('Jam_Query_Builder_Dynamic', array('_load_by_key'), array('test_position'));
-		$collection->result($this->result);
-
 		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
 		$additional_not_included = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional'));
 
-		$collection
+		$this->collection
 			->expects($this->once())
-			->method('_load_by_key')
+			->method('_find_item')
 			->with($this->equalTo('Additional'))
-			->will($this->returnValue($additional->as_array()));
+			->will($this->returnValue($additional));
 
-		$collection->offsetSet(NULL, $additional);
-		$collection->offsetSet(NULL, 9);
+		$this->collection->offsetSet(NULL, $additional);
+		$this->collection->offsetSet(NULL, 9);
 
-		$this->assertTrue($collection->has(2));
-		$this->assertTrue($collection->has(8));
-		$this->assertTrue($collection->has(9));
-		$this->assertTrue($collection->has('Additional'));
-		$this->assertTrue($collection->has(array('id' => 8)));
-		$this->assertTrue($collection->has(array('id' => 9)));
-		$this->assertTrue($collection->has($additional));
-		$this->assertFalse($collection->has(array('id' => 10)));
-		$this->assertFalse($collection->has(11));
-		$this->assertFalse($collection->has($additional_not_included));
+		$this->assertTrue($this->collection->has(2));
+		$this->assertTrue($this->collection->has(8));
+		$this->assertTrue($this->collection->has(9));
+		$this->assertTrue($this->collection->has('Additional'));
+		$this->assertTrue($this->collection->has(array('id' => 8)));
+		$this->assertTrue($this->collection->has(array('id' => 9)));
+		$this->assertTrue($this->collection->has($additional));
+		$this->assertFalse($this->collection->has(array('id' => 10)));
+		$this->assertFalse($this->collection->has(11));
+		$this->assertFalse($this->collection->has($additional_not_included));
 	}
 
 

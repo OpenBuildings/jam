@@ -76,30 +76,41 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return parent::compile($db);
 	}
 
+	protected function _join($model, $type)
+	{
+		$join_key = is_array($model) ? join(':', $model) : $model;
+
+		if ( ! isset($this->_join[$join_key]))
+		{
+			$join = Jam_Query_Builder::resolve_join($model, $type, $this->meta()->model());
+
+			$this->_join[$join_key] = $join;
+
+			return $join;
+		}
+		else
+		{
+			return $this->_join[$join_key];
+		}
+	}
+
 	public function join($model, $type = NULL)
 	{
-		$join = Jam_Query_Builder::resolve_join($model, $type, $this->model());
-
-		$this->_join[is_array($model) ? join(':', $model) : $model] = $this->_last_join = $join;
+		$this->_last_join = $this->_join($model, $type);
 
 		return $this;
 	}
 
 	public function join_nested($model, $type = NULL)
 	{
-		$join = Jam_Query_Builder::resolve_join($model, $type, $this->model())
-			->end($this);
-
-		$this->_join[is_array($model) ? join(':', $model) : $model] = $join;
-
-		return $join;
+		return $this->_join($model, $type)->end($this);
 	}
 
 	protected function _compile_order_by(Database $db, array $order_by)
 	{
 		foreach ($order_by as & $order) 
 		{
-			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->model());
+			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->meta()->model());
 		}
 
 		return parent::_compile_order_by($db, $order_by);
@@ -109,7 +120,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		foreach ($group_by as & $group) 
 		{
-			$group = Jam_Query_Builder::resolve_attribute_name($group, $this->model());
+			$group = Jam_Query_Builder::resolve_attribute_name($group, $this->meta()->model());
 		}
 
 		return parent::_compile_group_by($db, $conditions);
@@ -121,7 +132,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		{
 			foreach ($group as & $condition) 
 			{
-				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->model(), $condition[2]);
+				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
 			}
 		}
 
@@ -132,7 +143,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		$db = Database::instance($this->meta()->db());
 
-		$column = Jam_Query_Builder::resolve_attribute_name($column, $this->model());
+		$column = Jam_Query_Builder::resolve_attribute_name($column, $this->meta()->model());
 
 		$this->select(array(DB::expr('COUNT('.$db->quote_column($column).')'), 'total'));
 
@@ -181,35 +192,8 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return $this->_params;
 	}
 
-	public function model()
-	{
-		return $this->meta()->model();
-	}
-
 	public function meta()
 	{
 		return $this->_meta;
 	}
-
-	/**
-	 * Add methods for this builder on the fly (mixins) you can assign:
-	 * Class - loads all static methods
-	 * array or string/array callback
-	 * array of closures
-	 * 
-	 * @param  array|string   $callbacks 
-	 * @param  mixed $callback  
-	 * @return Jam_Builder              $this
-	 */
-	public function extend($callbacks, $callback = NULL)
-	{
-		// Handle input with second argument, so you can pass single items without an array
-		if ($callback !== NULL)
-		{
-			$callbacks = array($callbacks => $callback);
-		}
-
-		$this->_meta->events()->bind_callbacks('builder', $callbacks);
-		return $this;
-	}
-} // End Kohana_Jam_Association
+}

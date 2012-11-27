@@ -72,7 +72,8 @@ class Jam_Query_Builder_CollectionTest extends Unittest_TestCase {
 	{
 		foreach ($this->collection as $i => $model) 
 		{
-			$this->assertEquals($this->data[$i], $model);
+			$this->assertInstanceOf('Jam_Model', $model);
+			$this->assertEquals($this->data[$i], $model->as_array());
 		}
 	}
 

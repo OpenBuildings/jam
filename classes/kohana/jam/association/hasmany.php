@@ -13,9 +13,9 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 	public $as;
 
-	public $foreign_default = 0;
-
 	public $foreign_key = NULL;
+
+	public $polymorphic_key = NULL;
 
 	public $count_cache = NULL;
 
@@ -28,17 +28,6 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 	 */
 	public function initialize(Jam_Meta $meta, $name)
 	{
-		// Empty? The model defaults to the the singularized name
-		// of this field, and the field defaults to this field's model's foreign key
-		if (empty($this->foreign))
-		{
-			$this->foreign = Inflector::singular($name).'.'.Jam::meta($meta->model())->foreign_key();
-		}
-		// We have a model? Default the field to this field's model's foreign key
-		elseif (FALSE === strpos($this->foreign, '.'))
-		{
-			$this->foreign = $this->foreign.'.'.Jam::meta($meta->model())->foreign_key();
-		}
 
 		parent::initialize($meta, $name);
 
@@ -50,12 +39,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		// Polymorphic associations
 		if ($this->as)
 		{
-			if ( ! is_string($this->as))
-			{
-				$this->as = $this->model;
-			}
-			$this->foreign['as'] = $this->as.'_model';
-			$this->foreign['field'] = $this->as.'_id';
+			$this->polymorphic_key = $this->as.'_model';
 		}
 
 		// Count Cache
@@ -75,22 +59,15 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		}
 	}
 
-	public function join($table, $type = NULL)
+	public function join($alias, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($table, $type)
+		$join = Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+			->context_model($this->model)
 			->on($this->foreign_key, '=', ':primary_key');
-	}
 
-
-	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
-	{
-		$join = $builder
-			->join($this->foreign(NULL, $alias), $type)
-			->on($this->foreign('field', $alias), '=', "{$this->model}.:primary_key");
-		
-		if ($this->as)
+		if ($this->is_polymorphic())
 		{
-			$join->on($this->foreign('as', $alias), '=', DB::expr('"'.$this->model.'"'));
+			$join->on($this->polymorphic_key, '=', "{$this->model}.:primary_key");
 		}
 
 		return $join;

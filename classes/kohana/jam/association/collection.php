@@ -10,17 +10,6 @@
  */
 abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
-	public $through;
-
-	public function through($field_name = NULL)
-	{
-		if ($field_name !== NULL)
-		{
-			$field_name = '.'.Arr::get($this->through['fields'], $field_name, $field_name);
-		}
-		return $this->through['model'].$field_name;
-	}
-
 	/**
 	 * Find the join table based on the two model names pluralized,
 	 * sorted alphabetically and with an underscore separating them
@@ -48,11 +37,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return $this->builder($model)->select_all()->_parent_association($model, $this);
 	}
 
-	public function set(Jam_Validated $model, $value, $is_changed)
-	{
-		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
-		return $new_collection->_parent_association($model, $this);
-	}
+	// public function set(Jam_Validated $model, $value, $is_changed)
+	// {
+	// 	$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
+	// 	return $new_collection->_parent_association($model, $this);
+	// }
 
 	public function model_after_check(Jam_Model $model)
 	{
@@ -75,11 +64,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 	
-	public function diff_collection_ids(Jam_Model $model, Jam_Collection $collection)
+	public function diff_collection_ids(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
 	{
-		$current_ids = $this->builder($model)
-			->select_column(array($model->meta()->primary_key()))
-			->select_ids();
+		$current_ids = $this->get($model, NULL, TRUE)
+			->select_column(':primary_key')
+			->as_array(':primary_key');
 
 		if ($collection->changed())
 		{

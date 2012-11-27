@@ -127,7 +127,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			{
 				$this->_changed[$association->name] = $association->set($this, $value, TRUE);
 
-				unset($this->_retrieved[$attribute->name]);
+				unset($this->_retrieved[$association->name]);
 			}
 		}
 

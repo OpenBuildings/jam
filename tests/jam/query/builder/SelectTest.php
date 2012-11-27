@@ -12,10 +12,10 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 
 	public function test_constructor()
 	{
-		$select = new Jam_Query_Builder_Select('test_author');
+		$select = Jam_Query_Builder_Select::factory('test_author');
 		$this->assertInstanceOf('Jam_Query_Builder_Select', $select);
 
-		$this->assertEquals('test_author', $select->model());
+		$this->assertEquals(Jam::meta('test_author'), $select->meta());
 
 		$this->assertEquals('SELECT `test_authors`.* FROM `test_authors`', (string) $select);
 	}
@@ -50,6 +50,19 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);	
 	}
+
+	public function test_join_duplicate()
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->join('test_author')
+			->join('test_author')
+			->join('test_author');
+
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);	
+	}
+
 
 	public function test_having()
 	{
