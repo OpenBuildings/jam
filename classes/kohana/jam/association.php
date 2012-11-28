@@ -62,17 +62,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	{
 		parent::initialize($meta, $name);
 
-		if ( ! $this->is_polymorphic())
-		{
-			if ( ! $this->foreign_model)
-			{
-				$this->foreign_model = Inflector::singular($name);
-			}
-
-			// if ( ! Jam::meta($this->foreign_model))
-			// 	throw new Kohana_Exception('Foreign model ":foreign_model" does not exist for association :name, model :model', array(':model' => $this->model, ':name' => $name, ':foreign_model' => $this->foreign_model));
-		}
-
 		// if ($this->touch)
 		// {
 		// 	$this->extension('touch', Jam::extension('touch', $this->touch));

@@ -32,20 +32,30 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_offsetSet()
 	{
-		$this->assertFalse($this->collection->offsetExists(3));
+		$this->assertFalse(isset($this->collection[3]));
 
-		$this->collection->offsetSet(NULL, array('id' => 4, 'name' => 'Cleaner'));
-		$this->assertTrue($this->collection->offsetExists(3));
-		$this->assertInstanceOf('Jam_Model', $this->collection->offsetGet(3));
-		$this->assertEquals(array('id' => 4, 'name' => 'Cleaner'), $this->collection->offsetGet(3)->as_array());
+		$this->collection[] = array('id' => 4, 'name' => 'Cleaner');
+		$this->assertTrue(isset($this->collection[3]));
+
+		$model = Jam::factory('test_position');
+
+		$this->collection
+			->expects($this->once())
+			->method('_find_item')
+			->with($this->equalTo(4))
+			->will($this->returnValue($model));
+
+		$converted = $this->collection[3];
+		$this->assertSame($model, $converted);
+		$this->assertEquals('Cleaner', $converted->name);
 
 		$this->assertCount(count($this->data) + 1, $this->collection);
 
 		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
 
-		$this->collection->offsetSet(NULL, $additional);
+		$this->collection[] = $additional;
 
-		$this->assertSame($additional, $this->collection->offsetGet(4));
+		$this->assertSame($additional, $this->collection[4]);
 	}
 
 	public function test_offsetGet()
@@ -69,9 +79,9 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_offsetUnset()
 	{
-		$this->assertTrue($this->collection->offsetExists(2));
-		$this->collection->offsetUnset(2);
-		$this->assertFalse($this->collection->offsetExists(2));
+		$this->assertTrue(isset($this->collection[2]));
+		unset($this->collection[2]);
+		$this->assertFalse(isset($this->collection[2]));
 
 		$this->assertCount(2, $this->collection);
 	}
@@ -88,7 +98,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 			->with($this->equalTo('Additional'))
 			->will($this->returnValue($additional));
 
-		$this->collection->offsetSet(NULL, $additional);
+		$this->collection[] = $additional;
 
 		$this->assertEquals(1, $this->collection->search(2), 'Search for model with id 2');
 		$this->assertEquals(3, $this->collection->search(8), 'Search for model with id 8 (additional)');
@@ -117,8 +127,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 			->with($this->equalTo('Additional'))
 			->will($this->returnValue($additional));
 
-		$this->collection->offsetSet(NULL, $additional);
-		$this->collection->offsetSet(NULL, 9);
+		$this->collection[] = $additional;
+		$this->collection[] = 9;
 
 		$this->assertTrue($this->collection->has(2));
 		$this->assertTrue($this->collection->has(8));
@@ -138,7 +148,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$additional1 = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
 		$additional2 = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional 2'));
 		
-		$result = new Jam_Query_Builder_Dynamic_Result(array($additional1, $additional2), '', FALSE);
+		$result = new Jam_Query_Builder_Dynamic_Result(array(array('id' => 8, 'name' => 'Additional 1'), array('id' => 12, 'name' => 'Additional 2')), '', FALSE);
 		$additional_collection = new Jam_Query_Builder_Dynamic('test_position');
 		$additional_collection->result($result);
 
@@ -167,7 +177,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$current2 = Jam::factory('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
 		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
-		$result = new Jam_Query_Builder_Dynamic_Result(array($current2, $current3), '', FALSE);
+		$result = new Jam_Query_Builder_Dynamic_Result(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')), '', FALSE);
 		$current_collection = new Jam_Query_Builder_Dynamic('test_position');
 		$current_collection->result($result);
 

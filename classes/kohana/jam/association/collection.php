@@ -29,63 +29,47 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
-	public function get(Jam_Validated $model, $value, $is_changed)
-	{
-		if ( ! $model->loaded())
-			return $this->set($model, array(), TRUE);
-
-		return $this->builder($model)->select_all()->_parent_association($model, $this);
-	}
-
-	// public function set(Jam_Validated $model, $value, $is_changed)
+	// public function get(Jam_Validated $model, $value, $is_changed)
 	// {
-	// 	$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
-	// 	return $new_collection->_parent_association($model, $this);
+	// 	if ( ! $model->loaded())
+	// 		return $this->set($model, array(), TRUE);
+
+	// 	return $this->builder($model)->select_all()->_parent_association($model, $this);
 	// }
+
+	public function initialize(Jam_Meta $meta, $name)
+	{
+		if ( ! $this->foreign_model)
+		{
+			$this->foreign_model = Inflector::singular($name);
+		}
+
+		parent::initialize($meta, $name);
+	}
+	
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
+		return $new_collection->_parent_association($model, $this);
+	}
 
 	public function model_after_check(Jam_Model $model)
 	{
-		if ($model->changed($this->name))
+		if ($model->changed($this->name) AND ! $model->{$this->name}->check_changed())
 		{
-			$collection = $model->{$this->name};
-
-			foreach ($collection as $i => $item)
-			{
-				if (is_object($item) AND ! $item->deleted() AND is_numeric($i))
-				{
-					$this->assign_relation($model, $item);
-					if ( ! $item->check())
-					{
-						$model->errors()->add($this->name, 'association', array(':errors' => $item->errors()));
-					}
-					$collection[$i] = $item;
-				}
-			}	
+			$model->errors()->add($this->name, 'association_collection');
 		}
 	}
 	
 	public function diff_collection_ids(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
 	{
-		$current_ids = $this->get($model, NULL, TRUE)
-			->select_column(':primary_key')
-			->as_array(':primary_key');
+		$current_ids = $collection->original()->as_array(NULL, $collection->meta()->primary_key());
 
-		if ($collection->changed())
-		{
-			foreach ($collection as $i => $item)
-			{
-				if ( ! $item->deleted() AND is_numeric($i))
-				{
-					$this->assign_relation($model, $item);
-					$this->preserve_item_changes($item);
-					$collection[$i] = $item;
-				}
-			}
-		}
+		$collection->save_changed();
 
 		return array(
-			array_diff($current_ids, $collection->ids()),
-			array_diff($collection->ids(), $current_ids)
+			array_filter(array_diff($current_ids, $collection->ids())),
+			array_filter(array_diff($collection->ids(), $current_ids))
 		);	
 	}
 }

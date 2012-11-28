@@ -73,6 +73,25 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		}
 	}
 
+	public function get(Jam_Validated $model, $value, $is_changed)
+	{
+		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
+			->where($this->foreign_key, '=', $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
+		}
+
+		if ($is_changed)
+		{
+			$value = Jam_Query_Builder_Dynamic::convert_collection_to_array($value);
+			$builder->result(new Jam_Query_Builder_Dynamic_Result($value, NULL, FALSE));
+		}
+
+		return $builder;
+	}
+
 	public function join($alias, $type = NULL)
 	{
 		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)

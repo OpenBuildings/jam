@@ -61,6 +61,13 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 			$meta->field($this->polymorphic, Jam::field('string', array('convert_empty' => TRUE)));
 		}
+		else
+		{
+			if ( ! $this->foreign_model)
+			{
+				$this->foreign_model = $name;
+			}
+		}
 
 		// Count Cache
 		if ($this->inverse_of)

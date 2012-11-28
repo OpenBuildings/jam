@@ -39,6 +39,11 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		parent::initialize($meta, $name);
 
+		if ( ! $this->foreign_model)
+		{
+			$this->foreign_model = $name;
+		}
+
 		if ( ! $this->foreign_key)
 		{
 			$this->foreign_key = $this->model.'_id';

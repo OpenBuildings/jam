@@ -9,7 +9,7 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection {
+abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection {
 
 	public $as;
 
@@ -39,6 +39,7 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		// Polymorphic associations
 		if ($this->as)
 		{
+			$this->foreign_key = $this->as.'_id';
 			$this->polymorphic_key = $this->as.'_model';
 		}
 
@@ -67,23 +68,26 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$join->on($this->polymorphic_key, '=', "{$this->model}.:primary_key");
+			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->foreign_model.'"'));
 		}
 
 		return $join;
 	}
 
-	public function builder(Jam_Model $model)
+	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		if ( ! $model->loaded())
-			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
+		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
+			->where($this->foreign_key, '=', $model->id());
 
-		$builder = Jam::query($this->foreign())
-			->where($this->foreign('field'), '=', $model->id());
-
-		if ($this->as)
+		if ($this->is_polymorphic())
 		{
-			$builder->where($this->foreign('as'), '=', $model->meta()->model());
+			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
+		}
+
+		if ($is_changed)
+		{
+			$value = Jam_Query_Builder_Dynamic::convert_collection_to_array($value);
+			$builder->result(new Jam_Query_Builder_Dynamic_Result($value, NULL, FALSE));
 		}
 
 		return $builder;
@@ -99,28 +103,37 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 					$item->delete();
 				}
 			break;
+
 			case Jam_Association::ERASE:
-				$this->builder($model)->delete();
+				$delete = Jam_Query_Builder_Delete::factory($this->foreign_model)
+					->where($this->foreign_key, '=', $model->id());
+
+				if ($this->is_polymorphic())
+				{
+					$delete->where($this->polymorphic_key, '=', $model->meta()->model());
+				}
+				
+				$delete->execute();
+
 			break;
+
 			case Jam_Association::NULLIFY:
-				$this->nullify_builder($model)->update();
+				$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
+					->value($this->foreign_key, NULL)
+					->where($this->foreign_key, '=', $model->id());
+
+				if ($this->is_polymorphic())
+				{
+					$nullify
+						->where($this->polymorphic_key, '=', $model->meta()->model())
+						->value($this->polymorphic_key, NULL);
+				}
+
+				$nullify->execute();
+
 			break;
 		}
 	}
-
-	public function nullify_builder(Jam_Model $model)
-	{
-		$builder = $this->builder($model)
-			->value($this->foreign('field'), $this->foreign_default);
-
-		if ($this->as)
-		{
-			$builder->value($this->foreign('as'), NULL);
-		}
-
-		return $builder;
-	}
-
 
 	public function model_after_save(Jam_Model $model)
 	{
@@ -128,23 +141,31 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 		{
 			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
 
-			if (array_filter($old_ids))
+			if ($old_ids)
 			{
-				$this->nullify_builder($model)->key($old_ids)->update();
+				$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
+					->where(':primary_key', 'IN', $old_ids)
+					->value($this->foreign_key, NULL);
+
+				if ($this->is_polymorphic())
+				{
+					$nullify->value($this->polymorphic_key, NULL);
+				}
+
+				$nullify->execute();
 			}
 			
 			if ($new_ids)
 			{
-				$new_items_builder = Jam::query($this->foreign())
-					->key($new_ids)
-					->value($this->foreign('field'), $model->id());
+				$assign = Jam_Query_Builder_Update::factory($this->foreign_model)
+					->where(':primary_key', 'IN', $new_ids)
+					->value($this->foreign_key, $model->id());
 
-				if ($this->as)
+				if ($this->is_polymorphic())
 				{
-					$new_items_builder->value($this->foreign('as'), $model->meta()->model());
+					$assign->value($this->polymorphic_key, $model->meta()->model());
 				}
-
-				$new_items_builder->update();
+				$assign->execute();
 			}
 		}
 	}
@@ -157,20 +178,4 @@ abstract class Kohana_Jam_Association_HasMany extends Jam_Association_Collection
 	{
 		return (bool) $this->as;
 	}
-
-	public function assign_relation(Jam_Model $model, $item)
-	{
-		if ($item instanceof Jam_Model)
-		{
-			$item->set($this->foreign['field'], $model->id());
-
-			if ($this->is_polymorphic())
-			{
-				$item->set($this->foreign['as'], $model->meta()->model());
-			}
-		}
-		return parent::assign_relation($model, $item);
-	}
-
-
 } // End Kohana_Jam_Association_HasMany
