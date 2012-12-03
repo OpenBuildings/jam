@@ -144,12 +144,24 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 	public function ids()
 	{
-		return array_map(array($this, '_id'), $this->result()->as_array());
+		return array_filter(array_map(array($this, '_id'), $this->result()->as_array()));
+	}
+
+	public function original_ids()
+	{
+		return array_filter($this->original()->as_array(NULL, $this->meta()->primary_key()));
 	}
 
 	public function has($item)
 	{
 		return $this->search($item) !== NULL;
+	}
+
+	public function set($items)
+	{
+		$items = Jam_Query_Builder_Dynamic::convert_collection_to_array($items);
+		$this->result(new Jam_Query_Builder_Dynamic_Result($items, NULL, FALSE));
+		return $this;
 	}
 
 	public function add($items)
@@ -229,4 +241,4 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		}
 		return $this;
 	}
-} // End Kohana_Jam_Association
+} 

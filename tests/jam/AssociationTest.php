@@ -47,4 +47,34 @@ class Jam_AssociationTest extends Unittest_TestCase {
 		$this->assertEquals($foreign_model, $association->foreign_model);
 		$this->assertEquals($name, $association->name);
 	}
-} // End Jam_Association_BelongsToTest
+
+	public function data_value_to_key_and_model()
+	{
+		$test_position = Jam::factory('test_position')->load_fields(array('id' => 10, 'name' => 'name'));
+
+		return array(
+			array(NULL, 'test_position', FALSE, array(NULL, NULL)),
+			array(1, 'test_position', FALSE, array(1, 'test_position')),
+			array(1, 'test_position', TRUE, array(1, 'test_position')),
+			array('test', 'test_position', FALSE, array('test', 'test_position')),
+			array('test', 'test_position', TRUE, array('test', 'test_position')),
+			array($test_position, 'test_position', FALSE, array(10, 'test_position')),
+			array($test_position, 'test_position', TRUE, array(10, 'test_position')),
+			array($test_position, NULL, FALSE, array(10, 'test_position')),
+			array($test_position, NULL, TRUE, array(10, 'test_position')),
+			array(array('id' => 10), 'test_position', FALSE, array(10, 'test_position')),
+			array(array('name' => 10), 'test_position', FALSE, array(NULL, 'test_position')),
+			array(array('test_position' => array('id' => 10)), NULL, TRUE, array(10, 'test_position')),
+			array(array('test_position' => array('name' => 10)), NULL, TRUE, array(NULL, 'test_position')),
+			array(array('test_position' => 10), NULL, TRUE, array(10, 'test_position')),
+		);
+	}
+
+	/**
+	 * @dataProvider data_value_to_key_and_model
+	 */
+	public function test_value_to_key_and_model($value, $model, $is_polymorphic, $expected_key_and_model)
+	{
+		$this->assertEquals($expected_key_and_model, Jam_Association::value_to_key_and_model($value, $model, $is_polymorphic));
+	}
+}

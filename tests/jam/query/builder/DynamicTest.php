@@ -148,9 +148,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$additional1 = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
 		$additional2 = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional 2'));
 		
-		$result = new Jam_Query_Builder_Dynamic_Result(array(array('id' => 8, 'name' => 'Additional 1'), array('id' => 12, 'name' => 'Additional 2')), '', FALSE);
-		$additional_collection = new Jam_Query_Builder_Dynamic('test_position');
-		$additional_collection->result($result);
+		$additional_collection = Jam_Query_Builder_Dynamic::factory('test_position')
+			->set(array(array('id' => 8, 'name' => 'Additional 1'), array('id' => 12, 'name' => 'Additional 2')));
 
 		return array(
 			array(10, array(1, 2, 3, 10)),
@@ -177,9 +176,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$current2 = Jam::factory('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
 		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
-		$result = new Jam_Query_Builder_Dynamic_Result(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')), '', FALSE);
-		$current_collection = new Jam_Query_Builder_Dynamic('test_position');
-		$current_collection->result($result);
+		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
+			->set(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')));
 
 		return array(
 			array(3, array(1, 2)),
@@ -200,4 +198,32 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->assertEquals($expected_ids, $this->collection->remove($items)->ids());
 		$this->assertEquals($expected_ids, $this->collection->remove($items)->ids(), 'Should not remove anything twice');
 	}
+
+	public function data_set()
+	{
+		$current2 = Jam::factory('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
+		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
+		
+		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
+			->set(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')));
+
+		return array(
+			array(3, array(3)),
+			array(array(1, 3), array(1, 3)),
+			array(array(array('id' => 1), array('id' => 2)), array(1, 2)),
+			array($current2, array(2)),
+			array(array($current3), array(3)),
+			array(array($current2, $current3), array(2, 3)),
+			array($current_collection, array(2, 3)),
+		);
+	}
+
+	/**
+	 * @dataProvider data_set
+	 */	
+	public function test_set($items, $expected_ids)
+	{
+		$this->assertEquals($expected_ids, $this->collection->set($items)->ids());
+	}
+
 }

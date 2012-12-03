@@ -15,6 +15,52 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	const ERASE    = 'erase';
 	const DELETE   = 'delete';
 
+	public static function value_to_key_and_model($value, $model, $is_polymorphic = FALSE)
+	{
+		if ( ! $value)
+		{
+			return array(NULL, NULL);
+		}			
+		elseif ($value instanceof Jam_Validated) 
+		{
+			return array($value->id(), $value->meta()->model());
+		}
+		elseif (is_integer($value) OR is_string($value)) 
+		{
+			return array($value, $model);
+		}
+		elseif (array($value)) 
+		{
+			if ($is_polymorphic)
+			{
+				$model = key($value);
+				$value = current($value);
+
+				if (is_integer($value) OR is_string($value))
+					return array($value, $model);
+			}
+
+			$key = Arr::get($value, Jam::meta($model)->primary_key());
+			return array($key, $model);	
+		}
+	}
+
+	public static function value_is_changed($value, $is_polymorphic = FALSE)
+	{
+		if ($value instanceof Jam_Model AND ( ! $value->loaded() OR $value->changed()))
+		{
+			return TRUE;
+		}
+		elseif ($is_polymorphic)
+		{
+			return (is_array($value) AND is_array(current($value))) ? TRUE : FALSE;
+		}
+		else
+		{
+			return is_array($value) ? TRUE : FALSE;
+		}
+	}
+
 	public $foreign_model = NULL;
 
 	/**

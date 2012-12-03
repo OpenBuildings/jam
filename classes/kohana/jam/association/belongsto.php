@@ -83,7 +83,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($value = Arr::get($changed, $this->name) AND $this->_associated_model_changed($value))
+		if ($value = Arr::get($changed, $this->name) AND Jam_Association::value_is_changed($value))
 		{
 			if ( ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
 			{
@@ -114,56 +114,6 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			->on(':primary_key', '=', $this->foreign_key);
 	}
 
-	protected function _parse_value($value)
-	{
-		if ( ! $value)
-		{
-			return array(NULL, NULL);
-		}			
-		elseif ($value instanceof Jam_Validated) 
-		{
-			return array($value->id(), $value->meta()->model());
-		}
-		elseif (is_integer($value) OR is_string($value)) 
-		{
-			return array($value, $this->foreign_model);
-		}
-		elseif (array($value)) 
-		{
-			if ($this->is_polymorphic())
-			{
-				$foreign_model = key($value);
-				$value = current($value);
-
-				if (is_integer($value) OR is_string($value))
-					return array($value, $foreign_model);
-			}
-			else
-			{
-				$foreign_model = $this->foreign_model;
-			}
-
-			$key = Arr::get($value, Jam::meta($foreign_model)->primary_key());
-			return array($key, $foreign_model);	
-		}
-	}
-
-	protected function _associated_model_changed($value)
-	{
-		if ($value instanceof Jam_Model AND ( ! $value->loaded() OR $value->changed()))
-		{
-			return TRUE;
-		}
-		elseif ($this->is_polymorphic())
-		{
-			return (is_array($value) AND is_array(current($value))) ? TRUE : FALSE;
-		}
-		else
-		{
-			return is_array($value) ? TRUE : FALSE;
-		}
-	}
-
 	protected function _find_item($foreign_model, $key)
 	{
 		return Jam_Query_Builder_Collection::factory($foreign_model)->limit(1)->where(':unique_key', '=', $key)->current();
@@ -176,14 +126,22 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		if ($value instanceof Jam_Validated OR ! $value)
-			return $value;
+		if ($is_changed)
+		{
+			if ($value instanceof Jam_Validated OR ! $value)
+				return $value;
 
-		list($key, $foreign_model) = $this->_parse_value($value);
+			list($key, $foreign_model) = Jam_Association::value_to_key_and_model($value, $this->foreign_model, $this->is_polymorphic());
+		}
+		else
+		{
+			$key = $model->{$this->foreign_key};
+			$foreign_model = $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
+		}
 
 		$item = $this->_find_item($foreign_model, $key);
 
-		if (is_array($value) AND $this->_associated_model_changed($value))
+		if (is_array($value) AND Jam_Association::value_is_changed($value))
 		{
 			$item->set($this->is_polymorphic() ? current($value) : $value);
 		}
@@ -192,7 +150,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		list($key, $foreign_model) = $this->_parse_value($value);
+		list($key, $foreign_model) = Jam_Association::value_to_key_and_model($value, $this->foreign_model, $this->is_polymorphic());
 
 		if ($this->is_polymorphic())
 		{
@@ -209,7 +167,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($value = Arr::get($changed, $this->name) AND $this->_associated_model_changed($value))
+		if ($value = Arr::get($changed, $this->name) AND Jam_Association::value_is_changed($value))
 		{
 			$this->set($model, $model->{$this->name}->save(), TRUE);
 		}

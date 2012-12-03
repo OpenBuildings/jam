@@ -112,27 +112,30 @@ class Jam_Association_BelongsToTest extends Unittest_TestCase {
 	public function data_get()
 	{
 		return array(
-			array('test_author', array(), NULL, NULL, NULL),
-			array('test_author', array(), 1, 'test_author', 1),
-			array('test_author', array(), 'test', 'test_author', 'test'),
-			array('test_author', array(), array('id' => 2, 'name' => 'Test'), 'test_author', 2),
-			array('test_author', array('polymorphic' => TRUE), array('test_category' => 1), 'test_category', 1),
-			array('test_author', array('polymorphic' => TRUE), array('test_category' => array('id' => 2, 'name' => 'Test')), 'test_category', 2),
+			array('test_author', array(), NULL, TRUE, NULL, NULL),
+			array('test_author', array(), NULL, FALSE, 10, 'test_author'),
+			array('test_author', array(), 1, TRUE, 1, 'test_author'),
+			array('test_author', array(), 'test', TRUE, 'test', 'test_author'),
+			array('test_author', array(), array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_author'),
+			array('test_author', array('polymorphic' => TRUE), array('test_category' => 1), TRUE, 1, 'test_category'),
+			array('test_author', array('polymorphic' => TRUE), NULL, FALSE, 10, 'test_category'),
+			array('test_author', array('polymorphic' => TRUE), array('test_category' => array('id' => 2, 'name' => 'Test')), TRUE, 2, 'test_category'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_get
 	 */
-	public function test_get($name, $options, $value, $expected_model, $expected_id)
+	public function test_get($name, $options, $value, $is_changed, $expected_id, $expected_model)
 	{
 		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array($options));
 		$association->initialize($this->meta, $name);
-		$post = Jam::factory('test_post');
+
+		$post = Jam::factory('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
 
 		if ($expected_model)
 		{
-			$author = Jam::factory('test_post');
+			$author = Jam::factory('test_author');
 
 			$association
 				->expects($this->once())
@@ -140,13 +143,12 @@ class Jam_Association_BelongsToTest extends Unittest_TestCase {
 				->with($this->equalTo($expected_model), $this->equalTo($expected_id))
 				->will($this->returnValue($author));
 
-			$this->assertSame($author, $association->get($post, $value, TRUE));
+			$this->assertSame($author, $association->get($post, $value, $is_changed));
 		}
 		else
 		{
-			$this->assertSame($value, $association->get($post, $value, TRUE));			
+			$this->assertSame($value, $association->get($post, $value, $is_changed));			
 		}
-
 	}
 
 	public function data_set()

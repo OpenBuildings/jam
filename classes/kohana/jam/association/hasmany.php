@@ -68,7 +68,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->foreign_model.'"'));
+			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->model.'"'));
 		}
 
 		return $join;
@@ -86,11 +86,66 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($is_changed)
 		{
-			$value = Jam_Query_Builder_Dynamic::convert_collection_to_array($value);
-			$builder->result(new Jam_Query_Builder_Dynamic_Result($value, NULL, FALSE));
+			$builder->set($value);
 		}
 
 		return $builder;
+	}
+
+	public function erase_query(Jam_Model $model)
+	{
+		$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
+			->where($this->foreign_key, '=', $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$query->where($this->polymorphic_key, '=', $model->meta()->model());
+		}
+
+		return $query;
+	}
+
+	public function nullify_query(Jam_Model $model)
+	{
+		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
+			->value($this->foreign_key, NULL)
+			->where($this->foreign_key, '=', $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$query
+				->where($this->polymorphic_key, '=', $model->meta()->model())
+				->value($this->polymorphic_key, NULL);
+		}
+		return $query;
+	}
+
+
+	public function remove_items_query(array $ids)
+	{
+		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
+			->where(':primary_key', 'IN', $ids)
+			->value($this->foreign_key, NULL);
+
+		if ($this->is_polymorphic())
+		{
+			$query->value($this->polymorphic_key, NULL);
+		}
+
+		return $query; 
+	}
+
+	public function add_items_query(array $ids, Jam_Model $model)
+	{
+		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
+			->where(':primary_key', 'IN', $ids)
+			->value($this->foreign_key, $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$query->value($this->polymorphic_key, $model->meta()->model());
+		}
+		return $query;
 	}
 
 	public function model_before_delete(Jam_Model $model)
@@ -105,33 +160,25 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			break;
 
 			case Jam_Association::ERASE:
-				$delete = Jam_Query_Builder_Delete::factory($this->foreign_model)
-					->where($this->foreign_key, '=', $model->id());
-
-				if ($this->is_polymorphic())
-				{
-					$delete->where($this->polymorphic_key, '=', $model->meta()->model());
-				}
-				
-				$delete->execute();
-
+				$this->erase_query($model)->execute();
 			break;
 
 			case Jam_Association::NULLIFY:
-				$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
-					->value($this->foreign_key, NULL)
-					->where($this->foreign_key, '=', $model->id());
-
-				if ($this->is_polymorphic())
-				{
-					$nullify
-						->where($this->polymorphic_key, '=', $model->meta()->model())
-						->value($this->polymorphic_key, NULL);
-				}
-
-				$nullify->execute();
-
+				$this->nullify_query($model)->execute();
 			break;
+		}
+	}
+
+	public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	{
+		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
+		{
+			$this->remove_items_query($old_ids)->execute();
+		}
+		
+		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
+		{
+			$this->add_items_query($new_ids, $model)->execute();
 		}
 	}
 
@@ -139,34 +186,9 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	{
 		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
 		{
-			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
+			$collection->save_changed();
 
-			if ($old_ids)
-			{
-				$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
-					->where(':primary_key', 'IN', $old_ids)
-					->value($this->foreign_key, NULL);
-
-				if ($this->is_polymorphic())
-				{
-					$nullify->value($this->polymorphic_key, NULL);
-				}
-
-				$nullify->execute();
-			}
-			
-			if ($new_ids)
-			{
-				$assign = Jam_Query_Builder_Update::factory($this->foreign_model)
-					->where(':primary_key', 'IN', $new_ids)
-					->value($this->foreign_key, $model->id());
-
-				if ($this->is_polymorphic())
-				{
-					$assign->value($this->polymorphic_key, $model->meta()->model());
-				}
-				$assign->execute();
-			}
+			$this->save_collection($model, $collection);
 		}
 	}
 

@@ -29,14 +29,6 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
-	// public function get(Jam_Validated $model, $value, $is_changed)
-	// {
-	// 	if ( ! $model->loaded())
-	// 		return $this->set($model, array(), TRUE);
-
-	// 	return $this->builder($model)->select_all()->_parent_association($model, $this);
-	// }
-
 	public function initialize(Jam_Meta $meta, $name)
 	{
 		if ( ! $this->foreign_model)
@@ -46,12 +38,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
 		parent::initialize($meta, $name);
 	}
-	
-	public function set(Jam_Validated $model, $value, $is_changed)
-	{
-		$new_collection = new Jam_Collection($value, Jam::class_name($this->foreign()));
-		return $new_collection->_parent_association($model, $this);
-	}
+
 
 	public function model_after_check(Jam_Model $model)
 	{
@@ -60,16 +47,5 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			$model->errors()->add($this->name, 'association_collection');
 		}
 	}
-	
-	public function diff_collection_ids(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
-	{
-		$current_ids = $collection->original()->as_array(NULL, $collection->meta()->primary_key());
 
-		$collection->save_changed();
-
-		return array(
-			array_filter(array_diff($current_ids, $collection->ids())),
-			array_filter(array_diff($collection->ids(), $current_ids))
-		);	
-	}
 }
