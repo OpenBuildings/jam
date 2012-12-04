@@ -2,7 +2,12 @@
 
 return array(
 	'default_form' => 'general',
-	
+	'image_generator' => array(
+		'type' => IMAGETYPE_JPEG,
+		'file' => 'upload/generated/:model-:group/:id_:filename_:image.jpg',
+		'path_dir' => DOCROOT.'upload/generated/',
+		'web_dir' => '/upload/generated/',
+	),
 	'upload' => array(
 		'temp' => array(
 			'path' => DOCROOT.'upload'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR, 
