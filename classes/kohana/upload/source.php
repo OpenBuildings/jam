@@ -139,10 +139,10 @@ abstract class Kohana_Upload_Source {
 			throw new Kohana_Exception("File not uploaded properly. Error: :error", Arr::get($errors, Arr::get($data, 'error'), '-'));
 		}
 		
-		if ( ! move_uploaded_file($file['tmp_name'], Upload_Util::combine($directory, $file['name'])))
+		if ( ! move_uploaded_file($data['tmp_name'], Upload_Util::combine($directory, $data['name'])))
 			throw new Kohana_Exception('There was an error moving the file to :directory', array(':directory' => $directory));
 
-		return $file['name'];
+		return $data['name'];
 	}
 
 	/**
