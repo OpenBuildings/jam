@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
  * Add canvas variables (x, y, width, height) useful for working with html img tags

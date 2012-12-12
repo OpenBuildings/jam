@@ -4,9 +4,9 @@ return array(
 	'default_form' => 'general',
 	'image_generator' => array(
 		'type' => IMAGETYPE_JPEG,
-		'file' => 'upload/generated/:model-:group/:id_:filename_:image.jpg',
-		'path_dir' => DOCROOT.'upload/generated/',
-		'web_dir' => '/upload/generated/',
+		'file' => ':model-:group/:id_:filename_:image.jpg',
+		'path_dir' => DOCROOT.'upload/image-generator/',
+		'web_dir' => '/upload/image-generator/',
 	),
 	'upload' => array(
 		'temp' => array(
