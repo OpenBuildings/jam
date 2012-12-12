@@ -27,7 +27,10 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	 */
 	public function builder_before_select(Jam_Builder $builder)
 	{
-		$builder->order_by_position();
+		if ( ! $builder->inspect('order_by'))
+		{
+			$builder->order_by_position();
+		}
 	}
 
 	/**

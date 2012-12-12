@@ -16,6 +16,7 @@ return array(
 	'count_maximum'                    => ':attribute must be less than :maximum items',
 	'count_bwteen'                     => ':attribute must be less than :maximum and more than :minimum items',
 	'count_is'                         => ':attribute must be :is items',
+	'numeric'                          => ':attribute must be a proper number',
 	'numeric_greater_than_or_equal_to' => ':attribute must be greater than or equal to :greater_than_or_equal_to',
 	'numeric_greater_than'             => ':attribute must be greater than :greater_than',
 	'numeric_equal_to'                 => ':attribute must be equal to :equal_to',
