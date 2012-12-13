@@ -28,6 +28,8 @@ return array(
 	'numeric_only_integer'             => ':attribute must be an integer ',
 	'uploaded_is_file'                 => ':attribute is not a valid file',
 	'uploaded_extension'               => ':attribute must be a :extension',
+	'uploaded_minimum_size'            => ':attribute\'s file size must be bigger than :minimum_size',
+	'uploaded_maximum_size'            => ':attribute\'s file size must be smaller than :maximum_size',
 	'uploaded_minimum_width'           => ':attribute\'s width must be bigger than :minimum_width',
 	'uploaded_minimum_height'          => ':attribute\'s height must be bigger than :minimum_height',
 	'uploaded_maximum_width'           => ':attribute\'s width must be smaller than :maximum_width',
