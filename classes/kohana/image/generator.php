@@ -137,9 +137,9 @@ class Kohana_Image_Generator
 		return $this->path_dir().$this->resolved_file();
 	}
 
-	public function url()
+	public function url($full_path = FALSE)
 	{
-		return $this->web_dir().$this->resolved_file();
+		return URL::site($this->web_dir().$this->resolved_file(), $full_path);
 	}
 
 	public function clear()
