@@ -20,6 +20,8 @@ class Kohana_Upload_Util {
 
 		$curl = curl_init($url);
 		$file = Upload_Util::combine($directory, uniqid());
+
+
 		$handle = fopen($file, 'w');
 		$headers = new HTTP_Header();
 
@@ -27,7 +29,11 @@ class Kohana_Upload_Util {
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($curl, CURLOPT_HEADERFUNCTION, array($headers, 'parse_header_string'));
 		
-		curl_exec($curl);
+		if (curl_exec($curl) === FALSE OR curl_getinfo($curl, CURLINFO_HTTP_CODE) !== 200)
+		{
+			throw new Kohana_Exception('Curl: Download Error: :error', array(':error' => curl_error($curl)));
+		}
+
 		fclose($handle);
 
 		if ($filename === NULL)
@@ -39,7 +45,7 @@ class Kohana_Upload_Util {
 			else
 			{
 				$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-				$url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+				$url = urldecode(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
 				
 				$filename = Upload_Util::filename_from_url($url, $mime_type);
 			}

@@ -13,6 +13,7 @@ class Kohana_Image_Generator
 	protected $_image = NULL;
 	protected $_model = NULL;
 	protected $_auto_generate_filename = TRUE;
+	protected $_filename_generator = NULL;
 	
 	public function __construct(Jam_Model $model, $image = 'cover')
 	{
@@ -32,6 +33,16 @@ class Kohana_Image_Generator
 			return $this;
 		}
 		return $this->_auto_generate_filename;
+	}
+
+	public function filename_generator($filename_generator = NULL)
+	{
+		if ($filename_generator !== NULL)
+		{
+			$this->_filename_generator = $filename_generator;
+			return $this;
+		}
+		return $this->_filename_generator;
 	}
 
 	public function file_template($file_template = NULL)
@@ -77,24 +88,39 @@ class Kohana_Image_Generator
 
 	public function filename($filename = NULL)
 	{
-		$field = "image_generator_{$this->image()}_filename";
-
-		if ($filename !== NULL)
+		if ( ! $this->filename_generator())
 		{
-			$this->model()->$field = $filename;
+			return ($filename === NULL) ? (string) $this->model()->id() : $this;
 		}
-
-		if ($this->auto_generate_filename() AND ! $this->model()->$field)
+		else
 		{
-			$this->model()->update_fields($field, $this->generate_filename());
-		}
+			$field = $this->filename_generator();
 
-		return $this->model()->$field;
+			if ($filename !== NULL)
+			{
+				$this->model()->$field = $filename;
+				return $this;
+			}
+
+			if ($this->auto_generate_filename() AND ! $this->model()->$field)
+			{
+				$this->model()->update_fields($field, $this->generate_filename());
+			}
+
+			return $this->model()->$field;
+		}
 	}
 	
 	public function generate_filename()
 	{
-		return $this->model()->{"image_generator_{$this->image()}_filename"}();
+		if ($this->filename_generator())
+		{
+			return $this->model()->{"image_generator_{$this->image()}_filename"}();
+		}
+		else
+		{
+			return (string) $this->model()->id();
+		}
 	}
 
 	public function path()
@@ -105,6 +131,25 @@ class Kohana_Image_Generator
 	public function url()
 	{
 		return $this->web_dir().$this->resolved_file();
+	}
+
+	public function clear()
+	{
+		if ($this->filename_generator())
+		{
+			if ($this->model()->{$this->filename_generator()})
+			{
+				$this->model()->update_fields($this->filename_generator(), '');
+				if (is_file($this->path()))
+				{
+					unlink($this->path());
+				}
+			}
+		}
+		elseif (is_file($this->path()))
+		{
+			unlink($this->path());
+		}
 	}
 
 	public function update_cache()
@@ -128,7 +173,7 @@ class Kohana_Image_Generator
 
 		$this->update_cache();
 
-		$image = $model->{'image_generator_'.$image}($this->path());
-		$image->save();
+		$image = $this->model()->{'image_generator_'.$this->image()}($this->path());
+		$image->save($this->path());
 	}
 }
