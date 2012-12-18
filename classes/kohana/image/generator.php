@@ -17,9 +17,9 @@ class Kohana_Image_Generator
 	
 	public function __construct(Jam_Model $model, $image = 'cover')
 	{
-		$this->_path_dir = Kohana::$config->load('jam.image_generator.path_dir');
-		$this->_web_dir = Kohana::$config->load('jam.image_generator.web_dir');
-		$this->_file_template = Kohana::$config->load('jam.image_generator.file');
+		$this->_path_dir = Kohana::$config->load('jam-image-generator.path_dir');
+		$this->_web_dir = Kohana::$config->load('jam-image-generator.web_dir');
+		$this->_file_template = Kohana::$config->load('jam-image-generator.file');
 
 		$this->_image = $image;
 		$this->_model = $model;
@@ -29,7 +29,7 @@ class Kohana_Image_Generator
 	{
 		if ($auto_generate_filename !== NULL)
 		{
-			$this->_auto_generate_filename = $auto_generate_filename;
+			$this->_auto_generate_filename = (bool) $auto_generate_filename;
 			return $this;
 		}
 		return $this->_auto_generate_filename;
@@ -104,10 +104,19 @@ class Kohana_Image_Generator
 
 			if ($this->auto_generate_filename() AND ! $this->model()->$field)
 			{
-				$this->model()->update_fields($field, $this->generate_filename());
+				$this->model()->$field = $this->generate_filename();
+				$this->_update_model_field($this->model()->$field);
 			}
 
 			return $this->model()->$field;
+		}
+	}
+
+	protected function _update_model_field($filename)
+	{
+		if ($this->filename_generator())
+		{
+			$this->model()->update_fields($this->filename_generator(), $filename);
 		}
 	}
 	
@@ -139,11 +148,12 @@ class Kohana_Image_Generator
 		{
 			if ($this->model()->{$this->filename_generator()})
 			{
-				$this->model()->update_fields($this->filename_generator(), '');
 				if (is_file($this->path()))
 				{
 					unlink($this->path());
 				}
+				
+				$this->_update_model_field('');
 			}
 		}
 		elseif (is_file($this->path()))
