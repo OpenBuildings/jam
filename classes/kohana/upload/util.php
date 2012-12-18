@@ -51,6 +51,8 @@ class Kohana_Upload_Util {
 			}
 		}
 
+		$filename = substr(pathinfo($filename, PATHINFO_FILENAME), 0, 60).'.'.pathinfo($filename, PATHINFO_EXTENSION);
+
 		$result_file = Upload_Util::combine($directory, $filename);
 		
 		rename($file, $result_file);
