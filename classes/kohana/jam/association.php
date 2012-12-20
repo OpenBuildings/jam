@@ -15,50 +15,33 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	const ERASE    = 'erase';
 	const DELETE   = 'delete';
 
-	public static function value_to_key_and_model($value, $model, $is_polymorphic = FALSE)
+	public static function primary_key($model_name, $value)
 	{
 		if ( ! $value)
 		{
-			return array(NULL, NULL);
+			return NULL;
 		}			
 		elseif ($value instanceof Jam_Validated) 
 		{
-			return array($value->id(), $value->meta()->model());
+			return $value->id();
 		}
 		elseif (is_integer($value) OR is_string($value)) 
 		{
-			return array($value, $model);
+			return $value;
 		}
-		elseif (array($value)) 
+		elseif (is_array($value)) 
 		{
-			if ($is_polymorphic)
-			{
-				$model = key($value);
-				$value = current($value);
-
-				if (is_integer($value) OR is_string($value))
-					return array($value, $model);
-			}
-
-			$key = Arr::get($value, Jam::meta($model)->primary_key());
-			return array($key, $model);	
+			return Arr::get($value, Jam::meta($model_name)->primary_key());
 		}
 	}
 
-	public static function value_is_changed($value, $is_polymorphic = FALSE)
+	public static function is_changed($value)
 	{
 		if ($value instanceof Jam_Model AND ( ! $value->loaded() OR $value->changed()))
-		{
 			return TRUE;
-		}
-		elseif ($is_polymorphic)
-		{
-			return (is_array($value) AND is_array(current($value))) ? TRUE : FALSE;
-		}
-		else
-		{
-			return is_array($value) ? TRUE : FALSE;
-		}
+
+		if (is_array($value)) 
+			return TRUE;
 	}
 
 	public $foreign_model = NULL;
@@ -97,82 +80,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	public $required = FALSE;
 
 	/**
-	 * Default initialize set model, name and foreign variables
-	 * 
-	 * @param  Jam_Meta $meta
-	 * @param  string     $model   the model name 
-	 * @param  string     $name    the name of the association 
-	 * @return NULL            
-	 */
-	public function initialize(Jam_Meta $meta, $name)
-	{
-		parent::initialize($meta, $name);
-
-		// if ($this->touch)
-		// {
-		// 	$this->extension('touch', Jam::extension('touch', $this->touch));
-		// }
-
-		// $this->extension('general', Jam::extension('general'));
-	}
-
-	/**
-	 * Convert an array to a model, mostly for mass assignment and nested forms. 
-	 * Handle polymorphic associations with one more level of nesting the arrays. 
-	 * Load and update objects if they pass an id in the array
-	 * 
-	 * @param  array|string|Jam_Model  $array       
-	 * @return Jam_Model               The converted item
-	 */
-	public function model_from_array($array)
-	{
-		if ($array instanceof Jam_Model)
-			return $array;
-
-		if ($this->is_polymorphic() AND $this instanceof Jam_Association_BelongsTo)
-		{
-			if ( ! is_array($array))
-			{
-				if ($this->polymorphic_default_model)
-				{
-					$foreign_model = $this->polymorphic_default_model;
-				}
-				else
-				{
-					throw new Kohana_Exception('Model :model, association :name is polymorphic so you can only mass assign arrays', 
-						array(':model' => $this->model, ':name' => $this->name));
-				}
-			}
-			else
-			{
-				$foreign_model = key($array);
-				$array = reset($array);
-
-				if ( ! Jam::meta($foreign_model))
-					throw new Kohana_Exception('Model :model, association :name is polymorphic and in mass assignment, model ":new_model" does not exist or the array is not constructed properly ( must be array("model" => aray("fields"...)) )', 
-						array(':model' => $this->model, ':name' => $this->name, ':new_model' => $foreign_model));
-			}
-		}
-		else
-		{
-			$foreign_model = $this->foreign();
-		}
-
-		// Handle cases where there is an ID available - we load them first and then set the new attributes
-		if (is_array($array)) 
-		{
-			$key = Arr::get($array, Jam::meta($foreign_model)->primary_key());
-			$item = Jam::factory($foreign_model, $key)->set($array);
-		}
-		else
-		{
-			$item = Jam::factory($foreign_model, $array);
-		}
-
-		return $item;
-	}
-
-	/**
 	 * See if the association is polymorphic. 
 	 * This is overloaded in the associations themselves
 	 * 
@@ -188,45 +95,6 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		return $value;
-	}
-
-
-
-	/**
-	 * This method is executed for each child model so that it's values are properly assigned
-	 * 
-	 * @param  Jam_Model $model parent model
-	 * @param  Jam_Model|mixed  $item  child model item
-	 * @return Jam_Model        $item
-	 */
-	public function assign_relation(Jam_Model $model, $item)
-	{
-		return $this->assign_inverse($model, $item);
-	}
-
-	/**
-	 * Assigns the inverse model for the association
-	 * 
-	 * @param  Jam_Model $model parent model
-	 * @param  Jam_Model $item  child model
-	 * @return Jam_Model        $item
-	 */
-	public function assign_inverse(Jam_Model $model, Jam_Model $item)
-	{
-		if ($this->inverse_of)
-		{
-			$item->set($this->inverse_of, $model);
-		}
-		return $item;
-	}
-
-	public function inverse_association()
-	{
-		if ( ! $this->is_polymorphic() AND $this->inverse_of)
-		{
-			return Jam::meta($this->foreign())->association($this->inverse_of);
-		}
-		return NULL;
 	}
 
 	/**

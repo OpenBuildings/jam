@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 		parent::__construct($key, $meta_name);
 
-		$this->_meta->trigger_behavior_events($this, 'before_construct');
+		$this->_meta->events()->trigger('model.before_construct', $this);
 
 		// Copy over the defaults into the original data.
 		$this->_original = $this->_meta->defaults();
@@ -71,7 +71,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			}
 		}
 
-		$this->_meta->trigger_behavior_events($this, 'after_construct');
+		$this->_meta->events()->trigger('model.after_construct', $this);
 	}
 
 	/**
@@ -242,7 +242,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// These will be processed later
 		$values = $saveable = array();
 
-		if ($this->_meta->trigger_behavior_events($this, 'before_save', $this->_changed) === FALSE)
+		if ($this->_meta->events()->trigger('model.before_save', $this) === FALSE)
 		{
 			return $this;
 		}
@@ -250,7 +250,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->meta()->trigger_behavior_events($this, 'before_'.$event_type, $this->_changed) === FALSE)
+		if ($this->_meta->events()->trigger('before_'.$event_type, $this) === FALSE)
 		{
 			return $this;
 		}
@@ -310,9 +310,9 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->trigger_behavior_events($this, 'after_save', $this->_changed);
+		$this->_meta->events()->trigger('model.after_save', $this);
 
-		$this->_meta->trigger_behavior_events($this, 'after_'.$event_type, $this->_changed);
+		$this->_meta->events()->trigger('after_'.$event_type, $this);
 		
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
@@ -339,14 +339,14 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$key = $this->_original[$this->_meta->primary_key()];
 
-			if (($result = $this->_meta->trigger_behavior_events($this, 'before_delete', $key)) !== FALSE)
+			if (($result = $this->_meta->events()->trigger('model.before_delete', $this)) !== FALSE)
 			{
 				$result = Jam::query($this, $key)->delete();
 			}
 		}
 
 		// Trigger the after-delete
-		$this->_meta->trigger_behavior_events($this, 'after_delete', $key);
+		$this->_meta->events()->trigger('model.after_delete', $this);
 
 		// Clear the object so it appears deleted anyway
 		$this->clear();

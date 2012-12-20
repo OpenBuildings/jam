@@ -28,7 +28,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function initialize(Jam_Meta $meta, $name)
 	{
-
 		parent::initialize($meta, $name);
 
 		if ( ! $this->foreign_key)
@@ -55,8 +54,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			}
 
 			$meta->field($this->count_cache, Jam::field('integer', array('default' => 0, 'allow_null' => FALSE)));
-
-			// $this->extension('countcache', Jam::extension('countcache'));
 		}
 	}
 

@@ -159,8 +159,29 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	 **/
 	public function __call($method, $args)
 	{
-		$return = $this->_meta->events()->trigger_callback('model', $this, $method, $args);
+		$return = $this->_meta->events()->trigger_callback('builder', $this, $method, $args);
 		return $return ? $return : $this;
+	}
+
+	/**
+	 * Add methods for this builder on the fly (mixins) you can assign:
+	 * Class - loads all static methods
+	 * array or string/array callback
+	 * array of closures
+	 * @param  array|string   $callbacks 
+	 * @param  mixed $callback  
+	 * @return Jam_Meta              $this
+	 */
+	public function extend($callbacks, $callback = NULL)
+	{
+		// Handle input with second argument, so you can pass single items without an array
+		if ($callback !== NULL)
+		{
+			$callbacks = array($callbacks => $callback);
+		}
+
+		$this->_meta->events()->bind_callbacks('builder', $callbacks);
+		return $this;
 	}
 
 	/**

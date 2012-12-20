@@ -299,11 +299,6 @@ abstract class Kohana_Jam_Meta {
 		return $this;
 	}
 
-	public function trigger_behavior_events(Jam_Validated $model, $event)
-	{
-		return $this->_events->trigger('model.'.$event, $model);
-	}
-
 	/**
 	 * Allows setting a variable only when not initialized.
 	 *

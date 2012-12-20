@@ -16,6 +16,8 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public $foreign_key = NULL;
 
+	public $polymorphic_key = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -70,7 +72,18 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	protected function _find_item($foreign_model, $key)
 	{
-		return Jam_Query_Builder_Collection::factory($foreign_model)->limit(1)->where(':unique_key', '=', $key)->current();
+		if ($key instanceof Jam_Model)
+		{
+			$query = $this->_query_builder(Jam_Query_Builder::COLLECTION, $key);
+		}
+		else
+		{
+			$query = Jam_Query_Builder_Collection::factory($foreign_model)
+				->where(':unique_key', '=', $key)
+				->limit(1);
+		}
+
+		return $query->current();
 	}
 
 	public function get(Jam_Validated $model, $value, $is_changed)
@@ -80,11 +93,12 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			if ($value instanceof Jam_Validated OR ! $value)
 				return $value;
 
-			list($key, $foreign_model) = Jam_Association::value_to_key_and_model($value);
-
-			$item = $this->_find_item($foreign_model, $key);
-
+			$key = Jam_Association::primary_key($this->foreign_model, $value);
+		
+			$item = $this->_find_item($this->foreign_model, $key);
+		
 			$item->{$this->foreign_key} = $model->id();
+
 			if ($this->is_polymorphic())
 			{
 				$item->{$this->polymorphic} = $model->meta()->model();
@@ -94,26 +108,18 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			{
 				$item->set($value);
 			}
+
 			return $item;
 		}
 		else
 		{
-			$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
-				->limit(1)
-				->where($this->foreign_key, '=', $model->id());
+			return $this->_find_item($this->foreign_model, $model);
 		}
-
-		if ($this->is_polymorphic())
-		{
-			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
-		}
-
-		return $builder->current();
 	}
 
-	public function erase_query(Jam_Model $model)
+	public function _query_builder($type, Jam_Model $model)
 	{
-		$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
+		$query = Jam::query_builder($type, $this->foreign_model)
 			->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
@@ -124,21 +130,17 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $query;
 	}
 
-	public function nullify_query(Jam_Model $model)
+	public function _update_query(Jam_Model $model, $new_id, $new_model)
 	{
-		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
-			->value($this->foreign_key, NULL)
-			->where($this->foreign_key, '=', $model->id());
+		$query = $this->_query_builder(Jam_Query_Builder::UPDATE, $model)
+			->value($this->foreign_key, $new_id);
 
 		if ($this->is_polymorphic())
 		{
-			$query
-				->where($this->polymorphic_key, '=', $model->meta()->model())
-				->value($this->polymorphic_key, NULL);
+			$query->value($this->polymorphic_key, $new_model);
 		}
 		return $query;
 	}
-
 
 	public function model_before_delete(Jam_Model $model)
 	{
@@ -152,11 +154,11 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			break;
 
 			case Jam_Association::ERASE:
-				$this->erase_query($model)->execute();
+				$this->_query_builder(Jam_Query_Builder::DELETE, $model)->execute();
 			break;
 
 			case Jam_Association::NULLIFY:
-				$this->nullify_query($model)->execute();
+				$this->_update_query($model, NULL, NULL)->execute();
 			break;
 		}
 	}
@@ -176,17 +178,15 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($value = Arr::get($changed, $this->name))
 		{
-			$nullify = $this->nullify_query($model);
+			$this->_update_query($model, NULL, NULL)->execute();
 
-			if (Jam_Association::value_is_changed($value) AND $item = $model->{$this->name})
+			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{
 				$item->save();
-
-				$nullify->where(':primary_key', '!=', $item->id());
 			}
 			else
 			{
-				list($key) = Jam_Association::value_to_key_and_model($value);
+				$key = Jam_Association::primary_key($value);
 
 				$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 					->where(':unique_key', '=', $key)
@@ -198,9 +198,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 						->value($this->polymorphic_key, $model->meta()->model());
 				}
 				$query->execute();
-				$nullify->where(':primary_key', '!=', $key);
 			}
-			$nullify->execute();
 		}
 	}
-} // End Kohana_Jam_Association_HasOne
+}

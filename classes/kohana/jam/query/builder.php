@@ -11,6 +11,13 @@
  */
 abstract class Kohana_Jam_Query_Builder {
 
+	const SELECT =     'Select';
+	const INSERT =     'Insert';
+	const UPDATE =     'Update';
+	const DELETE =     'Delete';
+	const COLLECTION = 'Collection';
+	const DYNAMIC =    'Dynamic';
+
 	public static function resolve_attribute_name($column, $model = NULL, $value = NULL)
 	{
 		if (is_array($column))

@@ -6,110 +6,147 @@
  * @package Jam
  * @group   jam
  * @group   jam.association
- * @group   jam.association.has_one
+ * @group   jam.association.hasone
  */
-class Jam_Association_HasOneTest extends Unittest_Jam_TestCase {
+class Jam_Association_HasoneTest extends Unittest_Jam_TestCase {
 
-	/**
-	 * Provides test data for test_builder()
-	 *
-	 * @return  array
-	 */
-	public function provider_builder()
+	public function setUp()
+	{
+		parent::setUp();
+
+		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_author'));
+	}
+
+	public function data_initialize()
 	{
 		return array(
-			// Get existing post
-			array(array('test_author', 1, 'test_post'), TRUE),
-
-			// Get non-existing post
-			array(array('test_author', 2, 'test_post'), FALSE),
-
-			// Get non-existing author
-			array(array('test_author', 555, 'test_post'), FALSE),
-
-			// Get post without specifying an author
-			array(array('test_author', NULL, 'test_post'), FALSE),
+			array('test_post', array(), 'test_post', 'test_author_id', NULL),
+			array('cover_image', array('foreign_model' => 'post'), 'post', 'test_author_id', NULL),
+			array('test_post', array('foreign_key' => 'cover_uid'), 'test_post', 'cover_uid', NULL),
+			array('test_post', array('as' => 'cover'), 'test_post', 'cover_id', 'cover_model'),
+			array('creator', array('foreign_model' => 'test_cover', 'as' => 'cover'), 'test_cover', 'cover_id', 'cover_model'),
 		);
 	}
 
 	/**
-	 * Tests for Jam_Association_BelongsTo::builder()
-	 *
-	 * @dataProvider  provider_builder
-	 * @param         Jam         $builder
-	 * @param         bool          $loaded
-	 * @return        void
+	 * @dataProvider data_initialize
 	 */
-	public function test_builder($args, $loaded)
+	public function test_initialize($name, $options, $expected_foreign_model, $expected_foreign_key, $expected_polymorphic_key)
 	{
-		$model = Jam::factory($args[0], $args[1]);
+		$association = new Jam_Association_Hasone($options);
+		$association->initialize($this->meta, $name);
 
-		if ( ! $model->loaded())
-		{
-			$this->setExpectedException('Kohana_Exception');
-		}
+		$this->assertEquals($name, $association->name);
+		$this->assertEquals($expected_foreign_key, $association->foreign_key);
+		$this->assertEquals($expected_polymorphic_key, $association->polymorphic_key);
+		$this->assertEquals($expected_foreign_model, $association->foreign_model);
 
-		$builder = $model->builder($args[2]);
-
-		$this->assertTrue($builder instanceof Jam_Builder, "Must load Jam_Builder object for the association");
-
-		// Load the model
-		$model = $builder->select();
-
-		// Ensure it's loaded if it should be
-		$this->assertSame($loaded, $model->loaded());
+		$this->assertEquals((bool) $expected_polymorphic_key, $association->is_polymorphic());
 	}
 
-
-	public function test_build_association()
+	public function data_join()
 	{
-		$test_author = Jam::factory('test_author', 1);
-		$test_post = $test_author->build('test_post');
-		$this->assertInstanceOf('Model_Test_Post', $test_post);
-		$this->assertSame($test_post->test_author, $test_author);
+		return array(
+			array('test_post', array(), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
+			array('test_post', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_posts` AS `Posts` ON (`Posts`.`test_author_id` = `test_authors`.`id`)'),
+			array('post', array('foreign_model' => 'test_post'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
+			array('test_post', array('as' => 'poster'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`poster_id` = `test_authors`.`id` AND `test_posts`.`poster_model` = "test_author")'),
+			array('test_post', array('as' => 'poster'), 'articles', NULL, 'JOIN `test_posts` AS `articles` ON (`articles`.`poster_id` = `test_authors`.`id` AND `articles`.`poster_model` = "test_author")'),
+		);
 	}
 
-	public function test_create_association()
+	/**
+	 * @dataProvider data_join
+	 */
+	public function test_join($name, $options, $table, $type, $expected_sql)
 	{
-		$test_author = Jam::factory('test_author', 1);
-		$test_post = $test_author->create('test_post');
-		$test_author->save();
+		$association = new Jam_Association_Hasone($options);
+		$association->initialize($this->meta, $name);
 
-		$this->assertInstanceOf('Model_Test_Post', $test_post);
-		$this->assertEquals($test_post->test_author->test_post->id(), $test_author->id());
-		$this->assertEquals($test_post->test_author_id, $test_author->id());
+		$this->assertEquals($expected_sql, (string) $association->join($table, $type));
 	}
 
-	public function test_delete()
+	public function test_get()
 	{
-		$test_image = Jam::factory('test_image', 1);
-		$test_image_id = $test_image->id();
-		$test_copyright = $test_image->test_copyright;
-		$test_copyright_id = $test_copyright->id();
+		$association = $this->getMock('Jam_Association_Hasone', array('_find_item'), array());
+		$association->initialize($this->meta, 'test_post');
 
-		$test_image->delete();
-		$this->assertNotExists('test_image', $test_copyright_id);
-		$this->assertNotExists('test_copyright', $test_image_id);
+		$author = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$post = Jam::factory('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
+
+		// Check for Null Value changed
+		$this->assertNull($association->get($author, NULL, TRUE));
+
+		// Check for Null Value not changed
+		$association
+			->expects($this->at(0))
+			->method('_find_item')
+			->with($this->equalTo('test_post'), $this->equalTo($author))
+			->will($this->returnValue($post));
+
+		$this->assertSame($post, $association->get($author, NULL, FALSE));
+
+		// Check for Null Value not changed
+		$association
+			->expects($this->at(0))
+			->method('_find_item')
+			->with($this->equalTo('test_post'), $this->equalTo(10))
+			->will($this->returnValue($post));
+
+		$this->assertSame($post, $association->get($author, 10, TRUE));
+
+		// Check for Null Value not changed
+		$association
+			->expects($this->at(0))
+			->method('_find_item')
+			->with($this->equalTo('test_post'), $this->equalTo(12))
+			->will($this->returnValue($post));
+
+		$returned_post = $association->get($author, array('id' => 12, 'title' => 'new post title'), TRUE);
+		$this->assertSame($post, $returned_post);
+		$this->assertEquals('new post title', $returned_post->title);
 	}
 
-	public function test_polymorphic_as()
+	public function data_query_builder()
 	{
-		$post = Jam::factory('test_post', 1);
-		$image = Jam::factory('test_image')->set(array('file' => 'new file.file'))->save();
-		$post->test_cover_image = $image;
-		$post->save();
-
-		$image = Jam::factory('test_image', $image->id());
-
-		$this->assertEquals($post->id(), $image->test_holder->id());
-		$this->assertEquals($image->id(), Jam::factory('test_post', 1)->test_cover_image->id());
+		return array(
+			array(array(), 'SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`test_author_id` = 5'),
+			array(array('as' => 'own_post'), 'SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`own_post_id` = 5 AND `test_posts`.`own_post_model` = \'test_author\''),
+		);
 	}
 
-	public function test_polymorphic_join_association()
+	/**
+	 * @dataProvider data_query_builder
+	 */
+	public function test_query_builder($options, $expected_sql)
 	{
-		$this->assertEquals(1, Jam::query('test_post')
-			->join_association('test_cover_image')
-			->count());
+		$association = new Jam_Association_Hasone($options);
+		$association->initialize($this->meta, 'test_post');
+
+		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
+
+		$this->assertEquals($expected_sql, (string) $association->_query_builder(Jam_Query_Builder::SELECT, $author));
 	}
 
-} // End Jam_Field_HasOneTest
+	public function data_update_builder()
+	{
+		return array(
+			array(array(), 10, NULL, 'UPDATE `test_posts` SET `test_author_id` = 10 WHERE `test_posts`.`test_author_id` = 5'),
+			array(array('as' => 'own_post'), 12, 'test_author2', 'UPDATE `test_posts` SET `own_post_id` = 12, `own_post_model` = \'test_author2\' WHERE `test_posts`.`own_post_id` = 5 AND `test_posts`.`own_post_model` = \'test_author\''),
+		);
+	}
+
+	/**
+	 * @dataProvider data_update_builder
+	 */
+	public function test_update_builder($options, $id, $model, $expected_sql)
+	{
+		$association = new Jam_Association_Hasone($options);
+		$association->initialize($this->meta, 'test_post');
+
+		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
+
+		$this->assertEquals($expected_sql, (string) $association->_update_query($author, $id, $model));
+	}
+
+}

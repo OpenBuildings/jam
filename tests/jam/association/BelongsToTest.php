@@ -1,14 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Tests BelongsTo associatons.
+ * Tests Belongsto associatons.
  *
  * @package Jam
  * @group   jam
  * @group   jam.association
  * @group   jam.association.belongsto
  */
-class Jam_Association_BelongsToTest extends Unittest_TestCase {
+class Jam_Association_BelongstoTest extends Unittest_TestCase {
 
 	public $meta;
 
@@ -112,24 +112,24 @@ class Jam_Association_BelongsToTest extends Unittest_TestCase {
 	public function data_get()
 	{
 		return array(
-			array('test_author', array(), NULL, TRUE, NULL, NULL),
-			array('test_author', array(), NULL, FALSE, 10, 'test_author'),
-			array('test_author', array(), 1, TRUE, 1, 'test_author'),
-			array('test_author', array(), 'test', TRUE, 'test', 'test_author'),
-			array('test_author', array(), array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_author'),
-			array('test_author', array('polymorphic' => TRUE), array('test_category' => 1), TRUE, 1, 'test_category'),
-			array('test_author', array('polymorphic' => TRUE), NULL, FALSE, 10, 'test_category'),
-			array('test_author', array('polymorphic' => TRUE), array('test_category' => array('id' => 2, 'name' => 'Test')), TRUE, 2, 'test_category'),
+			array(FALSE, NULL, TRUE, NULL, NULL),
+			array(FALSE, NULL, FALSE, 10, 'test_author'),
+			array(FALSE, 1, TRUE, 1, 'test_author'),
+			array(FALSE, 'test', TRUE, 'test', 'test_author'),
+			array(FALSE, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_author'),
+			array(TRUE, 1, TRUE, 1, 'test_category'),
+			array(TRUE, NULL, FALSE, 10, 'test_category'),
+			array(TRUE, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_category'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_get
 	 */
-	public function test_get($name, $options, $value, $is_changed, $expected_id, $expected_model)
+	public function test_get($is_polymorphic, $value, $is_changed, $expected_id, $expected_model)
 	{
-		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array($options));
-		$association->initialize($this->meta, $name);
+		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('polymorphic' => $is_polymorphic)));
+		$association->initialize($this->meta, 'test_author');
 
 		$post = Jam::factory('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
 
@@ -154,25 +154,27 @@ class Jam_Association_BelongsToTest extends Unittest_TestCase {
 	public function data_set()
 	{
 		return array(
-			array('test_author', array(), NULL, NULL, NULL),
-			array('test_author', array(), 1, 1, NULL),
-			array('test_author', array(), 'test', NULL, NULL),
-			array('test_author', array(), array('id' => 2, 'name' => 'Test'), 2, NULL),
-			array('test_author', array('polymorphic' => TRUE), array('test_author' => 1), 1, 'test_author'),
-			array('test_author', array('polymorphic' => TRUE), array('test_author' => array('id' => 2, 'name' => 'Test')), 2, 'test_author'),
+			array(FALSE, NULL, NULL, NULL, NULL),
+			array(FALSE, 1, 1, 1, NULL),
+			array(FALSE, 'test', 'test', NULL, NULL),
+			array(FALSE, array('id' => 2, 'name' => 'Test'), array('id' => 2, 'name' => 'Test'), 2, NULL),
+			array(TRUE, array('test_author' => 1), 1, 1, 'test_author'),
+			array(TRUE, array('test_author' => array('id' => 2, 'name' => 'Test')), array('id' => 2, 'name' => 'Test'), 2, 'test_author'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_set
 	 */
-	public function test_set($name, $options, $value, $expected_foreign_key, $expected_polymorphic)
+	public function test_set($is_polymorphic, $value, $expected_value, $expected_foreign_key, $expected_polymorphic)
 	{
-		$association = new Jam_Association_Belongsto($options);
-		$association->initialize($this->meta, $name);
+		$association = new Jam_Association_Belongsto(array('polymorphic' => $is_polymorphic));
+		$association->initialize($this->meta, 'test_author');
 
 		$model = new Model_Test_Post();
-		$association->set($model, $value, TRUE);
+		$value = $association->set($model, $value, TRUE);
+
+		$this->assertEquals($expected_value, $value);
 
 		$this->assertEquals($expected_foreign_key, $model->{$association->foreign_key}, 'Should have correct value for column '.$association->foreign_key);
 

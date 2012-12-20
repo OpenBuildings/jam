@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Tests HasMany fields.
+ * Tests Hasmany fields.
  *
  * @package Jam
  * @group   jam
