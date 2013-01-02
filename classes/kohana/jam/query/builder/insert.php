@@ -9,11 +9,11 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_Delete {
+abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_Insert {
 
-	public static function factory($model, $key = NULL)
+	public static function factory($model)
 	{
-		return new Jam_Query_Builder_Delete($model, $key);
+		return new Jam_Query_Builder_Insert($model);
 	}
 
 	/**
@@ -37,11 +37,17 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 	 * @param   string|null  $model
 	 * @param   mixed|null   $key
 	 */
-	public function __construct($model)
+	public function __construct($model = NULL)
 	{
 		parent::__construct();
 
+		if ( ! $model)
+		{
+			throw new Kohana_Exception('Jam_Query_Builder_Insert requires model to be set in the constructor');
+		}
+
 		$this->_meta = Jam::meta($model);
+
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
@@ -58,37 +64,14 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 		{
 			$db = Database::instance($this->meta()->db());
 		}
-		
-		$this->meta()->events()->trigger('builder.before_delete', $this);
+
+		$this->meta()->events()->trigger('builder.before_insert', $this);
 
 		$result = parent::execute($db, $as_object, $object_params);
 
-		$this->meta()->events()->trigger('builder.after_delete', $this);
+		$this->meta()->events()->trigger('builder.after_insert', $this);
 
 		return $result;
-	}
-
-	protected function _compile_order_by(Database $db, array $order_by)
-	{
-		foreach ($order_by as & $order) 
-		{
-			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->meta()->model());
-		}
-
-		return parent::_compile_order_by($db, $order_by);
-	}
-
-	protected function _compile_conditions(Database $db, array $conditions)
-	{
-		foreach ($conditions as & $group) 
-		{
-			foreach ($group as & $condition) 
-			{
-				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
-			}
-		}
-
-		return parent::_compile_conditions($db, $conditions);
 	}
 
 	public function meta()
@@ -105,7 +88,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 	 **/
 	public function __call($method, $args)
 	{
-		$return = $this->meta()->events()->trigger_callback('builder', $this, $method, $args);
+		$return = $this->_meta->events()->trigger_callback('builder', $this, $method, $args);
 		return $return ? $return : $this;
 	}
 

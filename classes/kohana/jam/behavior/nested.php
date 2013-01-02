@@ -12,22 +12,23 @@
 class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 
 	protected $_field = 'parent_id';
+	protected $_children_dependent = NULL;
 
-	public function initialize(Jam_Event $event, $model, $name) 
+	public function initialize(Jam_Meta $meta, $name) 
 	{
-		parent::initialize($event, $model, $name);
+		parent::initialize($meta, $name);
 
-		Jam::meta($model)->associations(array(
+		$meta->associations(array(
 			'parent' => Jam::association('belongsto', array(
-				'foreign_model' => $model,
+				'foreign_model' => $this->_model,
 				'foreign_key' => $this->_field,
-				'default' => 0,
-				'inverse_of' => 'children'
+				'inverse_of' => 'children',
 			)),
 			'children' => Jam::association('hasmany', array(
-				'foreign_model' => $model,
+				'foreign_model' => $this->_model,
 				'foreign_key' => $this->_field,
-				'inverse_of' => 'parent'
+				'inverse_of' => 'parent',
+				'children_dependent' => $this->_children_dependent,
 			)),
 		));
 	}
@@ -39,7 +40,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	 * @param Jam_Event_Data $data    
 	 * @return Jam_Builder
 	 */
-	public function builder_call_root(Jam_Builder $builder, Jam_Event_Data $data, $is_root = TRUE)
+	public function builder_call_root(Database_Query $builder, Jam_Event_Data $data, $is_root = TRUE)
 	{
 		if ($is_root)
 		{
@@ -54,20 +55,6 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	}
 	
 	/**
-	 * $model->root() method to get the root element from Jam_Model
-	 * 
-	 * @param Jam_Model      $model 
-	 * @param Jam_Event_Data $data 
-	 * @return Jam_Model|NULL
-	 */
-	public function model_call_root(Jam_Model $model, Jam_Event_Data $data)
-	{
-		for ($item = $model; $item->parent->loaded(); $item = $item->parent);
-		$data->stop = TRUE;
-		$data->return = $item;
-	}
-
-	/**
 	 * $model->is_root() check if an item is a root object
 	 * @param Jam_Model      $model 
 	 * @param Jam_Event_Data $data  
@@ -80,17 +67,36 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	}
 	
 	/**
-	 * $model->parents() get an array of all the parents of a given item
+	 * A special query that gets you the IDs of all the parents
+	 * @param  string $child_id starting point id (included in the result)
+	 * @return Database_Query
+	 */
+	public function parents_query($child_id)
+	{
+		$meta = Jam::meta($this->_model);
+
+		return DB::select()
+			->select(array(DB::expr('@row'), '_id'))
+			->select(array(DB::expr("(SELECT @row := `{$this->_field}` FROM `{$meta->table()}` WHERE `{$meta->primary_key()}` = _id)"), $this->_field))
+			->select(array(DB::expr('@l := @l + 1'), 'lvl'))
+			->from(array(DB::expr('(SELECT @row := :id, @l := 0)', array(':id' => $child_id)), 'vars'))
+			->from($meta->table())
+			->where(DB::expr('@row'), '!=', 0);
+	}
+
+	/**
+	 * $model->parents() get all the parents of a given item
 	 * @param Jam_Model      $model 
-	 * @param Jam_Event_Data $data  
+	 * @param Jam_Event_Data $data
 	 * @return array
 	 */
 	public function model_call_parents(Jam_Model $model, Jam_Event_Data $data)
 	{	
-		$parents = array();	
-		for ($item = $model; $item->parent->loaded(); $parents[] = $item = $item->parent);
-		
-		$data->return = $parents;
+		$data->return = Jam::find($this->_model)
+			->join(array($this->parents_query($model->parent_id), 'recursion_table'))
+			->on('recursion_table._id', '=', ':primary_key')
+			->order_by('recursion_table.lvl', 'DESC');
+
 		$data->stop = TRUE;
 	}																		
 }

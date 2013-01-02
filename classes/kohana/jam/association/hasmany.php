@@ -17,6 +17,8 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 	public $polymorphic_key = NULL;
 
+	public $inverse_of = NULL;
+
 	public $count_cache = NULL;
 
 	/**
@@ -84,6 +86,11 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		if ($is_changed)
 		{
 			$builder->set($value);
+		}
+
+		if ($this->inverse_of)
+		{
+			$builder->assign_after_load(array($this->inverse_of => $model));
 		}
 
 		return $builder;
@@ -176,16 +183,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
 		{
 			$this->add_items_query($new_ids, $model)->execute();
-		}
-	}
-
-	public function model_after_save(Jam_Model $model)
-	{
-		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
-		{
-			$collection->save_changed();
-
-			$this->save_collection($model, $collection);
 		}
 	}
 

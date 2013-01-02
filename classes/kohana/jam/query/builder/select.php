@@ -37,22 +37,17 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	 * @param   string|null  $model
 	 * @param   mixed|null   $key
 	 */
-	public function __construct($model = NULL)
+	public function __construct($model)
 	{
 		parent::__construct();
 
-		if ( ! $model)
-		{
-			throw new Kohana_Exception('Jam_Query_Builder_Select requires model to be set in the constructor');
-		}
-
 		$this->_meta  = Jam::meta($model);
+		
+		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
 	public function compile(Database $db)
 	{
-		$db = Database::instance($this->meta()->db());
-
 		if (empty($this->_from))
 		{
 			$this->_from[] = $this->meta()->model();
@@ -74,6 +69,22 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		}
 
 		return parent::compile($db);
+	}
+
+	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
+	{
+		if ($db === NULL AND $this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+
+		$this->meta()->events()->trigger('builder.before_select', $this);
+
+		$result = parent::execute($db, $as_object, $object_params);
+
+		$this->meta()->events()->trigger('builder.after_select', $this);
+
+		return $result;
 	}
 
 	protected function _join($model, $type)
@@ -132,7 +143,10 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		{
 			foreach ($group as & $condition) 
 			{
-				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
+				if (is_array($condition))
+				{
+					$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
+				}
 			}
 		}
 
@@ -161,27 +175,6 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		$return = $this->_meta->events()->trigger_callback('builder', $this, $method, $args);
 		return $return ? $return : $this;
-	}
-
-	/**
-	 * Add methods for this builder on the fly (mixins) you can assign:
-	 * Class - loads all static methods
-	 * array or string/array callback
-	 * array of closures
-	 * @param  array|string   $callbacks 
-	 * @param  mixed $callback  
-	 * @return Jam_Meta              $this
-	 */
-	public function extend($callbacks, $callback = NULL)
-	{
-		// Handle input with second argument, so you can pass single items without an array
-		if ($callback !== NULL)
-		{
-			$callbacks = array($callbacks => $callback);
-		}
-
-		$this->_meta->events()->bind_callbacks('builder', $callbacks);
-		return $this;
 	}
 
 	/**

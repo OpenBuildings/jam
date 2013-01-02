@@ -9,6 +9,10 @@
  */
 abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collection {
 
+	public $_original;
+	
+	protected $_assign_after_load = array();
+	
 	public static function convert_collection_to_array($items)
 	{
 		if ($items instanceof Jam_Query_Builder_Collection)
@@ -49,13 +53,23 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return $this->_result;
 	}
 
-
 	public function original()
 	{
 		if ( ! $this->_original)
 		{
 			$this->_original = $this->execute()->cached();
 		}
+		return $this->_original;
+	}
+
+	public function assign_after_load(array $assign_after_load = NULL)
+	{
+		if ($assign_after_load !== NULL)
+		{
+			$this->_assign_after_load = $assign_after_load;
+			return $this;
+		}
+		return $this->_assign_after_load;
 	}
 
 	protected function _find_item($key)
@@ -66,14 +80,14 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 	protected function _load_model_changed($value, $is_changed)
 	{
 		if ($value instanceof Jam_Model OR ! $value)
-			return $value;
-					
-		if ( ! is_array($value))
-		{ 
-			return $this->_find_item($value);
+		{
+			$item = $value;
 		}
-
-		if (is_array($value) AND $is_changed)
+		elseif ( ! is_array($value))
+		{ 
+			$item = $this->_find_item($value);
+		}
+		elseif (is_array($value) AND $is_changed)
 		{
 			$key = Arr::get($value, $this->meta()->primary_key());
 
@@ -81,12 +95,20 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 			$model = $this->_find_item($key);
 			$model->set($value);
-			return $model;
+			$item = $model;
 		}
-			
-		return $this->_load_model($value);
-	}
+		else
+		{
+			$item = $this->_load_model($value);	
+		}
+		
+		if ($this->_assign_after_load) 
+		{
+			$item->set($this->_assign_after_load);
+		}
 
+		return $item;
+	}
 
 	protected function _id($value)
 	{

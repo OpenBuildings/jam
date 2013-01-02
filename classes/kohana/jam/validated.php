@@ -66,7 +66,7 @@ abstract class Kohana_Jam_Validated extends Model {
 		// Load the object's meta data for quick access
 		$this->_meta = Jam::meta($meta_name);
 
-		$this->_original = $this->_meta->defaults();
+		$this->_original = $this->meta()->defaults();
 	}
 
 	/**
@@ -110,27 +110,6 @@ abstract class Kohana_Jam_Validated extends Model {
 	}
 
 	/**
-	 * Add methods for this model on the fly (mixins) you can assign:
-	 * Class - loads all static methods
-	 * array or string/array callback
-	 * array of closures
-	 * @param  array|string   $callbacks 
-	 * @param  mixed $callback  
-	 * @return Jam_Meta              $this
-	 */
-	public function extend($callbacks, $callback = NULL)
-	{
-		// Handle input with second argument, so you can pass single items without an array
-		if ($callback !== NULL)
-		{
-			$callbacks = array($callbacks => $callback);
-		}
-
-		$this->_meta->events()->bind_callbacks('model', $callbacks);
-		return $this;
-	}
-
-	/**
 	 * Passes unknown methods along to the behaviors.
 	 *
 	 * @param   string  $method
@@ -139,7 +118,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 **/
 	public function __call($method, $args)
 	{
-		return $this->_meta->events()->trigger_callback('model', $this, $method, $args);
+		return $this->meta()->events()->trigger_callback('model', $this, $method, $args);
 	}
 
 	/**
@@ -154,7 +133,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function __isset($name)
 	{
-		return (bool) ($this->_meta->field($name) OR array_key_exists($name, $this->_unmapped));
+		return (bool) ($this->meta()->field($name) OR array_key_exists($name, $this->_unmapped));
 	}
 
 	/**
@@ -307,7 +286,7 @@ abstract class Kohana_Jam_Validated extends Model {
 
 		foreach ($values as $key => $value)
 		{
-			if ($field = $this->_meta->field($key))
+			if ($field = $this->meta()->field($key))
 			{
 				$this->_changed[$field->name] = $field->set($this, $value, TRUE);
 
@@ -345,11 +324,11 @@ abstract class Kohana_Jam_Validated extends Model {
 		// Run validation only when new or changed
 		if ($this->changed() OR $force)
 		{
-			$this->_meta->trigger_behavior_events($this, 'before_check');
+			$this->meta()->events()->trigger('model.before_check', $this, array($this->_changed));
 
-			$this->_meta->execute_validators($this);
+			$this->meta()->execute_validators($this);
 
-			$this->_meta->trigger_behavior_events($this, 'after_check');
+			$this->meta()->events()->trigger('model.after_check', $this, array($this->_changed));
 		}
 
 		$this->_is_validating = FALSE;
@@ -377,7 +356,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	{
 		if ( ! $this->_errors)
 		{
-			$this->_errors = new Jam_Errors($this, $this->_meta->errors_filename());
+			$this->_errors = new Jam_Errors($this, $this->meta()->errors_filename());
 		}
 
 		if ($name !== NULL)
@@ -459,7 +438,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function id()
 	{
-		return $this->get($this->_meta->primary_key());
+		return $this->get($this->meta()->primary_key());
 	}
 
 	/**
@@ -469,7 +448,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function name()
 	{
-		return $this->get($this->_meta->name_key());
+		return $this->get($this->meta()->name_key());
 	}
 
 	/**

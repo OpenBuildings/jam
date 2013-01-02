@@ -56,16 +56,15 @@ abstract class Kohana_Jam_Behavior {
 	/**
 	 * Initialize.
 	 *
-	 * @param   Jam_Event  $event
-	 * @param   string       $model
+	 * @param   Jam_Meta  $meta
 	 * @param   string       $name
 	 * @return  void
 	 */
-	public function initialize(Jam_Event $event, $model, $name)
+	public function initialize(Jam_Meta $meta, $name)
 	{
 		$this->_name  = $name;
-		$this->_model = $model;
+		$this->_model = $meta->model();
 		
-		$event->discover_events($this);
+		$meta->events()->discover_events($this);
 	}
 } // End Kohana_Jam_Behavior

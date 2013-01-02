@@ -123,7 +123,10 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		throw new Kohana_Exception('Database results are read-only');
 	}
 
-
+	public function first()
+	{
+		return $this->_load_model($this->result()->rewind()->current());
+	}
 	/**
 	 * Implement Iterator
 	 */

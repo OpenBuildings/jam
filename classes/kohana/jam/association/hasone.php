@@ -16,6 +16,8 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public $foreign_key = NULL;
 
+	public $inverse_of = NULL;
+
 	public $polymorphic_key = NULL;
 
 	/**
@@ -104,9 +106,17 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 				$item->{$this->polymorphic} = $model->meta()->model();
 			}
 
-			if (is_array($value))
+			if ($item)
 			{
-				$item->set($value);
+				if (is_array($value))
+				{
+					$item->set($value);
+				}
+
+				if ($this->inverse_of)
+				{
+					$item->{$this->inverse_of} = $model;
+				}
 			}
 
 			return $item;
@@ -117,7 +127,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		}
 	}
 
-	public function _query_builder($type, Jam_Model $model)
+	public function query_builder($type, Jam_Model $model)
 	{
 		$query = Jam::query_builder($type, $this->foreign_model)
 			->where($this->foreign_key, '=', $model->id());
@@ -130,9 +140,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $query;
 	}
 
-	public function _update_query(Jam_Model $model, $new_id, $new_model)
+	public function update_query(Jam_Model $model, $new_id, $new_model)
 	{
-		$query = $this->_query_builder(Jam_Query_Builder::UPDATE, $model)
+		$query = $this->query_builder(Jam_Query_Builder::UPDATE, $model)
 			->value($this->foreign_key, $new_id);
 
 		if ($this->is_polymorphic())
@@ -154,11 +164,11 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			break;
 
 			case Jam_Association::ERASE:
-				$this->_query_builder(Jam_Query_Builder::DELETE, $model)->execute();
+				$this->query_builder(Jam_Query_Builder::DELETE, $model)->execute();
 			break;
 
 			case Jam_Association::NULLIFY:
-				$this->_update_query($model, NULL, NULL)->execute();
+				$this->update_query($model, NULL, NULL)->execute();
 			break;
 		}
 	}
@@ -178,7 +188,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($value = Arr::get($changed, $this->name))
 		{
-			$this->_update_query($model, NULL, NULL)->execute();
+			$this->update_query($model, NULL, NULL)->execute();
 
 			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{

@@ -125,7 +125,7 @@ class Jam_Association_HasoneTest extends Unittest_Jam_TestCase {
 
 		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
 
-		$this->assertEquals($expected_sql, (string) $association->_query_builder(Jam_Query_Builder::SELECT, $author));
+		$this->assertEquals($expected_sql, (string) $association->query_builder(Jam_Query_Builder::SELECT, $author));
 	}
 
 	public function data_update_builder()
@@ -146,7 +146,7 @@ class Jam_Association_HasoneTest extends Unittest_Jam_TestCase {
 
 		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
 
-		$this->assertEquals($expected_sql, (string) $association->_update_query($author, $id, $model));
+		$this->assertEquals($expected_sql, (string) $association->update_query($author, $id, $model));
 	}
 
 }

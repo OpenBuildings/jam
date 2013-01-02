@@ -22,6 +22,12 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 	protected $_meta = NULL;
 
 	/**
+	 * A store for user defined values for the builder
+	 * @var array
+	 */
+	protected $_params = array();
+
+	/**
 	 * Constructs a new Jam_Builder instance.
 	 *
 	 * $model is not actually allowed to be NULL. It has
@@ -31,25 +37,36 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 	 * @param   string|null  $model
 	 * @param   mixed|null   $key
 	 */
-	public function __construct($model = NULL)
+	public function __construct($model)
 	{
 		parent::__construct();
 
-		if ( ! $model)
-		{
-			throw new Kohana_Exception('Jam_Query_Builder_Delete requires model to be set in the constructor');
-		}
+		$this->_meta = Jam::meta($model);
 
-		$this->_meta  = Jam::meta($model);
+		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
 	public function compile(Database $db)
 	{
-		$db = Database::instance($this->meta()->db());
-
 		$this->_table = $this->meta()->table();
 
 		return parent::compile($db);
+	}
+
+	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
+	{
+		if ($db === NULL AND $this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+
+		$this->meta()->events()->trigger('builder.before_update', $this);
+
+		$result = parent::execute($db, $as_object, $object_params);
+
+		$this->meta()->events()->trigger('builder.after_update', $this);
+
+		return $result;
 	}
 
 	protected function _compile_order_by(Database $db, array $order_by)
@@ -94,23 +111,32 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 	}
 
 	/**
-	 * Add methods for this builder on the fly (mixins) you can assign:
-	 * Class - loads all static methods
-	 * array or string/array callback
-	 * array of closures
-	 * @param  array|string   $callbacks 
-	 * @param  mixed $callback  
-	 * @return Jam_Meta              $this
+	 * Getter/setter for the params array used to store arbitrary values by the behaviors
+	 * 
+	 * @param  array|string $params 
+	 * @param  mixed $param  
+	 * @return Jam_Builder         $this
 	 */
-	public function extend($callbacks, $callback = NULL)
+	public function params($params = NULL, $param = NULL)
 	{
-		// Handle input with second argument, so you can pass single items without an array
-		if ($callback !== NULL)
+		// Accept params('name', 'param');
+		if ($param !== NULL)
 		{
-			$callbacks = array($callbacks => $callback);
+			$params = array($params => $param);
 		}
 
-		$this->_meta->events()->bind_callbacks('builder', $callbacks);
-		return $this;
+		if (is_array($params))
+		{
+			$this->_params = Arr::merge($params, $this->_params);
+			return $this;
+		}
+
+		if (is_string($params))
+		{
+			return Arr::get($this->_params, $params);
+		}
+
+		return $this->_params;
 	}
-} // End Kohana_Jam_Association
+
+}

@@ -22,21 +22,26 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	 */
 	protected $_field = 'is_deleted';
 
-	public function initialize(Jam_Event $event, $model, $name) 
+	public function initialize(Jam_Meta $meta, $name) 
 	{
-		parent::initialize($event, $model, $name);  
+		parent::initialize($meta);  
 
-		Jam::meta($model)
+		$meta
 			->field($this->_field, Jam::field('boolean', array('default' => FALSE)));
+
+		$meta->event()
+			->bind('builder.before_select', $this->builder_paranoid_filter)
+			->bind('builder.before_delete', $this->builder_paranoid_filter)
+			->bind('builder.before_update', $this->builder_paranoid_filter);
+
 	}
 
 	/**
 	 * Perform the actual where modification when it is needed
 	 * 
-	 * @param Jam_Builder    $builder 
-	 * @param Jam_Event_Data $data    
+	 * @param Database_Builder    $builder 
 	 */
-	public function builder_before_select(Jam_Builder $builder, Jam_Event_Data $data)
+	public function builder_paranoid_filter(Database_Builder $builder)
 	{
 
 		switch ($builder->params('paranoid_type'))
@@ -87,7 +92,7 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 				$association->delete($model, $model->id());
 			}
 
-			Jam::query($model->meta()->model())->value($this->_field, TRUE)->key($model->id())->update();
+			Jam::update($this->_model, $model->id())->value($this->_field, TRUE)->execute();
 
 			$data->return = FALSE;
 		}
@@ -112,8 +117,8 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	 * @param Jam_Model      $model 
 	 * @param Jam_Event_Data $data  
 	 */
-	public function model_call_restore_delete(Jam_Model $model, Jam_Event_Data $data)
+	public function model_call_restore_delete(Jam_Model $model)
 	{
-		Jam::query($model->meta()->model())->value($this->_field, FALSE)->key($model->id())->update();
+		Jam::update($this->_model, $model->id())->value($this->_field, FALSE)->execute();
 	}
 }

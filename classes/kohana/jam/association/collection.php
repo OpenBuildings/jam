@@ -10,6 +10,15 @@
  */
 abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
+
+	/**
+	 * a method or closure to call in order to modify the query
+	 * 
+	 * @var closure
+	 */
+	public $query;
+
+
 	/**
 	 * Find the join table based on the two model names pluralized,
 	 * sorted alphabetically and with an underscore separating them
@@ -48,4 +57,15 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
+	abstract public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection);
+
+	public function model_after_save(Jam_Model $model)
+	{
+		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
+		{
+			$collection->save_changed();
+
+			$this->save_collection($model, $collection);
+		}
+	}
 }

@@ -375,6 +375,44 @@ abstract class Kohana_Jam {
 		return new $class($model);
 	}
 
+	public static function delete($model)
+	{
+		return new Jam_Query_Builder_Delete($model);
+	}
+
+	public static function update($model)
+	{
+		return new Jam_Query_Builder_Update($model);
+	}
+
+	public static function insert($model)
+	{
+		return new Jam_Query_Builder_Insert($model);
+	}
+
+	public static function select($model)
+	{
+		return new Jam_Query_Builder_Select($model);
+	}
+
+	public static function find($model, $key = NULL)
+	{
+		$query = new Jam_Query_Builder_Collection($model);
+
+		if ($key !== NULL)
+		{
+			if (is_array($key))
+			{
+				return $query->where(':primary_key', 'IN', $key);
+			}
+			else
+			{
+				return $query->where(':unique_key', '=', $key)->limit(1)->first();
+			}
+		}
+		return $query;
+	}
+
 	public static function permit(array $permit = array(), array $data = array())
 	{
 		return Jam_Validator_Attributes::factory($permit)->data($data)->clean();

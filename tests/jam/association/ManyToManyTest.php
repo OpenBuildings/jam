@@ -6,171 +6,174 @@
  * @package Jam
  * @group   jam
  * @group   jam.association
- * @group   jam.association.many_to_many
+ * @group   jam.association.manytomany
  */
 class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 
-	/**
-	 * Provider for test_builder
-	 */
-	public function provider_builder()
+	public $meta;
+
+	public function setUp()
+	{
+		parent::setUp();
+
+		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_blog'));
+	}
+
+	public function data_initialize()
 	{
 		return array(
-			array(array('test_post', 1, 'test_categories'), 3, NULL),
-			array(array('test_post', 2, 'test_categories'), 1, NULL),
-			array(array('test_post', 555, 'test_categories'), 0, 'Kohana_Exception'),
+			array('test_tags', array(), 'test_blogs_test_tags', 'test_blog_id', 'test_tag_id'),
+			array('tags', array('foreign_model' => 'test_post'), 'test_blogs_test_posts', 'test_blog_id', 'test_post_id'),
+			array('test_tags', array('join_table' => 'poster'), 'poster', 'test_blog_id', 'test_tag_id'),
+			array('test_tags', array('foreign_key' => 'blog_id', 'foreign_model' => 'test_author'), 'test_authors_test_blogs', 'blog_id', 'test_author_id'),
+			array('test_tags', array('association_foreign_key' => 'blog_id', 'join_table' => 'poster'), 'poster', 'test_blog_id', 'blog_id'),
 		);
 	}
-	
+
 	/**
-	 * Tests Jam_Field_ManyToMany::builder()
-	 * 
-	 * @dataProvider  provider_builder
+	 * @dataProvider data_initialize
 	 */
-	public function test_builder($args, $count, $expected_exception)
+	public function test_initialize($name, $options, $expected_join_table, $expected_foreign_key, $expected_association_foreign_key)
 	{
-		if ($expected_exception)
-		{
-			$this->setExpectedException($expected_exception);
-		}
-		$builder = Jam::factory($args[0], $args[1])->builder($args[2]);
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
 
-		$this->assertInstanceOf('Jam_Builder', $builder);
-		
-		// Select the result
-		$result = $builder->select();
-		
-		// Should now be a collection
-		$this->assertInstanceOf('Jam_Collection', $result);
-		$this->assertEquals($count, $result->count());
-		
-		foreach ($result as $row)
-		{
-			$this->assertGreaterThan(0, $row->id());
-			$this->assertTrue($row->loaded());
-		}
+		$this->assertEquals($name, $association->name);
+		$this->assertEquals($expected_join_table, $association->join_table);
+		$this->assertEquals($expected_foreign_key, $association->foreign_key);
+		$this->assertEquals($expected_association_foreign_key, $association->association_foreign_key);
+
+		$this->assertEquals(FALSE, $association->is_polymorphic());
 	}
 
-	public function test_add()
+
+	public function data_join()
 	{
-		$post = Jam::factory('test_post', 1);
-		$categories = $post->test_categories;
-		$category = Jam::factory('test_category')->set(array('name' => 'New Tag', 'parent_id' => 0))->save();
-
-		$this->assertCount(3, $categories);
-
-		$categories->add($category);
-		$this->assertCount(4, $categories);
-		$this->assertTrue($categories->exists($category));
-
-		$post->save();
-
-		$new_categories = Jam::factory('test_post', 1)->test_categories;
-		$this->assertCount(4, $new_categories);
-		$this->assertTrue($categories->exists($category));
-	}
-
-	public function test_remove()
-	{
-		$post = Jam::factory('test_post', 1);
-		$categories = $post->test_categories;
-		$category = Jam::factory('test_category', 1);
-
-		$this->assertCount(3, $categories);
-
-		$categories->remove($category);
-		$this->assertCount(2, $categories);
-
-		$this->assertFalse($categories->exists($category));
-		$post->save();
-
-		$new_categories = Jam::factory('test_post', 1)->test_categories;
-		$this->assertCount(2, $new_categories);
-		$this->assertFalse($categories->exists($category));
-	}
-
-	public function test_build()
-	{
-		$post = Jam::factory('test_post', 1);
-
-		$new_category = $post->test_categories->build(array('name' => 'new', 'parent_id' => 0));
-		$this->assertTrue($post->test_categories->exists($new_category));
-		$post->save();
-
-		$this->assertTrue(Jam::factory('test_post', 1)->test_categories->exists($new_category));
-	}
-
-	public function test_create()
-	{
-		$post = Jam::factory('test_post', 1);
-
-		$new_category = $post->test_categories->create(array('name' => 'new', 'parent_id' => 0));
-		$this->assertTrue($post->test_categories->exists($new_category));
-		$post->save();
-
-		$this->assertTrue(Jam::factory('test_post', 1)->test_categories->exists($new_category));
-	}
-
-	public function test_exists()
-	{
-		$post = Jam::factory('test_post', 1);
-		$category = Jam::factory('test_category', 1);
-		$other_category = Jam::factory('test_category', 4);
-
-		$this->assertTrue($post->test_categories->exists($category), 'Should have category in test_categories collection');
-		$this->assertFalse($post->test_categories->exists($other_category), 'Should not have tag in test_categories collection');
-
-		$this->assertTrue($post->test_categories->exists('Category One'), 'Should have category in test_categories collection');
-		$this->assertFalse($post->test_categories->exists('Category Four'), 'Should not have tag in test_categories collection');
-	}
-
-	public function test_delete()
-	{
-		$test_category = Jam::factory('test_category', 1);
-		$test_category_id = $test_category->id();
-		$test_posts_ids = $test_category->test_posts->as_array(NULL, 'id');
-
-		$test_category->delete();
-		$this->assertNotExists('test_category', $test_category_id, 'Category should be deleted');
-		$this->assertExists('test_post', $test_posts_ids, 'Posts for the category should not be deleted');
-		$this->assertNull(Jam::factory('test_post', $test_posts_ids[0])->test_categories->search($test_category_id), 'Relations between the posts and the categories should be deleted');
-	}
-
-	public function test_mass_assignment()
-	{
-		$post = Jam::factory('test_post', 1);
-		$post->test_categories = array(
-			array('name' => 'new name 1', 'parent_id' => 0),
-			array('name' => 'new name 2', 'parent_id' => 0),
-			array('id' => 1, 'name' => 'new name 3'),
-			'',
-			'' => '',
+		return array(
+			array('test_tags', array(), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
+			array('tags', array('foreign_model' => 'test_tag'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
+			array('test_tags', array('join_table' => 'permissions'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `permissions`.`test_tag_id`) JOIN `permissions` ON (`permissions`.`test_blog_id` = `test_blogs`.`id`)'),
+			array('test_tags', array('foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_id` = `test_blogs`.`id`)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
+			array('test_tags', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_tags` AS `Posts` ON (`Posts`.`id` = `test_blogs_test_tags`.`test_tag_id`) LEFT JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
 		);
-
-		$this->assertCount(3, $post->test_categories);
-		$this->assertEquals('new name 1', $post->test_categories[0]->name);
-		$this->assertEquals('new name 2', $post->test_categories[1]->name);
-		$this->assertEquals('new name 3', $post->test_categories[2]->name);
-		$this->assertEquals(1, $post->test_categories[2]->id());
-
-		$post->save();
-
-		$post = Jam::factory('test_post', 1);
-		
-		$this->assertCount(3, $post->test_categories);
-		$this->assertEquals('new name 3', $post->test_categories[0]->name);
-		$this->assertEquals('new name 1', $post->test_categories[1]->name);
-		$this->assertEquals('new name 2', $post->test_categories[2]->name);
-		$this->assertEquals(1, $post->test_categories[0]->id());
-
-		$this->assertEquals('new name 3', Jam::factory('test_category', 1)->name());
 	}
 
-	public function test_required()
+	/**
+	 * @dataProvider data_join
+	 */
+	public function test_join($name, $options, $table, $type, $expected_sql)
 	{
-		$blog = Jam::factory('test_blog')->set(array(
-			
-		));
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
+
+		$this->assertEquals($expected_sql, (string) $association->join($table, $type));
 	}
+
+	public function data_get()
+	{
+		return array(
+			array('test_tags', array(), NULL, NULL, 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 1'),
+			array('tags', array('foreign_model' => 'test_tag'), NULL, NULL, 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 1'),
+
+			array('test_tags', array('join_table' => 'permissions'), NULL, NULL, 'SELECT `test_tags`.* FROM `test_tags` JOIN `permissions` ON (`permissions`.`test_tag_id` = `test_tags`.`id`) WHERE `permissions`.`test_blog_id` = 1'),
+			array('test_tags', array('foreign_key' => 'test_id'), NULL, NULL, 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_id` = 1'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), NULL, NULL, 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 1'),
+
+			array('test_tags', array(), array(1, 2), array(1, 2), 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 1'),
+			array('test_tags', array(), array(array('id' => 5), 2), array(5, 2), 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 1'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_get
+	 */
+	public function test_get($name, $options, $value, $expected_ids, $expected_sql)
+	{
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
+
+		$model = Jam::factory('test_blog')->load_fields(array('id' => 1));
+
+		$result = $association->get($model, $value, (bool) $value);
+
+		$this->assertInstanceOf('Jam_Query_Builder_Dynamic', $result);
+
+		$this->assertEquals($expected_sql, (string) $result);
+
+		if ($expected_ids !== NULL)
+		{
+			$this->assertEquals($expected_ids, $result->ids());
+		}
+	}
+
+	public function data_erase_query()
+	{
+		return array(
+			array('test_tags', array(), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1'),
+			array('tags', array('foreign_model' => 'test_tag'), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1'),
+			array('test_tags', array('foreign_key' => 'test_id'), 'DELETE FROM `test_blogs_test_tags` WHERE `test_id` = 1'),
+			array('test_tags', array('join_table' => 'permissions'), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_erase_query
+	 */
+	public function test_erase_query($name, $options, $expected_sql)
+	{
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
+
+		$model = Jam::factory('test_blog')->load_fields(array('id' => 1));
+
+		$this->assertEquals($expected_sql, (string) $association->erase_query($model));
+	}
+
+	public function data_remove_items_query()
+	{
+		return array(
+			array('test_tags', array(), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_tag_id` IN (1, 2, 3)'),
+			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_tag_id` IN (1, 2, 3)'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_remove_items_query
+	 */
+	public function test_remove_items_query($name, $options, $ids, $expected_sql)
+	{
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
+
+		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids));
+	}
+
+	public function data_add_items_query()
+	{
+		return array(
+			array('test_tags', array(), array(1,2,3), 'INSERT INTO `test_blogs_test_tags` (`test_blog_id`, `test_tag_id`) VALUES (1, 1), (1, 2), (1, 3)'),
+			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'INSERT INTO `test_blogs_test_tags` (`test_blog_id`, `test_tag_id`) VALUES (1, 1), (1, 2), (1, 3)'),
+			array('test_tags', array('foreign_key' => 'test_id'), array(1,2,3), 'INSERT INTO `test_blogs_test_tags` (`test_id`, `test_tag_id`) VALUES (1, 1), (1, 2), (1, 3)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'INSERT INTO `test_blogs_test_tags` (`test_blog_id`, `test_id`) VALUES (1, 1), (1, 2), (1, 3)'),
+			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'INSERT INTO `permissions` (`test_blog_id`, `test_tag_id`) VALUES (1, 1), (1, 2), (1, 3)'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_add_items_query
+	 */
+	public function test_add_items_query($name, $options, $ids, $expected_sql)
+	{
+		$association = new Jam_Association_Manytomany($options);
+		$association->initialize($this->meta, $name);
+
+		$model = Jam::factory('test_blog')->load_fields(array('id' => 1));
+
+		$this->assertEquals($expected_sql, (string) $association->add_items_query($ids, $model));
+	}
+
 }
 

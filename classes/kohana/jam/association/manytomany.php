@@ -8,13 +8,26 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collection {
+abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collection {
 
-	public $through;
-	public $through_dependent = TRUE;
+	public $join_table_dependent = TRUE;
 
+	/**
+	 * The name of the field on the join table, corresponding to the model
+	 * @var string
+	 */
 	public $foreign_key = NULL;
+
+	/**
+	 * The name of the field on the join table, corresponding to the key for the foreign model
+	 * @var string
+	 */
 	public $association_foreign_key = NULL;
+
+	/**
+	 * Then ame of the join table
+	 * @var string
+	 */
 	public $join_table = NULL;
 
 	/**
@@ -26,35 +39,6 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 	 */
 	public function initialize(Jam_Meta $meta, $name)
 	{
-		// if (empty($this->foreign))
-		// {
-		// 	$foreign_model = Inflector::singular($name);
-		// 	$this->foreign = $foreign_model.'.'.Jam::meta($foreign_model)->primary_key();
-		// }
-		// // Is it model.field?
-		// elseif (is_string($this->foreign) AND FALSE === strpos($this->foreign, '.'))
-		// {
-		// 	$foreign_model = $this->foreign;
-		// 	$this->foreign = $this->foreign.'.'.Jam::meta($foreign_model)->primary_key();
-		// }
-
-		// // Create the default through connection
-		// if (empty($this->through) OR is_string($this->through))
-		// {
-		// 	if (empty($this->through))
-		// 	{
-		// 		$this->through = Jam_Association_Collection::guess_through_table($foreign_model, $meta->model());
-		// 	}
-
-		// 	$this->through = array(
-		// 		'model' => $this->through,
-		// 		'fields' => array(
-		// 			'our' => $meta->foreign_key(),
-		// 			'foreign' => Jam::meta($foreign_model)->foreign_key(),
-		// 		)
-		// 	);
-		// }
-
 		parent::initialize($meta, $name);
 
 		if ( ! $this->join_table)
@@ -75,18 +59,19 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
-			->where($this->foreign_key, '=', $model->id());
+		if ( ! $model->loaded())
+			return NULL;
 
-		if ($this->is_polymorphic())
-		{
-			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
-		}
+		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
+			->join_nested($this->join_table)
+				->context_model($this->foreign_model)
+				->on($this->association_foreign_key, '=', ':primary_key')
+			->end()
+			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
 
 		if ($is_changed)
 		{
-			$value = Jam_Query_Builder_Dynamic::convert_collection_to_array($value);
-			$builder->result(new Jam_Query_Builder_Dynamic_Result($value, NULL, FALSE));
+			$builder->set($value);
 		}
 
 		return $builder;
@@ -97,69 +82,56 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
 			->context_model($this->model)
 			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
-			->join_nested($this->join_table)
+			->join_nested($this->join_table, $type)
 				->context_model($this->model)
 				->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
 			->end();
 	}
 
-
-	public function attribute_join(Jam_Builder $builder, $alias = NULL, $type = NULL)
+	public function model_after_delete(Jam_Model $model)
 	{
-		return $builder
-			->join($this->through(), $type)
-			->on($this->through('our'), '=', "{$this->model}.:primary_key")
-			->join($this->foreign(NULL, $alias), $type)
-			->on($this->foreign('field', $alias), '=', $this->through('foreign'));
-	}
-
-	public function builder(Jam_Model $model)
-	{
-		if ( ! $model->loaded())
-			throw new Kohana_Exception("Cannot create Jam_Builder on :model->:name because model is not loaded", array(':name' => $this->name, ':model' => $model->meta()->model()));
-
-		$builder = Jam::query($this->foreign())
-			->join($this->through())
-			->on($this->through('foreign'), '=', $this->foreign('field'))
-			->where($this->through('our'), '=', $model->id());
-
-		return $builder;
-	}
-
-	public function model_before_delete(Jam_Model $model)
-	{
-		if ($model->loaded() AND $this->through_dependent)
+		if ($model->loaded() AND $this->join_table_dependent)
 		{
-			Jam::query($this->through())
-				->where($this->through('our'), '=', $model->id())
-				->delete($model->meta()->db());
+			$this->erase_items_query($model)
+				->execute(Jam::meta($this->model)->db());
 		}
 	}
 
-	public function model_after_save(Jam_Model $model)
+	public function erase_query(Jam_Model $model)
 	{
-		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
-		{
-			list($old_ids, $new_ids) = $this->diff_collection_ids($model, $collection);
-
-			if ($old_ids)
-			{
-				Jam::query($this->through())
-					->where($this->through('foreign'), 'IN', $old_ids)
-					->delete($model->meta()->db());
-			}
-
-			if ($new_ids)
-			{
-				foreach ($new_ids as $new_id)
-				{
-					Jam::query($this->through())
-						 ->columns(array_values($this->through['fields']))
-						 ->values(array($model->id(), $new_id))
-						 ->insert($model->meta()->db());
-				}
-			}
-		}
+		return DB::delete($this->join_table)
+			->where($this->foreign_key, '=', $model->id());
 	}
 
-} // End Kohana_Jam_Association_ManyToMany
+	public function remove_items_query(array $ids)
+	{
+		return DB::delete($this->join_table)
+			->where($this->association_foreign_key, 'IN', $ids);
+	}
+
+	public function add_items_query(array $ids, Jam_Model $model)
+	{
+		$query = DB::insert($this->join_table)
+			->columns(array($this->foreign_key, $this->association_foreign_key));
+
+		foreach ($ids as $id) 
+		{
+			$query->values(array($model->id(), $id));
+		}
+
+		return $query;
+	}
+
+	public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	{
+		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
+		{
+			$this->remove_items_query($old_ids)->execute(Jam::meta($this->model)->db());
+		}
+		
+		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
+		{
+			$this->add_items_query($new_ids, $model)->execute(Jam::meta($this->model)->db());
+		}
+	}
+}

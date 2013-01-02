@@ -24,6 +24,8 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public $foreign_key = NULL;
 
+	public $inverse_of = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -136,10 +138,19 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 		$item = $this->_find_item($this->foreign_model($model), $key);
 
-		if (is_array($value) AND Jam_Association::is_changed($value))
+		if ($item)
 		{
-			$item->set($value);
+			if (is_array($value) AND Jam_Association::is_changed($value))
+			{
+				$item->set($value);
+			}
+
+			if ($this->inverse_of)
+			{
+				$item->{$this->inverse_of} = $model;
+			}
 		}
+
 		return $item;
 	}
 

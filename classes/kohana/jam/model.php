@@ -52,10 +52,10 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 		parent::__construct($key, $meta_name);
 
-		$this->_meta->events()->trigger('model.before_construct', $this);
+		$this->meta()->events()->trigger('model.before_construct', $this);
 
 		// Copy over the defaults into the original data.
-		$this->_original = $this->_meta->defaults();
+		$this->_original = $this->meta()->defaults();
 
 		// Have an id? Attempt to load it
 		if ($key)
@@ -71,7 +71,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			}
 		}
 
-		$this->_meta->events()->trigger('model.after_construct', $this);
+		$this->meta()->events()->trigger('model.after_construct', $this);
 	}
 
 	/**
@@ -82,11 +82,11 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 */
 	public function get($name)
 	{
-		if ($association = $this->_meta->association($name))
+		if ($association = $this->meta()->association($name))
 		{
 			$name = $association->name;
 
-			return $association->get($this, Arr::get($this->_changed, $name), isset($this->_changed));
+			return $association->get($this, Arr::get($this->_changed, $name), isset($this->_changed[$name]));
 		}
 
 		return parent::get($name);
@@ -94,7 +94,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 	public function __isset($name)
 	{
-		return ($this->_meta->association($name) OR parent::__isset($name));
+		return ($this->meta()->association($name) OR parent::__isset($name));
 	}
 
 	/**
@@ -123,7 +123,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		foreach ($values as $key => $value)
 		{
-			if ($association = $this->_meta->association($key))
+			if ($association = $this->meta()->association($key))
 			{
 				$this->_changed[$association->name] = $association->set($this, $value, TRUE);
 
@@ -157,7 +157,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		foreach ($values as $key => $value)
 		{
-			if ($field = $this->_meta->field($key))
+			if ($field = $this->meta()->field($key))
 			{
 				$this->_original[$field->name] = $field->set($this, $value, FALSE);
 			}
@@ -191,7 +191,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		foreach ($this->_retrieved as $column => $value) 
 		{
 			if ( ! isset($this->_changed[$column])
-				AND $association = $this->_meta->association($column)
+				AND $association = $this->meta()->association($column)
 				AND $association instanceof Jam_Association_Collection
 				AND $value->changed())
 			{
@@ -229,7 +229,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		$this->_is_saving = TRUE;
 
-		$key = $this->_original[$this->_meta->primary_key()];
+		$key = $this->_original[$this->meta()->primary_key()];
 
 		$this->_move_retrieved_to_changed();
 
@@ -242,7 +242,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// These will be processed later
 		$values = $saveable = array();
 
-		if ($this->_meta->events()->trigger('model.before_save', $this) === FALSE)
+		if ($this->meta()->events()->trigger('model.before_save', $this, array($this->_changed)) === FALSE)
 		{
 			return $this;
 		}
@@ -250,7 +250,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
 		
-		if ($this->_meta->events()->trigger('before_'.$event_type, $this) === FALSE)
+		if ($this->meta()->events()->trigger('before_'.$event_type, $this, array($this->_changed)) === FALSE)
 		{
 			return $this;
 		}
@@ -302,7 +302,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 							 ->insert();
 
 			// Gotta make sure to set this
-			$key = $values[$this->_meta->primary_key()] = $id;
+			$key = $values[$this->meta()->primary_key()] = $id;
 		}
 
 		// Re-set any saved values; they may have changed
@@ -310,9 +310,9 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = $this->_saved = TRUE;
 
-		$this->_meta->events()->trigger('model.after_save', $this);
+		$this->meta()->events()->trigger('model.after_save', $this, array($this->_changed));
 
-		$this->_meta->events()->trigger('after_'.$event_type, $this);
+		$this->meta()->events()->trigger('after_'.$event_type, $this, array($this->_changed));
 		
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
@@ -337,16 +337,16 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Are we loaded? Then we're just deleting this record
 		if ($this->_loaded)
 		{
-			$key = $this->_original[$this->_meta->primary_key()];
+			$key = $this->_original[$this->meta()->primary_key()];
 
-			if (($result = $this->_meta->events()->trigger('model.before_delete', $this)) !== FALSE)
+			if (($result = $this->meta()->events()->trigger('model.before_delete', $this)) !== FALSE)
 			{
 				$result = Jam::query($this, $key)->delete();
 			}
 		}
 
 		// Trigger the after-delete
-		$this->_meta->events()->trigger('model.after_delete', $this);
+		$this->meta()->events()->trigger('model.after_delete', $this);
 
 		// Clear the object so it appears deleted anyway
 		$this->clear();

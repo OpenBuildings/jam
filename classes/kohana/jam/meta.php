@@ -167,7 +167,7 @@ abstract class Kohana_Jam_Meta {
 				));
 
 			// Initialize behavior
-			$behavior->initialize($this->_events, $model, $name);
+			$behavior->initialize($this, $name);
 		}
 
 		// Allow modification of this meta object by the behaviors
