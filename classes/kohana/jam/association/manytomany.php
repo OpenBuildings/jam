@@ -33,6 +33,10 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 			$foreign_model = $this->foreign;
 			$this->foreign = $this->foreign.'.'.Jam::meta($foreign_model)->primary_key();
 		}
+		else
+		{
+			$foreign_model = $this->foreign;
+		}
 
 		// Create the default through connection
 		if (empty($this->through) OR is_string($this->through))
