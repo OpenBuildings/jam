@@ -31,7 +31,7 @@ class Kohana_Upload_Util {
 		
 		if (curl_exec($curl) === FALSE OR curl_getinfo($curl, CURLINFO_HTTP_CODE) !== 200)
 		{
-			throw new Kohana_Exception('Curl: Download Error: :error', array(':error' => curl_error($curl)));
+			throw new Kohana_Exception('Curl: Download Error: :error, status :status on url :url', array(':url' => $url, ':status' => curl_getinfo($curl, CURLINFO_HTTP_CODE), ':error' => curl_error($curl)));
 		}
 
 		fclose($handle);
