@@ -11,7 +11,6 @@ return array(
 	'accepted'                         => 'You must accept :attribute',
 	'choice_in'                        => ':attribute is not an accepted value',
 	'choice_out'                       => ':attribute is not an accepted value',
-	'confirmed'                        => ':attribute must be the same as :',
 	'count_minimum'                    => ':attribute must be more than :minimum items',
 	'count_maximum'                    => ':attribute must be less than :maximum items',
 	'count_bwteen'                     => ':attribute must be less than :maximum and more than :minimum items',
