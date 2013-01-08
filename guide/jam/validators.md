@@ -608,7 +608,7 @@ class Model_User extends Jam_Model {
 
 ## Models only for validation
 
-Sometimes you want to use validation, but without accually having a database table to store the model information in. You can create models that don't have any connection to a database (no save() and delete() methods), but can use all the validations. Jam_Model accually extends Jam_Validated, which encapsulates all the logic that is not associatited with the database, so you can extend it instead of Jam_Model, and use it as if its is a Jam_Model itself. 
+Sometimes you want to use validation, but without actually having a database table to store the model information in. You can create models that don't have any connection to a database (no save() and delete() methods), but can use all the validations. Jam_Model accually extends Jam_Validated, which encapsulates all the logic that is not associatited with the database, so you can extend it instead of Jam_Model, and use it as if its is a Jam_Model itself. 
 
 For example we want to have a login form, but we only want to validate it, without storing anithing in the DB. We just create a Model_Session:
 
