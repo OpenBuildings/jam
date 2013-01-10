@@ -17,10 +17,10 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached {
 	public function __construct(array $result, $sql, $as_object = NULL)
 	{
 		parent::__construct($result, $sql, $as_object);
-
+		$this->_total_rows = count($result);
 
 		$this->_original = $result;
-		$this->_changed = array_fill(0, $this->_total_rows, FALSE);
+		$this->changed(FALSE);
 	}
 
 	public function force_offsetSet($offset, $value, $is_changed = TRUE) 
@@ -47,18 +47,29 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached {
 		
 		$this->_total_rows = count($this->_result);
 	}
-
-	public function changed($offset = NULL)
+	
+	public function changed($offset = NULL, $value = NULL)
 	{
 		if ($offset === NULL)
-		{
 			return (bool) array_filter($this->_changed);
-		}
 
-		if ( ! isset($this->_changed[$offset]))
-			return NULL;
-		
-		return $this->_changed[$offset];
+		if (is_array($offset))
+		{
+			$this->_changed = $offset;
+		}
+		elseif (is_bool($offset))
+		{
+			$this->_changed = array_fill(0, $this->_total_rows, $offset);
+		}
+		else
+		{
+			if ($value === NULL)
+				return Arr::get($this->_changed, $offset);
+	
+			$this->_changed[$offset] = $value;
+		}
+	
+		return $this;
 	}
 
 	public function force_offsetUnset($offset)

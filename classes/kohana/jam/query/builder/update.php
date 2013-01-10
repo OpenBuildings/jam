@@ -37,7 +37,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 	 * @param   string|null  $model
 	 * @param   mixed|null   $key
 	 */
-	public function __construct($model)
+	public function __construct($model, $key = NULL)
 	{
 		parent::__construct();
 
@@ -46,11 +46,24 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
+	public function where_key($unique_key)
+	{
+		Jam_Query_Builder::find_by_primary_key($this, $unique_key);
+
+		return $this;
+	}
+
 	public function compile(Database $db)
 	{
 		$this->_table = $this->meta()->table();
 
-		return parent::compile($db);
+		$this->meta()->events()->trigger('builder.before_update', $this);
+
+		$result = parent::compile($db);
+
+		$this->meta()->events()->trigger('builder.after_update', $this);
+
+		return $result;		
 	}
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
@@ -60,13 +73,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 			$db = Database::instance($this->meta()->db());
 		}
 
-		$this->meta()->events()->trigger('builder.before_update', $this);
-
-		$result = parent::execute($db, $as_object, $object_params);
-
-		$this->meta()->events()->trigger('builder.after_update', $this);
-
-		return $result;
+		return parent::execute($db, $as_object, $object_params);
 	}
 
 	protected function _compile_order_by(Database $db, array $order_by)

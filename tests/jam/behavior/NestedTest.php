@@ -41,18 +41,13 @@ class Jam_Behavior_NestedTest extends Unittest_Jam_TestCase {
 		$this->assertEquals(array(3, 5), $top);
 	}
 
-	public function test_children()
+	public function test_children_normal()
 	{
-		$cat = Jam::find('test_category', array(1, 2, 3, 4));
+		$cat = Jam::find('test_category', array(1, 2, 3, 4))->as_array();
 
 		$cat[1]->children = array($cat[2], $cat[3]);
 		$cat[0]->children = array($cat[1]);
-		echo $cat[1]->parent;
-		die('ASASD');
 		$cat[0]->save();
-
-		
-
 
 		$this->assertEquals($cat[0]->id, $cat[1]->parent->id);
 		$this->assertEquals($cat[1]->id, $cat[2]->parent->id);
@@ -68,25 +63,25 @@ class Jam_Behavior_NestedTest extends Unittest_Jam_TestCase {
 
 	public function test_children_deep()
 	{
-		$author = Jam::factory('test_author');
+		$post = Jam::factory('test_post')->load_fields(array('id' => 1));
 
-		$author->test_categories = array(
+		$post->test_categories = array(
 			array('name' => 'root', 'children' => array(
 				array('name' => 'child1'),
 				array('name' => 'child2', 'children' => array(1, 2, 3))
 			))
 		);
 
-		$author->save();
+		$post->save();
 
-		$this->assertCount(1, $author->test_categories);
-		$this->assertCount(2, $author->test_categories[0]->children);
-		$this->assertCount(3, $author->test_categories[0]->children[1]->children);
+		$this->assertCount(1, $post->test_categories);
+		$this->assertCount(2, $post->test_categories[0]->children);
+		$this->assertCount(3, $post->test_categories[0]->children[1]->children);
 
-		$this->assertTrue($author->test_categories->exists('root'));
-		$this->assertTrue($author->test_categories[0]->children->exists('child1'));
-		$this->assertTrue($author->test_categories[0]->children->exists('child2'));
-		$this->assertTrue($author->test_categories[0]->children[1]->children->exists('Category One'));
+		$this->assertTrue($post->test_categories->has('root'));
+		$this->assertTrue($post->test_categories[0]->children->has('child1'));
+		$this->assertTrue($post->test_categories[0]->children->has('child2'));
+		$this->assertTrue($post->test_categories[0]->children[1]->children->has('Category One'));
 	}
 
 } // End Jam_Builder_SelectTest

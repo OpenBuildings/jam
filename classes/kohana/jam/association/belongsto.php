@@ -176,7 +176,10 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	{
 		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
 		{
-			$this->set($model, $model->{$this->name}->save(), TRUE);
+			if ($item = $model->{$this->name} AND ! $item->is_saving() AND $item->save())
+			{
+				$this->set($model, $item, TRUE);
+			}
 		}
 	}
 

@@ -30,9 +30,9 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return array_filter($array);
 	}
 
-	public static function factory($model)
+	public static function factory($model, $key = NULL)
 	{
-		return new Jam_Query_Builder_Dynamic($model);
+		return new Jam_Query_Builder_Dynamic($model, $key);
 	}
 
 	protected $_changed = FALSE;
@@ -110,6 +110,20 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return $item;
 	}
 
+	public function as_array($key = NULL, $value = NULL)
+	{
+		$results = array();
+		$key = Jam_Query_Builder::resolve_meta_attribute($key, $this->meta());
+		$value = Jam_Query_Builder::resolve_meta_attribute($value, $this->meta());
+
+		foreach ($this as $i => $item) 
+		{
+			$results[$key ? $item->$key : $i] = $value ? $item->$value : $item;
+		}
+
+		return $results;
+	}
+
 	protected function _id($value)
 	{
 		if ($value instanceof Jam_Model)
@@ -123,6 +137,15 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 		if (array($value))
 			return (int) Arr::get($value, $this->meta()->primary_key());
+	}
+
+	public function current()
+	{
+		$value = $this->result()->current();
+		if ( ! $value)
+			return NULL;
+
+		return $this->offsetGet($this->result()->key());
 	}
 
 	public function offsetGet($offset)
@@ -183,6 +206,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 	{
 		$items = Jam_Query_Builder_Dynamic::convert_collection_to_array($items);
 		$this->result(new Jam_Query_Builder_Dynamic_Result($items, NULL, FALSE));
+		$this->result()->changed(TRUE);
 		return $this;
 	}
 
@@ -221,7 +245,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 	public function offsetGetChanged($offset)
 	{
-		$item = $this->result->getOffset($offset);
+		$item = $this->result()->offsetGet($offset);
 		if ($item instanceof Jam_Model AND ! $item->deleted() AND ( ! $item->loaded() OR $item->changed()))
 		{
 			return $item;
@@ -253,9 +277,9 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 	{
 		if ($this->changed())
 		{
-			foreach ($this->result() as $offset => $item) 
+			foreach ($this as $offset => $item) 
 			{
-				if ($item = $this->offsetGetChanged($offset))
+				if ($item = $this->offsetGetChanged($offset) AND ! $item->is_saving())
 				{
 					$item->save();
 				}

@@ -77,18 +77,14 @@ abstract class Kohana_Jam {
 	/**
 	 * Factory for instantiating models.
 	 *
-	 * A key can be passed to automatically load a model by its
-	 * unique key.
-	 *
 	 * @param   mixed  $model
-	 * @param   mixed  $key
 	 * @return  Jam_Model
 	 */
-	public static function factory($model, $key = NULL)
+	public static function factory($model)
 	{
 		$class = Jam::class_name($model);
 
-		return new $class($key);
+		return new $class();
 	}
 
 	public static function build($model, $attributes = array())
@@ -99,35 +95,6 @@ abstract class Kohana_Jam {
 	public static function create($model, $attributes = array())
 	{
 		return Jam::build($model, $attributes)->save();
-	}
-
-	/**
-	 * Returns a query builder that can be used for querying.
-	 *
-	 * If $key is passed, the key will be passed to unique_key(), the result
-	 * will be limited to 1, and the record will be returned directly.
-	 *
-	 * In essence, passing a $key is analogous to:
-	 *
-	 *     Jam::query($model)->where(':unique_key', '=' $key)->limit(1);
-	 *
-	 * @param   string  $model
-	 * @param   mixed   $key
-	 * @return  Jam_Builder
-	 */
-	public static function query($model, $key = NULL)
-	{
-		$builder = 'Jam_Builder';
-
-		if ($meta = Jam::meta($model))
-		{
-			if ($meta->builder())
-			{
-				$builder = $meta->builder();
-			}
-		}
-
-		return new $builder($model, $key);
 	}
 
 	/**
@@ -401,16 +368,20 @@ abstract class Kohana_Jam {
 
 		if ($key !== NULL)
 		{
-			if (is_array($key))
-			{
-				return $query->where(':primary_key', 'IN', $key);
-			}
-			else
-			{
-				return $query->where(':unique_key', '=', $key)->limit(1)->first();
-			}
+			$query->where_key($key);
+			return is_array($key) ? $query : $query->first();
 		}
 		return $query;
+	}
+
+	public function find_insist($model, $key = NULL)
+	{
+		$result = $this->find($model, $key);
+
+		if ($key !== NULL AND $missing = array_diff(array_values((array) $key), array_values((array) $result->ids())));
+			throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+
+		return $result;
 	}
 
 	public static function permit(array $permit = array(), array $data = array())

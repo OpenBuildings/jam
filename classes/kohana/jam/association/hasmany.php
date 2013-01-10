@@ -73,6 +73,22 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $join;
 	}
 
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		if ($this->inverse_of AND is_array($value))
+		{
+			foreach ($value as & $item) 
+			{
+				if ($item instanceof Jam_Validated)
+				{
+					$item->{$this->inverse_of} = $model;
+				}
+			}
+		}
+
+		return $value;
+	}
+
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
@@ -173,7 +189,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 	}
 
-	public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{

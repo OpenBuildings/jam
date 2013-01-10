@@ -18,25 +18,26 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	public $_path = NULL;
 	public $_dynamic_server = NULL;
 
-	public function initialize(Jam_Event $event, $model, $name) 
-	{
-		parent::initialize($event, $model, $name);
+	public function initialize(Jam_Meta $meta, $name) 
+	{			
+		parent::initialize($meta, $name);
 		
 		if ($this->_save_size)
 		{
-			Jam::meta($model)->field($name.'_width', Jam::field('integer'));
-			Jam::meta($model)->field($name.'_height', Jam::field('integer'));
-			Jam::meta($model)->field('is_portrait', Jam::field('boolean'));
+			$meta
+				->field($name.'_width', Jam::field('integer'))
+				->field($name.'_height', Jam::field('integer'))
+				->field('is_portrait', Jam::field('boolean'));
 		}
 
 		if ($this->_dynamic_server)
 		{
 			$this->_dynamic_server = $this->_dynamic_server === TRUE ? $name.'_server' : $this->_dynamic_server;
 
-			Jam::meta($model)->field($this->_dynamic_server, Jam::field('string', array('default' => $this->_server)));
+			$meta->field($this->_dynamic_server, Jam::field('string', array('default' => $this->_server)));
 		}
 		
-		Jam::meta($model)->field($name, Jam::field('upload', array(
+		$meta->field($name, Jam::field('upload', array(
 			'path' => $this->_path, 
 			'thumbnails' => $this->_thumbnails, 
 			'transformations' => $this->_transformations, 

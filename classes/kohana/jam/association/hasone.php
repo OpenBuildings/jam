@@ -192,7 +192,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{
-				$item->save();
+				if ( ! $item->is_saving())
+				{
+					$item->save();
+				}
 			}
 			else
 			{

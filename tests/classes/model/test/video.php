@@ -13,9 +13,9 @@ class Model_Test_Video extends Jam_Model {
 		$meta->db(Unittest_Jam_Testcase::$database_connection);
 
 		$meta->behaviors(array(
-			'paranoid' => Jam::behavior('paranoid', array('field' => 'deleted')),
+			// 'paranoid' => Jam::behavior('paranoid', array('field' => 'deleted')),
 			'sortable' => Jam::behavior('sortable', array('field' => 'position')),
-			'sluggable' => Jam::behavior('sluggable', array('auto_save' => TRUE))
+			// 'sluggable' => Jam::behavior('sluggable', array('auto_save' => TRUE))
 		));
 
 		$meta->associations(array(

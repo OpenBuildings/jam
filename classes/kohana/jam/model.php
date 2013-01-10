@@ -43,33 +43,14 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * @param  mixed|null  $key
 	 */
-	public function __construct($key = NULL, $meta_name = NULL)
+	public function __construct($meta_name = NULL)
 	{
-		if ($meta_name === NULL)
-		{
-			$meta_name = $this;
-		}
-		
-		parent::__construct($key, $meta_name);
+		parent::__construct($meta_name);
 
 		$this->meta()->events()->trigger('model.before_construct', $this);
 
 		// Copy over the defaults into the original data.
 		$this->_original = $this->meta()->defaults();
-
-		// Have an id? Attempt to load it
-		if ($key)
-		{
-			$result = Jam::query($meta_name, $key)
-				->as_object(FALSE)
-				->select();
-
-			// Only load if a record is found
-			if ($result)
-			{
-				$this->load_fields($result);
-			}
-		}
 
 		$this->meta()->events()->trigger('model.after_construct', $this);
 	}
@@ -121,7 +102,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			$values = array($values => $value);
 		}
 
-		foreach ($values as $key => $value)
+		foreach ($values as $key => & $value)
 		{
 			if ($association = $this->meta()->association($key))
 			{
@@ -155,6 +136,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Clear the object
 		$this->clear();
 
+		$this->meta()->events()->trigger('model.before_load', $this);
+
 		foreach ($values as $key => $value)
 		{
 			if ($field = $this->meta()->field($key))
@@ -170,6 +153,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 		// Model is now saved and loaded
 		$this->_saved = $this->_loaded = TRUE;
+
+		$this->meta()->events()->trigger('model.after_load', $this);
 
 		return $this;
 	}
@@ -212,9 +197,10 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 		$this->set($values);
 
-		Jam::query($this, $this->id())
+		Jam::update($this)
+			->where_key($this->id())
 			->set($values)
-			->update();
+			->execute();
 
 		return $this;
 	}
@@ -227,6 +213,9 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 */
 	public function save($validate = NULL)
 	{
+		if ($this->_is_saving)
+			throw new Kohana_Exception("Cannot save a model that is already in the process of saving");
+		
 		$this->_is_saving = TRUE;
 
 		$key = $this->_original[$this->meta()->primary_key()];
@@ -249,8 +238,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		// Trigger callbacks and ensure we should proceed
 		$event_type = $key ? 'update' : 'create';
-		
-		if ($this->meta()->events()->trigger('before_'.$event_type, $this, array($this->_changed)) === FALSE)
+
+		if ($this->meta()->events()->trigger('model.before_'.$event_type, $this, array($this->_changed)) === FALSE)
 		{
 			return $this;
 		}
@@ -289,17 +278,18 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			// Do we even have to update anything in the row?
 			if ($values)
 			{
-				Jam::query($this, $key)
-					 ->set($values)
-					 ->update();
+				Jam::update($this, $key)
+					->where_key($key)
+					->set($values)
+					->execute();
 			}
 		}
 		else
 		{
-			list($id) = Jam::query($this)
-							 ->columns(array_keys($values))
-							 ->values(array_values($values))
-							 ->insert();
+			list($id) = Jam::insert($this)
+				->columns(array_keys($values))
+				->values(array_values($values))
+				->execute();
 
 			// Gotta make sure to set this
 			$key = $values[$this->meta()->primary_key()] = $id;
@@ -312,7 +302,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->meta()->events()->trigger('model.after_save', $this, array($this->_changed));
 
-		$this->meta()->events()->trigger('after_'.$event_type, $this, array($this->_changed));
+		$this->meta()->events()->trigger('model.after_'.$event_type, $this, array($this->_changed));
 		
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
@@ -332,7 +322,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function delete()
 	{
 		$result = FALSE;
-		$key = NULL;
 
 		// Are we loaded? Then we're just deleting this record
 		if ($this->_loaded)
@@ -341,7 +330,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 			if (($result = $this->meta()->events()->trigger('model.before_delete', $this)) !== FALSE)
 			{
-				$result = Jam::query($this, $key)->delete();
+				$result = Jam::delete($this)->where_key($key)->execute();
 			}
 		}
 

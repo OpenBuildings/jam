@@ -57,7 +57,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
-	abstract public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection);
+	abstract public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection);
 
 	public function model_after_save(Jam_Model $model)
 	{
@@ -65,7 +65,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		{
 			$collection->save_changed();
 
-			$this->save_collection($model, $collection);
+			$this->save($model, $collection);
 		}
 	}
 }

@@ -60,6 +60,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_offsetGet()
 	{
+		$this->assertSame($this->collection[0], $this->collection[0], 'Should load the model only once, and then reuse it');
+
 		$model = Jam::factory('test_position');
 		$this->collection->result(new Jam_Query_Builder_Dynamic_Result(array_merge($this->data, array(5, $model)), '', FALSE));
 
@@ -142,6 +144,60 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->assertFalse($this->collection->has($additional_not_included));
 	}
 
+	public function test_as_array()
+	{
+		// Test with no keys or values
+		$array = $this->collection->as_array();
+		$this->assertSame($this->collection[0], $array[0]);
+		$this->assertInternalType('array', $array);
+
+		foreach ($array as $offset => $model) 
+		{
+			$this->assertInstanceOf('Model_Test_Position', $model);
+			$this->assertEquals($this->data[$offset], $model->as_array());
+		}
+
+		// Test with keys
+		$array = $this->collection->as_array('name');
+		$this->assertInternalType('array', $array);
+
+		$offset = 0;
+		foreach ($array as $name => $model) 
+		{
+			$this->assertInstanceOf('Model_Test_Position', $model);
+			$this->assertEquals($this->data[$offset]['name'], $name);
+			$this->assertSame($this->collection[$offset], $model);
+
+			$offset += 1;
+		}
+
+		// Test with keys as meta aliases
+		$array = $this->collection->as_array(':primary_key');
+		$this->assertInternalType('array', $array);
+
+		$offset = 0;
+		foreach ($array as $name => $model) 
+		{
+			$this->assertInstanceOf('Jam_Model', $model);
+			$this->assertEquals($this->data[$offset]['id'], $name);
+			$this->assertSame($this->collection[$offset], $model);
+
+			$offset += 1;
+		}
+
+		// Test with values
+		$array = $this->collection->as_array(NULL, 'name');
+		$this->assertEquals(Arr::pluck($this->data, 'name'), $array);
+
+		// Test with values as aliases
+		$array = $this->collection->as_array(NULL, ':primary_key');
+		$this->assertEquals(Arr::pluck($this->data, 'id'), $array);
+
+		// Test with keys and values as aliases
+		$array = $this->collection->as_array(':name_key', ':primary_key');
+		$this->assertEquals(array_combine(Arr::pluck($this->data, 'name'), Arr::pluck($this->data, 'id')), $array);
+
+	}
 
 	public function data_add()
 	{
@@ -223,7 +279,9 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 	 */	
 	public function test_set($items, $expected_ids)
 	{
+		$this->assertFalse($this->collection->changed());
 		$this->assertEquals($expected_ids, $this->collection->set($items)->ids());
+		$this->assertTrue($this->collection->changed());
 	}
 
 }

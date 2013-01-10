@@ -42,8 +42,15 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		parent::__construct();
 
 		$this->_meta  = Jam::meta($model);
-		
+
 		$this->meta()->events()->trigger('builder.after_construct', $this);
+	}
+
+	public function where_key($unique_key)
+	{
+		Jam_Query_Builder::find_by_primary_key($this, $unique_key);
+
+		return $this;
 	}
 
 	public function compile(Database $db)
@@ -68,7 +75,13 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 			$attribute = Jam_Query_Builder::resolve_attribute_name($attribute);
 		}
 
-		return parent::compile($db);
+		$this->meta()->events()->trigger('builder.before_select', $this);
+
+		$result = parent::compile($db);
+		
+		$this->meta()->events()->trigger('builder.after_select', $this);
+
+		return $result;		
 	}
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
@@ -78,13 +91,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 			$db = Database::instance($this->meta()->db());
 		}
 
-		$this->meta()->events()->trigger('builder.before_select', $this);
-
-		$result = parent::execute($db, $as_object, $object_params);
-
-		$this->meta()->events()->trigger('builder.after_select', $this);
-
-		return $result;
+		return parent::execute($db, $as_object, $object_params);
 	}
 
 	protected function _join($model, $type)
@@ -153,15 +160,43 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return parent::_compile_conditions($db, $conditions);
 	}
 
-	public function select_count($column = '*')
+	public function aggregate_query($function, $column = NULL)
 	{
-		$db = Database::instance($this->meta()->db());
+		if ($column === NULL OR $column === '*')
+		{
+			$column = '*';
+		}
+		else
+		{
+			$db = Database::instance($this->meta()->db());
+			$column = Jam_Query_Builder::resolve_attribute_name($column, $this->meta()->model());
+			$column = $db->quote_column($column);
+		}
 
-		$column = Jam_Query_Builder::resolve_attribute_name($column, $this->meta()->model());
+		$count = clone $this;
+		return $count->select(array(DB::expr("{$function}({$column})"), 'result'));
+	}
 
-		$this->select(array(DB::expr('COUNT('.$db->quote_column($column).')'), 'total'));
+	public function aggregate($function, $column = NULL)
+	{
+		return $this->aggregate_query($function, $column)->execute()->get('result');	
+	}
 
-		return $this;
+	public function count_all($without_grouping = FALSE)
+	{
+		$query = $this->aggregate_query('COUNT');
+
+		if ($without_grouping)
+		{
+			$query->group_by(NULL)->order_by(NULL);
+		}
+
+		return $query->execute()->get('result');
+	}
+
+	public function count_with_subquery()
+	{
+		return DB::select(array(DB::expr('COUNT(*)', 'result')))->from($this)->execute()->get('result');
 	}
 
 	/**

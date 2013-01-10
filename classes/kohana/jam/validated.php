@@ -56,7 +56,7 @@ abstract class Kohana_Jam_Validated extends Model {
 	 *
 	 * @param  mixed|null  $key
 	 */
-	public function __construct($key = NULL, $meta_name = NULL)
+	public function __construct($meta_name = NULL)
 	{
 		if ($meta_name === NULL)
 		{
@@ -284,7 +284,7 @@ abstract class Kohana_Jam_Validated extends Model {
 			$values = array($values => $value);
 		}
 
-		foreach ($values as $key => $value)
+		foreach ($values as $key => & $value)
 		{
 			if ($field = $this->meta()->field($key))
 			{

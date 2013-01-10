@@ -41,11 +41,16 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 * @param  string      $name 
 	 * @return void
 	 */
-	public function initialize(Jam_Event $event, $model, $name) 
+	public function initialize(Jam_Meta $meta, $name) 
 	{			
-		parent::initialize($event, $model, $name);
+		parent::initialize($meta, $name);
 		
-		Jam::meta($model)->field('slug', Jam::field('slug', array('unique' => $this->_unique)));
+		$meta->field('slug', Jam::field('slug'));
+
+		if ($this->_unique)
+		{
+			$meta->validator('slug', array('unique' => $this->_unique));
+		}
 
 		if ( ! $this->_slug)
 		{
@@ -119,7 +124,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 			
 			if ($original != $model->slug)
 			{
-				Jam::query($this->_model)->set(array('slug' => $model->slug))->key($model->id())->update();
+				Jam::update($this->_model)->where_key($model->id())->value('slug', $model->slug)->execute();
 			}
 		}
 	}
@@ -158,7 +163,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 * @param  Jam_Event_Data $data
 	 * @return void
 	 */
-	public function builder_call_where_slug(Jam_Builder $builder, Jam_Event_Data $data, $slug)
+	public function builder_call_where_slug(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $slug)
 	{
 		if (preg_match($this->_pattern, $slug, $matches))
 		{
@@ -177,10 +182,10 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 * @param  Jam_Event_Data $data
 	 * @return void
 	 */
-	public function builder_call_find_by_slug(Jam_Builder $builder, Jam_Event_Data $data, $slug)
+	public function builder_call_find_by_slug(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $slug)
 	{
 		$this->builder_call_where_slug($builder, $data, $slug);
-		$data->return = $builder->find();
+		$data->return = $builder->first();
 		$data->stop = TRUE;
 	}
 
@@ -191,14 +196,14 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 * @param  Jam_Event_Data $data
 	 * @return void
 	 */
-	public function builder_call_find_by_slug_insist(Jam_Builder $builder, Jam_Event_Data $data, $slug)
+	public function builder_call_find_by_slug_insist(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $slug)
 	{
 		$this->builder_call_where_slug($builder, $data, $slug);
-		$data->return = $builder->find_insist();
+		$data->return = $builder->first_insist();
 
 		if ($this->_uses_primary_key AND $data->return->slug AND $data->return->slug != $slug)
 		{
-			throw new Jam_Exception_Sluggable("Old slug :slug for model :model ", $data->return, $slug);
+			throw new Jam_Exception_Sluggable("Stale slug :slug for model :model ", $data->return, $slug);
 		}
 
 		$data->stop = TRUE;

@@ -62,6 +62,19 @@ abstract class Kohana_Jam_Query_Builder {
 		}
 	}
 
+	public static function find_by_primary_key(Database_Query $query, $key)
+	{
+		if (is_array($key))
+		{
+			$query->where(':primary_key', 'IN', $key);
+		}
+		else
+		{
+			$query->where(':unique_key', '=', $key);
+		}
+		return $query;
+	}
+
 	public static function set_table_name($model, $table)
 	{
 		if (is_array($model))

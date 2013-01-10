@@ -7,7 +7,7 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Select implements Countable, ArrayAccess, Iterator{
+abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Select implements Countable, ArrayAccess, Iterator {
 
 	public static function factory($model)
 	{
@@ -125,8 +125,18 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	public function first()
 	{
-		return $this->_load_model($this->result()->rewind()->current());
+		return $this->_load_model($this->limit(1)->result()->rewind()->current());
 	}
+
+	public function first_insist()
+	{
+		$result = $this->first();
+		if ( ! $result)
+			throw new Jam_Exception_NotFound(":model not found", $this->meta()->model());
+
+		return $result;
+	}
+
 	/**
 	 * Implement Iterator
 	 */
@@ -173,4 +183,4 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	{
 		return $this->result()->valid();
 	}
-} // End Kohana_Jam_Association
+}

@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.hasone
  */
-class Jam_Association_HasoneTest extends Unittest_Jam_TestCase {
+class Jam_Association_HasoneTest extends Unittest_TestCase {
 
 	public function setUp()
 	{

@@ -13,11 +13,11 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 { 
 	public $_field = 'sort_position';
 
-	public function initialize(Jam_Event $event, $model, $name) 
-	{
-		parent::initialize($event, $model, $name);
+	public function initialize(Jam_Meta $meta, $name) 
+	{			
+		parent::initialize($meta, $name);
 
-		Jam::meta($model)->field($this->_field, Jam::field('integer', array('default' => 0)));	
+		$meta->field($this->_field, Jam::field('integer', array('default' => 0)));	
 	}
 
 	/**
@@ -25,7 +25,7 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	 * 
 	 * @param Jam_Builder $builder 
 	 */
-	public function builder_before_select(Jam_Builder $builder)
+	public function builder_before_select(Jam_Query_Builder_Select $builder)
 	{
 		$builder->order_by_position();
 	}
@@ -35,9 +35,9 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	 * 
 	 * @param Jam_Builder $builder 
 	 */
-	public function builder_call_order_by_position(Jam_Builder $builder)
+	public function builder_call_order_by_position(Jam_Query_Builder_Select $builder)
 	{
-		$builder->order_by($this->_field, "ASC");
+		$builder->order_by($this->_field, 'ASC');
 	}
 
 	/**
@@ -47,9 +47,9 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	 */
 	public function model_before_create(Jam_Model $model)
 	{
-		if ( ! $model->{$this->_field})
+		if ( ! $model->changed($this->_field))
 		{
-			$model->{$this->_field} = Jam::query($this->_model)->count();
+			$model->{$this->_field} = Jam::select($this->_model)->count_all();
 		}
 	}
 

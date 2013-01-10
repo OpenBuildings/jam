@@ -94,19 +94,28 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);	
 	}
 
-	public function test_select_count()
+	public function data_aggregate_query()
+	{
+		return array(
+			array('MAX', 'name', 'SELECT MAX(`test_posts`.`name`) AS `result` FROM `test_posts`'),
+			array('MAX', 'test_post.name', 'SELECT MAX(`test_posts`.`name`) AS `result` FROM `test_posts`'),
+			array('COUNT', NULL, 'SELECT COUNT(*) AS `result` FROM `test_posts`'),
+			array('COUNT', '*', 'SELECT COUNT(*) AS `result` FROM `test_posts`'),
+			array('COUNT', ':name_key', 'SELECT COUNT(`test_posts`.`name`) AS `result` FROM `test_posts`'),
+			array('GROUP_CONCAT', ':name_key', 'SELECT GROUP_CONCAT(`test_posts`.`name`) AS `result` FROM `test_posts`'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_aggregate_query
+	 */
+	public function test_aggregate_query($function, $column, $expected_sql)
 	{
 		$select = new Jam_Query_Builder_Select('test_post');
 
-		$select->select_count();
+		$query = $select->aggregate_query($function, $column);
 
-		$this->assertEquals('SELECT COUNT(*) AS `total` FROM `test_posts`', (string) $select);	
-
-		$select = new Jam_Query_Builder_Select('test_post');
-
-		$select->select_count(':name_key');
-
-		$this->assertEquals('SELECT COUNT(`test_posts`.`name`) AS `total` FROM `test_posts`', (string) $select);	
+		$this->assertEquals($expected_sql, (string) $query);	
 	}
 
 	public function test_nested_join()

@@ -122,7 +122,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		return $query;
 	}
 
-	public function save_collection(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{

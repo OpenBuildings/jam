@@ -71,6 +71,20 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$this->assertEquals($expected_sql, (string) $association->join($table, $type));
 	}
 
+	public function test_set()
+	{
+		$association = new Jam_Association_Hasmany(array('inverse_of' => 'test_author'));
+		$association->initialize($this->meta, 'test_posts');
+
+		$posts = array(Jam::factory('test_post'), Jam::factory('test_post'));
+		$author = Jam::factory('test_author');
+
+		$association->set($author, $posts, TRUE);
+
+		$this->assertSame($author, $posts[0]->test_author);
+		$this->assertSame($author, $posts[1]->test_author);
+	}
+
 	public function data_get()
 	{
 		return array(
