@@ -374,12 +374,24 @@ abstract class Kohana_Jam {
 		return $query;
 	}
 
-	public function find_insist($model, $key = NULL)
+	public static function find_insist($model, $key = NULL)
 	{
-		$result = $this->find($model, $key);
+		$result = Jam::find($model, $key);
 
-		if ($key !== NULL AND $missing = array_diff(array_values((array) $key), array_values((array) $result->ids())));
-			throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+		if ($key !== NULL)
+		{
+			if (is_array($key))
+			{
+				$missing = array_diff(array_values($key), array_values($result->ids()));
+			}
+			else
+			{
+				$missing = $result ? array() : array($key);
+			}
+			
+			if ($missing)
+				throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+		}
 
 		return $result;
 	}

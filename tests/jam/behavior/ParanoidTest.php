@@ -13,8 +13,8 @@ class Jam_Behavior_ParanoidTest extends Unittest_Jam_TestCase {
 	
 	public function test_select()
 	{
-		$this->assertNotNull(Jam::find('test_video', 1), 'Exists');
-		$this->assertNull(Jam::find('test_video', 3), 'Deleted');
+		$this->assertNotNull(Jam::find('test_video', 1), 'Should be able to find not deleted videos');
+		$this->assertNull(Jam::find('test_video', 3), 'Should not be able to find deleted videos');
 
 		$this->assertCount(2, Jam::find('test_video'));
 		$this->assertCount(3, Jam::find('test_video')->deleted(Jam_Behavior_Paranoid::ALL));

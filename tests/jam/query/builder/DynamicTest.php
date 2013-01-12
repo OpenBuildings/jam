@@ -205,7 +205,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$additional2 = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional 2'));
 		
 		$additional_collection = Jam_Query_Builder_Dynamic::factory('test_position')
-			->set(array(array('id' => 8, 'name' => 'Additional 1'), array('id' => 12, 'name' => 'Additional 2')));
+			->set(array($additional1, $additional2));
 
 		return array(
 			array(10, array(1, 2, 3, 10)),
@@ -233,7 +233,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
 		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
-			->set(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')));
+			->set(array($current2, $current3));
 
 		return array(
 			array(3, array(1, 2)),
@@ -261,7 +261,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
 		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
-			->set(array(array('id' => 2, 'name' => 'Freelancer'), array('id' => 3, 'name' => 'Manager')));
+			->set(array($current2, $current3));
 
 		return array(
 			array(3, array(3)),

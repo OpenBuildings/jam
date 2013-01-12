@@ -74,7 +74,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 	protected function _find_item($key)
 	{
-		return Jam::factory($this->meta()->model(), $key);
+		return Jam::find_insist($this->meta()->model(), $key);
 	}
 
 	protected function _load_model_changed($value, $is_changed)
@@ -90,12 +90,17 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		elseif (is_array($value) AND $is_changed)
 		{
 			$key = Arr::get($value, $this->meta()->primary_key());
-
-			unset($value[$this->meta()->primary_key()]);
-
-			$model = $this->_find_item($key);
-			$model->set($value);
-			$item = $model;
+			if ($key !== NULL)
+			{
+				unset($value[$this->meta()->primary_key()]);
+				$model = $this->_find_item($key);
+			}
+			else
+			{
+				$model = Jam::factory($this->meta()->model());
+			}
+			
+			$item = $model->set($value);
 		}
 		else
 		{
