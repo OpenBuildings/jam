@@ -54,6 +54,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 		$this->assertFileExists($image->file->file());
 		
 		unlink($image->file->file());
+		$image->delete();
 	}
 
 }

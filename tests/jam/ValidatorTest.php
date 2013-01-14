@@ -9,56 +9,67 @@
  */
 class Jam_ValidatorTest extends Unittest_Jam_TestCase {
 
+	public $element;
+
+	public function setUp()
+	{
+		parent::setUp();
+		$this->element = Jam::factory('test_element')->load_fields(array(
+			'id' => 1, 
+			'name' => 'Part 1', 
+			'email' => 'staff@example.com',
+			'url' => 'http://parts.wordpress.com/',
+			'desceription' => 'Big Part',
+			'amount' => 20,
+			'test_author_id' => 1
+		));
+	}
 	public function test_validator()
 	{
-		$element = Jam::factory('test_element', 1);
-
-		$element->set(array(
+		$this->element->set(array(
 			'name' => NULL,
 			'email' => 'invalidemail',
 			'amount' => 2,
 			'description' => 'short',
 		));
 
-		$element->check();
+		$this->element->check();
 
-		$this->assertHasError($element, 'name', 'present');
-		$this->assertHasError($element, 'email', 'format_filter');
-		$this->assertHasError($element, 'amount', 'numeric_greater_than');
-		$this->assertHasError($element, 'description', 'length_between');
+		$this->assertHasError($this->element, 'name', 'present');
+		$this->assertHasError($this->element, 'email', 'format_filter');
+		$this->assertHasError($this->element, 'amount', 'numeric_greater_than');
+		$this->assertHasError($this->element, 'description', 'length_between');
 	}
 
 	public function test_condition()
 	{
-		$element = Jam::factory('test_element', 1);
+		$this->element->name_is_ip = TRUE;
 
-		$element->name_is_ip = TRUE;
+		$this->element->name = 'test';
+		$this->element->check();
+		$this->assertHasError($this->element, 'name', 'format_filter');
 
-		$element->name = 'test';
-		$element->check();
-		$this->assertHasError($element, 'name', 'format_filter');
+		$this->element->revert();
+		$this->element->name = '95.87.212.88';
+		$this->element->check();
+		$this->assertNotHasError($this->element, 'name', 'format_filter');
 
-		$element->revert();
-		$element->name = '95.87.212.88';
-		$element->check();
-		$this->assertNotHasError($element, 'name', 'format_filter');
+		$this->element->name_is_ip = FALSE;
+		$this->element->revert();
+		$this->element->name = 'test';
+		$this->element->check();
+		$this->assertNotHasError($this->element, 'name', 'format_filter');
 
-		$element->name_is_ip = FALSE;
-		$element->revert();
-		$element->name = 'test';
-		$element->check();
-		$this->assertNotHasError($element, 'name', 'format_filter');
+		$this->element->name_is_email = TRUE;
+		$this->element->revert();
+		$this->element->name = 'notemail';
+		$this->element->check();
+		$this->assertHasError($this->element, 'name', 'format_filter');
 
-		$element->name_is_email = TRUE;
-		$element->revert();
-		$element->name = 'notemail';
-		$element->check();
-		$this->assertHasError($element, 'name', 'format_filter');
-
-		$element->revert();
-		$element->name = 'email@example.com';
-		$element->check();
-		$this->assertNotHasError($element, 'name', 'format_filter');
+		$this->element->revert();
+		$this->element->name = 'email@example.com';
+		$this->element->check();
+		$this->assertNotHasError($this->element, 'name', 'format_filter');
 
 	}
 }

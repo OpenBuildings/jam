@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
-class Kohana_Unittest_Jam_Upload_TestCase extends Unittest_Jam_TestCase {
+class Kohana_Unittest_Jam_Upload_TestCase extends Kohana_Unittest_Jam_TestCase {
 
 	public $test_local;
 	public $test_local2;
@@ -47,5 +47,4 @@ class Kohana_Unittest_Jam_Upload_TestCase extends Unittest_Jam_TestCase {
 
 		parent::setUp();
 	}
-
-} // End Kohana_Unittest_Jam_TestCase
+}

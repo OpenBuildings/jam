@@ -10,7 +10,7 @@ class Model_Test_Post extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		// Set database to connect to
-		$meta->db(Unittest_Jam_Testcase::$database_connection);
+		$meta->db(Unittest_Jam_Database_TestCase::$database_connection);
 
 		// Posts always load_with an author
 		//$meta->load_with(array('test_author'));

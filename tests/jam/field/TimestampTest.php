@@ -71,4 +71,4 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
 	}
 
-} // End Jam_Field_TimestampTest
+}

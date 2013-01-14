@@ -13,7 +13,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	public function setUp()
 	{
 		parent::setUp();
-		$this->model = Jam::factory('test_image', 1);
+		$this->model = Jam::factory('test_image')->load_fields(array('id' => 1, 'file' => 'file.jpg'));
 		$this->value = $this->model->file;
 	}
 

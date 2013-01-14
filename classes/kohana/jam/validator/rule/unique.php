@@ -19,7 +19,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 		if ($value !== $model->meta()->defaults($attribute))
 		{
 			// Build query
-			$query = Jam::query($model)->where($attribute, '=', $value);
+			$query = Jam::find($model)->where($attribute, '=', $value);
 
 			if ($this->scope)
 			{
@@ -31,7 +31,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 
 			$query->limit(1);
 
-			if ($query->count() AND ( ! $model->loaded() OR $query->select()->id() !== $model->id()))
+			if ($query->count() AND ( ! $model->loaded() OR $query[0]->id() !== $model->id()))
 			{
 				// Add error if duplicate found
 				$model->errors()->add($attribute, 'unique');

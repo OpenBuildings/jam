@@ -6,7 +6,7 @@
  * @group   jam.form
  * @group   jam.form.general
  */
-class Jam_Form_GeneralTest extends Unittest_Jam_TestCase {
+class Jam_Form_GeneralTest extends Unittest_TestCase {
 
 	protected $form;
 	protected $post;
@@ -15,7 +15,7 @@ class Jam_Form_GeneralTest extends Unittest_Jam_TestCase {
 	{
 		parent::setUp();
 
-		$this->post = Jam::factory('test_post', 1);
+		$this->post = Jam::factory('test_post')->load_fields(array('id' => 1, 'name' => 'First Post', 'slug' => 'first-post', 'status' => 'draft', 'test_blog_id' => 1));
 		$this->form = Jam::form($this->post, 'general');
 	}
 
@@ -82,25 +82,21 @@ class Jam_Form_GeneralTest extends Unittest_Jam_TestCase {
 		$this->assertSelectEquals('option[value="published"]', 'Published Title', 1, $select);
 		$this->assertSelectEquals('option[value="review"]', 'Published Review', 1, $select);
 
-		$blogs = Jam::query('test_blog')->select_all();
+		$blogs = new Jam_Query_Builder_Collection('test_blog');
+		$blogs->result(new Database_Result_Cached(array(
+			array('id' => 1, 'name' => 'Flowers blog', 'url' => 'http://flowers.wordpress.com'),
+			array('id' => 2, 'name' => 'Awesome programming', 'url' => 'http://programming-blog.com'),
+			array('id' => 3, 'name' => 'Tabless', 'url' => 'http://bobby-tables-ftw.com'),
+		), '', FALSE));	
 
-		$select = $this->form->select('test_blog', array('choices' => Jam::query('test_blog'), 'include_blank' => 'BLANK'), array('class' => 'myclass2'));
+		$this->form->object()->test_blog = $blogs[0];
 
-		$this->assertSelectCount('select.myclass2[name="test_blog"][id="test_blog"]', 1, $select);
-		$this->assertSelectCount('option', count($blogs) + 1, $select);
-
-		$this->assertSelectEquals('option[value="'.$this->post->test_blog->id().'"][selected="selected"]', $this->post->test_blog->name(), 1, $select);
-		foreach ($blogs as $blog) 
-		{
-			$this->assertSelectEquals('option[value="'.$blog->id().'"]', $blog->name(), 1, $select);
-		}
-
-		$select = $this->form->select('test_blog', array('choices' => Jam::query('test_blog')->select_all(), 'include_blank' => 'BLANK'), array('class' => 'myclass2'));
+		$select = $this->form->select('test_blog', array('choices' => $blogs, 'include_blank' => 'BLANK'), array('class' => 'myclass2'));
 
 		$this->assertSelectCount('select.myclass2[name="test_blog"][id="test_blog"]', 1, $select);
 		$this->assertSelectCount('option', count($blogs) + 1, $select);
-		$this->assertSelectEquals('option[value="'.$this->post->test_blog->id().'"][selected="selected"]', $this->post->test_blog->name(), 1, $select);
 
+		$this->assertSelectEquals('option[value="'.$this->post->test_blog_id.'"][selected="selected"]', $blogs[0]->name(), 1, $select);
 		foreach ($blogs as $blog) 
 		{
 			$this->assertSelectEquals('option[value="'.$blog->id().'"]', $blog->name(), 1, $select);

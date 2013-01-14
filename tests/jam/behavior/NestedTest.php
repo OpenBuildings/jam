@@ -8,7 +8,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.nested
  */
-class Jam_Behavior_NestedTest extends Unittest_Jam_TestCase {
+class Jam_Behavior_NestedTest extends Unittest_Jam_Database_TestCase {
 
 	public function test_all_parents()
 	{
