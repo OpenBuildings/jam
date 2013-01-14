@@ -31,8 +31,8 @@ class Jam_Query_Builder_ResultTest extends Unittest_TestCase {
 
 		$this->assertEquals(array('id' => 4, 'name' => 'Addition'), $result->offsetGet(3));
 
-		$object1 = Jam::factory('test_position')->load_fields(array('id' => 4, 'name' => 'Additional 1'));
-		$object2 = Jam::factory('test_position')->load_fields(array('id' => 5, 'name' => 'Additional 1'));
+		$object1 = Jam::build('test_position')->load_fields(array('id' => 4, 'name' => 'Additional 1'));
+		$object2 = Jam::build('test_position')->load_fields(array('id' => 5, 'name' => 'Additional 1'));
 
 		$result->force_offsetSet(NULL, $object1);
 
@@ -58,7 +58,7 @@ class Jam_Query_Builder_ResultTest extends Unittest_TestCase {
 	{
 		$result = new Jam_Query_Builder_Dynamic_Result($this->data, NULL, FALSE);
 
-		$object = Jam::factory('test_position');
+		$object = Jam::build('test_position');
 		$result->force_offsetSet(NULL, $object);
 
 		$this->assertEquals(array_merge($this->data, array($object)), $result->as_array());

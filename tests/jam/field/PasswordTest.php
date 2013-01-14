@@ -24,7 +24,7 @@ class Jam_Field_PasswordTest extends Unittest_TestCase {
 	public function test_change_password($password, $expected_hashed)
 	{
 		$field = new Jam_Field_Password();
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 
 		$hashed = $field->convert($model, $password, FALSE);
 

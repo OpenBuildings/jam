@@ -15,7 +15,7 @@ class Jam_FormTest extends Unittest_Jam_TestCase {
 	{
 		parent::setUp();
 
-		$this->post = Jam::factory('test_post', 1);
+		$this->post = Jam::build('test_post', 1);
 		$this->form = Jam::form($this->post);
 	}
 

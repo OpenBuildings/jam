@@ -71,8 +71,8 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 		$association = $this->getMock('Jam_Association_Hasone', array('_find_item'), array());
 		$association->initialize($this->meta, 'test_post');
 
-		$author = Jam::factory('test_author')->load_fields(array('id' => 1));
-		$post = Jam::factory('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
+		$author = Jam::build('test_author')->load_fields(array('id' => 1));
+		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
 
 		// Check for Null Value changed
 		$this->assertNull($association->get($author, NULL, TRUE));
@@ -123,7 +123,7 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasone($options);
 		$association->initialize($this->meta, 'test_post');
 
-		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
+		$author = Jam::build('test_author')->load_fields(array('id' => 5));
 
 		$this->assertEquals($expected_sql, (string) $association->query_builder(Jam_Query_Builder::SELECT, $author));
 	}
@@ -144,7 +144,7 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasone($options);
 		$association->initialize($this->meta, 'test_post');
 
-		$author = Jam::factory('test_author')->load_fields(array('id' => 5));
+		$author = Jam::build('test_author')->load_fields(array('id' => 5));
 
 		$this->assertEquals($expected_sql, (string) $association->update_query($author, $id, $model));
 	}

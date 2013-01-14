@@ -44,7 +44,7 @@ class Jam_Validator_LengthTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_validate($value, $options, $error, $is_valid)
 	{
-		$element = Jam::factory('test_element');
+		$element = Jam::build('test_element');
 
 		Jam::validator_rule('length', $options)->validate($element, 'name', $value);
 

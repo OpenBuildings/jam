@@ -16,7 +16,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 	{
 		parent::setUp();
 
-		$this->model = Jam::factory('test_image', 1);
+		$this->model = Jam::build('test_image', 1);
 		$this->field = $this->model->meta()->field('file');
 	}
 
@@ -46,7 +46,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 
 	public function test_save()
 	{
-		$image = Jam::factory('test_image');
+		$image = Jam::build('test_image');
 
 		$image->file = Upload_File::combine($this->test_local, 'source', 'logo.gif');
 		$image->save();

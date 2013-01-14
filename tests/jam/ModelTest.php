@@ -30,7 +30,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_save_empty_model($model_name)
 	{
-		$model = Jam::factory($model_name);
+		$model = Jam::build($model_name);
 		$model->save();
 		
 		// Model should be saved, loaded, and have an id
@@ -47,7 +47,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_save_primary_key()
 	{
-		$model = Jam::factory('test_post');
+		$model = Jam::build('test_post');
 		$model->id = 9000;
 		$model->save();
 
@@ -56,10 +56,10 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 		$this->assertEquals(9000, $model->id);
 
 		// Verify the record actually exists in the database
-		$this->assertTrue(Jam::factory('test_post', 9000)->loaded());
+		$this->assertTrue(Jam::build('test_post', 9000)->loaded());
 
 		// Manually re-selecting so that Postgres doesn't cause errors down the line
-		$model = Jam::factory('test_post', 9000);
+		$model = Jam::build('test_post', 9000);
 
 		// Change it again so we can verify it works on UPDATE as well
 		// This is key because Jam got this wrong in the past
@@ -67,13 +67,13 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 		$model->save();
 
 		// Verify we can't find the old record 9000
-		$this->assertFalse(Jam::factory('test_post', 9000)->loaded());
+		$this->assertFalse(Jam::build('test_post', 9000)->loaded());
 
 		// And that we can find the new 9001
-		$this->assertTrue(Jam::factory('test_post', 9001)->loaded());
+		$this->assertTrue(Jam::build('test_post', 9001)->loaded());
 
 		// Cleanup
-		Jam::factory('test_post', 9001)->delete();
+		Jam::build('test_post', 9001)->delete();
 	}
 
 	/**
@@ -82,13 +82,13 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	public function provider_state()
 	{
 		return array(
-			array(Jam::factory('test_alias'), FALSE, FALSE, FALSE),
-			array(Jam::factory('test_alias')->set('name', 'Test'), FALSE, FALSE, TRUE),
-			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test')), TRUE, TRUE, FALSE),
-			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test'), TRUE, FALSE, TRUE),
-			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test2'), TRUE, FALSE, TRUE),
-			array(Jam::factory('test_alias')->set('name', 'Test')->clear(), FALSE, FALSE, FALSE),
-			array(Jam::factory('test_alias')->load_fields(array('name' => 'Test'))->clear(), FALSE, FALSE, FALSE),
+			array(Jam::build('test_alias'), FALSE, FALSE, FALSE),
+			array(Jam::build('test_alias')->set('name', 'Test'), FALSE, FALSE, TRUE),
+			array(Jam::build('test_alias')->load_fields(array('name' => 'Test')), TRUE, TRUE, FALSE),
+			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test'), TRUE, FALSE, TRUE),
+			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test2'), TRUE, FALSE, TRUE),
+			array(Jam::build('test_alias')->set('name', 'Test')->clear(), FALSE, FALSE, FALSE),
+			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->clear(), FALSE, FALSE, FALSE),
 		);
 	}
 
@@ -113,7 +113,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	public function provider_original()
 	{
 		// Create a mock model for most of our tests
-		$alias = Jam::factory('test_alias')
+		$alias = Jam::build('test_alias')
 			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
@@ -148,7 +148,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	public function provider_changed()
 	{
 		// Create a mock model for most of our tests
-		$alias = Jam::factory('test_alias')
+		$alias = Jam::build('test_alias')
 			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
@@ -183,10 +183,10 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 	public function test_clear()
 	{
 		// Empty model to compare
-		$one = Jam::factory('test_alias');
+		$one = Jam::build('test_alias');
 
 		// Set and cleared model
-		$two = Jam::factory('test_alias')
+		$two = Jam::build('test_alias')
 			->load_fields(array(
 				'id'          => 1,
 				'name'        => 'Test',
@@ -203,7 +203,7 @@ class Jam_ModelTest extends Unittest_Jam_TestCase {
 
 	public function test_check()
 	{
-		$video = Jam::factory('test_video', 1);
+		$video = Jam::build('test_video', 1);
 		$this->assertTrue($video->check());
 		$video->file = '111';
 		$this->assertFalse($video->check());

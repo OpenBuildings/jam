@@ -44,7 +44,7 @@ class Jam_Validator_CountTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_validate($value, $options, $error, $is_valid)
 	{
-		$element = Jam::factory('test_element');
+		$element = Jam::build('test_element');
 
 		Jam::validator_rule('count', $options)->validate($element, 'count', $value);
 

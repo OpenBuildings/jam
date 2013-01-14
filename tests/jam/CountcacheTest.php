@@ -12,7 +12,9 @@ class Jam_CountercacheTest extends Unittest_Jam_TestCase {
 	public function data_update_counters()
 	{
 		return array(
-			array('test_blog', 5, array('test_counts' => -1), 'asd'),
+			array('test_blog', 5, array('test_counts' => -1), 'UPDATE `test_blogs` SET `test_counts` = COALESCE(`test_counts`, 0) - 1) WHERE `test_blogs`.`id` IN (5)'),
+			array('test_blog', array(5, 10), array('test_counts' => 1), 'UPDATE `test_blogs` SET `test_counts` = COALESCE(`test_counts`, 0) + 1) WHERE `test_blogs`.`id` IN (5, 10)'),
+			array('test_blog', array(5, 10), array('test_counts' => 1, 'test_tags' => -1), 'UPDATE `test_blogs` SET `test_counts` = COALESCE(`test_counts`, 0) + 1), `test_tags` = COALESCE(`test_tags`, 0) - 1) WHERE `test_blogs`.`id` IN (5, 10)'),
 		);
 	}
 

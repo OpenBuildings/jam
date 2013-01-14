@@ -15,7 +15,7 @@ class Jam_Form_GeneralTest extends Unittest_TestCase {
 	{
 		parent::setUp();
 
-		$this->post = Jam::factory('test_post')->load_fields(array('id' => 1, 'name' => 'First Post', 'slug' => 'first-post', 'status' => 'draft', 'test_blog_id' => 1));
+		$this->post = Jam::build('test_post')->load_fields(array('id' => 1, 'name' => 'First Post', 'slug' => 'first-post', 'status' => 'draft', 'test_blog_id' => 1));
 		$this->form = Jam::form($this->post, 'general');
 	}
 

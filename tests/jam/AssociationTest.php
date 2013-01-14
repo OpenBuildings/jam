@@ -12,7 +12,7 @@ class Jam_AssociationTest extends Unittest_TestCase {
 
 	public function data_primary_key()
 	{
-		$test_position = Jam::factory('test_position')->load_fields(array('id' => 10, 'name' => 'name'));
+		$test_position = Jam::build('test_position')->load_fields(array('id' => 10, 'name' => 'name'));
 
 		return array(
 			array('test_position', NULL, NULL),

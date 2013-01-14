@@ -51,14 +51,6 @@ abstract class Kohana_Jam {
 	protected static $_form_prefix = 'Jam_Form_';	
 
 	/**
-	 * @var  string  This prefix to use for all attribute's extension classes
-	 *               This can be overridden to allow you to place
-	 *               form classes in a different location.
-	 */
-	protected static $_extension_prefix = 'Jam_Extension_';	
-
-
-	/**
 	 * @var  string  This prefix to use for all attribute's validator rule classes
 	 *               This can be overridden to allow you to place
 	 *               form classes in a different location.
@@ -70,26 +62,13 @@ abstract class Kohana_Jam {
 	 */
 	public static $_models = array();
 
-
-	protected static $_global_callbacks = array();
-
-
-	/**
-	 * Factory for instantiating models.
-	 *
-	 * @param   mixed  $model
-	 * @return  Jam_Model
-	 */
-	public static function factory($model)
+	public static function build($model, $attributes = array())
 	{
 		$class = Jam::class_name($model);
 
-		return new $class();
-	}
+		$object = new $class();
 
-	public static function build($model, $attributes = array())
-	{
-		return Jam::factory($model)->set($attributes);
+		return $object->set($attributes);
 	}
 
 	public static function create($model, $attributes = array())
@@ -162,20 +141,6 @@ abstract class Kohana_Jam {
 		$behavior = Jam::$_behavior_prefix.$type;
 
 		return new $behavior($options);
-	}
-
-	/**
-	 * Factoring for instantiating behaviors.
-	 *
-	 * @param   string  $type
-	 * @param   mixed   $options
-	 * @return  Jam_Extension
-	 */
-	public static function extension($type, $options = array())
-	{
-		$extension = Jam::$_extension_prefix.$type;
-
-		return new $extension($options);
 	}
 
 	/**
@@ -334,12 +299,6 @@ abstract class Kohana_Jam {
 		{
 			Jam::$_models = array();
 		}
-	}
-
-	public static function query_builder($type, $model)
-	{
-		$class = 'Jam_Query_Builder_'.$type;
-		return new $class($model);
 	}
 
 	public static function delete($model)

@@ -18,9 +18,12 @@ class Kohana_Jam_Countcache {
 		{
 			$change = (int) $change;
 			$operator = $change < 0 ? '-' : '+';
-			$name = Jam_Query_Builder::resolve_meta_attribute($name, $query->meta());
 
-			$query->value($name, DB::expr("COALESCE($name, 0) {$operator} ".abs($change).")"));
+			$query->value($name, DB::expr(strtr('COALESCE(:name, 0) :operator :value)', array(
+				':value' => abs($change),
+				':operator' => $operator,
+				':name' => Database::instance($query->meta()->db())->quote_column($name),
+			))));
 		}
 
 		return $query->where(':primary_key', 'IN', (array) $ids);

@@ -92,7 +92,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
 	}
 
-	public function model_after_create(Jam_Model $model, Jam_Event_Data $data, $changed)
+	public function model_after_create(Jam_Model $model)
 	{
 		if ($this->count_cache)
 		{
@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 	}
 
-	public function model_after_delete(Jam_Model $model, Jam_Event_Data $data, $changed)
+	public function model_after_delete(Jam_Model $model)
 	{
 		if ($this->count_cache)
 		{

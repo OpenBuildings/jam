@@ -32,13 +32,13 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 	 */
 	public function test_format($field, $value, $expected)
 	{
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 		$this->assertSame($expected, $field->convert($model, $value, FALSE));
 	}
 
 	public function test_timezone()
 	{
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 		$field = new Jam_Field_Timestamp(array('format' => 'Y-m-d H:i:s'));
 		$field->timezone = new Jam_Timezone();
 		$field->timezone
@@ -59,7 +59,7 @@ class Jam_Field_TimestampTest extends Unittest_TestCase {
 		$auto_update = new Jam_Field_Timestamp(array('auto_now_update' => TRUE, 'timezone' => new Jam_Timezone()));
 		$default_date = 1268657100;
 
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 
 		$this->assertEquals($default_date, $normal->convert($model, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
 		$this->assertEquals($default_date, $normal->convert($model, $default_date, FALSE), 'Should not generate a new date on normal timestamp');

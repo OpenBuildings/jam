@@ -14,7 +14,7 @@ class Jam_ValidatorTest extends Unittest_Jam_TestCase {
 	public function setUp()
 	{
 		parent::setUp();
-		$this->element = Jam::factory('test_element')->load_fields(array(
+		$this->element = Jam::build('test_element')->load_fields(array(
 			'id' => 1, 
 			'name' => 'Part 1', 
 			'email' => 'staff@example.com',

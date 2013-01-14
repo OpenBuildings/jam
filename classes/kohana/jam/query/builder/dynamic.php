@@ -97,7 +97,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 			}
 			else
 			{
-				$model = Jam::factory($this->meta()->model());
+				$model = Jam::build($this->meta()->model());
 			}
 			
 			$item = $model->set($value);

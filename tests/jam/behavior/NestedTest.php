@@ -63,7 +63,7 @@ class Jam_Behavior_NestedTest extends Unittest_Jam_Database_TestCase {
 
 	public function test_children_deep()
 	{
-		$post = Jam::factory('test_post')->load_fields(array('id' => 1));
+		$post = Jam::build('test_post')->load_fields(array('id' => 1));
 
 		$post->test_categories = array(
 			array('name' => 'root', 'children' => array(

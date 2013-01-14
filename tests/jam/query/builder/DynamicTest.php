@@ -37,7 +37,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->collection[] = array('id' => 4, 'name' => 'Cleaner');
 		$this->assertTrue(isset($this->collection[3]));
 
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 
 		$this->collection
 			->expects($this->once())
@@ -51,7 +51,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 		$this->assertCount(count($this->data) + 1, $this->collection);
 
-		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
+		$additional = Jam::build('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
 
 		$this->collection[] = $additional;
 
@@ -62,7 +62,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 	{
 		$this->assertSame($this->collection[0], $this->collection[0], 'Should load the model only once, and then reuse it');
 
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 		$this->collection->result(new Jam_Query_Builder_Dynamic_Result(array_merge($this->data, array(5, $model)), '', FALSE));
 
 		$this->assertInstanceOf('Model_Test_Position', $this->collection[0]);
@@ -92,7 +92,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 	{
 		$this->collection->result($this->result);
 
-		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
+		$additional = Jam::build('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
 
 		$this->collection
 			->expects($this->once())
@@ -111,7 +111,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_ids()
 	{
-		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
+		$additional = Jam::build('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
 		$this->collection->add($additional);
 		$this->collection->add(20);
 
@@ -120,8 +120,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function test_has()
 	{
-		$additional = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
-		$additional_not_included = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional'));
+		$additional = Jam::build('test_position')->load_fields(array('id' => 8, 'name' => 'Additional'));
+		$additional_not_included = Jam::build('test_position')->load_fields(array('id' => 12, 'name' => 'Additional'));
 
 		$this->collection
 			->expects($this->once())
@@ -201,8 +201,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function data_add()
 	{
-		$additional1 = Jam::factory('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
-		$additional2 = Jam::factory('test_position')->load_fields(array('id' => 12, 'name' => 'Additional 2'));
+		$additional1 = Jam::build('test_position')->load_fields(array('id' => 8, 'name' => 'Additional 1'));
+		$additional2 = Jam::build('test_position')->load_fields(array('id' => 12, 'name' => 'Additional 2'));
 		
 		$additional_collection = Jam_Query_Builder_Dynamic::factory('test_position')
 			->set(array($additional1, $additional2));
@@ -229,8 +229,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function data_remove()
 	{
-		$current2 = Jam::factory('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
-		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
+		$current2 = Jam::build('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
+		$current3 = Jam::build('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
 		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
 			->set(array($current2, $current3));
@@ -257,8 +257,8 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 
 	public function data_set()
 	{
-		$current2 = Jam::factory('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
-		$current3 = Jam::factory('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
+		$current2 = Jam::build('test_position')->load_fields(array('id' => 2, 'name' => 'Freelancer'));
+		$current3 = Jam::build('test_position')->load_fields(array('id' => 3, 'name' => 'Manager'));
 		
 		$current_collection = Jam_Query_Builder_Dynamic::factory('test_position')
 			->set(array($current2, $current3));

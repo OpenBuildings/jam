@@ -103,7 +103,7 @@ class Jam_FieldTest extends Unittest_TestCase {
 	 */
 	public function test_construction(Jam_Field $field, $expected)
 	{
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 
 		// Ensure the following properties have been set
 		foreach ($expected as $key => $value)
@@ -201,7 +201,7 @@ class Jam_FieldTest extends Unittest_TestCase {
 	 */
 	public function test_set($field, $value, $expected)
 	{
-		$model = Jam::factory('test_position');
+		$model = Jam::build('test_position');
 		$this->assertSame($expected, $field->set($model, $value, TRUE));
 	}
 

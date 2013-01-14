@@ -129,7 +129,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function query_builder($type, Jam_Model $model)
 	{
-		$query = Jam::query_builder($type, $this->foreign_model)
+		$query = call_user_func("Jam::{$type}", $this->foreign_model)
 			->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
@@ -142,7 +142,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	public function update_query(Jam_Model $model, $new_id, $new_model)
 	{
-		$query = $this->query_builder(Jam_Query_Builder::UPDATE, $model)
+		$query = $this->query_builder('update', $model)
 			->value($this->foreign_key, $new_id);
 
 		if ($this->is_polymorphic())
@@ -164,7 +164,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			break;
 
 			case Jam_Association::ERASE:
-				$this->query_builder(Jam_Query_Builder::DELETE, $model)->execute();
+				$this->query_builder('delete', $model)->execute();
 			break;
 
 			case Jam_Association::NULLIFY:

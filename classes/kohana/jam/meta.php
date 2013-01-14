@@ -80,12 +80,6 @@ abstract class Kohana_Jam_Meta {
 	 */
 	protected $_associations = array();	
 
-	/**
-	 * @var  string  The builder class the model is associated with. This defaults to
-	 *               Jam_Builder_Modelname, if that particular class is found.
-	 */
-	protected $_builder = '';
-
 
 	/**
 	 * The message filename used for validation errors.
@@ -189,25 +183,15 @@ abstract class Kohana_Jam_Meta {
 			$this->_table = Inflector::plural($model);
 		}
 
-		// See if we have a special builder class to use
-		if (empty($this->_builder))
-		{
-			$builder = Jam::model_prefix().'builder_'.$model;
-
-			if (class_exists($builder))
-			{
-				$this->_builder = $builder;
-			}
-			else
-			{
-				$this->_builder = 'Jam_Builder';
-			}
-		}
-
 		// Can we set a sensible foreign key?
 		if (empty($this->_foreign_key))
 		{
 			$this->_foreign_key = $model.'_id';
+		}
+
+		if (empty($this->_unique_key) AND method_exists(Jam::class_name($this->_model), 'unique_key'))
+		{
+			$this->_unique_key = Jam::class_name($this->_model).'::unique_key';
 		}
 
 		foreach ($this->_fields as $column => $field)

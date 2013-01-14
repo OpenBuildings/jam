@@ -43,20 +43,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			$this->foreign_key = $this->as.'_id';
 			$this->polymorphic_key = $this->as.'_model';
 		}
-
-		// Count Cache
-		if ($this->count_cache)
-		{
-			if ($this->is_polymorphic())
-				throw new Kohana_Exception('Cannot use count cache on polymorphic associations');
-			
-			if ($this->count_cache === TRUE)
-			{
-				$this->count_cache = $this->name.'_count';
-			}
-
-			$meta->field($this->count_cache, Jam::field('integer', array('default' => 0, 'allow_null' => FALSE)));
-		}
 	}
 
 	public function join($alias, $type = NULL)

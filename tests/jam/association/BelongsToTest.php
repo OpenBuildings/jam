@@ -131,11 +131,11 @@ class Jam_Association_BelongstoTest extends Unittest_TestCase {
 		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('polymorphic' => $is_polymorphic)));
 		$association->initialize($this->meta, 'test_author');
 
-		$post = Jam::factory('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
+		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
 
 		if ($expected_model)
 		{
-			$author = Jam::factory('test_author');
+			$author = Jam::build('test_author');
 
 			$association
 				->expects($this->once())
@@ -199,7 +199,7 @@ class Jam_Association_BelongstoTest extends Unittest_TestCase {
 	 */
 	public function test_model_after_check($changed, $perform_check)
 	{
-		$author = $this->getMock('Model_Test_Author', array('check'), array(NULL, 'test_post'));
+		$author = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
 		$author
 			->expects($perform_check ? $this->once() : $this->never())
 			->method('check')
@@ -226,7 +226,7 @@ class Jam_Association_BelongstoTest extends Unittest_TestCase {
 	 */
 	public function test_model_after_check_polymorphic($changed, $perform_check)
 	{
-		$author = $this->getMock('Model_Test_Author', array('check'), array(NULL, 'test_post'));
+		$author = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
 		$author
 			->expects($perform_check ? $this->once() : $this->never())
 			->method('check')
@@ -254,7 +254,7 @@ class Jam_Association_BelongstoTest extends Unittest_TestCase {
 	 */
 	public function test_model_after_save($changed, $perform_save)
 	{
-		$author = $this->getMock('Model_Test_Author', array('check', 'save'), array(NULL, 'test_post'));
+		$author = $this->getMock('Model_Test_Post', array('check', 'save'), array('test_post'));
 		$author
 			->expects($this->any())
 			->method('check')

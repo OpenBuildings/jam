@@ -458,6 +458,9 @@ abstract class Kohana_Jam_Validated extends Model {
 	 */
 	public function meta()
 	{
+		if ( ! $this->_meta)
+			throw new Kohana_Exception('Model for class :class does not have a meta', array(':class' => get_class($this)));
+		
 		return $this->_meta;
 	}
 

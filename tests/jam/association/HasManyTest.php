@@ -76,8 +76,8 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany(array('inverse_of' => 'test_author'));
 		$association->initialize($this->meta, 'test_posts');
 
-		$posts = array(Jam::factory('test_post'), Jam::factory('test_post'));
-		$author = Jam::factory('test_author');
+		$posts = array(Jam::build('test_post'), Jam::build('test_post'));
+		$author = Jam::build('test_author');
 
 		$association->set($author, $posts, TRUE);
 
@@ -106,7 +106,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
 		$result = $association->get($model, $value, (bool) $value);
 
@@ -138,7 +138,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
 		$this->assertEquals($expected_sql, (string) $association->erase_query($model));
 	}
@@ -161,7 +161,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
 		$this->assertEquals($expected_sql, (string) $association->nullify_query($model));
 	}
@@ -205,14 +205,14 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
 		$this->assertEquals($expected_sql, (string) $association->add_items_query($ids, $model));
 	}
 
-	public function test_save_collection()
+	public function test_save()
 	{
-		$model = Jam::factory('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
 		$association = $this->getMock('Jam_Association_Hasmany', array('add_items_query', 'remove_items_query'), array(array()));
 		$association->initialize($this->meta, 'test_posts');
@@ -245,6 +245,6 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 			->with($this->equalTo(array(1, 2)))
 			->will($this->returnValue($dummy));
 
-		$association->save_collection($model, $collection);
+		$association->save($model, $collection);
 	}
 }

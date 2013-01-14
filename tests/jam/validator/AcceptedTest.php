@@ -27,7 +27,7 @@ class Jam_Validator_AcceotedTest extends Unittest_Jam_TestCase {
 	 */
 	public function test_validate($value, $accept, $is_valid)
 	{
-		$element = Jam::factory('test_element');
+		$element = Jam::build('test_element');
 
 		Jam::validator_rule('accepted', array('accept' => $accept))->validate($element, 'name', $value);
 
