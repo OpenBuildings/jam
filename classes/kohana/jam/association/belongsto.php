@@ -26,6 +26,8 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public $inverse_of = NULL;
 
+	public $count_cache = NULL;
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -67,6 +69,17 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$this->foreign_model = $name;
 		}
+
+		if ($this->count_cache)
+		{
+			if ($this->is_polymorphic())
+				throw new Kohana_Exception('Cannot use count cache on polymorphic associations');
+			
+			if ($this->count_cache === TRUE)
+			{
+				$this->count_cache = Inflector::plural($this->model).'_count';
+			}
+		}
 	}
 
 	public function is_polymorphic()
@@ -77,6 +90,22 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	public function foreign_model(Jam_Model $model)
 	{
 		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
+	}
+
+	public function model_after_create(Jam_Model $model, Jam_Event_Data $data, $changed)
+	{
+		if ($this->count_cache)
+		{
+			Jam_Countcache::increment($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+		}
+	}
+
+	public function model_after_delete(Jam_Model $model, Jam_Event_Data $data, $changed)
+	{
+		if ($this->count_cache)
+		{
+			Jam_Countcache::decrement($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+		}
 	}
 
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
