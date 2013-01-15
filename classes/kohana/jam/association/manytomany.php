@@ -99,6 +99,7 @@ abstract class Kohana_Jam_Association_ManyToMany extends Jam_Association_Collect
 			if ($old_ids)
 			{
 				Jam::query($this->through())
+					->where($this->through('our'), '=', $model->id())
 					->where($this->through('foreign'), 'IN', $old_ids)
 					->delete($model->meta()->db());
 			}
