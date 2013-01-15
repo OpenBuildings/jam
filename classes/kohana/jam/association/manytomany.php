@@ -63,7 +63,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			return NULL;
 
 		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
-			->model($model)
+			->parent($model)
 			->association($this)
 			->join_nested($this->join_table)
 				->context_model($this->foreign_model)
@@ -105,9 +105,10 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->where($this->foreign_key, '=', $model->id());
 	}
 
-	public function remove_items_query(array $ids)
+	public function remove_items_query(array $ids, Jam_Model $model)
 	{
 		return DB::delete($this->join_table)
+			->where($this->foreign_key, '=', $model->id())
 			->where($this->association_foreign_key, 'IN', $ids);
 	}
 
@@ -124,11 +125,19 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		return $query;
 	}
 
+	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
+	{
+		if ($ids = array_filter($collection->ids()))
+		{
+			$this->remove_items_query($ids, $model)->execute(Jam::meta($this->model)->db());
+		}
+	}
+
 	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{
-			$this->remove_items_query($old_ids)->execute(Jam::meta($this->model)->db());
+			$this->remove_items_query($old_ids, $model)->execute(Jam::meta($this->model)->db());
 		}
 		
 		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))

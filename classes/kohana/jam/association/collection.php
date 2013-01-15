@@ -35,7 +35,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		{
 			$collection = new Jam_Query_Builder_Associated($this->foreign_model);
 			return $collection
-				->model($model)
+				->parent($model)
 				->association($this)
 				->load_fields($value);
 		}

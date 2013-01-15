@@ -133,10 +133,10 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	public function data_remove_items_query()
 	{
 		return array(
-			array('test_tags', array(), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_tag_id` IN (1, 2, 3)'),
-			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_tag_id` IN (1, 2, 3)'),
-			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_id` IN (1, 2, 3)'),
-			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array(), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
 		);
 	}
 
@@ -147,8 +147,9 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	{
 		$association = new Jam_Association_Manytomany($options);
 		$association->initialize($this->meta, $name);
+		$model = Jam::build('test_blog')->load_fields(array('id' => 1));
 
-		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids));
+		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids, $model));
 	}
 
 	public function data_add_items_query()
