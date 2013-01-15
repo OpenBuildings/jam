@@ -33,8 +33,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	{
 		if ( ! $is_changed)
 		{
-			$collection = new Jam_Query_Builder_Dynamic($this->foreign_model);
-			return $collection->load_fields($value);
+			$collection = new Jam_Query_Builder_Associated($this->foreign_model);
+			return $collection
+				->model($model)
+				->association($this)
+				->load_fields($value);
 		}
 		
 		return $value;
@@ -59,7 +62,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
-	abstract public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection);
+	abstract public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection);
 
 	public function model_after_save(Jam_Model $model)
 	{

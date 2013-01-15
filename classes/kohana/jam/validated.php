@@ -11,7 +11,7 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Validated extends Model {
+abstract class Kohana_Jam_Validated extends Model implements Serializable {
 
 	/**
 	 * @var  array  The original data set on the object
@@ -468,4 +468,23 @@ abstract class Kohana_Jam_Validated extends Model {
 	{
 		return isset($this->_unmapped[$name]);
 	}
-}  // End Kohana_Jam_Model
+
+
+	public function serialize()
+	{
+		return serialize(array(
+			'original' => $this->_original, 
+			'changed' => $this->_changed, 
+			'unmapped' => $this->_unmapped,
+		));
+	}
+
+	public function unserialize($data)
+	{
+		$data = unserialize($data);
+		$this->_meta = Jam::meta($this);
+		$this->_original = $data['original'];
+		$this->_changed = $data['changed'];
+		$this->_unmapped = $data['unmapped'];
+	}
+}

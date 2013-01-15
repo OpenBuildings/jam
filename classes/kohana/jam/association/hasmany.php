@@ -75,18 +75,38 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 					}
 				}
 			}
-			elseif ($value instanceof Jam_Query_Builder_Dynamic) 
-			{
-				$value->assign_after_load(array($this->inverse_of => $model));
-			}
 		}
 
 		return $value;
 	}
 
+	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
+	{
+		$ids = array();
+		foreach ($collection as $item) 
+		{
+			$item->{$this->foreign_key} = NULL;
+			$ids[] = $item->id();
+		}
+		if (count($ids = array_filter($ids)) > 0)
+		{
+			$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
+				->where_key($ids)
+				->value($this->foreign_key, NULL);
+
+			if ($this->is_polymorphic())
+			{
+				$nullify->value($this->polymorphic_key, NULL);
+			}
+			$nullify->execute();
+		}
+	}
+
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
+		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
+			->model($model)
+			->association($this)
 			->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
@@ -184,7 +204,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 	}
 
-	public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{

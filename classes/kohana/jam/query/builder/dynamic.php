@@ -33,8 +33,6 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 	public $_original;
 	
-	protected $_assign_after_load = array();
-	
 	protected $_changed = FALSE;
 
 	public function result(Database_Result $result = NULL)
@@ -55,7 +53,7 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 
 	public function load_fields(array $fields)
 	{
-		$this->_result = new Jam_Query_Builder_Dynamic_Result($fields, '', FALSE);
+		$this->_original = new Database_Result_Cached($fields, '', FALSE);
 		return $this;
 	}
 
@@ -68,15 +66,6 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return $this->_original;
 	}
 
-	public function assign_after_load(array $assign_after_load = NULL)
-	{
-		if ($assign_after_load !== NULL)
-		{
-			$this->_assign_after_load = $assign_after_load;
-			return $this;
-		}
-		return $this->_assign_after_load;
-	}
 
 	protected function _find_item($key)
 	{
@@ -111,11 +100,6 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		else
 		{
 			$item = $this->_load_model($value);	
-		}
-		
-		if ($this->_assign_after_load) 
-		{
-			$item->set($this->_assign_after_load);
 		}
 
 		return $item;
@@ -297,5 +281,22 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 			}
 		}
 		return $this;
+	}
+
+	public function serialize()
+	{
+		return serialize(array(
+			'original' => $this->original(), 
+			'result' => $this->result(), 
+			'meta' => $this->meta()->model()
+		));
+	}
+
+	public function unserialize($data)
+	{
+		$data = unserialize($data);
+		$this->_meta = Jam::meta($data['meta']);
+		$this->_original = $data['original'];
+		$this->_result = $data['result'];
 	}
 } 

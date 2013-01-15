@@ -446,4 +446,32 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		return (string) get_class($this).'('.($this->loaded() ? $this->id() : 'NULL').')';
 	}
 
+
+	public function serialize()
+	{
+		$this->_move_retrieved_to_changed();
+		
+		return serialize(array(
+			'original' => $this->_original, 
+			'changed' => $this->_changed, 
+			'unmapped' => $this->_unmapped,
+			'saved' => $this->_saved, 
+			'loaded' => $this->_loaded, 
+			'deleted' => $this->_deleted, 
+		));
+	}
+
+	public function unserialize($data)
+	{
+		$data = unserialize($data);
+
+		$this->_meta = Jam::meta($this);
+		$this->_original = $data['original'];
+		$this->_changed = $data['changed'];
+		$this->_unmapped = $data['unmapped'];
+		$this->_saved = $data['saved'];
+		$this->_loaded = $data['loaded'];
+		$this->_deleted = $data['deleted'];
+	}
+
 }  // End Kohana_Jam_Model

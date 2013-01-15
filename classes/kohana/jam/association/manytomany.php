@@ -62,7 +62,9 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		if ( ! $model->loaded())
 			return NULL;
 
-		$builder = Jam_Query_Builder_Dynamic::factory($this->foreign_model)
+		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
+			->model($model)
+			->association($this)
 			->join_nested($this->join_table)
 				->context_model($this->foreign_model)
 				->on($this->association_foreign_key, '=', ':primary_key')
@@ -122,7 +124,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		return $query;
 	}
 
-	public function save(Jam_Model $model, Jam_Query_Builder_Dynamic $collection)
+	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{

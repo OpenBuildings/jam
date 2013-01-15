@@ -9,17 +9,15 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached {
+class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached implements Serializable{
 
 	protected $_changed;
-	protected $_original;
 
 	public function __construct(array $result, $sql, $as_object = NULL)
 	{
 		parent::__construct($result, $sql, $as_object);
 		$this->_total_rows = count($result);
 
-		$this->_original = $result;
 		$this->changed(FALSE);
 	}
 
@@ -85,4 +83,20 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached {
 		$this->_total_rows = count($this->_result);
 	}
 
+	public function serialize()
+	{
+		return serialize(array(
+			'result' => $this->_result,
+			'changed' => $this->_changed,
+		));
+	}
+
+	public function unserialize($data)
+	{
+		$data = unserialize($data);
+
+		$this->_result = $data['result'];
+		$this->_changed = $data['changed'];
+		$this->_total_rows = count($this->_result);
+	}
 }
