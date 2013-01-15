@@ -9,10 +9,6 @@
  */
 abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collection {
 
-	public $_original;
-	
-	protected $_assign_after_load = array();
-	
 	public static function convert_collection_to_array($items)
 	{
 		if ($items instanceof Jam_Query_Builder_Collection)
@@ -35,6 +31,10 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return new Jam_Query_Builder_Dynamic($model, $key);
 	}
 
+	public $_original;
+	
+	protected $_assign_after_load = array();
+	
 	protected $_changed = FALSE;
 
 	public function result(Database_Result $result = NULL)
@@ -51,6 +51,12 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		}
 
 		return $this->_result;
+	}
+
+	public function load_fields(array $fields)
+	{
+		$this->_result = new Jam_Query_Builder_Dynamic_Result($fields, '', FALSE);
+		return $this;
 	}
 
 	public function original()

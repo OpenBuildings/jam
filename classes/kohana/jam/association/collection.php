@@ -10,15 +10,6 @@
  */
 abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
-
-	/**
-	 * a method or closure to call in order to modify the query
-	 * 
-	 * @var closure
-	 */
-	public $query;
-
-
 	/**
 	 * Find the join table based on the two model names pluralized,
 	 * sorted alphabetically and with an underscore separating them
@@ -36,6 +27,17 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 
 		sort($through);
 		return implode('_', $through);
+	}
+
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		if ( ! $is_changed)
+		{
+			$collection = new Jam_Query_Builder_Dynamic($this->foreign_model);
+			return $collection->load_fields($value);
+		}
+		
+		return $value;
 	}
 
 	public function initialize(Jam_Meta $meta, $name)

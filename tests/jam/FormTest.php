@@ -15,19 +15,36 @@ class Jam_FormTest extends Unittest_Jam_TestCase {
 	{
 		parent::setUp();
 
-		$this->post = Jam::build('test_post', 1);
+		$this->post = $this->build_model('test_post', array(
+			'id' => 1, 
+			'name' => 'First Post', 
+			'slug' => 'first-post', 
+			'status' => 'draft', 
+			'test_blog_id' => 1,
+			'test_blog' => array(
+				'id' => 1,
+				'name' => 'Flowers blog',
+				'url' => 'http://flowers.wordpress.com/',
+			),
+			'test_tags' => array(
+				array('id' => 1, 'name' => 'red', 'slug' => 'red'),
+				array('id' => 2, 'name' => 'green', 'slug' => 'green'),
+			)
+		));
 		$this->form = Jam::form($this->post);
 	}
 
 	public function test_choices()
 	{
-		$query = Jam::query('test_blog');
-		$select = $query->select_all()->as_array(':primary_key', ':name_key');
+		$blogs = $this->build_collection('test_blog', array(
+			array('id' => 1, 'name' => 'Flowers blog', 'url' => 'http://flowers.wordpress.com'),
+			array('id' => 2, 'name' => 'Awesome programming', 'url' => 'http://programming-blog.com'),
+			array('id' => 3, 'name' => 'Tabless', 'url' => 'http://bobby-tables-ftw.com'),
+		));	
 
-		$choices = Jam_Form::list_choices($query);
-		$this->assertEquals($select, $choices);
+		$select = $blogs->as_array(':primary_key', ':name_key');
 
-		$choices = Jam_Form::list_choices($query->select_all());
+		$choices = Jam_Form::list_choices($blogs);
 		$this->assertEquals($select, $choices);
 
 		$choices = Jam_Form::list_choices($select);

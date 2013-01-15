@@ -144,7 +144,10 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			{
 				$this->_original[$field->name] = $field->set($this, $value, FALSE);
 			}
-			// Unmapped data
+			elseif ($association = $this->meta()->association($key))
+			{
+				$this->_retrieved[$association->name] = $association->set($this, $value, FALSE);
+			}
 			else
 			{
 				$this->_unmapped[$key] = $value;

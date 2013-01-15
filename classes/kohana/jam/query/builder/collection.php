@@ -17,18 +17,6 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	protected $_result;
 	protected $_model;
 
-	protected $_count_cache;
-	
-	public function count_cache($count_cache = NULL)
-	{
-		if ($count_cache !== NULL)
-		{
-			$this->_count_cache = (int) $count_cache;
-			return $this;
-		}
-		return $this->_count_cache;
-	}
-
 	public function result(Database_Result $result = NULL)
 	{
 		if ($result !== NULL)
@@ -42,6 +30,12 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		}
 
 		return $this->_result;
+	}
+
+	public function load_fields(array $fields)
+	{
+		$this->_result = new Database_Result_Cached($fields, '', FALSE);
+		return $this;
 	}
 
 	public function model()

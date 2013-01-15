@@ -185,6 +185,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
+		if ( ! $is_changed)
+			return Jam::build($this->foreign_model)->load_fields($value);
+
 		if (is_array($value) AND $this->is_polymorphic())
 		{
 			$model->{$this->polymorphic} = key($value);

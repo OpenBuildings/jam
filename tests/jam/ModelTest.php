@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.model
  */
-class Jam_ModelTest extends Unittest_Jam_TestCase {
+class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 
 	/**
 	 * Provider for test_save_empty_model

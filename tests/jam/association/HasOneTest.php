@@ -66,6 +66,20 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 		$this->assertEquals($expected_sql, (string) $association->join($table, $type));
 	}
 
+	public function test_set_load_fields()
+	{
+		$association = new Jam_Association_Hasone(array());
+		$association->initialize($this->meta, 'test_post');
+
+		$model = new Model_Test_Author();
+		$value = $association->set($model, array('id' => 2, 'name' => 'Test'), FALSE);
+
+		$this->assertInstanceOf('Model_Test_Post', $value);
+		$this->assertTrue($value->loaded());
+		$this->assertEquals(2, $value->id());
+		$this->assertEquals('Test', $value->name());
+	}
+
 	public function test_get()
 	{
 		$association = $this->getMock('Jam_Association_Hasone', array('_find_item'), array());

@@ -26,7 +26,7 @@ class Kohana_Unittest_Jam_Database_TestCase extends Unittest_Database_TestCase {
 	{
 		if ($model instanceof Jam_Model)
 		{
-			return Jam::query($model->meta()->model())->key($model->id());
+			return Jam::find($model->meta()->model(), $model->id());
 		}
 		elseif ($model instanceof Jam_Builder)
 		{
@@ -34,7 +34,7 @@ class Kohana_Unittest_Jam_Database_TestCase extends Unittest_Database_TestCase {
 		}
 		else
 		{
-			return Jam::query($model)->key($key);
+			return Jam::find($model, $key);
 		}
 	}
 

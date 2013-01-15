@@ -15,4 +15,15 @@ class Kohana_Unittest_Jam_TestCase extends Unittest_TestCase {
 
 		$this->assertArrayNotHasKey($error, (array) Arr::get($errors, $attribute), 'Should not have error '.$error.' for '.$attribute);
 	}
+
+	public function build_collection($model, array $collection_result)
+	{
+		$collection = new Jam_Query_Builder_Collection($model);
+		return $collection->load_fields($collection_result);	
+	}
+
+	public function build_model($model, $data)
+	{
+		return Jam::build($model)->load_fields($data);
+	}
 }

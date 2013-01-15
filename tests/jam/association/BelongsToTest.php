@@ -184,6 +184,20 @@ class Jam_Association_BelongstoTest extends Unittest_TestCase {
 		}
 	}
 
+	public function test_set_load_fields()
+	{
+		$association = new Jam_Association_Belongsto(array());
+		$association->initialize($this->meta, 'test_author');
+
+		$model = new Model_Test_Post();
+		$value = $association->set($model, array('id' => 2, 'name' => 'Test'), FALSE);
+
+		$this->assertInstanceOf('Jam_Model', $value);
+		$this->assertTrue($value->loaded());
+		$this->assertEquals(2, $value->id());
+		$this->assertEquals('Test', $value->name());
+	}
+
 	public function data_model_after_check()
 	{
 		return array(

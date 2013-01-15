@@ -30,6 +30,37 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->collection->result($this->result);
 	}
 
+	public function test_load_fields()
+	{
+		$collection = new Jam_Query_Builder_Dynamic('test_position', $this->data);
+
+		foreach ($collection as $i => $item) 
+		{
+			$this->assertTrue($item->loaded());
+			$this->assertEquals($this->data[$i], $item->as_array());
+		}
+
+		$data = array(
+			array('id' => 1, 'name' => 'post 1'),
+			array('id' => 2, 'name' => 'post 2'),
+			array('id' => 3, 'name' => 'post 3', 'test_author' => array('id' => 2, 'name' => 'Author 2')),
+		);
+
+		$collection = new Jam_Query_Builder_Dynamic('test_post');
+		$collection->load_fields($data);
+
+		foreach ($collection as $i => $item) 
+		{
+			$this->assertTrue($item->loaded());
+			$this->assertEquals($data[$i]['id'], $item->id());
+			$this->assertEquals($data[$i]['name'], $item->name());
+		}
+
+		$author = $collection[2]->test_author;
+		$this->assertTrue($author->loaded());
+		$this->assertEquals($author->name(), 'Author 2');
+	}
+
 	public function test_offsetSet()
 	{
 		$this->assertFalse(isset($this->collection[3]));

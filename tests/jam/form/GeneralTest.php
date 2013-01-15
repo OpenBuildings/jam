@@ -6,7 +6,7 @@
  * @group   jam.form
  * @group   jam.form.general
  */
-class Jam_Form_GeneralTest extends Unittest_TestCase {
+class Jam_Form_GeneralTest extends Unittest_Jam_TestCase {
 
 	protected $form;
 	protected $post;
@@ -82,12 +82,11 @@ class Jam_Form_GeneralTest extends Unittest_TestCase {
 		$this->assertSelectEquals('option[value="published"]', 'Published Title', 1, $select);
 		$this->assertSelectEquals('option[value="review"]', 'Published Review', 1, $select);
 
-		$blogs = new Jam_Query_Builder_Collection('test_blog');
-		$blogs->result(new Database_Result_Cached(array(
+		$blogs = $this->build_collection('test_blog', array(
 			array('id' => 1, 'name' => 'Flowers blog', 'url' => 'http://flowers.wordpress.com'),
 			array('id' => 2, 'name' => 'Awesome programming', 'url' => 'http://programming-blog.com'),
 			array('id' => 3, 'name' => 'Tabless', 'url' => 'http://bobby-tables-ftw.com'),
-		), '', FALSE));	
+		));	
 
 		$this->form->object()->test_blog = $blogs[0];
 

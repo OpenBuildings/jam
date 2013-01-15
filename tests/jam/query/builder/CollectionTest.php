@@ -8,9 +8,8 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.collection
  */
-class Jam_Query_Builder_CollectionTest extends Unittest_TestCase {
+class Jam_Query_Builder_CollectionTest extends Unittest_Jam_TestCase {
 
-	public $result;
 	public $collection;
 	public $data;
 
@@ -24,10 +23,7 @@ class Jam_Query_Builder_CollectionTest extends Unittest_TestCase {
 			array('id' => 3, 'name' => 'Manager'),
 		);
 
-		$this->result = new Database_Result_Cached($this->data, '', FALSE);
-
-		$this->collection = new Jam_Query_Builder_Collection('test_position');
-		$this->collection->result($this->result);
+		$this->collection = $this->build_collection('test_position', $this->data);
 	}
 
 	public function test_count()
@@ -80,6 +76,37 @@ class Jam_Query_Builder_CollectionTest extends Unittest_TestCase {
 	public function test_ids()
 	{
 		$this->assertEquals(Arr::pluck($this->data, 'id'), $this->collection->ids());
+	}
+
+	public function test_load_fields()
+	{
+		$collection = new Jam_Query_Builder_Collection('test_position', $this->data);
+
+		foreach ($collection as $i => $item) 
+		{
+			$this->assertTrue($item->loaded());
+			$this->assertEquals($this->data[$i], $item->as_array());
+		}
+
+		$data = array(
+			array('id' => 1, 'name' => 'post 1'),
+			array('id' => 2, 'name' => 'post 2'),
+			array('id' => 3, 'name' => 'post 3', 'test_author' => array('id' => 2, 'name' => 'Author 2')),
+		);
+
+		$collection = new Jam_Query_Builder_Collection('test_post');
+		$collection->load_fields($data);
+
+		foreach ($collection as $i => $item) 
+		{
+			$this->assertTrue($item->loaded());
+			$this->assertEquals($data[$i]['id'], $item->id());
+			$this->assertEquals($data[$i]['name'], $item->name());
+		}
+
+		$author = $collection[2]->test_author;
+		$this->assertTrue($author->loaded());
+		$this->assertEquals($author->name(), 'Author 2');
 	}
 
 	public function test_as_array()

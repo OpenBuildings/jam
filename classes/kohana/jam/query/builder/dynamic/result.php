@@ -59,7 +59,7 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached {
 		}
 		elseif (is_bool($offset))
 		{
-			$this->_changed = array_fill(0, $this->_total_rows, $offset);
+			$this->_changed = $this->_total_rows ? array_fill(0, $this->_total_rows, $offset) : array();
 		}
 		else
 		{

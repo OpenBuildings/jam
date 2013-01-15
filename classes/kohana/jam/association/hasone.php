@@ -88,6 +88,14 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $query->current();
 	}
 
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		if ( ! $is_changed)
+			return Jam::build($this->foreign_model)->load_fields($value);
+		
+		return $value;
+	}
+
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($is_changed)
