@@ -32,13 +32,12 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 		$this->assertSame($author, $author->test_posts[0]->test_categories[0]->test_author, 'Should be the same object');
 
 		$author->save();
-		
-		$author = Jam::query('test_author')->where('name', '=', 'Joe')->find();
-		
+
+		$author = Jam::all('test_author')->where('name', '=', 'Joe')->first();
+
 		$this->assertEquals($author->id(), $author->test_posts[0]->test_categories[0]->test_author->id(), 'Should be the same author');
 		$this->assertEquals($author->id(), $author->test_posts[0]->test_categories[1]->test_author->id(), 'Should be the same author');
 		$this->assertEquals($author->id(), $author->test_posts[1]->test_categories[0]->test_author->id(), 'Should be the same author');
 		$this->assertEquals($author->id(), $author->test_posts[1]->test_categories[1]->test_author->id(), 'Should be the same author');
-
 	}
 }

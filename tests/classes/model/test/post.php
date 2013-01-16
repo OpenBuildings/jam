@@ -34,7 +34,7 @@ class Model_Test_Post extends Jam_Model {
 			)),
 			'approved_by'     => Jam::association('belongsto', array(
 				'foreign_model' => 'test_author',
-				'column'  => '_approved_by',
+				'foreign_key'  => '_approved_by',
 				'inverse_of' => 'test_author',
 			)),
 			'test_images'     => Jam::association('hasmany', array(

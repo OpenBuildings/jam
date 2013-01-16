@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	{
 		if ($model->loaded() AND $this->join_table_dependent)
 		{
-			$this->erase_items_query($model)
+			$this->erase_query($model)
 				->execute(Jam::meta($this->model)->db());
 		}
 	}

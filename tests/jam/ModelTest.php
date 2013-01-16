@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.model
  */
-class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
+class Jam_ModelTest extends Unittest_Jam_TestCase {
 
 	/**
 	 * Provider for test_save_empty_model
@@ -37,6 +37,8 @@ class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 		$this->assertTrue($model->saved());
 		$this->assertTrue($model->loaded());
 		$this->assertNotNull(Jam::find($model, $model->id()));
+
+		$model->delete();
 	}
 	
 	/**
@@ -56,10 +58,10 @@ class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 		$this->assertEquals(9000, $model->id);
 
 		// Verify the record actually exists in the database
-		$this->assertTrue(Jam::build('test_post', 9000)->loaded());
+		$this->assertNotNull(Jam::find('test_post', 9000));
 
 		// Manually re-selecting so that Postgres doesn't cause errors down the line
-		$model = Jam::build('test_post', 9000);
+		$model = Jam::find('test_post', 9000);
 
 		// Change it again so we can verify it works on UPDATE as well
 		// This is key because Jam got this wrong in the past
@@ -67,13 +69,13 @@ class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 		$model->save();
 
 		// Verify we can't find the old record 9000
-		$this->assertFalse(Jam::build('test_post', 9000)->loaded());
+		$this->assertNull(Jam::find('test_post', 9000));
 
 		// And that we can find the new 9001
-		$this->assertTrue(Jam::build('test_post', 9001)->loaded());
+		$this->assertNotNull(Jam::find('test_post', 9001));
 
 		// Cleanup
-		Jam::build('test_post', 9001)->delete();
+		Jam::find('test_post', 9001)->delete();
 	}
 
 	/**
@@ -203,7 +205,7 @@ class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 
 	public function test_check()
 	{
-		$video = Jam::build('test_video', 1);
+		$video = Jam::build('test_video')->load_fields(array('id' => 1, 'file' => 'file11.mov'));
 		$this->assertTrue($video->check());
 		$video->file = '111';
 		$this->assertFalse($video->check());

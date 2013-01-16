@@ -76,7 +76,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($key instanceof Jam_Model)
 		{
-			$query = $this->_query_builder(Jam_Query_Builder::COLLECTION, $key);
+			$query = $this->query_builder('all', $key);
 		}
 		else
 		{
@@ -165,9 +165,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		switch ($this->dependent) 
 		{
 			case Jam_Association::DELETE:
-				foreach ($model->{$this->name} as $item) 
+				if ($model->{$this->name})
 				{
-					$item->delete();
+					$model->{$this->name}->delete();
 				}
 			break;
 

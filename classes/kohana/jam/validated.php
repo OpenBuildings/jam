@@ -320,7 +320,6 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	public function check($force = FALSE)
 	{
 		$this->_is_validating = TRUE;
-
 		// Run validation only when new or changed
 		if ($this->changed() OR $force)
 		{
