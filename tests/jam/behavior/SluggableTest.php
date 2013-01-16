@@ -26,7 +26,7 @@ class Jam_Behavior_SluggableTest extends Unittest_Jam_Database_TestCase {
 	public function test_select_no_primary_key()
 	{
 		$this->setExpectedException('Jam_Exception_NotFound');
-		Jam::find('test_tag')->find_by_slug_insist('-j320lt');
+		Jam::all('test_tag')->find_by_slug_insist('-j320lt');
 	}
 
 	public function test_set()
@@ -49,7 +49,7 @@ class Jam_Behavior_SluggableTest extends Unittest_Jam_Database_TestCase {
 	public function test_select()
 	{
 		$this->setExpectedException('Jam_Exception_Sluggable');
-		Jam::find('test_video')->find_by_slug_insist('video-jp2g-1');
+		Jam::all('test_video')->find_by_slug_insist('video-jp2g-1');
 	}
 
 	public function provider_pattern()
@@ -86,7 +86,7 @@ class Jam_Behavior_SluggableTest extends Unittest_Jam_Database_TestCase {
 		{
 			$this->setExpectedException('Kohana_Exception');
 		}
-		Jam::find('test_video')->where_slug($pattern)->first();
+		Jam::all('test_video')->where_slug($pattern)->first();
 	}
 
 }

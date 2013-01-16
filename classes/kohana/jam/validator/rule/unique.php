@@ -19,7 +19,7 @@ class Kohana_Jam_Validator_Rule_Unique extends Jam_Validator_Rule {
 		if ($value !== $model->meta()->defaults($attribute))
 		{
 			// Build query
-			$query = Jam::find($model)->where($attribute, '=', $value);
+			$query = Jam::all($model)->where($attribute, '=', $value);
 
 			if ($this->scope)
 			{

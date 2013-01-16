@@ -21,7 +21,7 @@ class Jam_Behavior_SortableTest extends Unittest_Jam_Database_TestCase {
 
 	public function test_order()
 	{
-		$videos = Jam::find('test_video');
+		$videos = Jam::all('test_video');
 
 		$this->assertEquals(0, $videos[0]->position);
 		$this->assertEquals(1, $videos[1]->position);

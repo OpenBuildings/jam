@@ -92,7 +92,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	 */
 	public function model_call_parents(Jam_Model $model, Jam_Event_Data $data)
 	{	
-		$data->return = Jam::find($this->_model)
+		$data->return = Jam::all($this->_model)
 			->join(array($this->parents_query($model->parent_id), 'recursion_table'))
 			->on('recursion_table._id', '=', ':primary_key')
 			->order_by('recursion_table.lvl', 'DESC');

@@ -321,16 +321,16 @@ abstract class Kohana_Jam {
 		return new Jam_Query_Builder_Select($model);
 	}
 
-	public static function find($model, $key = NULL)
+	public static function find($model, $key)
 	{
 		$collection = new Jam_Query_Builder_Collection($model);
+		$collection->where_key($key);
+		return is_array($key) ? $collection : $collection->first();
+	}
 
-		if ($key !== NULL)
-		{
-			$collection->where_key($key);
-			return is_array($key) ? $collection : $collection->first();
-		}
-		return $collection;
+	public static function all($model)
+	{
+		return new Jam_Query_Builder_Collection($model);
 	}
 
 	protected static function find_or($method, $model, array $values)
@@ -365,21 +365,18 @@ abstract class Kohana_Jam {
 	{
 		$result = Jam::find($model, $key);
 
-		if ($key !== NULL)
+		if (is_array($key))
 		{
-			if (is_array($key))
-			{
-				$missing = array_diff(array_values($key), array_values($result->ids()));
-			}
-			else
-			{
-				$missing = $result ? array() : array($key);
-			}
-			
-			if ($missing)
-				throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+			$missing = array_diff(array_values($key), array_values($result->ids()));
 		}
-
+		else
+		{
+			$missing = $result ? array() : array($key);
+		}
+		
+		if ($missing)
+			throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+	
 		return $result;
 	}
 

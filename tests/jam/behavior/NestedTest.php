@@ -31,13 +31,13 @@ class Jam_Behavior_NestedTest extends Unittest_Jam_Database_TestCase {
 
 		$this->assertEquals(array(3), $one->children->ids());
 
-		$top = Jam::find('test_category')->root()->ids();
+		$top = Jam::all('test_category')->root()->ids();
 		$this->assertEquals(array(1, 2, 4), $top);
 
-		$top = Jam::find('test_category')->root(TRUE)->ids();
+		$top = Jam::all('test_category')->root(TRUE)->ids();
 		$this->assertEquals(array(1, 2, 4), $top);
 
-		$top = Jam::find('test_category')->root(FALSE)->ids();
+		$top = Jam::all('test_category')->root(FALSE)->ids();
 		$this->assertEquals(array(3, 5), $top);
 	}
 

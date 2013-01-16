@@ -129,7 +129,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 
 		$result = $association->get($model, $value, (bool) $value);
 
-		$this->assertInstanceOf('Jam_Query_Builder_Dynamic', $result);
+		$this->assertInstanceOf('Jam_Query_Builder_Associated', $result);
 
 		$this->assertEquals($expected_sql, (string) $result);
 
@@ -236,7 +236,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = $this->getMock('Jam_Association_Hasmany', array('add_items_query', 'remove_items_query'), array(array()));
 		$association->initialize($this->meta, 'test_posts');
 
-		$collection = $this->getMock('Jam_Query_Builder_Dynamic', array('original_ids', 'ids'), array('test_post'));
+		$collection = $this->getMock('Jam_Query_Builder_Associated', array('original_ids', 'ids'), array('test_post'));
 		$dummy = $this->getMock('Jam_Query_Builder_Update', array('execute'), array('test_post'));
 		$dummy
 			->expects($this->exactly(2))

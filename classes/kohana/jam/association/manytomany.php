@@ -63,7 +63,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->parent($model)
 			->association($this);
 
-		if ( ! $model->loaded())
+		if ($model->loaded())
 		{
 			$builder	
 				->join_nested($this->join_table)

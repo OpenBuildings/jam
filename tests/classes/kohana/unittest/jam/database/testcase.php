@@ -22,22 +22,6 @@ class Kohana_Unittest_Jam_Database_TestCase extends Unittest_Database_TestCase {
 		return $this->createXMLDataSet(Kohana::find_file('tests/test_data/jam', 'test', 'xml'));
 	}
 
-	protected function _builder_for_model($model, $key = NULL)
-	{
-		if ($model instanceof Jam_Model)
-		{
-			return Jam::find($model->meta()->model(), $model->id());
-		}
-		elseif ($model instanceof Jam_Builder)
-		{
-			return $model;
-		}
-		else
-		{
-			return Jam::find($model, $key);
-		}
-	}
-
 	public function assertHasError($model, $attribute, $error)
 	{
 		$errors = $model->errors()->as_array();
@@ -52,17 +36,4 @@ class Kohana_Unittest_Jam_Database_TestCase extends Unittest_Database_TestCase {
 		$this->assertArrayNotHasKey($error, (array) Arr::get($errors, $attribute), 'Should not have error '.$error.' for '.$attribute);
 	}
 
-
-	public function assertExists($model, $key = NULL)
-	{
-		$builder = $this->_builder_for_model($model, $key);
-		$this->assertTrue($builder->count() > 0, "The model ".$builder->meta()->model()." should exist in the database");
-	}
-
-	public function assertNotExists($model, $key = NULL)
-	{
-		$builder = $this->_builder_for_model($model, $key);
-		$this->assertTrue($builder->count() == 0, "The model ".$builder->meta()->model()." should not exist in the database");
-	}
-
-} // End Kohana_Unittest_Jam_TestCase
+}

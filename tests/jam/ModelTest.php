@@ -36,7 +36,7 @@ class Jam_ModelTest extends Unittest_Jam_Database_TestCase {
 		// Model should be saved, loaded, and have an id
 		$this->assertTrue($model->saved());
 		$this->assertTrue($model->loaded());
-		$this->assertExists($model);
+		$this->assertNotNull(Jam::find($model, $model->id()));
 	}
 	
 	/**
