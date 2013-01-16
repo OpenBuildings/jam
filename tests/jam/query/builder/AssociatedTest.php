@@ -28,7 +28,7 @@ class Jam_Query_Builder_AssociatedTest extends Unittest_Jam_TestCase {
 		$this->collection = new Jam_Query_Builder_Associated('test_position');
 		$this->collection->load_fields($this->data);
 
-		$this->association = $this->getMock('Jam_Association_Hasmany', array('delete'), array(array('inverse_of' => 'test_author')));
+		$this->association = $this->getMock('Jam_Association_Hasmany', array('clear'), array(array('inverse_of' => 'test_author')));
 		$this->association->initialize(Jam::meta('test_author'), 'test_positions');
 
 		$this->test_author = Jam::build('test_author')->load_fields(array('id' => 1, 'name' => 'Test'));
