@@ -116,11 +116,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			$builder->set($value);
 		}
 
-		if ($this->inverse_of)
-		{
-			$builder->assign_after_load(array($this->inverse_of => $model));
-		}
-
 		return $builder;
 	}
 
@@ -199,6 +194,36 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 				$this->nullify_query($model)->execute();
 			break;
 		}
+	}
+
+	public function assign_item(Jam_Model $item, $foreign_key, $polymorphic_key, $inverse_of)
+	{
+		$item->{$this->foreign_key} = $foreign_key;
+		
+		if ($this->is_polymorphic())
+		{
+			$item->{$this->polymorphic_key} = $polymorphic_key;
+		}
+
+		if ($this->inverse_of)
+		{
+			$item->{$this->inverse_of} = $inverse_of;
+		}
+	}
+
+	public function item_get(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
+	}
+
+	public function item_set(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);	
+	}
+
+	public function item_unset(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+		$this->assign_item($item, NULL, NULL, NULL);
 	}
 
 	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)

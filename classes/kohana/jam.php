@@ -323,14 +323,42 @@ abstract class Kohana_Jam {
 
 	public static function find($model, $key = NULL)
 	{
-		$query = new Jam_Query_Builder_Collection($model);
+		$collection = new Jam_Query_Builder_Collection($model);
 
 		if ($key !== NULL)
 		{
-			$query->where_key($key);
-			return is_array($key) ? $query : $query->first();
+			$collection->where_key($key);
+			return is_array($key) ? $collection : $collection->first();
 		}
-		return $query;
+		return $collection;
+	}
+
+	protected static function find_or($method, $model, array $values)
+	{
+		$collection = new Jam_Query_Builder_Collection($model);
+		$converted_keys = array();
+		foreach ($values as $key => $value) 
+		{
+			$key = Jam_Query_Builder::resolve_meta_attribute($key, Jam::meta($model), $value);
+
+			$collection->where($key, '=', $value);
+			$converted_keys[$key] = $value;
+		}
+
+		if ($item = $collection->first())
+			return $item;
+
+		return call_user_func($method, $model, $converted_keys);
+	}
+
+	public function find_or_build($model, array $values)
+	{
+		return Jam::find_or('Jam::build', $model, $values);
+	}
+
+	public function find_or_create($model, array $values)
+	{
+		return Jam::find_or('Jam::create', $model, $values);
 	}
 
 	public static function find_insist($model, $key = NULL)

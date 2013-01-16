@@ -37,49 +37,53 @@ abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dyn
 		return $this->_parent;
 	}
 
-	protected function _load_model_changed($value, $is_changed)
+	public function clear()
 	{
-		$item = parent::_load_model_changed($value, $is_changed);
-
-		if ($this->association()->inverse_of)
-		{
-			$item->{$this->association()->inverse_of} = $this->parent();
-		}
-		
-		return $item;
-	}
-
-	protected function assign_inverse($item)
-	{
-		if ($this->association()->inverse_of)
-		{
-			$item->{$this->association()->inverse_of} = $this->parent();
-		}
-		return $this;
-	}
-
-	public function delete()
-	{
-		$this->association()->delete($this->parent(), $this);
+		$this->association()->clear($this->parent(), $this);
 		$this->_result = NULL;
 		$this->load_fields(array());
 		return $this;
 	}
 
-	public function build()
+	public function build(array $values = NULL)
 	{
-		$item = Jam::build($this->meta()->model());
-		$this->assign_inverse($item);
-		return $this->add($item);
-	}
+		$item = Jam::build($this->meta()->model(), $values);
 
-	public function create()
-	{
-		$item = Jam::build($this->meta()->model());
-		$this->assign_inverse($item);
 		$this->add($item);
-		$item->save();
-		return $this;
+
+		return $item;
 	}
 
+	public function create(array $values = NULL)
+	{
+		return $this->build($values)->save();
+	}
+
+	public function offsetGet($offset)
+	{
+		$item = parent::offsetGet($offset);
+		if ($item instanceof Jam_Model)
+		{
+			$this->association()->item_get($this->parent(), $item, $this);
+		}
+		return $item;
+	}
+
+	public function offsetSet($offset, $item)
+	{
+		parent::offsetSet($offset, $item);
+		if ($item instanceof Jam_Model)
+		{
+			$this->association()->item_set($this->parent(), $item, $this);
+		}
+	}
+
+	public function offsetUnset($offset)
+	{
+		if ($item instanceof Jam_Model)
+		{
+			$this->association()->item_unset($this->parent(), $item, $this);
+		}
+		parent::offsetUnset($offset);
+	}
 } 

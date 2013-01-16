@@ -83,6 +83,11 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		$this->_total_rows = count($this->_result);
 	}
 
+	public function total_rows()
+	{
+		return $this->total_rows;
+	}
+
 	public function serialize()
 	{
 		return serialize(array(

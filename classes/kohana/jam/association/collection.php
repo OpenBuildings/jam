@@ -62,6 +62,18 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
+	public function item_get(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+	}
+
+	public function item_set(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+	}
+
+	public function item_unset(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	{
+	}
+
 	abstract public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection);
 
 	public function model_after_save(Jam_Model $model)

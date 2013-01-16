@@ -142,6 +142,11 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		{
 			foreach ($this->filters as $filter => $arguments) 
 			{
+				if (is_numeric($filter))
+				{
+					$filter = $arguments;
+					$arguments = array();
+				}
 				$value = $this->run_filter($model, $value, $filter, $arguments);
 			}
 		}
@@ -223,7 +228,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		return array($value, $return);
 	}
 
-	public function run_filter(Jam_Attribute $model, $value, $filter, array $arguments = array())
+	public function run_filter(Jam_Validated $model, $value, $filter, array $arguments = array())
 	{
 		$bound = array(
 			':model' => $model, 

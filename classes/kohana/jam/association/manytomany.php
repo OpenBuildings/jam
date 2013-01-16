@@ -59,17 +59,23 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		if ( ! $model->loaded())
-			return NULL;
-
 		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
 			->parent($model)
-			->association($this)
-			->join_nested($this->join_table)
-				->context_model($this->foreign_model)
-				->on($this->association_foreign_key, '=', ':primary_key')
-			->end()
-			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
+			->association($this);
+
+		if ( ! $model->loaded())
+		{
+			$builder	
+				->join_nested($this->join_table)
+					->context_model($this->foreign_model)
+					->on($this->association_foreign_key, '=', ':primary_key')
+				->end()
+				->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
+		}	
+		else
+		{
+			$builder->load_fields(array());
+		}
 
 		if ($is_changed)
 		{
