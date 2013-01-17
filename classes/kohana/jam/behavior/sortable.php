@@ -23,24 +23,24 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	/**
 	 * Perform an order by position at the end of the select
 	 * 
-	 * @param Jam_Builder $builder 
+	 * @param Jam_Builder $select 
 	 */
-	public function builder_before_select(Jam_Query_Builder_Select $builder)
+	public function builder_before_select(Jam_Query_Builder_Select $select)
 	{
-		if ( ! $builder->inspect('order_by'))
+		if ( ! $select->inspect('order_by'))
 		{
-			$builder->order_by_position();
+			$select->order_by_position();
 		}
 	}
 
 	/**
-	 * $builder->order_by_position()
+	 * $select->order_by_position()
 	 * 
-	 * @param Jam_Builder $builder 
+	 * @param Jam_Builder $select 
 	 */
-	public function builder_call_order_by_position(Jam_Query_Builder_Select $builder)
+	public function builder_call_order_by_position(Jam_Query_Builder_Select $select)
 	{
-		$builder->order_by($this->_field, 'ASC');
+		$select->order_by($this->_field, 'ASC');
 	}
 
 	/**
