@@ -39,28 +39,14 @@ class Kohana_Upload_Server_Local extends Upload_Server
 		}
 		elseif (is_dir($file))
 		{
-	    return Upload_File::recursive_rmdir($file);
-		}
-	}
-
-	private function permissions($file)
-	{
-		if (isset($this->_config['group']) AND $this->_config['group'])
-		{
-			chgrp($this->realpath($file), $this->_config['group']);
+	    return Upload_Util::rmdir($file);
 		}
 	}
 
 	public function mkdir($file)
 	{
-		$result = mkdir($this->realpath($file), 0777, TRUE);
 
-		if ($result)
-		{
-			$this->permissions($file);
-		}
-
-		return $result;
+		return mkdir($this->realpath($file), 0777, true);
 	}
 
 	public function rename($file, $new_file)
@@ -93,22 +79,16 @@ class Kohana_Upload_Server_Local extends Upload_Server
 		{
 			if (is_uploaded_file($local_file))
 			{
-				$result = move_uploaded_file($local_file, $file);
+				return move_uploaded_file($local_file, $file);
 			}
 			elseif (is_file($local_file))
 			{
-				$result = rename($local_file, $file);
+				return rename($local_file, $file);
 			}
 		}
 		else
 		{
-			$result = copy($local_file, $file);
-		}
-
-		if ($result)
-		{
-			$this->permissions($file);
-			return $result;
+			return copy($local_file, $file);
 		}
 
 		return FALSE;

@@ -14,10 +14,8 @@ class Kohana_Unittest_Jam_Upload_TestCase extends Kohana_Unittest_Jam_TestCase {
 
 		$this->environmentDefault = Arr::merge(
 			array(
-				'jam.upload.temp' => array(
-					'path' => $this->test_temp,
-					'web' => '/temp/',
-				),
+				'jam.upload.temp.path' => $this->test_temp,
+				'jam.upload.temp.web' => '/temp/',
 				'jam.upload.servers' => array(
 					'test_local' => array(
 						'type' => 'local',

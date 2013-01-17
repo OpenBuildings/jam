@@ -16,7 +16,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @var boolean save the sizes of the image when saving the field
 	 */
 	public $save_size = FALSE;
-	
+
 	/**
 	 * @var  string  the server used to store the file
 	 */
@@ -73,7 +73,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 			}
 			elseif ($value)
 			{
-				$upload_file->source($value);
+				if (Upload_Source::valid($value))
+				{
+					$upload_file->source($value);
+				}
+				
 				$upload_file->filename($value);
 			}
 

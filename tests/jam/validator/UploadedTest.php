@@ -33,7 +33,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	public function test_normal()
 	{
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
 
 		Jam::validator_rule('uploaded', array('only' => 'image'))->validate($this->model, 'file', $this->value);
@@ -45,7 +45,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	public function test_is_file()
 	{
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'));
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'));
 
 		Jam::validator_rule('uploaded', array('only' => 'image'))->validate($this->model, 'file', $this->value);
 
@@ -56,7 +56,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	public function test_extension()
 	{
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'text.txt'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'text.txt'))
 			->save_to_temp();
 	
 		Jam::validator_rule('uploaded', array('only' => 'image'))->validate($this->model, 'file', $this->value);
@@ -68,7 +68,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	{
 		// Logo is 127 x 34
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
 		
 		Jam::validator_rule('uploaded', array('minimum_width' => 100))->validate($this->model, 'file', $this->value);
@@ -84,7 +84,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	{
 		// Logo is 127 x 34
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
 		
 		Jam::validator_rule('uploaded', array('minimum_height' => 20))->validate($this->model, 'file', $this->value);
@@ -100,7 +100,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	{
 		// Logo is 127 x 34
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
 		
 		Jam::validator_rule('uploaded', array('maximum_width' => 300))->validate($this->model, 'file', $this->value);
@@ -116,7 +116,7 @@ class Jam_Validator_UploadedTest extends Unittest_Jam_Upload_TestCase {
 	{
 		// Logo is 127 x 34
 		$this->value
-			->source(Upload_File::combine($this->test_local, 'source', 'logo.gif'))
+			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
 		
 		Jam::validator_rule('uploaded', array('maximum_height' => 100))->validate($this->model, 'file', $this->value);

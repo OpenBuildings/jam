@@ -61,7 +61,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 			$this->default = $this->format ? '' : 0;
 		}
 
-		if ( ! $this->timezone)
+		if ($this->timezone === NULL)
 		{
 			$this->timezone = Jam_Timezone::instance();
 		}
@@ -70,7 +70,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 
 	public function get(Jam_Validated $model, $value, $is_loaded)
 	{
-		if ($this->timezone->is_active() AND ! $is_loaded)
+		if ($this->timezone !== FALSE AND $this->timezone->is_active() AND ! $is_loaded)
 		{
 			if ( ! is_numeric($value) AND FALSE !== strtotime($value))
 			{
@@ -105,7 +105,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 		// Do we need to provide a default since we're creating or updating
 		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
 		{
-			$value = $this->timezone->time();
+			$value = ($this->timezone !== FALSE) ? $this->timezone->time() : time();
 		}
 		else
 		{
@@ -119,7 +119,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 				$value = $to_time;
 			}
 
-			if (is_numeric($value) AND $value)
+			if (is_numeric($value) AND $value AND $this->timezone !== FALSE)
 			{
 				$value = $this->timezone->convert($value, Jam_Timezone::USER_TIMEZONE, Jam_Timezone::MASTER_TIMEZONE);
 			}

@@ -40,7 +40,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 		$upload = $this->field->set($this->model, 'http://example.com/test.png', TRUE);
 
 		$this->assertInstanceOf('Upload_File', $upload);
-		$this->assertEquals('http://example.com/test.png', $upload->source());
+		$this->assertEquals('http://example.com/test.png', $upload->source()->data());
 		$this->assertEquals('http://example.com/test.png', $upload->filename());
 	}
 
@@ -48,7 +48,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 	{
 		$image = Jam::build('test_image');
 
-		$image->file = Upload_File::combine($this->test_local, 'source', 'logo.gif');
+		$image->file = Upload_Util::combine($this->test_local, 'source', 'logo.gif');
 		$image->save();
 
 		$this->assertFileExists($image->file->file());
