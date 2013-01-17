@@ -209,17 +209,17 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 	}
 
-	public function item_get(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	public function item_get(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
 	}
 
-	public function item_set(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	public function item_set(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);	
 	}
 
-	public function item_unset(Jam_Model $model, Jam_Model $item, Jam_Query_Builder_Associated $collection)
+	public function item_unset(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, NULL, NULL, NULL);
 	}

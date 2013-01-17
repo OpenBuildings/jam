@@ -64,7 +64,7 @@ abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dyn
 		$item = parent::offsetGet($offset);
 		if ($item instanceof Jam_Model)
 		{
-			$this->association()->item_get($this->parent(), $item, $this);
+			$this->association()->item_get($this->parent(), $item);
 		}
 		return $item;
 	}
@@ -74,7 +74,7 @@ abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dyn
 		parent::offsetSet($offset, $item);
 		if ($item instanceof Jam_Model)
 		{
-			$this->association()->item_set($this->parent(), $item, $this);
+			$this->association()->item_set($this->parent(), $item);
 		}
 	}
 
@@ -89,7 +89,7 @@ abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dyn
 
 		if (isset($item) AND $item instanceof Jam_Model)
 		{
-			$this->association()->item_unset($this->parent(), $item, $this);
+			$this->association()->item_unset($this->parent(), $item);
 		}
 	}
 } 

@@ -16,7 +16,7 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	{
 		parent::setUp();
 
-		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_blog'));
+		$this->meta = new Jam_Meta('test_blog');
 	}
 
 	public function data_initialize()
@@ -62,12 +62,12 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	/**
 	 * @dataProvider data_join
 	 */
-	public function test_join($name, $options, $table, $type, $expected_sql)
+	public function test_join($name, $options, $alias, $type, $expected_sql)
 	{
 		$association = new Jam_Association_Manytomany($options);
 		$association->initialize($this->meta, $name);
 
-		$this->assertEquals($expected_sql, (string) $association->join($table, $type));
+		$this->assertEquals($expected_sql, (string) $association->join($alias, $type));
 	}
 
 	public function data_get()
