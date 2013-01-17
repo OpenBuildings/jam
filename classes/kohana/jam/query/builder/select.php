@@ -245,4 +245,20 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		return $this->_meta;
 	}
+
+	/**
+	 * You can get some of the parameters of the jam query builder.
+	 * 
+	 * @param  string $name one of select, from, join, where, group_by, having, order_by, union, distinct, limit, offset, parameters
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		$allowed = array('select', 'from', 'join', 'where', 'group_by', 'having', 'order_by', 'union', 'distinct', 'limit', 'offset', 'parameters');
+
+		if ( ! in_array($name, $allowed))
+				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
+		
+		return $this->{'_'.$name};
+	}
 }

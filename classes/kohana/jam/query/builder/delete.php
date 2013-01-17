@@ -151,4 +151,14 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 		return $this->_params;
 	}
 
+	public function __get($name)
+	{
+		$allowed = array('table', 'where', 'order_by', 'limit', 'parameters');
+
+		if ( ! in_array($name, $allowed))
+				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
+		
+		return $this->{'_'.$name};
+	}
+
 }

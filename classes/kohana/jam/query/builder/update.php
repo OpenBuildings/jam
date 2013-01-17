@@ -146,4 +146,20 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 		return $this->_params;
 	}
 
+	/**
+	 * You can get some of the parameters of the jam query builder.
+	 * 
+	 * @param  string $name one of set, from, where, order_by, limit, parameters
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		$allowed = array('set', 'table', 'where', 'order_by', 'limit', 'parameters');
+
+		if ( ! in_array($name, $allowed))
+				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
+		
+		return $this->{'_'.$name};
+	}
+
 }
