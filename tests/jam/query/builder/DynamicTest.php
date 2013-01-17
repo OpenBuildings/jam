@@ -64,6 +64,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 	public function test_offsetSet()
 	{
 		$this->assertFalse(isset($this->collection[3]));
+		$this->assertFalse($this->collection->changed());
 
 		$this->collection[] = array('id' => 4, 'name' => 'Cleaner');
 		$this->assertTrue(isset($this->collection[3]));
@@ -87,6 +88,7 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 		$this->collection[] = $additional;
 
 		$this->assertSame($additional, $this->collection[4]);
+		$this->assertTrue($this->collection->changed());
 	}
 
 	public function test_offsetGet()
@@ -113,8 +115,12 @@ class Jam_Query_Builder_DynamicTest extends Unittest_TestCase {
 	public function test_offsetUnset()
 	{
 		$this->assertTrue(isset($this->collection[2]));
+		$this->assertFalse($this->collection->changed());
+
 		unset($this->collection[2]);
+
 		$this->assertFalse(isset($this->collection[2]));
+		$this->assertTrue($this->collection->changed());
 
 		$this->assertCount(2, $this->collection);
 	}

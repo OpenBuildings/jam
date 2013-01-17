@@ -80,10 +80,16 @@ abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dyn
 
 	public function offsetUnset($offset)
 	{
-		if ($item instanceof Jam_Model)
+		if ($this->result()->offsetExists($offset))
+		{
+			$item = $this->result()->offsetGet($offset);
+		}
+
+		parent::offsetUnset($offset);
+
+		if (isset($item) AND $item instanceof Jam_Model)
 		{
 			$this->association()->item_unset($this->parent(), $item, $this);
 		}
-		parent::offsetUnset($offset);
 	}
 } 

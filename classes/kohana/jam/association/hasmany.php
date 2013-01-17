@@ -61,15 +61,13 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		$value = parent::set($model, $value, $is_changed);
-
 		if ($this->inverse_of AND is_array($value))
 		{
 			foreach ($value as & $item) 
 			{
-				if ($item instanceof Jam_Validated)
+				if ($item instanceof Jam_Model)
 				{
-					$item->{$this->inverse_of} = $model;
+					$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
 				}
 			}
 		}

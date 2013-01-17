@@ -29,18 +29,22 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
-	public function set(Jam_Validated $model, $value, $is_changed)
+	public function load_fields(Jam_Validated $model, $value)
 	{
-		if ( ! $is_changed)
+		if ($value instanceof Jam_Query_Builder_Associated)
+		{
+			$collection = $value;
+		}
+		else
 		{
 			$collection = new Jam_Query_Builder_Associated($this->foreign_model);
-			return $collection
-				->parent($model)
-				->association($this)
+			$collection
 				->load_fields($value);
 		}
-		
-		return $value;
+
+		return $collection
+			->parent($model)
+			->association($this);
 	}
 
 	public function initialize(Jam_Meta $meta, $name)

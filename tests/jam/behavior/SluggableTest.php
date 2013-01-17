@@ -73,7 +73,7 @@ class Jam_Behavior_SluggableTest extends Unittest_Jam_Database_TestCase {
 		{
 			$this->setExpectedException('Kohana_Exception');
 		}
-		Jam::find('test_video')->where_slug($pattern);
+		Jam::all('test_video')->where_slug($pattern);
 	}
 
 	/**

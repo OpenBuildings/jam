@@ -31,7 +31,7 @@ class Jam_Behavior_ParanoidTest extends Unittest_Jam_Database_TestCase {
 		$this->assertCount(3, Jam::all('test_video')->deleted(Jam_Behavior_Paranoid::ALL));
 		$this->assertCount(2, Jam::all('test_video')->deleted(Jam_Behavior_Paranoid::DELETED));
 
-		$video = Jam::find('test_video')->deleted(Jam_Behavior_Paranoid::ALL)->where(':primary_key', '=', 1)->first();
+		$video = Jam::all('test_video')->deleted(Jam_Behavior_Paranoid::ALL)->where(':primary_key', '=', 1)->first();
 
 		$video->restore_delete();
 

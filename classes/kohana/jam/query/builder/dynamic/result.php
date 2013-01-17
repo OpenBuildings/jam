@@ -12,6 +12,7 @@
 class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached implements Serializable{
 
 	protected $_changed;
+	protected $_removed_items = FALSE;
 
 	public function __construct(array $result, $sql, $as_object = NULL)
 	{
@@ -49,7 +50,7 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 	public function changed($offset = NULL, $value = NULL)
 	{
 		if ($offset === NULL)
-			return (bool) array_filter($this->_changed);
+			return ( (bool) array_filter($this->_changed) OR $this->_removed_items);
 
 		if (is_array($offset))
 		{
@@ -74,6 +75,8 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 	{
 		array_splice($this->_result, $offset, 1);
 		array_splice($this->_changed, $offset, 1);
+
+		$this->_removed_items = TRUE;
 
 		if ($this->_current_row === $offset)
 		{
