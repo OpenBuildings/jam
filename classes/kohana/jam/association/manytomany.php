@@ -130,25 +130,4 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 
 		return $query;
 	}
-
-	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
-	{
-		if ($ids = array_filter($collection->ids()))
-		{
-			$this->remove_items_query($ids, $model)->execute(Jam::meta($this->model)->db());
-		}
-	}
-
-	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
-	{
-		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
-		{
-			$this->remove_items_query($old_ids, $model)->execute(Jam::meta($this->model)->db());
-		}
-		
-		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
-		{
-			$this->add_items_query($new_ids, $model)->execute(Jam::meta($this->model)->db());
-		}
-	}
 }

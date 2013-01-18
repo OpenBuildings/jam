@@ -146,7 +146,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	}
 
 
-	public function remove_items_query(array $ids)
+	public function remove_items_query(array $ids, Jam_Model $model)
 	{
 		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 			->where(':primary_key', 'IN', $ids)
@@ -222,19 +222,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	public function item_unset(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, NULL, NULL, NULL);
-	}
-
-	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
-	{
-		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
-		{
-			$this->remove_items_query($old_ids)->execute();
-		}
-		
-		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
-		{
-			$this->add_items_query($new_ids, $model)->execute();
-		}
 	}
 
 	/**

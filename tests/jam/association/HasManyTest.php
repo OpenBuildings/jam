@@ -203,7 +203,9 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids));
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
+
+		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids, $model));
 	}
 
 	public function data_add_items_query()

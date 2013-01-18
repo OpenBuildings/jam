@@ -87,11 +87,20 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		return (bool) $this->polymorphic;
 	}
 
+	/**
+	 * Get the foreign model, if its a polymorphic, use the polymorphic field (e.g. item_model is the polymorphic field, then it's contents will be used)
+	 * @param  Jam_Model $model 
+	 * @return string           
+	 */
 	public function foreign_model(Jam_Model $model)
 	{
 		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
 	}
 
+	/**
+	 * If we're using count_cache, increment the count_cache field on the foreign model
+	 * @param  Jam_Model $model 
+	 */
 	public function model_after_create(Jam_Model $model)
 	{
 		if ($this->count_cache)
@@ -100,6 +109,10 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 	}
 
+	/**
+	 * If we're using count_cache, decrement the count_cache field on the foreign model
+	 * @param  Jam_Model $model 
+	 */
 	public function model_after_delete(Jam_Model $model)
 	{
 		if ($this->count_cache)

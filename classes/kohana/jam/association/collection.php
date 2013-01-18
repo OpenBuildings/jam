@@ -78,7 +78,9 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	{
 	}
 
-	abstract public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection);
+	abstract public function remove_items_query(array $ids, Jam_Model $model);
+	abstract public function add_items_query(array $ids, Jam_Model $model);
+
 
 	public function model_after_save(Jam_Model $model)
 	{
@@ -89,4 +91,26 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			$this->save($model, $collection);
 		}
 	}
+
+	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
+	{
+		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
+		{
+			$this->remove_items_query($old_ids, $model)->execute();
+		}
+		
+		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
+		{
+			$this->add_items_query($new_ids, $model)->execute();
+		}
+	}
+
+	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
+	{
+		if ($ids = array_filter($collection->ids()))
+		{
+			$this->remove_items_query($ids, $model)->execute(Jam::meta($this->model)->db());
+		}
+	}
+
 }
