@@ -10,10 +10,16 @@
  */
 abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
+	/**
+	 * Polymorphic option - this describes the opposite polymorphic association
+	 * @var string
+	 */
 	public $as = NULL;
 
-	public $foreign_default = 0;
-
+	/**
+	 * The foreign key
+	 * @var string
+	 */
 	public $foreign_key = NULL;
 
 	public $inverse_of = NULL;
@@ -45,47 +51,11 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		if ($this->as)
 		{
 			$this->foreign_key = $this->as.'_id';
-			$this->polymorphic_key = $this->as.'_model';
+			if ( ! $this->polymorphic_key)
+			{
+				$this->polymorphic_key = $this->as.'_model';
+			}
 		}
-	}
-
-	/**
-	 * See if the association is polymorphic
-	 * @return boolean 
-	 */
-	public function is_polymorphic()
-	{
-		return (bool) $this->as;
-	}
-
-	public function join($alias, $type = NULL)
-	{
-		$join = Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
-			->context_model($this->model)
-			->on($this->foreign_key, '=', ':primary_key');
-
-		if ($this->is_polymorphic())
-		{
-			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->model.'"'));
-		}
-
-		return $join;
-	}
-
-	protected function _find_item($foreign_model, $key)
-	{
-		if ($key instanceof Jam_Model)
-		{
-			$query = $this->query_builder('all', $key);
-		}
-		else
-		{
-			$query = Jam_Query_Builder_Collection::factory($foreign_model)
-				->where(':unique_key', '=', $key)
-				->limit(1);
-		}
-
-		return $query->current();
 	}
 
 	public function load_fields(Jam_Validated $model, $value)
@@ -101,6 +71,20 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		}
 		
 		return $value;
+	}
+
+	public function join($alias, $type = NULL)
+	{
+		$join = Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+			->context_model($this->model)
+			->on($this->foreign_key, '=', ':primary_key');
+
+		if ($this->is_polymorphic())
+		{
+			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->model.'"'));
+		}
+
+		return $join;
 	}
 
 	public function get(Jam_Validated $model, $value, $is_changed)
@@ -139,52 +123,6 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		else
 		{
 			return $this->_find_item($this->foreign_model, $model);
-		}
-	}
-
-	public function query_builder($type, Jam_Model $model)
-	{
-		$query = call_user_func("Jam::{$type}", $this->foreign_model)
-			->where($this->foreign_key, '=', $model->id());
-
-		if ($this->is_polymorphic())
-		{
-			$query->where($this->polymorphic_key, '=', $model->meta()->model());
-		}
-
-		return $query;
-	}
-
-	public function update_query(Jam_Model $model, $new_id, $new_model)
-	{
-		$query = $this->query_builder('update', $model)
-			->value($this->foreign_key, $new_id);
-
-		if ($this->is_polymorphic())
-		{
-			$query->value($this->polymorphic_key, $new_model);
-		}
-		return $query;
-	}
-
-	public function model_before_delete(Jam_Model $model)
-	{
-		switch ($this->dependent) 
-		{
-			case Jam_Association::DELETE:
-				if ($model->{$this->name})
-				{
-					$model->{$this->name}->delete();
-				}
-			break;
-
-			case Jam_Association::ERASE:
-				$this->query_builder('delete', $model)->execute();
-			break;
-
-			case Jam_Association::NULLIFY:
-				$this->update_query($model, NULL, NULL)->execute();
-			break;
 		}
 	}
 
@@ -228,5 +166,76 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 				$query->execute();
 			}
 		}
+	}
+
+	public function model_before_delete(Jam_Model $model)
+	{
+		switch ($this->dependent) 
+		{
+			case Jam_Association::DELETE:
+				if ($model->{$this->name})
+				{
+					$model->{$this->name}->delete();
+				}
+			break;
+
+			case Jam_Association::ERASE:
+				$this->query_builder('delete', $model)->execute();
+			break;
+
+			case Jam_Association::NULLIFY:
+				$this->update_query($model, NULL, NULL)->execute();
+			break;
+		}
+	}
+
+	/**
+	 * See if the association is polymorphic
+	 * @return boolean 
+	 */
+	public function is_polymorphic()
+	{
+		return (bool) $this->as;
+	}
+
+	protected function _find_item($foreign_model, $key)
+	{
+		if ($key instanceof Jam_Model)
+		{
+			$query = $this->query_builder('all', $key);
+		}
+		else
+		{
+			$query = Jam_Query_Builder_Collection::factory($foreign_model)
+				->where(':unique_key', '=', $key)
+				->limit(1);
+		}
+
+		return $query->current();
+	}
+
+	public function query_builder($type, Jam_Model $model)
+	{
+		$query = call_user_func("Jam::{$type}", $this->foreign_model)
+			->where($this->foreign_key, '=', $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$query->where($this->polymorphic_key, '=', $model->meta()->model());
+		}
+
+		return $query;
+	}
+
+	public function update_query(Jam_Model $model, $new_id, $new_model)
+	{
+		$query = $this->query_builder('update', $model)
+			->value($this->foreign_key, $new_id);
+
+		if ($this->is_polymorphic())
+		{
+			$query->value($this->polymorphic_key, $new_model);
+		}
+		return $query;
 	}
 }

@@ -82,60 +82,25 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 	}
 
-	public function is_polymorphic()
-	{
-		return (bool) $this->polymorphic;
-	}
-
 	/**
-	 * Get the foreign model, if its a polymorphic, use the polymorphic field (e.g. item_model is the polymorphic field, then it's contents will be used)
-	 * @param  Jam_Model $model 
-	 * @return string           
+	 * Load associated model (from database or after deserialization)
+	 * @param  Jam_Validated $model 
+	 * @param  mixed         $value 
+	 * @return Jam_Model
 	 */
-	public function foreign_model(Jam_Model $model)
+	public function load_fields(Jam_Validated $model, $value)
 	{
-		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
-	}
-
-	/**
-	 * If we're using count_cache, increment the count_cache field on the foreign model
-	 * @param  Jam_Model $model 
-	 */
-	public function model_after_create(Jam_Model $model)
-	{
-		if ($this->count_cache)
+		if ( ! ($value instanceof Jam_Model))
 		{
-			Jam_Countcache::increment($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+			$value = Jam::build($this->foreign_model)->load_fields($value);
 		}
-	}
 
-	/**
-	 * If we're using count_cache, decrement the count_cache field on the foreign model
-	 * @param  Jam_Model $model 
-	 */
-	public function model_after_delete(Jam_Model $model)
-	{
-		if ($this->count_cache)
+		if ($this->inverse_of)
 		{
-			Jam_Countcache::decrement($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+			$value->{$this->inverse_of} = $model;
 		}
-	}
-
-	/**
-	 * Perform validation on the belonging model, if it was changed. 
-	 * @param  Jam_Model      $model   
-	 * @param  Jam_Event_Data $data    
-	 * @param  array         $changed 
-	 */
-	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
-	{
-		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
-		{
-			if ( ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
-			{
-				$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
-			}
-		}
+		
+		return $value;
 	}
 
 	/**
@@ -164,28 +129,6 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		return $join
 			->context_model($this->model)
 			->on(':primary_key', '=', $this->foreign_key);
-	}
-
-	/**
-	 * Get an item based on a unique key
-	 * @param  string $foreign_model 
-	 * @param  string $key           
-	 * @return Jam_Model
-	 */
-	protected function _find_item($foreign_model, $key)
-	{
-		return Jam::find($foreign_model, $key);
-	}
-
-	/**
-	 * Delete an item with a specific key
-	 * @param  string $foreign_model 
-	 * @param  string $key           
-	 * @return Database_Result                
-	 */
-	protected function _delete_item($foreign_model, $key)
-	{
-		return Jam::delete($foreign_model)->where_key($key)->execute();
 	}
 
 	/**
@@ -231,27 +174,6 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	}
 
 	/**
-	 * Load associated model (from database or after deserialization)
-	 * @param  Jam_Validated $model 
-	 * @param  mixed         $value 
-	 * @return Jam_Model
-	 */
-	public function load_fields(Jam_Validated $model, $value)
-	{
-		if ( ! ($value instanceof Jam_Model))
-		{
-			$value = Jam::build($this->foreign_model)->load_fields($value);
-		}
-
-		if ($this->inverse_of)
-		{
-			$value->{$this->inverse_of} = $model;
-		}
-		
-		return $value;
-	}
-
-	/**
 	 * Set releated model, by assigning foreign key for this model
 	 * @param Jam_Validated $model      
 	 * @param mixed         $value      
@@ -273,6 +195,23 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Perform validation on the belonging model, if it was changed. 
+	 * @param  Jam_Model      $model   
+	 * @param  Jam_Event_Data $data    
+	 * @param  array         $changed 
+	 */
+	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
+	{
+		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
+		{
+			if ( ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
+			{
+				$model->errors()->add($this->name, 'association', array(':errors' => $model->{$this->name}->errors()));
+			}
+		}
 	}
 
 	/**
@@ -298,6 +237,18 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	}
 
 	/**
+	 * If we're using count_cache, increment the count_cache field on the foreign model
+	 * @param  Jam_Model $model 
+	 */
+	public function model_after_create(Jam_Model $model)
+	{
+		if ($this->count_cache)
+		{
+			Jam_Countcache::increment($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+		}
+	}
+
+	/**
 	 * Delete related model if it has been assigned as dependent
 	 * If dependent is Jam_Association::DELETE - execute the delete method (and all events)
 	 * IF dependent is Jam_Association::ERASE - simply remove from database without executing any events (faster)
@@ -314,4 +265,58 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$this->_delete_item($this->foreign_model($model), $model->{$this->foreign_key});	
 		}
 	}
+
+	/**
+	 * If we're using count_cache, decrement the count_cache field on the foreign model
+	 * @param  Jam_Model $model 
+	 */
+	public function model_after_delete(Jam_Model $model)
+	{
+		if ($this->count_cache)
+		{
+			Jam_Countcache::decrement($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
+		}
+	}
+
+	/**
+	 * Check if association is polymophic
+	 * @return boolean 
+	 */
+	public function is_polymorphic()
+	{
+		return (bool) $this->polymorphic;
+	}
+
+	/**
+	 * Get the foreign model, if its a polymorphic, use the polymorphic field (e.g. item_model is the polymorphic field, then it's contents will be used)
+	 * @param  Jam_Model $model 
+	 * @return string           
+	 */
+	public function foreign_model(Jam_Model $model)
+	{
+		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
+	}
+
+	/**
+	 * Get an item based on a unique key from the database
+	 * @param  string $foreign_model 
+	 * @param  string $key           
+	 * @return Jam_Model
+	 */
+	protected function _find_item($foreign_model, $key)
+	{
+		return Jam::find($foreign_model, $key);
+	}
+
+	/**
+	 * Delete an item with a specific key from the database
+	 * @param  string $foreign_model 
+	 * @param  string $key           
+	 * @return Database_Result                
+	 */
+	protected function _delete_item($foreign_model, $key)
+	{
+		return Jam::delete($foreign_model)->where_key($key)->execute();
+	}
+
 }

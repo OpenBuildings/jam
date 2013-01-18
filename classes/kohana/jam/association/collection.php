@@ -29,6 +29,22 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		return implode('_', $through);
 	}
 
+	/**
+	 * Assign default forein_model to singular association name
+	 * @param  Jam_Meta $meta 
+	 * @param  string   $name 
+	 */
+	public function initialize(Jam_Meta $meta, $name)
+	{
+		if ( ! $this->foreign_model)
+		{
+			$this->foreign_model = Inflector::singular($name);
+		}
+
+		parent::initialize($meta, $name);
+	}
+
+
 	public function load_fields(Jam_Validated $model, $value)
 	{
 		if ($value instanceof Jam_Query_Builder_Associated)
@@ -47,22 +63,22 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			->association($this);
 	}
 
-	public function initialize(Jam_Meta $meta, $name)
-	{
-		if ( ! $this->foreign_model)
-		{
-			$this->foreign_model = Inflector::singular($name);
-		}
-
-		parent::initialize($meta, $name);
-	}
-
 
 	public function model_after_check(Jam_Model $model)
 	{
 		if ($model->changed($this->name) AND ! $model->{$this->name}->check_changed())
 		{
 			$model->errors()->add($this->name, 'association_collection');
+		}
+	}
+
+	public function model_after_save(Jam_Model $model)
+	{
+		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
+		{
+			$collection->save_changed();
+
+			$this->save($model, $collection);
 		}
 	}
 
@@ -79,18 +95,9 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	}
 
 	abstract public function remove_items_query(array $ids, Jam_Model $model);
+
+	
 	abstract public function add_items_query(array $ids, Jam_Model $model);
-
-
-	public function model_after_save(Jam_Model $model)
-	{
-		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
-		{
-			$collection->save_changed();
-
-			$this->save($model, $collection);
-		}
-	}
 
 	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
 	{

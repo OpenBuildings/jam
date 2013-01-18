@@ -59,6 +59,26 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $join;
 	}
 
+	public function get(Jam_Validated $model, $value, $is_changed)
+	{
+		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
+			->parent($model)
+			->association($this)
+			->where($this->foreign_key, '=', $model->id());
+
+		if ($this->is_polymorphic())
+		{
+			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
+		}
+
+		if ($is_changed)
+		{
+			$builder->set($value);
+		}
+
+		return $builder;
+	}
+
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($this->inverse_of AND is_array($value))
@@ -73,6 +93,27 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 
 		return $value;
+	}
+
+	public function model_before_delete(Jam_Model $model)
+	{
+		switch ($this->dependent) 
+		{
+			case Jam_Association::DELETE:
+				foreach ($model->{$this->name} as $item) 
+				{
+					$item->delete();
+				}
+			break;
+
+			case Jam_Association::ERASE:
+				$this->erase_query($model)->execute();
+			break;
+
+			case Jam_Association::NULLIFY:
+				$this->nullify_query($model)->execute();
+			break;
+		}
 	}
 
 	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
@@ -95,26 +136,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			}
 			$nullify->execute();
 		}
-	}
-
-	public function get(Jam_Validated $model, $value, $is_changed)
-	{
-		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
-			->parent($model)
-			->association($this)
-			->where($this->foreign_key, '=', $model->id());
-
-		if ($this->is_polymorphic())
-		{
-			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
-		}
-
-		if ($is_changed)
-		{
-			$builder->set($value);
-		}
-
-		return $builder;
 	}
 
 	public function erase_query(Jam_Model $model)
@@ -173,26 +194,6 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $query;
 	}
 
-	public function model_before_delete(Jam_Model $model)
-	{
-		switch ($this->dependent) 
-		{
-			case Jam_Association::DELETE:
-				foreach ($model->{$this->name} as $item) 
-				{
-					$item->delete();
-				}
-			break;
-
-			case Jam_Association::ERASE:
-				$this->erase_query($model)->execute();
-			break;
-
-			case Jam_Association::NULLIFY:
-				$this->nullify_query($model)->execute();
-			break;
-		}
-	}
 
 	public function assign_item(Jam_Model $item, $foreign_key, $polymorphic_key, $inverse_of)
 	{
