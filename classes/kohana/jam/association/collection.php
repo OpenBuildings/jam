@@ -44,7 +44,12 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		parent::initialize($meta, $name);
 	}
 
-
+	/**
+	 * Load associated models (from database or after deserialization)
+	 * @param  Jam_Validated $model 
+	 * @param  mixed         $value 
+	 * @return Jam_Query_Builder_Associated
+	 */
 	public function load_fields(Jam_Validated $model, $value)
 	{
 		if ($value instanceof Jam_Query_Builder_Associated)
@@ -63,7 +68,10 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			->association($this);
 	}
 
-
+	/**
+	 * Perform checks on all changed items from this collection
+	 * @param  Jam_Model $model 
+	 */
 	public function model_after_check(Jam_Model $model)
 	{
 		if ($model->changed($this->name) AND ! $model->{$this->name}->check_changed())
@@ -72,6 +80,10 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
+	/**
+	 * Persist this collection in the database
+	 * @param  Jam_Model $model 
+	 */
 	public function model_after_save(Jam_Model $model)
 	{
 		if ($model->changed($this->name) AND $collection = $model->{$this->name} AND $collection->changed())
@@ -82,41 +94,80 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 		}
 	}
 
+	/**
+	 * Use this method to perform special actions when an item is requested from the collection
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_get(Jam_Model $model, Jam_Model $item)
 	{
+		// Extend
 	}
 
+	/**
+	 * Use this method to perform special actions when an item is set to the collection
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_set(Jam_Model $model, Jam_Model $item)
 	{
+		// Extend
 	}
 
+	/**
+	 * Use this method to perform special actions when an item is removed from the collection
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_unset(Jam_Model $model, Jam_Model $item)
 	{
+		// Extend
 	}
 
-	abstract public function remove_items_query(array $ids, Jam_Model $model);
+	/**
+	 * A database query used to remove items from the model
+	 * @param  array     $ids   
+	 * @param  Jam_Model $model 
+	 * @return Database_Query
+	 */
+	abstract public function remove_items_query(Jam_Model $model, array $ids);
 
-	
-	abstract public function add_items_query(array $ids, Jam_Model $model);
+	/**
+	 * A database query used to add items to the model
+	 * @param  array     $ids   
+	 * @param  Jam_Model $model 
+	 * @return Database_Query
+	 */
+	abstract public function add_items_query(Jam_Model $model, array $ids);
 
+	/**
+	 * Execute remove_items_query and add_items_query to persist the colleciton to the datbaase
+	 * @param  Jam_Model                    $model      
+	 * @param  Jam_Query_Builder_Associated $collection 
+	 */
 	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{
-			$this->remove_items_query($old_ids, $model)->execute();
+			$this->remove_items_query($model, $old_ids)->execute(Jam::meta($this->model)->db());
 		}
 		
 		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
 		{
-			$this->add_items_query($new_ids, $model)->execute();
+			$this->add_items_query($model, $new_ids)->execute(Jam::meta($this->model)->db());
 		}
 	}
 
+	/**
+	 * Use the remove query to remove all items from the collection
+	 * @param  Jam_Validated                $model      
+	 * @param  Jam_Query_Builder_Associated $collection 
+	 */
 	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
 	{
 		if ($ids = array_filter($collection->ids()))
 		{
-			$this->remove_items_query($ids, $model)->execute(Jam::meta($this->model)->db());
+			$this->remove_items_query($model, $ids)->execute(Jam::meta($this->model)->db());
 		}
 	}
 

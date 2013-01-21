@@ -149,7 +149,7 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 		$association->initialize($this->meta, $name);
 		$model = Jam::build('test_blog')->load_fields(array('id' => 1));
 
-		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids, $model));
+		$this->assertEquals($expected_sql, (string) $association->remove_items_query($model, $ids));
 	}
 
 	public function data_add_items_query()
@@ -173,7 +173,7 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 
 		$model = Jam::build('test_blog')->load_fields(array('id' => 1));
 
-		$this->assertEquals($expected_sql, (string) $association->add_items_query($ids, $model));
+		$this->assertEquals($expected_sql, (string) $association->add_items_query($model, $ids));
 	}
 
 }

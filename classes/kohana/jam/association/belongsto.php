@@ -105,6 +105,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
+	 * You can join polymorphic association only when you pass an alias, wich will be used as the 
+	 * name of the model to match to the polymorphic_key
+	 * 
 	 * @param  string $alias table name alias
 	 * @param  string $type  join type (LEFT, NATURAL)
 	 * @return Jam_Query_Builder_Join        
@@ -219,11 +222,11 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 * Only save related model if it has been changed, and is not in a process of saving itself
 	 * @param  Jam_Model      $model   
 	 * @param  Jam_Event_Data $data    
-	 * @param  boolean        $is_changed 
+	 * @param  boolean        $changed 
 	 */
-	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $is_changed)
+	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($value = Arr::get($is_changed, $this->name) AND Jam_Association::is_changed($value))
+		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
 		{
 			if ($item = $model->{$this->name})
 			{

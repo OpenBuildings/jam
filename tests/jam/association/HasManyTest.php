@@ -55,8 +55,8 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 			array('test_posts', array(), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
 			array('test_posts', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_posts` AS `Posts` ON (`Posts`.`test_author_id` = `test_authors`.`id`)'),
 			array('posts', array('foreign_model' => 'test_post'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
-			array('test_posts', array('as' => 'poster'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`poster_id` = `test_authors`.`id` AND `test_posts`.`poster_model` = "test_author")'),
-			array('test_posts', array('as' => 'poster'), 'articles', NULL, 'JOIN `test_posts` AS `articles` ON (`articles`.`poster_id` = `test_authors`.`id` AND `articles`.`poster_model` = "test_author")'),
+			array('test_posts', array('as' => 'poster'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`poster_id` = `test_authors`.`id` AND `test_posts`.`poster_model` = \'test_author\')'),
+			array('test_posts', array('as' => 'poster'), 'articles', NULL, 'JOIN `test_posts` AS `articles` ON (`articles`.`poster_id` = `test_authors`.`id` AND `articles`.`poster_model` = \'test_author\')'),
 		);
 	}
 
@@ -205,7 +205,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 
 		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
-		$this->assertEquals($expected_sql, (string) $association->remove_items_query($ids, $model));
+		$this->assertEquals($expected_sql, (string) $association->remove_items_query($model, $ids));
 	}
 
 	public function data_add_items_query()
@@ -228,7 +228,7 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 
 		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
-		$this->assertEquals($expected_sql, (string) $association->add_items_query($ids, $model));
+		$this->assertEquals($expected_sql, (string) $association->add_items_query($model, $ids));
 	}
 
 	public function test_save()
@@ -257,13 +257,13 @@ class Jam_Association_HasmanyTest extends Unittest_TestCase {
 		$association
 			->expects($this->once())
 			->method('add_items_query')
-			->with($this->equalTo(array(4, 5)), $this->equalTo($model))
+			->with($this->equalTo($model), $this->equalTo(array(4, 5)))
 			->will($this->returnValue($dummy));
 
 		$association
 			->expects($this->once())
 			->method('remove_items_query')
-			->with($this->equalTo(array(1, 2)))
+			->with($this->equalTo($model), $this->equalTo(array(1, 2)))
 			->will($this->returnValue($dummy));
 
 		$association->save($model, $collection);

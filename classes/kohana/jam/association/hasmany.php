@@ -11,22 +11,39 @@
  */
 abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection {
 
+	/**
+	 * Set this for polymorphic associations, this has to be the name of the opposite belongsto relation,
+	 * so if the oposite relation was item->parent, then this will have to be 'items' => Jam::association('hasmany', array('as' => 'parent')
+	 * If this option is set then the foreign_key default becomes "{$as}_id", and polymorphic_key to "{$as}_model"
+	 * @var string
+	 */
 	public $as;
 
+	/**
+	 * The field in the opposite model that is used to linking to this one.
+	 * It defaults to "{$foreign_model}_id", but you can custumize it
+	 * @var string
+	 */
 	public $foreign_key = NULL;
 
+	/**
+	 * The field in the opposite model that is used by the polymorphic association to determine the model
+	 * It defaults to "{$as}_model"
+	 * @var string
+	 */
 	public $polymorphic_key = NULL;
 
+	/**
+	 * You can set this to the name of the opposite belongsto relation for optimization purposes
+	 * @var string
+	 */
 	public $inverse_of = NULL;
 
-	public $count_cache = NULL;
-
 	/**
-	 * Automatically sets foreign to sensible defaults.
+	 * Initialize foreign_key, as, and polymorphic_key with default values
 	 *
 	 * @param   string  $model
 	 * @param   string  $name
-	 * @return  void
 	 */
 	public function initialize(Jam_Meta $meta, $name)
 	{
@@ -41,10 +58,19 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		if ($this->as)
 		{
 			$this->foreign_key = $this->as.'_id';
-			$this->polymorphic_key = $this->as.'_model';
+			if ( ! $this->polymorphic_key)
+			{
+				$this->polymorphic_key = $this->as.'_model';
+			}
 		}
 	}
 
+	/**
+	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
+	 * @param  string $alias table name alias
+	 * @param  string $type  join type (LEFT, NATURAL)
+	 * @return Jam_Query_Builder_Join        
+	 */
 	public function join($alias, $type = NULL)
 	{
 		$join = Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
@@ -53,32 +79,45 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$join->on($this->polymorphic_key, '=', DB::expr('"'.$this->model.'"'));
+			$join->on($this->polymorphic_key, '=', DB::expr(':model', array(':model' => $this->model)));
 		}
 
 		return $join;
 	}
 
+	/**
+	 * Get a Jam_Query_Builder_Associated for this association
+	 * @param  Jam_Validated $model      
+	 * @param  mixed         $value      
+	 * @param  boolean       $is_changed 
+	 * @return Jam_Query_Builder_Associated
+	 */
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
-		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
+		$collection = Jam_Query_Builder_Associated::factory($this->foreign_model)
 			->parent($model)
 			->association($this)
 			->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
 		{
-			$builder->where($this->polymorphic_key, '=', $model->meta()->model());
+			$collection->where($this->polymorphic_key, '=', $model->meta()->model());
 		}
 
 		if ($is_changed)
 		{
-			$builder->set($value);
+			$collection->set($value);
 		}
 
-		return $builder;
+		return $collection;
 	}
 
+	/**
+	 * Assign inverse associations to elements of arrays
+	 * @param Jam_Validated $model      
+	 * @param mixed         $value      
+	 * @param boolean       $is_changed 
+	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($this->inverse_of AND is_array($value))
@@ -95,6 +134,10 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $value;
 	}
 
+	/**
+	 * Before the model is deleted, and the depenedent option is set, remove the dependent models
+	 * @param  Jam_Model $model 
+	 */
 	public function model_before_delete(Jam_Model $model)
 	{
 		switch ($this->dependent) 
@@ -116,28 +159,26 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 	}
 
+	/**
+	 * Remove items from this association (withought deleteing it) and persist the data in the database
+	 * @param  Jam_Validated                $model     
+	 * @param  Jam_Query_Builder_Associated $collection
+	 */
 	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
 	{
-		$ids = array();
 		foreach ($collection as $item) 
 		{
 			$item->{$this->foreign_key} = NULL;
-			$ids[] = $item->id();
 		}
-		if (count($ids = array_filter($ids)) > 0)
-		{
-			$nullify = Jam_Query_Builder_Update::factory($this->foreign_model)
-				->where_key($ids)
-				->value($this->foreign_key, NULL);
 
-			if ($this->is_polymorphic())
-			{
-				$nullify->value($this->polymorphic_key, NULL);
-			}
-			$nullify->execute();
-		}
+		$this->nullify_query($model)->execute();
 	}
 
+	/**
+	 * Generate a query to delete associated models in the database
+	 * @param  Jam_Model $model 
+	 * @return Database_Query           
+	 */
 	public function erase_query(Jam_Model $model)
 	{
 		$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
@@ -151,6 +192,11 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $query;
 	}
 
+	/**
+	 * Generate a query to remove models from this association (without deleting them)
+	 * @param  Jam_Model $model 
+	 * @return Database_Query
+	 */
 	public function nullify_query(Jam_Model $model)
 	{
 		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
@@ -166,8 +212,13 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $query;
 	}
 
-
-	public function remove_items_query(array $ids, Jam_Model $model)
+	/**
+	 * Generate a query to remove models from the association (without deleting them), for specific ids
+	 * @param  Jam_Model $model
+	 * @param  array     $ids  
+	 * @return Database_Query
+	 */
+	public function remove_items_query(Jam_Model $model, array $ids)
 	{
 		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 			->where(':primary_key', 'IN', $ids)
@@ -181,7 +232,13 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $query; 
 	}
 
-	public function add_items_query(array $ids, Jam_Model $model)
+	/**
+	 * Generate a query to add models from the association (without deleting them), for specific ids
+	 * @param  Jam_Model $model
+	 * @param  array     $ids  
+	 * @return Database_Query
+	 */
+	public function add_items_query(Jam_Model $model, array $ids)
 	{
 		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 			->where(':primary_key', 'IN', $ids)
@@ -195,7 +252,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	}
 
 
-	public function assign_item(Jam_Model $item, $foreign_key, $polymorphic_key, $inverse_of)
+	protected function assign_item(Jam_Model $item, $foreign_key, $polymorphic_key, $inverse_of)
 	{
 		$item->{$this->foreign_key} = $foreign_key;
 		
@@ -210,16 +267,34 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		}
 	}
 
+	/**
+	 * Set the foreign and polymorphic keys on an item when its requested from the associated collection
+	 * 
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_get(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
 	}
 
+	/**
+	 * Set the foreign and polymorphic keys on an item when its set to the associated collection
+	 * 
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_set(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);	
 	}
 
+	/**
+	 * Unset the foreign and polymorphic keys on an item when its removed from the associated collection
+	 * 
+	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $item  
+	 */
 	public function item_unset(Jam_Model $model, Jam_Model $item)
 	{
 		$this->assign_item($item, NULL, NULL, NULL);

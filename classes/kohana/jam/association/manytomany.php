@@ -25,7 +25,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	public $association_foreign_key = NULL;
 
 	/**
-	 * Then ame of the join table
+	 * Then n ame of the join table
 	 * @var string
 	 */
 	public $join_table = NULL;
@@ -111,14 +111,14 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->where($this->foreign_key, '=', $model->id());
 	}
 
-	public function remove_items_query(array $ids, Jam_Model $model)
+	public function remove_items_query(Jam_Model $model, array $ids)
 	{
 		return DB::delete($this->join_table)
 			->where($this->foreign_key, '=', $model->id())
 			->where($this->association_foreign_key, 'IN', $ids);
 	}
 
-	public function add_items_query(array $ids, Jam_Model $model)
+	public function add_items_query(Jam_Model $model, array $ids)
 	{
 		$query = DB::insert($this->join_table)
 			->columns(array($this->foreign_key, $this->association_foreign_key));
