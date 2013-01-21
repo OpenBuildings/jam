@@ -60,6 +60,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function compile(Database $db)
 	{
+		$original_select = $this->_select;
+		$original_from = $this->_from;
+
 		if (empty($this->_from))
 		{
 			$this->_from[] = $this->meta()->model();
@@ -85,6 +88,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		$result = parent::compile($db);
 		
 		$this->meta()->events()->trigger('builder.after_select', $this);
+
+		$this->_select = $original_select;
+		$this->_from = $original_from;
 
 		return $result;		
 	}
