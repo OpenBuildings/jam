@@ -308,6 +308,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	protected function _find_item($foreign_model, $key)
 	{
+		if ( ! $foreign_model)
+			return NULL;
+		
 		return Jam::find($foreign_model, $key);
 	}
 
@@ -319,6 +322,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	protected function _delete_item($foreign_model, $key)
 	{
+		if ( ! $foreign_model)
+			return NULL;
+
 		return Jam::delete($foreign_model)->where_key($key)->execute();
 	}
 
