@@ -121,6 +121,28 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 		$this->assertEquals('new post title', $returned_post->title);
 	}
 
+	public function test_check()
+	{
+		$association = new Jam_Association_Hasone(array());
+		$association->initialize($this->meta, 'test_post');
+
+		$author = Jam::build('test_author')->load_fields(array('id' => 1));
+		$post = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
+		$post->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
+		$post
+			->expects($this->once())
+			->method('check')
+			->will($this->returnValue(TRUE));
+
+		$author->test_post = $post;
+		// Should not call check as the model was not changed
+		$association->model_after_check($author, new Jam_Event_Data(array()), array('test_post' => $post));
+
+		$post->name = 'New Name';
+		// Should call check as the model was changed
+		$association->model_after_check($author, new Jam_Event_Data(array()), array('test_post' => $post));
+	}
+
 	public function data_query_builder()
 	{
 		return array(
