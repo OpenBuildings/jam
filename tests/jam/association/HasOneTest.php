@@ -50,8 +50,8 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 			array('test_post', array(), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
 			array('test_post', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_posts` AS `Posts` ON (`Posts`.`test_author_id` = `test_authors`.`id`)'),
 			array('post', array('foreign_model' => 'test_post'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
-			array('test_post', array('as' => 'poster'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`poster_id` = `test_authors`.`id` AND `test_posts`.`poster_model` = "test_author")'),
-			array('test_post', array('as' => 'poster'), 'articles', NULL, 'JOIN `test_posts` AS `articles` ON (`articles`.`poster_id` = `test_authors`.`id` AND `articles`.`poster_model` = "test_author")'),
+			array('test_post', array('as' => 'poster'), NULL, NULL, 'JOIN `test_posts` ON (`test_posts`.`poster_id` = `test_authors`.`id` AND `test_posts`.`poster_model` = \'test_author\')'),
+			array('test_post', array('as' => 'poster'), 'articles', NULL, 'JOIN `test_posts` AS `articles` ON (`articles`.`poster_id` = `test_authors`.`id` AND `articles`.`poster_model` = \'test_author\')'),
 		);
 	}
 

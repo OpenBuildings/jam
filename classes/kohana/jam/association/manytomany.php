@@ -10,6 +10,10 @@
  */
 abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collection {
 
+	/**
+	 * Set this to false to disable deleting the association table entry when the model is deleted
+	 * @var boolean
+	 */
 	public $join_table_dependent = TRUE;
 
 	/**
@@ -57,6 +61,30 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		}
 	}
 
+	/**
+	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
+	 * @param  string $alias table name alias
+	 * @param  string $type  join type (LEFT, NATURAL)
+	 * @return Jam_Query_Builder_Join        
+	 */
+	public function join($alias, $type = NULL)
+	{
+		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+			->context_model($this->model)
+			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
+			->join_nested($this->join_table, $type)
+				->context_model($this->model)
+				->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
+			->end();
+	}
+
+	/**
+	 * Get a Jam_Query_Builder_Associated for this association
+	 * @param  Jam_Validated $model      
+	 * @param  mixed         $value      
+	 * @param  boolean       $is_changed 
+	 * @return Jam_Query_Builder_Associated
+	 */
 	public function get(Jam_Validated $model, $value, $is_changed)
 	{
 		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
@@ -85,17 +113,12 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		return $builder;
 	}
 
-	public function join($alias, $type = NULL)
-	{
-		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
-			->context_model($this->model)
-			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
-			->join_nested($this->join_table, $type)
-				->context_model($this->model)
-				->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
-			->end();
-	}
 
+	/**
+	 * After the model is deleted, remove all the join_table entries associated with it,
+	 * You can disabled this by setting join_table_dependent to FALSE
+	 * @param  Jam_Model $model 
+	 */
 	public function model_after_delete(Jam_Model $model)
 	{
 		if ($model->loaded() AND $this->join_table_dependent)
@@ -105,12 +128,23 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		}
 	}
 
+	/**
+	 * Generate a query to delete associated models in the database
+	 * @param  Jam_Model $model 
+	 * @return Database_Query           
+	 */
 	public function erase_query(Jam_Model $model)
 	{
 		return DB::delete($this->join_table)
 			->where($this->foreign_key, '=', $model->id());
 	}
 
+	/**
+	 * Generate a query to remove models from the association (without deleting them), for specific ids
+	 * @param  Jam_Model $model
+	 * @param  array     $ids  
+	 * @return Database_Query
+	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
 	{
 		return DB::delete($this->join_table)
@@ -118,6 +152,12 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->where($this->association_foreign_key, 'IN', $ids);
 	}
 
+	/**
+	 * Generate a query to add models from the association (without deleting them), for specific ids
+	 * @param  Jam_Model $model
+	 * @param  array     $ids  
+	 * @return Database_Query
+	 */
 	public function add_items_query(Jam_Model $model, array $ids)
 	{
 		$query = DB::insert($this->join_table)

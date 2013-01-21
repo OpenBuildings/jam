@@ -26,9 +26,14 @@ abstract class Kohana_Jam_Query_Builder_Dynamic extends Jam_Query_Builder_Collec
 		return array_filter($array);
 	}
 
-	public static function factory($model, $key = NULL)
+	/**
+	 * Create object of class Jam_Query_Builder_Dynamic
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Dynamic        
+	 */
+	public static function factory($model)
 	{
-		return new Jam_Query_Builder_Dynamic($model, $key);
+		return new Jam_Query_Builder_Dynamic($model);
 	}
 
 	public $_original;

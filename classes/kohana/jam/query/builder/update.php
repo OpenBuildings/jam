@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Core class that all associations must extend
+ * A class to create queries for updating jam models from the database
  *
  * @package    Jam
  * @category   Associations
@@ -11,9 +11,14 @@
  */
 abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Update {
 
-	public static function factory($model)
+	/**
+	 * Create object of class Jam_Query_Builder_Update
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Update        
+	 */
+	public static function factory($model, $key = NULL)
 	{
-		return new Jam_Query_Builder_Update($model);
+		return new Jam_Query_Builder_Update($model, $key);
 	}
 
 	/**

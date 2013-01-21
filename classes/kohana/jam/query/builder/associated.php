@@ -12,6 +12,11 @@
  */
 abstract class Kohana_Jam_Query_Builder_Associated extends Jam_Query_Builder_Dynamic {
 
+	/**
+	 * Create object of class Jam_Query_Builder_Associated
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Associated        
+	 */
 	public static function factory($model, $key = NULL)
 	{
 		return new Jam_Query_Builder_Associated($model, $key);

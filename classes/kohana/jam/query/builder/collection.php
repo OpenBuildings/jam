@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
+ * A collection of jam models from the database.
+ * 
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
@@ -9,14 +11,33 @@
  */
 abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Select implements Countable, ArrayAccess, Iterator, Serializable {
 
+	/**
+	 * Create object of class Jam_Query_Builder_Collection
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Collection        
+	 */
 	public static function factory($model)
 	{
 		return new Jam_Query_Builder_Collection($model);
 	}
 	
+	/**
+	 * The result of this colleciton
+	 * @var Database_Result
+	 */
 	protected $_result;
-	protected $_model;
 
+	/**
+	 * The model of this collection
+	 * @var Jam_Model
+	 */
+	protected $_model_template;
+
+	/**
+	 * Result Setter / Getter
+	 * @param  Database_Result $result
+	 * @return Database_Result|Jam_Query_Builder_Collection
+	 */
 	public function result(Database_Result $result = NULL)
 	{
 		if ($result !== NULL)
@@ -32,33 +53,62 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		return $this->_result;
 	}
 
+	/**
+	 * Load the info for the collection result, as if was loaded from the database 
+	 * @param  array  $fields 
+	 * @return Jam_Query_Builder_Collection         
+	 */
 	public function load_fields(array $fields)
 	{
 		$this->_result = new Database_Result_Cached($fields, '', FALSE);
 		return $this;
 	}
 
-	public function model()
+	/**
+	 * Get a jam model template to use for _Load_model
+	 * @return Jam_Model 
+	 */
+	public function model_template()
 	{
-		if ( ! $this->_model)
+		if ( ! $this->_model_template)
 		{
-			$this->_model = Jam::build($this->meta()->model());
+			$this->_model_template = Jam::build($this->meta()->model());
 		}
-		return $this->_model;
+		return $this->_model_template;
 	}
 
+	/**
+	 * Use the model_template() to return the model for the row in the results
+	 * @param  array $value 
+	 * @return Jam_Model        
+	 */
 	protected function _load_model($value)
 	{
 		if ( ! $value)
 			return NULL;
 
-		$model = clone $this->model();
+		$model = clone $this->model_template();
 		$model = $model->load_fields($value);
 
 		return $model;
 	}
 
-
+	/**
+	 * Return all of the models in the result as an array.
+	 *
+	 *     // Indexed array of all models
+	 *     $rows = $result->as_array();
+	 *
+	 *     // Associative array of models by "id"
+	 *     $rows = $result->as_array('id');
+	 *
+	 *     // Associative array of fields, "id" => "name"
+	 *     $rows = $result->as_array('id', 'name');
+	 *
+	 * @param   string  column for associative keys
+	 * @param   string  column for values
+	 * @return  array
+	 */
 	public function as_array($key = NULL, $value = NULL)
 	{
 		$key = Jam_Query_Builder::resolve_meta_attribute($key, $this->meta());
@@ -73,9 +123,36 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		}
 	}
 
+	/**
+	 * Get the ids of the models in an array
+	 * @return array 
+	 */
 	public function ids()
 	{
 		return $this->as_array(NULL, ':primary_key');
+	}
+
+	/**
+	 * Return the first model
+	 * @return Jam_Model 
+	 */
+	public function first()
+	{
+		return $this->_load_model($this->limit(1)->result()->rewind()->current());
+	}
+
+	/**
+	 * Return the first model, throw Jam_Exception_NotFound if there was no result
+	 * @return Jam_Model
+	 * @throws Jam_Exception_NotFound
+	 */
+	public function first_insist()
+	{
+		$result = $this->first();
+		if ( ! $result)
+			throw new Jam_Exception_NotFound(":model not found", $this->meta()->model());
+
+		return $result;
 	}
 
 	/**
@@ -127,20 +204,6 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	public function offsetUnset($offset)
 	{
 		throw new Kohana_Exception('Database results are read-only');
-	}
-
-	public function first()
-	{
-		return $this->_load_model($this->limit(1)->result()->rewind()->current());
-	}
-
-	public function first_insist()
-	{
-		$result = $this->first();
-		if ( ! $result)
-			throw new Jam_Exception_NotFound(":model not found", $this->meta()->model());
-
-		return $result;
 	}
 
 	/**

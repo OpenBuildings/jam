@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Core class that all associations must extend
+ * A class representing one or more joins
  *
  * @package    Jam
  * @category   Associations
@@ -11,6 +11,12 @@
  */
 abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join {
 
+	/**
+	 * Create object of class Jam_Query_Builder_Join
+	 * @param  string $model 
+	 * @param  string $type LEFT, RIGHT, NATURAL...
+	 * @return Jam_Query_Builder_Join        
+	 */
 	public static function factory($model, $type = NULL)
 	{
 		return new Jam_Query_Builder_Join($model, $type);

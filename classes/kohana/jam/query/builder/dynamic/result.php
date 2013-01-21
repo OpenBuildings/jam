@@ -1,7 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Represents the changed data of a Jam_Collection. The same as Database_Result, but allow to change its contents
+ * Represents the changed data of a Jam_Query_Builder_Collection. 
+ * The same as Database_Result, but allow to change its contents
  * 
  * @package    Jam
  * @category   Collection
@@ -11,7 +12,16 @@
  */
 class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached implements Serializable{
 
+	/**
+	 * An array holding information which fields have been changed
+	 * @var array
+	 */
 	protected $_changed;
+
+	/**
+	 * A boolean showing if there have been any removed items
+	 * @var boolean
+	 */
 	protected $_removed_items = FALSE;
 
 	public function __construct(array $result, $sql, $as_object = NULL)
@@ -22,6 +32,14 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		$this->changed(FALSE);
 	}
 
+	/**
+	 * Set the new value for the offset. By Default set the associated entry in the changed array to TRUE
+	 * Set the last argument to FALSE to not do that.
+	 * 
+	 * @param  integer  $offset     
+	 * @param  mixed    $value      
+	 * @param  boolean $is_changed 
+	 */
 	public function force_offsetSet($offset, $value, $is_changed = TRUE) 
 	{
 		if (is_numeric($offset)) 
@@ -47,6 +65,13 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		$this->_total_rows = count($this->_result);
 	}
 	
+	/**
+	 * Getter / setter of the changed array
+	 * 
+	 * @param  integer $offset 
+	 * @param  boolean   $value  
+	 * @return mixed
+	 */
 	public function changed($offset = NULL, $value = NULL)
 	{
 		if ($offset === NULL)
@@ -71,6 +96,10 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		return $this;
 	}
 
+	/**
+	 * Remove the entry from the results and from the changed array
+	 * @param  integer $offset 
+	 */
 	public function force_offsetUnset($offset)
 	{
 		array_splice($this->_result, $offset, 1);
@@ -86,11 +115,19 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		$this->_total_rows = count($this->_result);
 	}
 
+	/**
+	 * Get the total rows count
+	 * @return integer 
+	 */
 	public function total_rows()
 	{
 		return $this->total_rows;
 	}
 
+	/**
+	 * Implement serializable behavior
+	 * @return string
+	 */
 	public function serialize()
 	{
 		return serialize(array(
@@ -99,6 +136,10 @@ class Kohana_Jam_Query_Builder_Dynamic_Result extends Database_Result_Cached imp
 		));
 	}
 
+	/**
+	 * Implement serializable behavior
+	 * @param  string $data 
+	 */
 	public function unserialize($data)
 	{
 		$data = unserialize($data);

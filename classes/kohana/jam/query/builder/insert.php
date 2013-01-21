@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Core class that all associations must extend
+ * A class to create queries for deleting jam models from the database
  *
  * @package    Jam
  * @category   Associations
@@ -11,6 +11,11 @@
  */
 abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_Insert {
 
+	/**
+	 * Create object of class Jam_Query_Builder_Insert
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Insert        
+	 */
 	public static function factory($model)
 	{
 		return new Jam_Query_Builder_Insert($model);

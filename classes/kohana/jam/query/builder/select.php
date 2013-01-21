@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Core class that all associations must extend
+ * A class to create queries for selecting data for jam models from the database
  *
  * @package    Jam
  * @category   Associations
@@ -11,6 +11,11 @@
  */
 abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Select {
 
+	/**
+	 * Create object of class Jam_Query_Builder_Select
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Select        
+	 */
 	public static function factory($model)
 	{
 		return new Jam_Query_Builder_Select($model);
