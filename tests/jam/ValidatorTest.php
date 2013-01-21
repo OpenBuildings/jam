@@ -24,6 +24,7 @@ class Jam_ValidatorTest extends Unittest_Jam_TestCase {
 			'test_author_id' => 1
 		));
 	}
+
 	public function test_validator()
 	{
 		$this->element->set(array(
@@ -39,6 +40,8 @@ class Jam_ValidatorTest extends Unittest_Jam_TestCase {
 		$this->assertHasError($this->element, 'email', 'format_filter');
 		$this->assertHasError($this->element, 'amount', 'numeric_greater_than');
 		$this->assertHasError($this->element, 'description', 'length_between');
+		
+		$this->assertNotHasError($this->element, 'name', 'length_minimum');
 	}
 
 	public function test_condition()

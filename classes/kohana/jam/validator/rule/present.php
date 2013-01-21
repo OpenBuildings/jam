@@ -10,14 +10,14 @@
  */
 class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 
-	public $allow_null = FALSE;
+	public $validate_empty = TRUE;
 
 	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ( 
 			! $value
 			OR (is_string($value) AND ! trim($value))
-			OR (($value instanceof Jam_Collection) AND ! count($value))
+			OR (($value instanceof Jam_Query_Buidler_Collection) AND ! count($value))
 			OR (($value instanceof Upload_File) AND $value->is_empty())
 		)
 		{

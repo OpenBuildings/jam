@@ -228,6 +228,14 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		return array($value, $return);
 	}
 
+	public function is_empty($value)
+	{
+		if ($this->convert_empty AND $this->empty_value !== NULL)
+			return $value === $this->empty_value;
+		
+		return ($value === NULL OR $value === $this->default);
+	}
+
 	public function run_filter(Jam_Validated $model, $value, $filter, array $arguments = array())
 	{
 		$bound = array(

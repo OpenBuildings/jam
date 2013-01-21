@@ -78,11 +78,11 @@ abstract class Kohana_Jam_Validator {
 		{
 			if ($model instanceof Jam_Model AND $this->condition_met($model))
 			{
-				if ( ! $model->loaded() OR $model->changed($attribute) OR $model->unmapped($attribute))
+				if ( ( ! $model->loaded() OR $model->changed($attribute)) OR $model->unmapped($attribute))
 				{
 					foreach ($this->rules as $rule) 
 					{
-						if ($rule->allow_null OR $model->$attribute);
+						if ($rule->process_attribute($model, $attribute))
 						{
 							$rule->validate($model, $attribute, $model->$attribute);
 						}

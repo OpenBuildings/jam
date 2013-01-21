@@ -10,7 +10,7 @@
  */
 abstract class Kohana_Jam_Validator_Rule {
 
-	public $allow_null = TRUE;
+	public $validate_empty = FALSE;
 
 	function __construct($params)
 	{
@@ -21,6 +21,17 @@ abstract class Kohana_Jam_Validator_Rule {
 				$this->$param = $value;
 			}
 		}
+	}
+
+	public function process_attribute(Jam_Validated $model, $attribute)
+	{
+		if ($this->validate_empty)
+			return TRUE;
+
+		if ($field = $model->meta()->field($attribute))
+			return ! $field->is_empty($model->$attribute);
+
+		return $model->$attribute !== NULL;
 	}
 
 	abstract public function validate(Jam_Validated $model, $attribute, $value);
