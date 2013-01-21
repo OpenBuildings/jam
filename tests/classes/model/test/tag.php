@@ -21,8 +21,7 @@ class Model_Test_Tag extends Jam_Model {
 				'touch' => 'updated'
 			)),
 			'test_blogs' => Jam::association('manytomany', array(
-				'required' => TRUE,
-				'through' => 'test_blogs_test_tags'
+				'join_table' => 'test_blogs_test_tags'
 			))
 		));
 

@@ -26,7 +26,7 @@ class Model_Test_Author extends Jam_Model {
 				'foreign_model' => 'test_position',
 				'foreign_key'  => 'test_position_id',
 			)),
-			'styles' => Jam::association('taxonomy_terms', array('vocabulary' => 'Styles', 'vocabulary_model' => 'test_vocabulary', 'through' => 'test_terms_items', 'foreign_model' => 'test_term'))
+			'styles' => Jam::association('taxonomy_terms', array('vocabulary' => 'Styles', 'vocabulary_model' => 'test_vocabulary', 'join_table' => 'test_terms_items', 'foreign_model' => 'test_term'))
 		));
 
 		// Define fields

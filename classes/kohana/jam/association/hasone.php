@@ -81,6 +81,27 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $value;
 	}
 
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		if ($value instanceof Jam_Model)
+		{
+			if ($model->loaded())
+			{
+				$value->{$this->foreign_key} = $model->id();
+				if ($this->is_polymorphic())
+				{
+					$value->{$this->polymorphic_key} = $model->meta()->model();
+				}
+			}
+			if ($this->inverse_of)
+			{
+				$value->{$this->inverse_of} = $model;
+			}
+		}
+
+		return $value;
+	}
+
 	/**
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
 	 * 
@@ -136,20 +157,22 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 				{
 					$item->set($value);
 				}
-
-				if ($this->inverse_of)
-				{
-					$item->{$this->inverse_of} = $model;
-				}
 			}
-
-			return $item;
 		}
 		else
 		{
-			return $this->_find_item($this->foreign_model, $model);
+			$item = $this->_find_item($this->foreign_model, $model);
 		}
+
+		if ($item AND $this->inverse_of)
+		{
+			$item->{$this->inverse_of} = $model;
+		}
+
+		return $item;
 	}
+
+
 
 	/**
 	 * Perform validation on the belonging model, if it was changed. 
