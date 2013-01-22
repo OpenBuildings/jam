@@ -78,32 +78,16 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->end();
 	}
 
-	/**
-	 * Get a Jam_Query_Builder_Associated for this association
-	 * @param  Jam_Validated $model      
-	 * @param  mixed         $value      
-	 * @param  boolean       $is_changed 
-	 * @return Jam_Query_Builder_Associated
-	 */
-	public function get(Jam_Validated $model, $value, $is_changed)
+	public function collection(Jam_Model $model)
 	{
-		$builder = Jam_Query_Builder_Associated::factory($this->foreign_model)
-			->parent($model)
-			->association($this);
+		$collection = new Jam_Query_Builder_Collection($this->foreign_model);
 
-		$builder	
+		return $collection	
 			->join_nested($this->join_table)
 				->context_model($this->foreign_model)
 				->on($this->association_foreign_key, '=', ':primary_key')
 			->end()
 			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
-
-		if ($is_changed)
-		{
-			$builder->set($value);
-		}
-
-		return $builder;
 	}
 
 

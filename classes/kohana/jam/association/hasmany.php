@@ -85,30 +85,15 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		return $join;
 	}
 
-	/**
-	 * Get a Jam_Query_Builder_Associated for this association
-	 * @param  Jam_Validated $model      
-	 * @param  mixed         $value      
-	 * @param  boolean       $is_changed 
-	 * @return Jam_Query_Builder_Associated
-	 */
-	public function get(Jam_Validated $model, $value, $is_changed)
+	public function collection(Jam_Model $model)
 	{
-		$collection = Jam_Query_Builder_Associated::factory($this->foreign_model)
-			->parent($model)
-			->association($this);
+		$collection = new Jam_Query_Builder_Collection($this->foreign_model);
 
-		$collection
-			->where($this->foreign_key, '=', $model->id());
+		$collection->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
 		{
 			$collection->where($this->polymorphic_key, '=', $model->meta()->model());
-		}
-
-		if ($is_changed)
-		{
-			$collection->set($value);
 		}
 
 		return $collection;
@@ -164,9 +149,9 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	/**
 	 * Remove items from this association (withought deleteing it) and persist the data in the database
 	 * @param  Jam_Validated                $model     
-	 * @param  Jam_Query_Builder_Associated $collection
+	 * @param  Jam_Array_Association $collection
 	 */
-	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
+	public function clear(Jam_Validated $model, Jam_Array_Association $collection)
 	{
 		foreach ($collection as $item) 
 		{

@@ -68,7 +68,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 		{
 			return array($models);
 		}
-		if ($models instanceof Jam_Query_Builder_Associated AND count($models))
+		if ($models instanceof Jam_Array_Association AND count($models))
 		{
 			return $models->as_array();
 		}

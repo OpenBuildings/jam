@@ -48,24 +48,41 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	 * Load associated models (from database or after deserialization)
 	 * @param  Jam_Validated $model 
 	 * @param  mixed         $value 
-	 * @return Jam_Query_Builder_Associated
+	 * @return Jam_Array_Association
 	 */
 	public function load_fields(Jam_Validated $model, $value)
 	{
-		if ($value instanceof Jam_Query_Builder_Associated)
+		if ($value instanceof Jam_Array_Association)
 		{
 			$collection = $value;
 		}
 		else
 		{
-			$collection = new Jam_Query_Builder_Associated($this->foreign_model);
+			$collection = new Jam_Array_Association();
 			$collection
 				->load_fields($value);
 		}
 
 		return $collection
+			->model($this->foreign_model)
 			->parent($model)
 			->association($this);
+	}
+
+	public function get(Jam_Validated $model, $value, $is_changed)
+	{
+		$array = new Jam_Array_Association();
+		$array
+			->model($this->foreign_model)
+			->association($this)
+			->parent($model);
+
+		if ($is_changed)
+		{
+			$array->set($value);
+		}
+
+		return $array;
 	}
 
 	/**
@@ -140,12 +157,14 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	 */
 	abstract public function add_items_query(Jam_Model $model, array $ids);
 
+	abstract public function collection(Jam_Model $model);
+
 	/**
 	 * Execute remove_items_query and add_items_query to persist the colleciton to the datbaase
 	 * @param  Jam_Model                    $model      
-	 * @param  Jam_Query_Builder_Associated $collection 
+	 * @param  Jam_Array_Association $collection 
 	 */
-	public function save(Jam_Model $model, Jam_Query_Builder_Associated $collection)
+	public function save(Jam_Model $model, Jam_Array_Association $collection)
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{
@@ -161,9 +180,9 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	/**
 	 * Use the remove query to remove all items from the collection
 	 * @param  Jam_Validated                $model      
-	 * @param  Jam_Query_Builder_Associated $collection 
+	 * @param  Jam_Array_Association $collection 
 	 */
-	public function clear(Jam_Validated $model, Jam_Query_Builder_Associated $collection)
+	public function clear(Jam_Validated $model, Jam_Array_Association $collection)
 	{
 		if ($ids = array_filter($collection->ids()))
 		{

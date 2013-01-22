@@ -30,35 +30,6 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 		}
 	}
 
-	public function test_dynamic()
-	{
-		$collection = new Jam_Query_Builder_Dynamic('test_position');
-		$data = array(
-			array('id' => 1, 'name' => 'name 1'),
-			array('id' => 2, 'name' => 'name 2'),
-			array('id' => 3, 'name' => 'name 3'),
-		);
-
-		$position = Jam::build('test_position')->load_fields(array('id' => 4, 'name' => 'name 4'));
-		$collection->load_fields($data);
-		$collection->add($position);
-
-		$unserialized = unserialize(serialize($collection));
-
-		$this->assertCount(4, $unserialized);
-
-		foreach ($data as $i => $item) 
-		{
-			$this->assertTrue($unserialized[$i]->loaded());
-			$this->assertEquals($item, $unserialized[$i]->as_array());
-		}
-
-		$this->assertEquals($position->as_array(), $collection[3]->as_array());
-
-		$this->assertEquals(array(1, 2, 3), $collection->original_ids());
-		$this->assertEquals(array(1, 2, 3, 4), $collection->ids());
-	}
-
 	public function test_deep()
 	{
 		$author = Jam::build('test_author')->load_fields(array(

@@ -97,7 +97,7 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 
 		$result = $association->get($model, $value, (bool) $value);
 
-		$this->assertInstanceOf('Jam_Query_Builder_Associated', $result);
+		$this->assertInstanceOf('Jam_Array_Association', $result);
 
 		$this->assertEquals($expected_sql, (string) $result);
 
