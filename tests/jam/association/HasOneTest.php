@@ -135,11 +135,7 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 			->will($this->returnValue(TRUE));
 
 		$author->test_post = $post;
-		// Should not call check as the model was not changed
-		$association->model_after_check($author, new Jam_Event_Data(array()), array('test_post' => $post));
 
-		$post->name = 'New Name';
-		// Should call check as the model was changed
 		$association->model_after_check($author, new Jam_Event_Data(array()), array('test_post' => $post));
 	}
 

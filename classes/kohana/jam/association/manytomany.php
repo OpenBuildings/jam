@@ -91,19 +91,12 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->parent($model)
 			->association($this);
 
-		if ($model->loaded())
-		{
-			$builder	
-				->join_nested($this->join_table)
-					->context_model($this->foreign_model)
-					->on($this->association_foreign_key, '=', ':primary_key')
-				->end()
-				->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
-		}	
-		else
-		{
-			$builder->load_fields(array());
-		}
+		$builder	
+			->join_nested($this->join_table)
+				->context_model($this->foreign_model)
+				->on($this->association_foreign_key, '=', ':primary_key')
+			->end()
+			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
 
 		if ($is_changed)
 		{

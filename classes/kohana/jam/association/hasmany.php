@@ -96,7 +96,9 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	{
 		$collection = Jam_Query_Builder_Associated::factory($this->foreign_model)
 			->parent($model)
-			->association($this)
+			->association($this);
+
+		$collection
 			->where($this->foreign_key, '=', $model->id());
 
 		if ($this->is_polymorphic())
@@ -263,7 +265,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->inverse_of)
 		{
-			$item->{$this->inverse_of} = $inverse_of;
+			$item->retrieved($this->inverse_of, $inverse_of);
 		}
 	}
 

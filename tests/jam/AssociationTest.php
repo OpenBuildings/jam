@@ -31,4 +31,16 @@ class Jam_AssociationTest extends Unittest_TestCase {
 	{
 		$this->assertEquals($expected_primary_key, Jam_Association::primary_key($model_name, $value));
 	}
+
+	public function test_associated()
+	{
+		$blog = Jam::build('test_blog')->load_fields(array('id' => 2, 'name' => 'Blog Name'));
+		$expected_sql = 'SELECT `test_tags`.* FROM `test_tags` JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_tag_id` = `test_tags`.`id`) WHERE `test_blogs_test_tags`.`test_blog_id` = 2';
+
+		$this->assertEquals($expected_sql, (string) $blog->test_tags);
+
+		$blog->test_tags->where('name','=', 'some name');
+
+		$this->assertEquals($expected_sql, (string) $blog->test_tags);
+	}
 }

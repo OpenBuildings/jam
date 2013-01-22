@@ -75,7 +75,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		if ($this->inverse_of)
 		{
-			$value->{$this->inverse_of} = $model;
+			$value->retrieved($this->inverse_of, $model);
 		}
 		
 		return $value;
@@ -85,17 +85,17 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($value instanceof Jam_Model)
 		{
+			if ($this->is_polymorphic())
+			{
+				$value->{$this->polymorphic_key} = $model->meta()->model();
+			}
 			if ($model->loaded())
 			{
 				$value->{$this->foreign_key} = $model->id();
-				if ($this->is_polymorphic())
-				{
-					$value->{$this->polymorphic_key} = $model->meta()->model();
-				}
 			}
 			if ($this->inverse_of)
 			{
-				$value->{$this->inverse_of} = $model;
+				$value->retrieved($this->inverse_of, $model);
 			}
 		}
 
@@ -166,7 +166,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 		if ($item AND $this->inverse_of)
 		{
-			$item->{$this->inverse_of} = $model;
+			$item->retrieved($this->inverse_of, $model);
 		}
 
 		return $item;

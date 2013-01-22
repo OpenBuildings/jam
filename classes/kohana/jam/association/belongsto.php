@@ -94,11 +94,6 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$value = Jam::build($this->foreign_model)->load_fields($value);
 		}
-
-		if ($this->inverse_of)
-		{
-			$value->{$this->inverse_of} = $model;
-		}
 		
 		return $value;
 	}
@@ -167,9 +162,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 				$item->set($value);
 			}
 
-			if ($this->inverse_of)
+			if ($item instanceof Jam_Model AND $this->inverse_of AND $model->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
 			{
-				$item->{$this->inverse_of} = $model;
+				$item->retrieved($this->inverse_of, $model);
 			}
 		}
 
@@ -197,9 +192,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$model->{$this->foreign_key} = $key;
 		}
 
-		if ($value instanceof Jam_Model AND $this->inverse_of)
+		if ($value instanceof Jam_Model AND $this->inverse_of AND $model->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
 		{
-			$value->{$this->inverse_of} = $model;
+			$value->retrieved($this->inverse_of, $model);
 		}
 
 		return $value;
