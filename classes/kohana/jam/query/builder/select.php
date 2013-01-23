@@ -155,7 +155,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 			$group = Jam_Query_Builder::resolve_attribute_name($group, $this->meta()->model());
 		}
 
-		return parent::_compile_group_by($db, $conditions);
+		return parent::_compile_group_by($db, $group_by);
 	}
 
 	protected function _compile_conditions(Database $db, array $conditions)

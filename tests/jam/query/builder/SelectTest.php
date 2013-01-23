@@ -76,6 +76,16 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` HAVING `test_posts`.`test_author_id` = 10', (string) $select);	
 	}
 
+	public function test_group()
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->group_by('test_post.id');
+
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` GROUP BY `test_posts`.`id`', (string) $select);	
+	}
+
 	public function test_where()
 	{
 		$select = new Jam_Query_Builder_Select('test_post');
