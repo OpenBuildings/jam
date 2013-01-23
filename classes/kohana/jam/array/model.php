@@ -72,8 +72,10 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		{
 			if ( ! $this->collection())
 				throw new Kohana_Exception('Cannot load content because collection not loaded for Jam_Array(:model)', array(':model' => $this->model()));
+			
+			$collection = clone $this->collection();
 
-			$this->_original = $this->collection()->result()->as_array();
+			$this->_original = $collection->result()->as_array();
 
 			if ( ! $this->_replace)
 			{
