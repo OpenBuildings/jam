@@ -184,6 +184,10 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$model->{$this->polymorphic} = key($value);
 			$value = current($value);
 		}
+		elseif ($value instanceof Jam_Model) 
+		{
+			$model->{$this->polymorphic} = $value->meta()->model();
+		}
 
 		$key = Jam_Association::primary_key($this->foreign_model($model), $value);
 
@@ -191,6 +195,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$model->{$this->foreign_key} = $key;
 		}
+
+
+
 
 		if ($value instanceof Jam_Model AND $this->inverse_of AND $model->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
 		{

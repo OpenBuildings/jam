@@ -48,6 +48,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		$this->_meta  = Jam::meta($model);
 
+		if ( ! $this->_meta)
+			throw new Kohana_Exception('There is no model :model for select', array(':model' => $model));
+		
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 

@@ -39,7 +39,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 
 	protected function _load_content()
 	{
-		if ($this->_original === NULL AND $this->parent()->loaded())
+		if ($this->_original === NULL AND $this->parent() AND $this->parent()->loaded())
 		{
 			parent::_load_content();
 		}
@@ -53,7 +53,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 			return $this;
 		}
 
-		if ( ! $this->_collection AND $this->parent()->loaded())
+		if ( ! $this->_collection AND $this->parent() AND $this->parent()->loaded())
 		{
 			$this->collection($this->association()->collection($this->parent()));
 		}
@@ -124,6 +124,67 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 		if (isset($item) AND $item instanceof Jam_Model)
 		{
 			$this->association()->item_unset($this->parent(), $item);
+		}
+	}
+
+	public function log()
+	{
+		echo "Jam_Array_Association [\n";
+		if ($this->_original !== NULL)
+		{
+			echo "  _original: array(\n";
+			foreach ($this->_original as $key => $value) 
+			{
+				echo "    $key => array (\n";
+				foreach ($value as $key => $value) 
+				{
+					echo "      $key => $value,\n";
+				}
+				echo "    )\n";
+
+			}
+			echo "  )\n";
+		}
+		else
+		{
+			echo " _original: NULL";
+		}
+
+		if ($this->_content !== NULL)
+		{
+			echo "  _content: array(\n";
+			foreach ($this->_content as $key => $value) 
+			{
+				echo "    $key => ";
+				if ($value instanceof Jam_Model)
+				{
+					echo $value.": (\n";
+					foreach ($value->as_array() as $key => $value) 
+					{
+						echo "      $key => $value,\n";
+					}
+					echo "    )\n";
+				}
+				elseif (is_array($value))
+				{
+					echo "array(\n";
+					foreach ($value as $key => $value) 
+					{
+						echo "      $key => $value,\n";
+					}
+					echo "    )\n";
+				}
+				else
+				{
+					echo $value."\n";
+				}
+
+			}
+			echo "  )\n";
+		}
+		else
+		{
+			echo " _content: NULL";
 		}
 	}
 } 

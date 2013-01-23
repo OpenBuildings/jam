@@ -175,6 +175,8 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	 */
 	public function valid()
 	{
+		$this->_load_content();
+
 		return isset($this->_content[$this->_current]);
 	}
 

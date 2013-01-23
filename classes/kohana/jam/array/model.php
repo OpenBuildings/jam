@@ -107,7 +107,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	protected function _find_item($key)
 	{
-		return Jam::find_insist($this->model(), $key);
+		return Jam::find($this->model(), $key);
 	}
 
 	protected function _load_item($value, $is_changed, $offset)
@@ -154,8 +154,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		if (is_numeric($value))
 			return (int) $value;
 
-		if (is_string($value))
-			return $this->_find_item($value)->id();
+		if (is_string($value) AND $item = $this->_find_item($value))
+			return $item->id();
 
 		if (is_array($value) AND isset($value[$this->meta()->primary_key()]))
 			return (int) $value[$this->meta()->primary_key()];
@@ -164,6 +164,10 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	public function search($item)
 	{
 		$search_id = $this->_id($item);
+
+		if ( ! $search_id)
+			return NULL;
+		
 		$this->_load_content();
 
 		if ($this->_content)
