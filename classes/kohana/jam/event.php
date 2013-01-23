@@ -42,14 +42,26 @@ abstract class Kohana_Jam_Event {
 	 * @param   callback  $callback
 	 * @return  Jam_Event
 	 */
-	public function bind($event, $callback)
+	public function bind($event, $callback, $prepend = FALSE)
 	{
-		$this->_events[$event][] = $callback;
+		if ( ! isset($this->_events[$event]))
+		{
+			$this->_events[$event] = array();
+		}
+
+		if ($prepend)
+		{
+			array_unshift($this->_events[$event], $callback);
+		}
+		else
+		{
+			array_push($this->_events[$event], $callback);
+		}
 		
 		return $this;
 	}
 
-	public function discover_events($from)
+	public function discover_events($from, $prepend = FALSE)
 	{
 		foreach (get_class_methods($from) as $method)
 		{
@@ -57,7 +69,7 @@ abstract class Kohana_Jam_Event {
 			OR  ($ns = substr($method, 0, 4)) === 'meta'
 			OR  ($ns = substr($method, 0, 7)) === 'builder')
 			{
-				$this->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($from, $method));
+				$this->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($from, $method), $prepend);
 			}
 		}
 	}

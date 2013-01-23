@@ -80,7 +80,7 @@ abstract class Kohana_Jam_Attribute {
 			$this->label = Inflector::humanize($name);
 		}
 
-		$meta->events()->discover_events($this);
+		$meta->events()->discover_events($this, TRUE);
 	}
 
 	abstract public function get(Jam_Validated $model, $value, $is_changed);
