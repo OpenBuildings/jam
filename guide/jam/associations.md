@@ -347,7 +347,7 @@ $picture->imagable = 1;
 $picture->save();
 
 // You can join them up as if its a normal belongs to association
-Jam::query('picture')->join_association('imagable')->select_all();
+Jam::all('picture')->join('imagable');
 ?>
 ```
 
