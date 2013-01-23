@@ -377,22 +377,6 @@ abstract class Kohana_Jam_Meta {
 	}
 
 	/**
-	 * Gets or sets the builder attached to this object
-	 *
-	 * @param   string  $value
-	 * @return  Jam_Meta|string
-	 */
-	public function builder($value = NULL)
-	{
-		if (func_num_args() !== 0)
-		{
-			return $this->set('builder', $value);
-		}
-
-		return $this->_builder;
-	}
-
-	/**
 	 * Getter / setter for individual fields.
 	 *
 	 * @param   string       $name     name of the field

@@ -394,7 +394,7 @@ abstract class Kohana_Jam {
 		
 		if (is_string($model))
 		{
-			$model = Jam::factory($model);
+			$model = Jam::build($model);
 		}
 
 		if (class_exists(Jam::$_form_prefix.$class))

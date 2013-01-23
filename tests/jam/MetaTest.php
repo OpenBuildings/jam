@@ -23,7 +23,6 @@ class Jam_MetaTest extends Unittest_TestCase {
 		$meta = new Jam_Meta('foo');
 		$meta->db('foo')
 				->table('foo')
-				->builder('Jam_Builder_Foo')
 				->fields($fields)
 				->sorting(array('foo' => 'bar'))
 				->primary_key('id2')
