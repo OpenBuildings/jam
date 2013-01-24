@@ -293,5 +293,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		{
 			$this->{'_'.$name} = NULL;
 		}
+		
+		return $this;
 	}
 }
