@@ -32,6 +32,8 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	 */
 	protected $_params = array();
 
+	protected static $_modifiable = array('select', 'from', 'join', 'where', 'group_by', 'having', 'order_by', 'union', 'distinct', 'limit', 'offset', 'parameters');
+
 	/**
 	 * Constructs a new Jam_Builder instance.
 	 *
@@ -202,7 +204,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		if ($without_grouping)
 		{
-			$query->group_by(NULL)->order_by(NULL);
+			$query->except('group_by', 'order_by');
 		}
 
 		return $query->execute()->get('result');
@@ -268,11 +270,23 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	 */
 	public function __get($name)
 	{
-		$allowed = array('select', 'from', 'join', 'where', 'group_by', 'having', 'order_by', 'union', 'distinct', 'limit', 'offset', 'parameters');
-
-		if ( ! in_array($name, $allowed))
-				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
+		if ( ! in_array($name, Jam_Query_Builder_Select::$_modifiable))
+				throw new Kohana_Exception('You cannot get :name, only :modifiable', array(':name' => $name, ':modifiable' => join(', ', Jam_Query_Builder_Select::$_modifiable)));
 		
 		return $this->{'_'.$name};
+	}
+
+
+	public function except($name)
+	{
+		$except = func_get_args();
+
+		if ($not_modifieable = array_diff($except, Jam_Query_Builder_Select::$_modifiable))
+				throw new Kohana_Exception('You cannot modify :not_modifieable, only :modifiable', array(':not_modifieable' => join(', ', $not_modifieable), ':modifiable' => join(', ', Jam_Query_Builder_Select::$_modifiable)));
+
+		foreach ($except as $name) 
+		{
+			$this->{'_'.$name} = NULL;
+		}
 	}
 }

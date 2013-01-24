@@ -429,6 +429,21 @@ abstract class Kohana_Jam_Meta {
 		return $this->field($name, $field);
 	}
 
+	public function attribute($name)
+	{
+		return Arr::get($this->_fields, $name, Arr::get($this->_associations, $name));
+	}
+
+	public function attribute_insist($name)
+	{
+		$attribute = $this->attribute($name);
+		
+		if ( ! $attribute)
+			throw new Kohana_Exception('The attrubute :name for this model :model does not exist', array(':name' => $name, ':model' => $this->_model));
+
+		return $attribute;
+	}
+
 
 	/**
 	 * Gets and sets the fields for this object.

@@ -40,7 +40,6 @@ class Jam_MetaTest extends Unittest_TestCase {
 			'primary_key' => 'id2',
 			'name_key'    => 'name',
 			'foreign_key' => 'meta_fk',
-			'builder'     => 'Jam_Builder_Foo',
 			'sorting'     => array('foo' => 'bar'),
 		);
 		

@@ -152,4 +152,37 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`) JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`)', (string) $select);	
 	}
 
+	public function data_except()
+	{
+		return array(
+			array(array('join'), 'SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`name` = \'Adam\' ORDER BY `test_posts`.`id` DESC'),
+			array(array('order_by'), 'SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`) WHERE `test_posts`.`name` = \'Adam\''),
+			array(array('order_by', 'where'), 'SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)'),
+			array(array('meta'), NULL),
+		);
+	}
+
+	/**
+	 * @dataProvider data_except
+	 */
+	public function test_except($except, $expected_sql)
+	{
+		$select = new Jam_Query_Builder_Select('test_post');
+
+		$select
+			->join('test_author')
+			->where('name', '=', 'Adam')
+			->order_by('id', 'DESC');
+
+		if ($expected_sql === NULL)
+		{
+			$this->setExpectedException('Kohana_Exception');
+		}
+
+		call_user_func_array(array($select, 'except'), $except);
+
+		$this->assertEquals($expected_sql, (string) $select);
+
+	}
+
 }
