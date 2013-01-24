@@ -19,7 +19,11 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 					Jam::build('test_category', array('name' => 'cat1', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat2', 'test_author' => $author)),
 					array('id' => 1),
-				)
+				),
+				'test_images' => Jam::build('test_image', array(
+					'file' => 'file11',
+					'test_copyright' => Jam::build('test_copyright', array('name' => 'copy 1'))
+				))
 			)),
 			Jam::build('test_post', array(
 				'name' => 'software',
@@ -42,6 +46,10 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 		$this->assertEquals('Category One', $author->test_posts[0]->test_categories[2]->name(), 'Should have loaded the category based on id');
 		$this->assertEquals($author->id(), $author->test_posts[0]->test_categories[1]->test_author->id(), 'Should be the same author');
 
+		$this->assertCount(1, $author->test_posts[0]->test_images);
+		$this->assertNotNull($author->test_posts[0]->test_images[0]->test_copyright);
+		$this->assertEquals($author->test_posts[0]->test_images[0]->file, 'file11');
+		$this->assertEquals($author->test_posts[0]->test_images[0]->test_copyright->name(), 'copy 1');
 
 		$this->assertEquals($author->id(), $author->test_posts[1]->test_categories[0]->test_author->id(), 'Should be the same author');
 		$this->assertEquals('cat3', $author->test_posts[1]->test_categories[0]->name, 'Should have created the test_category');

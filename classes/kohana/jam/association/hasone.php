@@ -144,13 +144,6 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		
 			$item = $this->_find_item($this->foreign_model, $key);
 		
-			$item->{$this->foreign_key} = $model->id();
-
-			if ($this->is_polymorphic())
-			{
-				$item->{$this->polymorphic} = $model->meta()->model();
-			}
-
 			if ($item)
 			{
 				if (is_array($value))
@@ -164,15 +157,8 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			$item = $this->_find_item($this->foreign_model, $model);
 		}
 
-		if ($item AND $this->inverse_of)
-		{
-			$item->retrieved($this->inverse_of, $model);
-		}
-
-		return $item;
+		return $this->set($model, $item, $is_changed);
 	}
-
-
 
 	/**
 	 * Perform validation on the belonging model, if it was changed. 
@@ -209,7 +195,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			{
 				if ( ! $item->is_saving())
 				{
-					$item->save();
+					$this->set($model, $item, TRUE)->save();
 				}
 			}
 			else

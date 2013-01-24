@@ -156,7 +156,7 @@ abstract class Kohana_Jam_Form {
 			}
 			else
 			{
-				$object = $this->object()->build($name);
+				$object = $object->build();
 			}
 		}
 

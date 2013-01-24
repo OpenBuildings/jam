@@ -298,7 +298,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		foreach ($this->_changed as $offset => $is_changed) 
 		{
 			$item = $this->offsetGet($offset);
-			if ($is_changed AND ! $item->check())
+			if ($is_changed AND $item AND ! $item->check())
 			{
 				$check = FALSE;
 			}
