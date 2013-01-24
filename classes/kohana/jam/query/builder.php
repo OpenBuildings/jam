@@ -97,11 +97,11 @@ abstract class Kohana_Jam_Query_Builder {
 		return $model;
 	}
 
-	public static function resolve_join($table, $type = NULL, $context_model = NULL)
+	public static function resolve_join($table, $type = NULL, $context_model = NULL, $resolve_table_model = TRUE)
 	{
 		$context_model_name = Jam_Query_Builder::aliased_model($context_model);
 
-		if (is_string($context_model_name) AND $meta = Jam::meta($context_model_name))
+		if ($resolve_table_model AND is_string($context_model_name) AND $meta = Jam::meta($context_model_name))
 		{
 			$table_name = Jam_Query_Builder::aliased_model($table);
 			if (is_string($table_name) AND $association = $meta->association($table_name))

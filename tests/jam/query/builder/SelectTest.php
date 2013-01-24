@@ -149,7 +149,7 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$select
 			->join('test_categories');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`) JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`)', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`) JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`)', (string) $select);	
 	}
 
 	public function data_except()

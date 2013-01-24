@@ -50,12 +50,12 @@ class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
 	public function data_join()
 	{
 		return array(
-			array('test_tags', array(), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
-			array('tags', array('foreign_model' => 'test_tag'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
-			array('test_tags', array('join_table' => 'permissions'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `permissions`.`test_tag_id`) JOIN `permissions` ON (`permissions`.`test_blog_id` = `test_blogs`.`id`)'),
-			array('test_tags', array('foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_id` = `test_blogs`.`id`)'),
-			array('test_tags', array('association_foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_id`) JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
-			array('test_tags', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_tags` AS `Posts` ON (`Posts`.`id` = `test_blogs_test_tags`.`test_tag_id`) LEFT JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`)'),
+			array('test_tags', array(), NULL, NULL, 'JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`) JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`)'),
+			array('tags', array('foreign_model' => 'test_tag'), NULL, NULL, 'JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`) JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`)'),
+			array('test_tags', array('join_table' => 'permissions'), NULL, NULL, 'JOIN `permissions` ON (`permissions`.`test_blog_id` = `test_blogs`.`id`) JOIN `test_tags` ON (`test_tags`.`id` = `permissions`.`test_tag_id`)'),
+			array('test_tags', array('foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_id` = `test_blogs`.`id`) JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_tag_id`)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), NULL, NULL, 'JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`) JOIN `test_tags` ON (`test_tags`.`id` = `test_blogs_test_tags`.`test_id`)'),
+			array('test_tags', array(), 'Posts', 'LEFT', 'LEFT JOIN `test_blogs_test_tags` ON (`test_blogs_test_tags`.`test_blog_id` = `test_blogs`.`id`) LEFT JOIN `test_tags` AS `Posts` ON (`Posts`.`id` = `test_blogs_test_tags`.`test_tag_id`)'),
 		);
 	}
 

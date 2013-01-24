@@ -69,12 +69,12 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 */
 	public function join($alias, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+		return Jam_Query_Builder_Join::factory($this->join_table, $type)
 			->context_model($this->model)
-			->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
-			->join_nested($this->join_table, $type)
+			->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
+			->join_table($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
+				->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
 				->context_model($this->model)
-				->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
 			->end();
 	}
 
@@ -83,7 +83,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		$collection = new Jam_Query_Builder_Collection($this->foreign_model);
 
 		return $collection	
-			->join_nested($this->join_table)
+			->join_table($this->join_table)
 				->context_model($this->foreign_model)
 				->on($this->association_foreign_key, '=', ':primary_key')
 			->end()

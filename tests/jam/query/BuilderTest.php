@@ -39,7 +39,7 @@ class Jam_Query_BuilderTest extends Unittest_TestCase {
 		return array(
 			array(array('test_author', NULL, 'test_post'), 'JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)'),
 			array(array('test_posts', NULL, 'test_author'), 'JOIN `test_posts` ON (`test_posts`.`test_author_id` = `test_authors`.`id`)'),
-			array(array('test_categories', NULL, 'test_post'), 'JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`) JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`)'),
+			array(array('test_categories', NULL, 'test_post'), 'JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`) JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`)'),
 			array(array('test_posts', NULL, 'test_blog'), 'JOIN `test_posts` ON (`test_posts`.`test_blog_id` = `test_blogs`.`id`)'),
 		);
 	}

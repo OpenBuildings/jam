@@ -110,13 +110,13 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return parent::execute($db, $as_object, $object_params);
 	}
 
-	protected function _join($model, $type)
+	protected function _join($model, $type, $resolve_table_model = TRUE)
 	{
 		$join_key = is_array($model) ? join(':', $model) : $model;
 
 		if ( ! isset($this->_join[$join_key]))
 		{
-			$join = Jam_Query_Builder::resolve_join($model, $type, $this->meta()->model());
+			$join = Jam_Query_Builder::resolve_join($model, $type, $this->meta()->model(), $resolve_table_model);
 
 			$this->_join[$join_key] = $join;
 
@@ -138,6 +138,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	public function join_nested($model, $type = NULL)
 	{
 		return $this->_join($model, $type)->end($this);
+	}
+
+	public function join_table($table, $type = NULL)
+	{
+		return $this->_join($table, $type, FALSE)->end($this);
 	}
 
 	protected function _compile_order_by(Database $db, array $order_by)

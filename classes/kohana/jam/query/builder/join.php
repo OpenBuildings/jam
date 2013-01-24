@@ -43,6 +43,15 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		return $join;
 	}
 
+	public function join_table($model, $type = NULL)
+	{
+		$join = Jam_Query_Builder::resolve_join($model, $type, $this->_table, FALSE)
+			->end($this);
+			
+		$this->_joins[] = $join;
+		return $join;
+	}
+
 	public function compile(Database $db)
 	{
 		if ($this->context_model() AND $meta = Jam::meta(Jam_Query_Builder::aliased_model($this->context_model())))
