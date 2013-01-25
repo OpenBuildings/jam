@@ -123,16 +123,17 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		elseif (is_array($value) AND $is_changed)
 		{
 			$key = $this->meta()->primary_key();
-			if (isset($value[$key]))
+			if (isset($value[$key]) AND $value[$key])
 			{
 				$model = $this->_find_item($value[$key]);
+					
 				unset($value[$key]);
 			}
 			else
 			{
 				$model = clone $this->model_template();
 			}
-			
+				
 			$item = $model->set($value);
 		}
 		else

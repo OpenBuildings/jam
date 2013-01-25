@@ -23,7 +23,7 @@ abstract class Kohana_Jam_Validator_Rule {
 		}
 	}
 
-	public function process_attribute(Jam_Validated $model, $attribute)
+	public function is_processable_attribute(Jam_Validated $model, $attribute)
 	{
 		if ($this->validate_empty)
 			return TRUE;

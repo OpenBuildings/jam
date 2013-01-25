@@ -82,7 +82,7 @@ abstract class Kohana_Jam_Validator {
 				{
 					foreach ($this->rules as $rule) 
 					{
-						if ($rule->process_attribute($model, $attribute))
+						if ($rule->is_processable_attribute($model, $attribute))
 						{
 							$rule->validate($model, $attribute, $model->$attribute);
 						}

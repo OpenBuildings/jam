@@ -45,7 +45,7 @@ abstract class Kohana_Jam_Form {
 	 */
 	static public function list_choices($choices)
 	{
-		if ($choices instanceof Jam_Query_Builder_Select)
+		if ($choices instanceof Jam_Query_Builder_Select OR $choices instanceof Jam_Array_Model)
 		{
 			$choices = $choices->as_array(':primary_key', ':name_key');
 		}
@@ -65,7 +65,7 @@ abstract class Kohana_Jam_Form {
 		{
 			$id = $id->id();
 		}
-		elseif ($id instanceof Jam_Query_Builder_Select) 
+		elseif ($id instanceof Jam_Query_Builder_Select OR $id instanceof Jam_Array_Model) 
 		{
 			$id = $id->ids();
 		}
