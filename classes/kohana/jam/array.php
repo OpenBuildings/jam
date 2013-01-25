@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
+ * A base iterator class, execute _load_contnet on any interation with the array. Can be serialized properly
+ * 
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
@@ -14,23 +16,56 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 		return new Jam_Array();
 	}
 
+	/**
+	 * An array of booleans that flags which entries have been changed
+	 * @var array
+	 */
 	protected $_changed = array();
-	protected $_removed = FALSE;
-	protected $_content = NULL;
-	protected $_current = 0;
-	protected $_collection;
 
+	/**
+	 * This is set to true when any entries are removed
+	 * @var boolean
+	 */
+	protected $_removed = FALSE;
+
+	/**
+	 * The content loaded with _load_content. The main store of this iterator
+	 * @var array
+	 */
+	protected $_content = NULL;
+
+	/**
+	 * Iterator implementation
+	 * @var integer
+	 */
+	protected $_current = 0;
+
+	/**
+	 * Load the _content variable. This is used to lazy load the content of this iterator
+	 */
 	protected function _load_content()
 	{
 		if ( ! $this->_content)
 			throw new Kohana_Exception('Content has not been loaded');
 	}
 
+	/**
+	 * Load each of the entries of this iterator. Called everytime an entry is requested. Use it to lazy load each item
+	 * @param  mixed    $value      
+	 * @param  boolean  $is_changed 
+	 * @param  int      $offset     
+	 * @return mixed             
+	 */
 	protected function _load_item($value, $is_changed, $offset)
 	{
 		return $value;
 	}
 
+	/**
+	 * Getter / Setter of the content. Lazy loads with _load_content();
+	 * @param  array $content 
+	 * @return array          
+	 */
 	public function content(array $content = NULL)
 	{
 		if ($content !== NULL)
@@ -44,12 +79,31 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 		return $this->_content;
 	}
 
+	/**
+	 * Getter for the changed array - check if any or a particular item has been changed
+	 * @param  int $offset 
+	 * @return bool         
+	 */
 	public function changed($offset = NULL)
 	{
 		if ($offset !== NULL)
 			return isset($this->_changed[$offset]);
 
 		return ( (bool) $this->_changed OR $this->_removed);
+	}
+
+	/**
+	 * Reset the content so it can be loaded again
+	 * @return Jam_Array
+	 */
+	public function reload()
+	{
+		$this->_original = NULL;
+		$this->_changed = array();
+		$this->_removed = FALSE;
+		$this->_current = 0;
+
+		return $this;
 	}
 
 	/**
@@ -67,7 +121,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement ArrayAccess
+	 * Implement ArrayAccess. Lazy load with _load_content, and the item with _load_item
 	 * 
 	 * @param  int $offset 
 	 * @return Jam_Model         
@@ -83,7 +137,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement ArrayAccess
+	 * Implement ArrayAccess. Lazy load with _load_content
 	 * 
 	 * @param  int $offset 
 	 * @return boolean         
@@ -96,7 +150,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement ArrayAccess
+	 * Implement ArrayAccess. Lazy load with _load_content
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -116,7 +170,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement ArrayAccess
+	 * Implement ArrayAccess. Lazy load with _load_content
 	 */
 	public function offsetUnset($offset)
 	{
@@ -140,7 +194,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement Iterator
+	 * Implement Iterator. Lazy load with _load_content and the item with _load_item
 	 * @return  Jam_Model 
 	 */
 	public function current()
@@ -170,7 +224,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	}
 
 	/**
-	 * Implement Iterator
+	 * Implement Iterator. Lazy load with _load_content
 	 * @return  bool
 	 */
 	public function valid()
@@ -180,7 +234,10 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 		return isset($this->_content[$this->_current]);
 	}
 
-
+	/**
+	 * Implement Serializable. Lazy load with _load_content
+	 * @return string 
+	 */
 	public function serialize()
 	{
 		$this->_load_content();
@@ -193,6 +250,11 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 		));
 	}
 
+	/**
+	 * Implement Serializable.
+	 * @param  [type] $data [description]
+	 * @return [type]       [description]
+	 */
 	public function unserialize($data)
 	{
 		$data = unserialize($data);

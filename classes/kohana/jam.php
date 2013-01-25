@@ -8,7 +8,7 @@
  * @package    Jam
  * @category   Base
  * @author     Ivan Kerin
- * @copyright  (c) 2011-2012 Despark Ltd.
+ * @copyright  (c) 2011-2013 Despark Ltd.
  * @author     Jonathan Geiger
  * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
@@ -62,7 +62,13 @@ abstract class Kohana_Jam {
 	 */
 	public static $_models = array();
 
-	public static function build($model, $attributes = array())
+	/**
+	 * Make a new object of the given model, optionally setting some fields
+	 * @param  string $model      
+	 * @param  array  $attributes 
+	 * @return Jam_Model
+	 */
+	public static function build($model, array $attributes = array())
 	{
 		$class = Jam::class_name($model);
 
@@ -71,7 +77,13 @@ abstract class Kohana_Jam {
 		return $object->set($attributes);
 	}
 
-	public static function create($model, $attributes = array())
+	/**
+	 * Create a new object of a given model, optionally setting some fields, and then save it to the database
+	 * @param  string $model      
+	 * @param  array  $attributes 
+	 * @return Jam_Model
+	 */
+	public static function create($model, array $attributes = array())
 	{
 		return Jam::build($model, $attributes)->save();
 	}
@@ -289,6 +301,10 @@ abstract class Kohana_Jam {
 		return Jam::$_behavior_prefix;
 	}
 
+	/**
+	 * Clear the cache of the models. You should do this only when you dynamically change models
+	 * @param  string $name optionally clear only one model
+	 */
 	public static function clear_cache($name = NULL)
 	{
 		if ($name !== NULL)
@@ -301,26 +317,51 @@ abstract class Kohana_Jam {
 		}
 	}
 
+	/**
+	 * Make an object of class Jam_Query_Builder_Delete
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Delete
+	 */
 	public static function delete($model)
 	{
 		return new Jam_Query_Builder_Delete($model);
 	}
 
+	/**
+	 * Make an object of class Jam_Query_Builder_Update
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Update
+	 */
 	public static function update($model)
 	{
 		return new Jam_Query_Builder_Update($model);
 	}
 
+	/**
+	 * Make an object of class Jam_Query_Builder_Insert
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Insert
+	 */
 	public static function insert($model)
 	{
 		return new Jam_Query_Builder_Insert($model);
 	}
 
+	/**
+	 * Make an object of class Jam_Query_Builder_Select
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Select
+	 */
 	public static function select($model)
 	{
 		return new Jam_Query_Builder_Select($model);
 	}
 
+	/**
+	 * Make an object of class Jam_Query_Builder_Collection
+	 * @param  string $model 
+	 * @return Jam_Query_Builder_Collection
+	 */
 	public static function all($model)
 	{
 		return new Jam_Query_Builder_Collection($model);
@@ -344,16 +385,37 @@ abstract class Kohana_Jam {
 		return call_user_func($method, $model, $converted_keys);
 	}
 
+	/**
+	 * Try to find a model with the given fields, if one cannot be found, 
+	 * build it and set the fields we've search with to it.
+	 * @param  string $model  
+	 * @param  array  $values 
+	 * @return Jam_Model         
+	 */
 	public static function find_or_build($model, array $values)
 	{
 		return Jam::find_or('Jam::build', $model, $values);
 	}
 
+	/**
+	 * Try to find a model with the given fields, if one cannot be found, 
+	 * create it and set the fields we've search with to it. Save the model to the database.
+	 * @param  string $model  
+	 * @param  array  $values 
+	 * @return Jam_Model         
+	 */
 	public static function find_or_create($model, array $values)
 	{
 		return Jam::find_or('Jam::create', $model, $values);
 	}
 
+	/**
+	 * Find a model with its unique key. Return NULL on failure.
+	 * You can pass an array - then it tries to find all the models corresponding to the keys
+	 * @param  string $model 
+	 * @param  string|array $key   
+	 * @return Jam_Model        
+	 */
 	public static function find($model, $key)
 	{
 		$collection = new Jam_Query_Builder_Collection($model);
@@ -361,7 +423,14 @@ abstract class Kohana_Jam {
 		return is_array($key) ? $collection : $collection->first();
 	}
 
-	public static function find_insist($model, $key = NULL)
+	/**
+	 * Find a model with its unique key. Throw Jam_Exception_NotFound on failure 
+	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_NotFound
+	 * @param  string $model 
+	 * @param  string|array $key
+	 * @return Jam_Model
+	 */
+	public static function find_insist($model, $key)
 	{
 		$result = Jam::find($model, $key);
 
@@ -380,6 +449,12 @@ abstract class Kohana_Jam {
 		return $result;
 	}
 
+	/**
+	 * Filter the $data array by removing everything that does not have a key in the permit array
+	 * @param  array  $permit array of permitted keys 
+	 * @param  array  $data   
+	 * @return array         
+	 */
 	public static function permit(array $permit = array(), array $data = array())
 	{
 		return Jam_Validator_Attributes::factory($permit)->data($data)->clean();

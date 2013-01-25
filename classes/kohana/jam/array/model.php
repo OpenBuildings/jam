@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
+ * Represents an array of models. Lazy loaded from a Jam_Query_Builder_Collection, and can be changed, checked and saved at once.
+ * 
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
@@ -14,6 +16,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return new Jam_Collection_Model();
 	}
 
+	/**
+	 * Convert a collection to an array, keep an array or make a Jam_Model to an array(Jam_Model)
+	 * @param  mixed $collection 
+	 * @return array
+	 */
 	public static function convert_collection_to_array($collection)
 	{
 		if ($collection instanceof Jam_Query_Builder_Collection OR $collection instanceof Jam_Array_Model)
@@ -31,12 +38,41 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return array_filter($array);
 	}
 
+	/**
+	 * A collection used to load the content
+	 * @var Jam_Query_Builder_Collection
+	 */
 	protected $_collection;
+
+	/**
+	 * A template for the models of this iterator. Used to load the model quickly
+	 * @var Jam_Model
+	 */
 	protected $_model_template;
+
+	/**
+	 * The name of the models in this iterator
+	 * @var string
+	 */
 	protected $_model;
+
+	/**
+	 * The original content, loaded from the database
+	 * @var array
+	 */
 	protected $_original;
+
+	/**
+	 * This is set if the whole collection has been replaced.
+	 * @var boolean
+	 */
 	protected $_replace = FALSE;
 	
+	/**
+	 * Getter / Setter of the model name
+	 * @param  string $model 
+	 * @return string        
+	 */
 	public function model($model = NULL)
 	{
 		if ($model !== NULL)
@@ -47,6 +83,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return $this->_model;
 	}
 
+	/**
+	 * Getter of the meta object for this iterator (based on $_model)
+	 * @return Jam_Model 
+	 * @throws Kohana_Exception If $_model not present
+	 */
 	public function meta()
 	{
 		if ( ! $this->model())
@@ -55,6 +96,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return Jam::meta($this->model());
 	}
 	
+	/**
+	 * Getter / Setter of the collection, used to lazy load the data for this iterator
+	 * @param  Jam_Query_Builder_Collection $collection 
+	 * @return Jam_Query_Builder_Collection
+	 */
 	public function collection(Jam_Query_Builder_Collection $collection = NULL)
 	{
 		if ($collection !== NULL)
@@ -66,6 +112,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return $this->_collection;
 	}
 
+	/**
+	 * Load the content from the database, using $_collection. 
+	 * If some items have been added to the iterator before it has been loaded, merge the results
+	 * @throws Kohana_Exception If the $_collection has not been loaded
+	 */
 	protected function _load_content()
 	{
 		if ($this->_original === NULL)
@@ -88,12 +139,18 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 					$this->_content = $this->_original;
 				}
 			}
-
 		}
 	}
 
+	public function reload()
+	{
+		$this->_original = NULL;
+		$this->_replace = FALSE;
+		return parent::reload();
+	}
+
 	/**
-	 * Get a jam model template to use for _Load_model
+	 * Get a jam model template to use for _load_model
 	 * @return Jam_Model 
 	 */
 	public function model_template()
@@ -104,12 +161,23 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		}
 		return $this->_model_template;
 	}
-
+	/**
+	 * Load an item from the database, based on a unique key
+	 * @param  string $key 
+	 * @return Jam_Model      
+	 */
 	protected function _find_item($key)
 	{
 		return Jam::find($this->model(), $key);
 	}
 
+	/**
+	 * Convert an item from the $_content to a Jam_Model
+	 * @param  mixed $value      
+	 * @param  boolean $is_changed 
+	 * @param  int $offset     
+	 * @return Jam_Model             
+	 */
 	protected function _load_item($value, $is_changed, $offset)
 	{
 		if ($value instanceof Jam_Model OR ! $value)
@@ -147,6 +215,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return $item;
 	}
 
+	/**
+	 * Find out the primary_key of an item of the $_content
+	 * @param  mixed $value 
+	 * @return int        
+	 */
 	protected function _id($value)
 	{
 		if ($value instanceof Jam_Model)

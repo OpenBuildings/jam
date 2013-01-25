@@ -1,83 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [The Types of Associations](#the-types-of-associations)
-	- [The belongsto Association](#the-belongsto-association)
-	- [The hasone Association](#the-hasone-association)
-	- [The hasmany Association](#the-hasmany-association)
-	- [The manytomany Association](#the-manytomany-association)
-- [Choosing Between belongsto and hasone](#choosing-between-belongsto-and-hasone)
-- [Polymorphic Associations](#polymorphic-associations)
-- [Self Joins](#self-joins)
-- [Tips, Tricks, and Warnings](#tips-tricks-and-warnings)
-	- [Controlling Caching](#controlling-caching)
-	- [Avoiding Name Collisions](#avoiding-name-collisions)
-	- [Updating the Schema](#updating-the-schema)
-		- [Creating Foreign Keys for belongsto Associations](#creating-foreign-keys-for-belongsto-associations)
-		- [Creating Join Tables for manytomany Associations](#creating-join-tables-for-manytomany-associations)
-- [Bi-directional Associations](#bi-directional-associations)
-- [Model Helper Methods](#model-helper-methods)
-	- [builder()](#builder)
-	- [build(), create()](#build-create)
-- [Jam_Collection](#jam_collection)
-	- [Mass Assignment](#mass-assignment)
-	- [Helper Methods for Jam_Collection](#helper-methods-for-jam_collection)
-	- [meta()](#meta)
-	- [as_array()](#as_array)
-	- [reload()](#reload)
-	- [add()](#add)
-	- [remove()](#remove)
-	- [remove_insist()](#remove_insist)
-	- [ids()](#ids)
-	- [clear()](#clear)
-	- [changed()](#changed)
-	- [parent()](#parent)
-	- [build()](#build)
-	- [create()](#create)
-	- [search()](#search)
-	- [exists()](#exists)
-- [Detailed Association Reference](#detailed-association-reference)
-	- [belongsto Association Reference](#belongsto-association-reference)
-		- [column](#column)
-		- [conditions](#conditions)
-		- [default](#default)
-		- [dependent](#dependent)
-		- [foreign](#foreign)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-		- [polymorphic](#polymorphic)
-		- [touch](#touch)
-	- [hasone Association Reference](#hasone-association-reference)
-		- [as](#as)
-		- [conditions](#conditions)
-		- [dependent](#dependent)
-		- [foreign](#foreign)
-		- [foreign_default](#foreign_default)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-	- [hasmany Association Reference](#hasmany-association-reference)
-		- [as](#as)
-		- [conditions](#conditions)
-		- [dependent](#dependent)
-		- [extend](#extend)
-		- [foreign](#foreign)
-		- [foreign_default](#foreign_default)
-		- [inverse_of](#inverse_of)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-	- [manytomany Association Reference](#manytomany-association-reference)
-		- [extend](#extend)
-		- [through](#through)
-		- [foreign](#foreign)
-		- [conditions](#conditions)
-		- [label](#label)
-		- [model](#model)
-		- [name](#name)
-
 ## The Types of Associations
 
 With Jam, an association is a connection between two Jam models. Associations are implemented using macro-style calls, so that you can declaratively add features to your models. For example, by declaring that one model `belongsto` another, you instruct Jam to maintain Primary Key–Foreign Key information between instances of the two models, and you also get a number of utility methods added to your model. Jam supports four types of associations:
@@ -327,30 +247,6 @@ If you have an instance of the Model_Picture, you can get to its parent via $pic
 └─────────────────────────┴─────────┘
 </pre>
 
-If your polymorphic association is mainly conserned with a single table, and only occasionaly goes to other tables, you can take advantage of that using the "polymorphic_default_model" - by setting that you can use this as a normal belongsto association but can assign differnet models to it.
-
-```php
-<?php 
-class Model_Picture extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('imageable', Jam::association('belongsto', array('polymorphic' => TRUE, 'polymorphic_default_model' => 'product')));
-		// ...
-	}
-}
-
-$picture = Jam::factory('picture', 1);
-
-// Set the imagable just by ID, the _model will be set with the default
-$picture->imagable = 1;
-$picture->save();
-
-// You can join them up as if its a normal belongs to association
-Jam::all('picture')->join('imagable');
-?>
-```
-
 ## Self Joins
 
 In designing a data model, you will sometimes find a model that should have a relation to itself. For example, you may want to store all employees in a single database model, but be able to trace relationships such as between manager and subordinates. This situation can be modeled with self-joining associations:
@@ -362,8 +258,8 @@ class Model_Employee extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('subordinates', Jam::association('hasmany', array('foreign' => 'employee.manager_id')));
-		$meta->association('manager', Jam::association('belongsto', array('foreign' => 'employee', 'column' => 'manager_id')));
+		$meta->association('subordinates', Jam::association('hasmany', array('foreign_model' => 'employee', 'foreign_key' => 'manager_id')));
+		$meta->association('manager', Jam::association('belongsto', array('foreign_model' => 'employee', 'foreign_key' => 'manager_id')));
 		// ...
 	}
 }
@@ -389,7 +285,7 @@ All of the association methods are built around caching, which keeps the result 
 <?php
 $customer->orders;                             // retrieves orders from the database
 $customer->orders->count();                    // uses the cached copy of orders
-foreach($customer->orders as $order);          // uses the cached copy of orders
+foreach ($customer->orders as $order);          // uses the cached copy of orders
 ?>
 ```
 
@@ -513,7 +409,7 @@ By default, Jam doesn't know about the connection between these associations. Th
 
 ```php
 <?php
-$customer = Jam::query('customer')->find();
+$customer = Jam::all('customer')->first();
 $order = $customer->orders[0];
 $customer->first_name == $order->customer->first_name; // TRUE
 $customer->first_name = 'Manny';
@@ -550,7 +446,7 @@ With these changes, Jam will only load one copy of the customer object, preventi
 
 ```php
 <?php
-$customer = Jam::query('customer')->find();
+$customer = Jam::all('customer')->first();
 $order = $customer->orders[0];
 $customer->first_name == $order->customer->first_name; // TRUE
 $customer->first_name = 'Manny';
@@ -558,82 +454,11 @@ $customer->first_name == $order->customer->first_name; // TRUE
 ?>
 ```
 
-## Model Helper Methods
+## Association Collections
 
-The `Jam_Model` class has some helper methods that work only with associations. Their first argument is the name of the association.
+When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jam_Array_Association` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it. 
 
-* `builder()`
-* `build()`
-* `create()`
-
-### builder()
-
-Use this to get the `Jam_Builder` for the association (The builder that, when executed will get you the Jam_Collection of the association). This can allow you to modify the association query, add more constraints and generally perform more low level stuff than with the association itself. Have in mind that everything you do with this builder does not get cached or associated with the parent model so things like 'inverse_of' will not function. This is just a `Jam_Builder`
-
-```php
-<?php 
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		$meta->fields(array(
-			'id'         => Jam::field('primary'),
-			'name'       => Jam::field('string'),
-		));
-	}
-}
-
-// Get only 3 of the orders from this supplier
-$supplier = $supplier->builder('orders')->limit(3)->select_all();
-
-// Update the names of all the orders from this supplier
-$supplier->builder('orders')->set(array('name' => 'new name'))->update();
-?>
-```
-
-### build(), create()
-
-This is available only on `belongsto` and `hasmany` associations. You can create a model object for the association, and it will be linked to your parent model with the appropriate associations set (both parent and child).
-
-```php
-<?php 
-
-class Model_Order extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('customer', Jam::association('belongsto'));
-
-		$meta->fields(array(
-			'id'         => Jam::field('primary'),
-			'order_date' => Jam::field('timestamp'),
-		));
-	}
-}
-
-// This supplier is not yet saved to the database
-$supplier = $order->build('supplier', array('name' => 'Hitachi'));
-
-echo $supplier->name; // 'Hitachi'
-
-// A link is created between supplier and order
-echo $order->supplier->name; // 'Hitachi'
-
-echo $order->supplier === $supplier // TRUE
-
-?>
-```
-The second argument of `build()` is an array of attributes that is given to the constructor of the new model. Have in mind that you do not need to set "supplier_id" or other such fields as they get set automatically.
-
-`create()` is the same as `build()` but it saves the object immediately.
-
-## Jam_Collection
-
-When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jam_Collection` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it. 
-
-It is important to note that `Jam_Collection` utilizes lazy loading so the SQL query to retrieve the objects from the database is executed at the last possible moment (in a `foreach` or `[]`).
+It is important to note that `Jam_Array_Association` utilizes lazy loading so the SQL query to retrieve the objects from the database is executed at the last possible moment (in a `foreach` or `[]`).
 
 ```php
 <?php 
@@ -669,6 +494,354 @@ So when you get the orders inside `suppliers/show` view, only then will the SQL 
 </ul>
 ?>
 ```
+
+You also have the ability to modify this Jam_Array_Association, by adding or removing models, using the array interface:
+
+```php
+<?php
+$customer->orders[] = Jam::create('order');  // Add a newly created order
+$customer->orders[0] = Jam::create('order'); // Replace the first order with a newly created one
+unset($customer->orders[1]);                 // Remove the second order
+?>
+```
+
+### Helper Methods for Jam_Array_Association
+
+Along with the basic array stuff, `Jam_Array_Association` implements some useful helper methods:
+
+* model()
+* meta()
+* as_array()
+* reload()
+* add()
+* remove()
+* set()
+* ids()
+* original()
+* original_ids()
+* clear()
+* changed()
+* changed_check()
+* changed_save()
+* save()
+* association()
+* parent()
+* build()
+* create()
+* search()
+* has()
+
+### meta(), model()
+
+Get the meta of the model being retrieved. Or the model name itself. For example:
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::factory('supplier', 1);
+
+echo $supplier->orders->meta() // Jam_Meta object for the Model_Order class
+echo $supplier->orders->model() // 'order'
+?>
+```
+
+### as_array()
+
+Get the contents of the `Jam_Array_Association` as an array, this get rid of the `Jam_Array_Association` object, and gives you a simple array of `Jam_Model` objects. `as_array()` method is a lot more powerful though: 
+
+```
+<?php
+
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+// You can get the array indexed by "id" or any other field like this 
+$supplier->orders->as_array('id');         // array(1 => Model_Order(), 27 => Model_Order())
+$supplier->orders->as_array('name');       // array('first order' => Model_Order(), 'second order' => Model_Order())
+
+// You can get an array only with one field 
+$supplier->orders->as_array(NULL, 'name'); // array('first order', 'second order')
+
+// Or you can mixed the two and get an array of names indexed by id
+$supplier->orders->as_array('id', 'name'); // array(1 => 'first order', 27 => 'second order')
+
+// Or even the other way around 
+$supplier->orders->as_array('name', 'id'); // array('first order' => 1, 'second order' => 27)
+?>
+```
+
+### reload()
+
+Forces the association to get reloaded. This way the next `foreach` or `[]` operation will trigger a fresh SQL query 
+
+```
+<?php
+// Perform the SQL query
+foreach ($supplier->orders as $order) 
+{
+	// ... $order	
+}
+
+$supplier->orders->reload();
+
+// Perform the SQL query again
+echo $supplier->orders[1];
+?>
+```
+### add()
+
+Add an object to the association. The object will be added to the current `Jam_Array_Association` object and will be saved when your save the parent object. Also if you have defined `inverse_of` on the filed, then when you `add()` an object to a collection, then the inverse association is set as well. You can use different representations of the object that you pass to `add()` - you can pass a primary_key a name_key or the object itself:
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+$order = Jam::find('order', 20);
+$supplier->orders->add($order);
+
+// Assigns the parent
+echo $suplier->id() == $order->supplier->id(); // TRUE
+
+// The user is already present in the collection even though its not saved yet.
+echo $supplier->orders->has($order); // TRUE 
+
+// Save associations.
+$supplier->save();
+
+// The new association is persisted in the database.
+echo Jam::find('supplier', 1)->orders->has($order); // TRUE 
+
+// Add by primary key
+$supplier->orders->add(21);
+
+// Add by name key
+$supplier->orders->add('last order');
+
+// Add multiple items
+$supplier->orders->add(array(1, 2, 10));
+
+// Add a collection of objects (adds all the objects)
+$supplier->orders->add(Jam::all('order')->where('price', '<', 10));
+?>
+```
+
+### remove()
+
+Remove an object from the association. The object will be removed from the current `Jam_Array_Association` object and will be saved when your save the parent object. You can use different representations of the object that you pass to `remove()` - you can pass a primary_key a name_key or the object itself
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+$order = Jam::find('order', 20);
+$supplier->orders->remove($order);
+
+// The user is already present in the collection even though its not saved yet.
+echo $supplier->orders->exists($order); // FALSE 
+
+// Save associations.
+$supplier->save();
+
+// The new association is persisted in the database.
+echo Jam::find('supplier', 1)->orders->has($order); // FALSE 
+
+// Remove by primary key
+$supplier->orders->remove(21);
+
+// Remove by name key
+$supplier->orders->remove('last order');
+
+// Remove multiple items
+$supplier->orders->remove(array(1, 2, 10));
+
+// Remove a collection of objects (removes all the objects)
+$supplier->orders->remove(Jam::all('order')->where('price', '<', 10))
+?>
+```
+
+### ids()
+
+Using `ids()` you can get all the ids of the objects in the association.
+
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+
+echo $supplier->orders->ids(); // Array with the ids
+
+?>
+```
+
+### clear()
+
+Clear the contents of the association leaving an empty `Jam_Array_Association`, and saves the result to the database imidiately
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+
+// Lets assume we have some orders
+echo $supplier->orders; // Jam_Collection: Model_Order(2)
+
+$supplier->orders->clear();
+
+echo $supplier->orders; // Jam_Collection: Model_Order(0)
+
+$supplier->save();
+
+echo Jam::factory('supplier', 1)->orders; // Jam_Collection: Model_Order(0)
+?>
+```
+
+### changed()
+
+A boolean getter to find out if the collection has been changed. It is considered changed if elements have been added or removed or if it has been cleared or set through `set()`
+
+### parent()
+
+This method will return the parent model that requested the association. 
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::factory('supplier', 1);
+
+// The parent is the supplier
+echo $supplier->orders->parent() === $supplier; // TRUE
+?>
+```
+
+### build()
+
+You can build an new object for the association and have it assigned to the collection. Does not work with polymorphic associations.
+
+```
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::factory('supplier', 1);
+
+// The parent is the supplier
+$order = $supplier->orders->build(array('name' => 'new name'));
+
+// Newly created order
+echo $order; // Model_Order(NULL)
+
+// The new order is automatically added to the collection
+echo $supplier->orders->exists($order); // TRUE
+?>
+```
+
+### create()
+
+The same as `build()` but actually created the object in the database.
+
+### search()
+
+If you want to find out the key of an element in the collection you can use the `search()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
+
+### exists()
+
+If you want to check if an element is in the collection you can use the `exists()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::factory('supplier', 1);
+$order = Jam::factory('order', 1)
+
+// Check with Jam_Model object
+echo $supplier->orders->exists($order);
+
+// Check with id of an
+echo $supplier->orders->exists(1);
+
+// Check with name key
+echo $supplier->orders->exists('first order');
+?>
+```
+
 
 ### Mass Assignment
 
@@ -793,330 +966,6 @@ $employee->pictures = array(
 echo $employee->picture[0]; // Model_Picture(Null)
 echo $employee->picture[0]->name; // 'Mug Shot'
 
-?>
-```
-
-### Helper Methods for Jam_Collection
-
-Along with the basic array stuff, `Jam_Collection` implements some useful helper methods
-
-* meta()
-* as_array()
-* reload()
-* add()
-* remove()
-* remove_insist()
-* ids()
-* clear()
-* changed()
-* parent()
-* build()
-* create()
-* search()
-* exists()
-
-### meta()
-
-Get the meta of the model being retrieved. For example:
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-echo $supplier->orders->meta() // Jam_Meta object for the Model_Order class
-?>
-```
-
-### as_array()
-
-Get the contents of the `Jam_Collection` as an array, this get rid of the `Jam_Collection` object, and gives you a simple array of `Jam_Model` objects. `as_array()` method is a lot more powerful though: 
-
-```
-<?php
-
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-// You can get the array indexed by "id" or any other field like this 
-$supplier->orders->as_array('id');         // array(1 => Model_Order(), 27 => Model_Order())
-$supplier->orders->as_array('name');       // array('first order' => Model_Order(), 'second order' => Model_Order())
-
-// You can get an array only with one field 
-$supplier->orders->as_array(NULL, 'name'); // array('first order', 'second order')
-
-// Or you can mixed the two and get an array of names indexed by id
-$supplier->orders->as_array('id', 'name'); // array(1 => 'first order', 27 => 'second order')
-
-// Or even the other way around 
-$supplier->orders->as_array('name', 'id'); // array('first order' => 1, 'second order' => 27)
-?>
-```
-
-### reload()
-
-Forces the association to get reloaded. This way the next `foreach` or `[]` operation will trigger a fresh SQL query 
-
-```
-<?php
-// Perform the SQL query
-foreach ($supplier->orders as $order) 
-{
-	// ... $order	
-}
-
-$supplier->orders->reload();
-
-// Perform the SQL query again
-echo $supplier->orders[1];
-?>
-```
-### add()
-
-Add an object to the association. The object will be added to the current Jam_Collection object and will be saved when your save the parent object. Also if you have defined `inverse_of` on the filed, then when you `add()` an object to a collection, then the inverse association is set as well. You can use different representations of the object that you pass to `add()` - you can pass a primary_key a name_key or the object itself:
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-$order = Jam::factory('order', 20);
-$supplier->orders->add($order);
-
-// Assigns the parent
-echo $suplier->id() == $order->supplier->id(); // TRUE
-
-// The user is already present in the collection even though its not saved yet.
-echo $supplier->orders->exists($order); // TRUE 
-
-// Save associations.
-$supplier->save();
-
-// The new association is persisted in the database.
-echo Jam::factory('supplier', 1)->orders->exists($order); // TRUE 
-
-// Add by primary key
-$supplier->orders->add(21);
-
-// Add by name key
-$supplier->orders->add('last order');
-?>
-```
-
-### remove()
-
-Remove an object from the association. The object will be removed from the current `Jam_Collection` object and will be saved when your save the parent object. You can use different representations of the object that you pass to `remove()` - you can pass a primary_key a name_key or the object itself
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-$order = Jam::factory('order', 20);
-$supplier->orders->remove($order);
-
-// The user is already present in the collection even though its not saved yet.
-echo $supplier->orders->exists($order); // FALSE 
-
-// Save associations.
-$supplier->save();
-
-// The new association is persisted in the database.
-echo Jam::factory('supplier', 1)->orders->exists($order); // FALSE 
-
-// Remove by primary key
-$supplier->orders->remove(21);
-
-// Remove by name key
-$supplier->orders->remove('last order');
-?>
-```
-
-### remove_insist()
-
-The same as `remove()` but if the object is not present in the collection, then raise an `Jam_Exception_Missing`
-
-### ids()
-
-Using `ids()` you can get all the ids of the objects in the association, additionally you can set all the objects with ids through this method - it acts as a setter.
-
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-echo $supplier->orders->ids(); // Array with the ids
-
-// Set orders with ids
-$supplier->orders->ids(array(14, 21));
-
-?>
-```
-
-### clear()
-
-Clear the contents of the association leaving an empty `Jam_Collection`
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-// Lets assume we have some orders
-echo $supplier->orders; // Jam_Collection: Model_Order(2)
-
-$supplier->orders->clear();
-
-echo $supplier->orders; // Jam_Collection: Model_Order(0)
-
-$supplier->save();
-
-echo Jam::factory('supplier', 1)->orders; // Jam_Collection: Model_Order(0)
-?>
-```
-
-### changed()
-
-A boolean getter to find out if the collection has been changed. It is considered changed if elements have been added or removed or if it has been cleared or set through `ids()`
-
-### parent()
-
-This method will return the parent model that requested the association. 
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-// The parent is the supplier
-echo $supplier->orders->parent() === $supplier; // TRUE
-?>
-```
-
-### build()
-
-You can build an new object for the association and have it assigned to the collection. Does not work with polymorphic associations.
-
-```
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-// The parent is the supplier
-$order = $supplier->orders->build(array('name' => 'new name'));
-
-// Newly created order
-echo $order; // Model_Order(NULL)
-
-// The new order is automatically added to the collection
-echo $supplier->orders->exists($order); // TRUE
-?>
-```
-
-### create()
-
-The same as `build()` but actually created the object in the database.
-
-### search()
-
-If you want to find out the key of an element in the collection you can use the `search()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
-
-### exists()
-
-If you want to check if an element is in the collection you can use the `exists()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('orders', Jam::association('hasmany'));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-$order = Jam::factory('order', 1)
-
-// Check with Jam_Model object
-echo $supplier->orders->exists($order);
-
-// Check with id of an
-echo $supplier->orders->exists(1);
-
-// Check with name key
-echo $supplier->orders->exists('first order');
 ?>
 ```
 

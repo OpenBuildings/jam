@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Handles belongs to relationships
+ * Handles count cache counting for hasmany
  *
  * @package    Jam
  * @category   Associations
