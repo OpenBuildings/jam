@@ -13,7 +13,7 @@ class Model_Test_Blog extends Jam_Model {
 		$meta->db(Unittest_Jam_Database_TestCase::$database_connection);
 
 		$meta->associations(array(
-			'test_owner'             => Jam::association('belongsto', array('foreign_model' => 'test_author', 'column' => 'test_owner_id')),
+			'test_owner'             => Jam::association('belongsto', array('foreign_model' => 'test_author', 'foreign_key' => 'test_owner_id')),
 			'test_featured_category' => Jam::association('hasone', array(
 				'foreign_model' => 'test_category',
 				'conditions' => array(

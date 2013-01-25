@@ -58,6 +58,9 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		{
 			$db = Database::instance($meta->db());
 		}
+		$original_on = $this->_on;
+		$original_using = $this->_using;
+		$original_table = $this->_table;
 
 		if ( ! empty($this->_on))
 		{
@@ -83,7 +86,12 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 			$additional_joins .= ' '.$join->compile($db);
 		}
 
-		return parent::compile($db).$additional_joins;
+		$compiled = parent::compile($db).$additional_joins;
+		$this->_on = $original_on;
+		$this->_using = $original_using;
+		$this->_table = $original_table;
+
+		return $compiled;
 	}
 
 	public function context_model($context_model = NULL)

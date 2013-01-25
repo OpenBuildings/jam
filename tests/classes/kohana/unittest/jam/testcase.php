@@ -2,6 +2,11 @@
 
 class Kohana_Unittest_Jam_TestCase extends Unittest_TestCase {
 
+	public function test__dummy()
+	{
+		
+	}
+
 	public function assertHasError($model, $attribute, $error)
 	{
 		$errors = $model->errors()->as_array();

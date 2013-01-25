@@ -13,9 +13,9 @@ class Jam_Query_Builder_JoinTest extends Unittest_TestCase {
 	public function test_compile()
 	{
 		$join = Jam_Query_Builder_Join::factory('test_author')
-			->on(':primary_key', '=', 'test_blog.test_author_id');
+			->on(':primary_key', '=', 'test_blog.test_owner_id');
 
-		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_blogs`.`test_author_id`)', (string) $join);
+		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_blogs`.`test_owner_id`)', (string) $join);
 	}
 
 	public function test_compile_not_model()
@@ -42,13 +42,13 @@ class Jam_Query_Builder_JoinTest extends Unittest_TestCase {
 	public function test_context_model()
 	{
 		$join = Jam_Query_Builder_Join::factory('test_author')
-			->on(':primary_key', '=', 'test_author_id');
+			->on(':primary_key', '=', 'test_owner_id');
 
-		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_author_id`)', (string) $join);
+		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_owner_id`)', (string) $join);
 
 		$join->context_model('test_blog');
 
-		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_blogs`.`test_author_id`)', (string) $join);
+		$this->assertEquals('JOIN `test_authors` ON (`test_authors`.`id` = `test_blogs`.`test_owner_id`)', (string) $join);
 	}
 
 	public function test_join_single()
