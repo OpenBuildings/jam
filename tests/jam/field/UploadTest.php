@@ -16,7 +16,7 @@ class Jam_Field_UploadTest extends Unittest_Jam_Upload_TestCase {
 	{
 		parent::setUp();
 
-		$this->model = Jam::build('test_image', 1);
+		$this->model = Jam::find('test_image', 1);
 		$this->field = $this->model->meta()->field('file');
 	}
 
