@@ -134,33 +134,44 @@ The same as the `first()` method, but throws Jam_Exception_NotFound if nothing i
 
 If you want to limit the records to specific ids, then you can use the `where_key()` method. It uses the unique_key method to determine what column to use for the WHERE clasue - by default primary_key for numeric values and name_key for string values. However you can extend this method in the builder and have some other logic. This is explained below. You can also pass an array of ids.
 
-	Jam::all('client')->where_key(1)->first();                   // Model_Client(1)
-	Jam::all('client')->where_key('Pesho')->first();             // Model_Client(1)
-	Jam::all('client')->where_key(array(1, 2));                  // Jam_Query_Builder_Collection: Model_Client(2)
-
+```php
+<?php
+Jam::all('client')->where_key(1)->first();                   // Model_Client(1)
+Jam::all('client')->where_key('Pesho')->first();             // Model_Client(1)
+Jam::all('client')->where_key(array(1, 2));                  // Jam_Query_Builder_Collection: Model_Client(2)
+?>
+```
 
 ### where(), and_where()
 
 This is the basic constraint method. It adds a WHERE SQL clause and requires 3 methods - column, operator and value:
 
-	Jam::all('client')->where('title', '=', 'Patrik');    // SELECT clients.* FROM clients WHERE title = 'Patrick'
-	Jam::all('client')->where('title', 'LIKE', 'Pat%');   // SELECT clients.* FROM clients WHERE title LIKE 'Pat%'
+```php
+<?php
+Jam::all('client')->where('title', '=', 'Patrik');    // SELECT clients.* FROM clients WHERE title = 'Patrick'
+Jam::all('client')->where('title', 'LIKE', 'Pat%');   // SELECT clients.* FROM clients WHERE title LIKE 'Pat%'
+?>
+```
 
 `where()`, `and_where()` are the same method - `where()` is just a shortcut.
 
 There are a lot of logic to help you in writing precise SQL queries in the `where()` functions. When you have ambiguous column names, you can use model names instead of tables. There are also some meta aliases for each model that are available as the name of the field. Also if you want use a SQL Function for the method you can just write it in uppercase, Jam will figure out the details.
 
-	Jam::all('client')->where('client.title', '=', 'Patrik');  
-	// SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
+```php
+<?php
+Jam::all('client')->where('client.title', '=', 'Patrik');  
+// SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
 
-	Jam::all('client')->where('client.:name_key', '=', 'Patrik');
-	// SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
+Jam::all('client')->where('client.:name_key', '=', 'Patrik');
+// SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
 
-	Jam::all('client')->where('client.:primary_key', '=', 10);
-	// SELECT clients.* FROM clients WHERE clients.id = 10
+Jam::all('client')->where('client.:primary_key', '=', 10);
+// SELECT clients.* FROM clients WHERE clients.id = 10
 
-	Jam::all('client')->where('SUBSTR(client.:name_key, 4)', '=', 'noon');
-	// SELECT clients.* FROM clients WHERE SUBSTR(clients.title, 4) = 'noon'
+Jam::all('client')->where('SUBSTR(client.:name_key, 4)', '=', 'noon');
+// SELECT clients.* FROM clients WHERE SUBSTR(clients.title, 4) = 'noon'
+?>
+```
 
 The available meta aliases with Jam are
 
@@ -170,48 +181,58 @@ The available meta aliases with Jam are
 
 :unique_key is a bit more tricky. It tries to guess the field you need to search for based on the value itself. If it's a numeric value - then it will use :primary_key, but if it's a normal string, it will use the :name_key. 
 
-	Jam::query('client')->where('client.:unique_key', '=', 10);
-	// SELECT clients.* FROM clients WHERE clients.id = 10
+```php
+<?php
+Jam::all('client')->where('client.:unique_key', '=', 10);
+// SELECT clients.* FROM clients WHERE clients.id = 10
 
-	Jam::query('client')->where('client.:unique_key', '=', 'Patrik');
-	// SELECT clients.* FROM clients WHERE clients.name = 'Patrick'
+Jam::all('client')->where('client.:unique_key', '=', 'Patrik');
+// SELECT clients.* FROM clients WHERE clients.name = 'Patrick'
+?>
+```
 
 That in itself is quite neat. However, internally this method uses the `unique_key()` method of the `Jam_Model` that could be extended by your application for every `Jam_Model`. You can for example write a custom logic that searched by email if the value is an email or by IP if the value is by IP. This is all covered in [Writing Models & Builders](/OpenBuildings/Jam/blob/master/guide/jam/models-and-builders.md)
 
 For operators you can use all the SQL operators ('=', '!=', '>' ...). Special cases are "IN", "IS", "IS NOT", and "BETWEEN" operators
 
-	// IN with array
-	Jam::all('client')->where('client.id', 'IN', array(1, 2, 3));
-	// SELECT clients.* FROM clients WHERE clients.id IN array(1, 2, 3)
+```php
+<?php
+// IN with array
+Jam::all('client')->where('client.id', 'IN', array(1, 2, 3));
+// SELECT clients.* FROM clients WHERE clients.id IN array(1, 2, 3)
 
-	// IS and IS can use the NULL php constant to pass on NULL
-	Jam::all('client')->where('client.id', 'IS', NULL);
-	// SELECT clients.* FROM clients WHERE clients.id IS NULL
+// IS and IS can use the NULL php constant to pass on NULL
+Jam::all('client')->where('client.id', 'IS', NULL);
+// SELECT clients.* FROM clients WHERE clients.id IS NULL
 
-	// IS and IS NOT can use the NULL php constant to pass on NULL
-	Jam::all('client')->where('client.id', 'IS NOT', NULL);
-	// SELECT clients.* FROM clients WHERE clients.id IS NOT NULL
+// IS and IS NOT can use the NULL php constant to pass on NULL
+Jam::all('client')->where('client.id', 'IS NOT', NULL);
+// SELECT clients.* FROM clients WHERE clients.id IS NOT NULL
 
-	// BETWEEN uses an array for the boundaries
-	Jam::all('client')->where('client.id', 'BETWEEN', array(1, 100));
-	// SELECT clients.* FROM clients WHERE clients.id BETWEEN 1 AND 100
-
+// BETWEEN uses an array for the boundaries
+Jam::all('client')->where('client.id', 'BETWEEN', array(1, 100));
+// SELECT clients.* FROM clients WHERE clients.id BETWEEN 1 AND 100
+?>
+```
 
 ### or_where()
 
 When you want to add an OR SQL statement, you can use the `or_where()` method. What it does is simply adds your constraint with and SQL OR. 
 
-	Jam::all('client')
-		->where('title', '=', 'Patrik')
-		->or_where('price', '<', 100);    
-	// SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
+```php
+<?php
+Jam::all('client')
+	->where('title', '=', 'Patrik')
+	->or_where('price', '<', 100);    
+// SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
 
-	Jam::all('client')
-		->where('title', 'LIKE', '%Pat%')
-		->where('price', '<', 100)
-		->or_where('title', 'LIKE', 'Admin%');   
-	// SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND price < 100 OR title LIKE 'Admin%'
-
+Jam::all('client')
+	->where('title', 'LIKE', '%Pat%')
+	->where('price', '<', 100)
+	->or_where('title', 'LIKE', 'Admin%');   
+// SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND price < 100 OR title LIKE 'Admin%'
+?>
+```
 
 > __Be careful__ Using `or_where()` can lead to unexpected results. If you have builder with some constraints already in place - adding an OR statement will OR with _all of them_. So you should consider using `where_open()` and `where_close()` to enclose statements in brackets, if the result is not what you've expected.
 
@@ -222,21 +243,29 @@ When writing complex SQL queries, you often want to put statements in brackets t
 
 In this example:
 
-	Jam::all('client')
-		->where('title', 'LIKE', '%Pat%')
-		->where('price', '<', 100)
-		->or_where('title', 'LIKE', 'Admin%'); 
-	// SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
+```php
+<?php
+Jam::all('client')
+	->where('title', 'LIKE', '%Pat%')
+	->where('price', '<', 100)
+	->or_where('title', 'LIKE', 'Admin%'); 
+// SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
+?>
+```
 
 If we wanted to change the logic of the query to say that 
 
-	Jam::all('client')
-		->where('title', 'LIKE', '%Pat%')
-		->where_open()
-			->where('price', '<', 100)
-			->or_where('title', 'LIKE', 'Admin%'); 
-		->where_close()
-	// SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND (price < 100 OR title LIKE 'Admin%')
+```php
+<?php
+Jam::all('client')
+	->where('title', 'LIKE', '%Pat%')
+	->where_open()
+		->where('price', '<', 100)
+		->or_where('title', 'LIKE', 'Admin%'); 
+	->where_close()
+// SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND (price < 100 OR title LIKE 'Admin%')
+?>
+```
 
 ### having(), and_having(), or_having(), having_open(), having_close(), and_having_close(), and_having_open(), or_having_open(), or_having_close()
 
@@ -246,22 +275,25 @@ When you want to add constraints to the HAVING SQL clause you can use the `havin
 
 When you want to join other tables to the SQL, use `join()` methods. You can join by table name, model name or a table/model and alias. To add an ON statement to the JOIN, you must use the on() method. You can also use multiple on() clauses. Jam keeps track of the models that have been joined already and will not duplicate joins. If you want to join the same model twice with different conditions, you can use an array('model', 'alias') for the first argument. You can also perform different kinds of joins (LEFT, NATURAL ...) with the second argument of the `join()` method. You generally won't need to write the `->on()` statements yourself as they are handled automatically using the logic from your associations
 
-	// Normal JOIN statements
-	Jam::all('client')->join('order')
-	// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id
+```php
+<?php
+// Normal JOIN statements
+Jam::all('client')->join('order')
+// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id
 
-	// JOIN statement with alias
-	Jam::all('client')->join(array('order', 'purchase'))
-	// SELECT clients.* FROM clients JOIN orders as purchase ON purchase.client_id = clients.id
+// JOIN statement with alias
+Jam::all('client')->join(array('order', 'purchase'))
+// SELECT clients.* FROM clients JOIN orders as purchase ON purchase.client_id = clients.id
 
-	// LEFT JOIN statements
-	Jam::query('client', 'LEFT')->join('order')
-	// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id
+// LEFT JOIN statements
+Jam::query('client', 'LEFT')->join('order')
+// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id
 
-	// JOIN statement ON
-	Jam::query('client')->join('order')->on('order.name', '=', 'client.name');
-	// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id AND orders.name = clients.name
-
+// JOIN statement ON
+Jam::query('client')->join('order')->on('order.name', '=', 'client.name');
+// SELECT clients.* FROM clients JOIN orders ON orders.client_id = clients.id AND orders.name = clients.name
+?>
+```
 
 ### join_nested()
 

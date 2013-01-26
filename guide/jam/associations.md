@@ -476,10 +476,10 @@ class Controller_Supliers extends Controller_Template {
 
 	public function action_show()
 	{
-		$supplier = Jam::factory('supplier', $this->request->parma('id'));
+		$supplier = Jam::find('supplier', $this->request->parma('id'));
 
 		// This line will not perform an SQL query, just create a Jam_Collection object
-		$this->template->content = View::Factory("suppliers/show", array('orders' => $supplier->orders));
+		$this->template->content = View::factory("suppliers/show", array('orders' => $supplier->orders));
 	}
 }
 ?>
@@ -672,7 +672,7 @@ $order = Jam::find('order', 20);
 $supplier->orders->remove($order);
 
 // The user is already present in the collection even though its not saved yet.
-echo $supplier->orders->exists($order); // FALSE 
+echo $supplier->orders->has($order); // FALSE 
 
 // Save associations.
 $supplier->save();
@@ -887,7 +887,7 @@ class Model_Supplier extends Jam_Model {
 	}
 }
 
-$supplier = Jam::factory('supplier', 1);
+$supplier = Jam::find('supplier', 1);
 
 // The parent is the supplier
 $order = $supplier->orders->build(array('name' => 'new name'));
@@ -896,7 +896,7 @@ $order = $supplier->orders->build(array('name' => 'new name'));
 echo $order; // Model_Order(NULL)
 
 // The new order is automatically added to the collection
-echo $supplier->orders->exists($order); // TRUE
+echo $supplier->orders->has($order); // TRUE
 ?>
 ```
 
@@ -924,8 +924,8 @@ class Model_Supplier extends Jam_Model {
 	}
 }
 
-$supplier = Jam::factory('supplier', 1);
-$order = Jam::factory('order', 1)
+$supplier = Jam::find('supplier', 1);
+$order = Jam::find('order', 1)
 
 // Check with Jam_Model object
 echo $supplier->orders->has($order);
@@ -974,7 +974,7 @@ You can set all the orders in one single assignment, creating the objects in the
 
 ```php
 <?php
-$customer = Jam::factory('customer', 1);
+$customer = Jam::find('customer', 1);
 $customer->orders = array(
 	array(
 		'name' => 'one order',
@@ -999,7 +999,7 @@ There's one more cool feature, after you perform the assignment, you can get the
 
 ```php
 <?php
-$customer = Jam::factory('customer', 1);
+$customer = Jam::find('customer', 1);
 $customer->orders = array(
 	array(
 		'name' => 'one order',
@@ -1043,7 +1043,7 @@ class Model_Employee extends Jam_Model {
 	}
 }
 
-$employee = Jam::factory('employee', 1);
+$employee = Jam::find('employee', 1);
 $employee->pictures = array(
 	array(
 		'picture' => array(

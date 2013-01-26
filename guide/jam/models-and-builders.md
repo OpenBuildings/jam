@@ -242,9 +242,9 @@ class Model_Order extends Jam_Model {
 }
 
 // Find the order based on the ip field
-$order = Jam::factory('order', '10.20.10.1');
+$order = Jam::find('order', '10.20.10.1');
 
 // Find the order based on the email field
-$order = Jam::factory('order', 'joe@example.com');
+$order = Jam::find('order', 'joe@example.com');
 ?>
 ```

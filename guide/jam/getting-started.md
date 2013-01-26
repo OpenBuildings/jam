@@ -132,7 +132,7 @@ class Controller_Posts extends Controller_Template {
 ?>
 ```
 
-This is all straight forward - Jam::factory loads an empty element of the post model, if the request is a post, we set all the contents of the POST to the model (an associative array) and the check if it's valid. If it is, we save (create) the post and redirect to its view to show it up. Notice the $post->id() method - this method is designed to give you the primary key of the model, however it is defined. There is also a $post->name() method - giving you the text representation of the model.
+This is all straight forward - Jam::build loads an empty element of the post model, if the request is a post, we set all the contents of the POST to the model (an associative array) and the check if it's valid. If it is, we save (create) the post and redirect to its view to show it up. Notice the $post->id() method - this method is designed to give you the primary key of the model, however it is defined. There is also a $post->name() method - giving you the text representation of the model.
 
 
 ### The View
