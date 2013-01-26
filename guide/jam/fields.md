@@ -1,27 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [Jam Fields](#jam-fields)
-	- [Meta::fields, Meta::field](#meta::fields-meta::field)
-	- [Global properties](#global-properties)
-	- [Validation properties](#validation-properties)
-	- [Field Types](#field-types)
-			- [Jam::field('boolean')](#jam::field'boolean')
-			- [Jam::field('enum')](#jam::field'enum')
-			- [Jam::field('float')](#jam::field'float')
-			- [Jam::field('integer')](#jam::field'integer')
-			- [Jam::field('primary')](#jam::field'primary')
-			- [Jam::field('string')](#jam::field'string')
-			- [Jam::field('text')](#jam::field'text')
-			- [Jam::field('timestamp')](#jam::field'timestamp')
-			- [Jam::field('email')](#jam::field'email')
-			- [Jam::field('expression')](#jam::field'expression')
-			- [Jam::field('upload'), Jam::field('upload_image')](#jam::field'upload'-jam::field'upload_image')
-			- [Jam::field('password')](#jam::field'password')
-			- [Jam::field('serialized')](#jam::field'serialized')
-			- [Jam::field('slug')](#jam::field'slug')
-			- [Jam::field('weblink')](#jam::field'weblink')
-	- [Custom fields](#custom-fields)
-
 # Jam Fields
 
 Jam comes with many common field types defined as objects with suitable logic for retrieving and formatting them for the database.

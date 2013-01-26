@@ -1,20 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [Getting Started](#getting-started)
-	- [Defining the ORM Models](#defining-the-orm-models)
-		- [Prerequisite Database Table](#prerequisite-database-table)
-		- [The Model File](#the-model-file)
-		- [Adding Some Validation](#adding-some-validation)
-	- [Controllers and views](#controllers-and-views)
-		- [The Controller](#the-controller)
-		- [The View](#the-view)
-		- [Showing the post](#showing-the-post)
-		- [Deleting the post](#deleting-the-post)
-	- [Adding a second model](#adding-a-second-model)
-		- [The database migration](#the-database-migration)
-		- [Associating of the models](#associating-of-the-models)
-		- [Showing the Association](#showing-the-association)
-
 # Getting Started
 
 ## Defining the ORM Models
@@ -133,7 +116,7 @@ class Controller_Posts extends Controller_Template {
 	
 	public function action_new()
 	{
-		$post = Jam::factory('post');
+		$post = Jam::build('post');
 
 		if ($this->request->method() == Request::POST)
 		{
@@ -196,7 +179,7 @@ class Controller_Posts extends Controller_Template {
 	
 	public function action_show()
 	{
-		$post = Jam::factory('post', $this->request->param('id'));
+		$post = Jam::find('post', $this->request->param('id'));
 
 		$this->template->content = View::factory('posts/show', array('post' => $post));
 	}
@@ -234,7 +217,7 @@ class Controller_Posts extends Controller_Template {
 	
 	public function action_delete()
 	{
-		$post = Jam::factory('post', $this->request->param('id'));
+		$post = Jam::find('post', $this->request->param('id'));
 		$post->delete();
 
 		$this->request->redirect('posts/new');
@@ -363,7 +346,7 @@ class Controller_Posts extends Controller_Template {
 	
 	public function action_show()
 	{
-		$post = Jam::factory('post', $this->request->param('id'));
+		$post = Jam::find('post', $this->request->param('id'));
 
 		$message = '';
 

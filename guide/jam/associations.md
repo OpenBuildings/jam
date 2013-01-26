@@ -517,6 +517,7 @@ Along with the basic array stuff, `Jam_Array_Association` implements some useful
 * remove()
 * set()
 * ids()
+* content()
 * original()
 * original_ids()
 * clear()
@@ -547,7 +548,7 @@ class Model_Supplier extends Jam_Model {
 	}
 }
 
-$supplier = Jam::factory('supplier', 1);
+$supplier = Jam::find('supplier', 1);
 
 echo $supplier->orders->meta() // Jam_Meta object for the Model_Order class
 echo $supplier->orders->model() // 'order'
@@ -717,6 +718,43 @@ echo $supplier->orders->ids(); // Array with the ids
 ?>
 ```
 
+### content()
+
+If you want to get (or set) the row data from the database, you can use the 'content()' Getter / Setter. This is a very low level method and you should only using when building extensions and other low - level coding, generally you should not mess with this.
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+
+echo $supplier->orders->content(); // Array of all the orders data from the database
+
+$suplier->orders->content(array(
+	array('id' => 1, 'name' => 'Order 1'),
+	array('id' => 3, 'name' => 'Order 2'),
+));
+
+?>
+```
+
+### original()
+
+Getter - the original data from the database. This cannot be changed.
+
+### original_ids()
+
+Getter - get the ids of all the models originally loaded from the database.
+
+
 ### clear()
 
 Clear the contents of the association leaving an empty `Jam_Array_Association`, and saves the result to the database imidiately
@@ -744,13 +782,71 @@ echo $supplier->orders; // Jam_Collection: Model_Order(0)
 
 $supplier->save();
 
-echo Jam::factory('supplier', 1)->orders; // Jam_Collection: Model_Order(0)
+echo Jam::find('supplier', 1)->orders; // Jam_Collection: Model_Order(0)
 ?>
 ```
 
 ### changed()
 
-A boolean getter to find out if the collection has been changed. It is considered changed if elements have been added or removed or if it has been cleared or set through `set()`
+A boolean getter to find out if the collection has been changed. It is considered changed if elements have been added or removed or if it has been cleared or set through `set()`. You can pass an offset to see if a specific entry has been changed.
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+echo $supplier->orders->changed(); // Returns FALSE
+echo $supplier->orders->changed(2); // Returns FALSE
+
+$suplier->orders[2] = Jam::create('order');
+
+echo $supplier->orders->changed(); // Returns TRUE
+echo $supplier->orders->changed(1); // Returns FALSE
+echo $supplier->orders->changed(2); // Returns TRUE
+
+
+?> 
+```
+
+### changed_check()
+
+Call `changed_check()` method to check if any of the changed items are valid. Basically performs a check() on each added / updated item and returns FALSE if at least one is not valid.
+
+### changed_save()
+
+Call `changed_save()` method to call a "save()" method on every changed item in this array (added / updated).
+
+### save()
+
+Save the association in its present condition (it calls changed_check() and changed_save() internally.), without the need to call ->save() on the parent model. This is called automatically if the parent model is saved.
+
+```php
+<?php
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('orders', Jam::association('hasmany'));
+
+		// ...
+	}
+}
+
+$supplier = Jam::find('supplier', 1);
+
+$suplier->orders[2] = Jam::create('order');
+
+$suplier->orders->save();
+?>
+```
 
 ### parent()
 
@@ -768,7 +864,7 @@ class Model_Supplier extends Jam_Model {
 	}
 }
 
-$supplier = Jam::factory('supplier', 1);
+$supplier = Jam::find('supplier', 1);
 
 // The parent is the supplier
 echo $supplier->orders->parent() === $supplier; // TRUE
@@ -812,9 +908,9 @@ The same as `build()` but actually created the object in the database.
 
 If you want to find out the key of an element in the collection you can use the `search()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
 
-### exists()
+### has()
 
-If you want to check if an element is in the collection you can use the `exists()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
+If you want to check if an element is in the collection you can use the `has()` method. You can pass an object argument, a name_key or a primary_key. The search will be performed based on primary key so even if you've created the object later and it does not use the exact same object, if the primary keys match then you will find your object.
 
 ```php
 <?php
@@ -832,13 +928,13 @@ $supplier = Jam::factory('supplier', 1);
 $order = Jam::factory('order', 1)
 
 // Check with Jam_Model object
-echo $supplier->orders->exists($order);
+echo $supplier->orders->has($order);
 
 // Check with id of an
-echo $supplier->orders->exists(1);
+echo $supplier->orders->has(1);
 
 // Check with name key
-echo $supplier->orders->exists('first order');
+echo $supplier->orders->has('first order');
 ?>
 ```
 
@@ -986,8 +1082,8 @@ class Model_Order extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('customer', Jam::association('belongsto', array(
-			'foreign' => 'order_customer',
-			'column' => 'order_customer_uid'			
+			'foreign_model' => 'order_customer',
+			'foreign_key' => 'order_customer_uid'			
 		)));
 
 		// ...
@@ -998,21 +1094,18 @@ class Model_Order extends Jam_Model {
 
 The `belongsto` association supports these options:
 
-* column
-* conditions
-* default
+* foreign_key
 * dependent
-* foreign
+* foreign_model
 * inverse_of
 * label
 * model
 * name
 * polymorphic
-* touch
 
 #### column
 
-By convention, Jam assumes that the column used to hold the foreign key on this model is the name of the association with the suffix _id added. The `column` option lets you set the name of the foreign key directly:
+By convention, Jam assumes that the foreign_key used to hold the foreign key on this model is the name of the association with the suffix _id added. The `foreign_key` option lets you set the name of the foreign key directly:
 
 ```php
 <?php 
@@ -1021,60 +1114,12 @@ class Model_Order extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('customer', Jam::association('belongsto', array(
-			'column' => 'customer_identifier'
+			'foreign_key' => 'customer_identifier'
 		)));
 
 		// ...
 	}
 }
-?>
-```
-
-#### conditions
-
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
-
-```php
-<?php
-class Model_Order extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('customer', Jam::association('belongsto', array(
-			'conditions' => array(
-				'where' => array('customer.is_active', '=', TRUE),
-				'or_where' => array('customer.is_paid', '=', TRUE)
-			)
-		)));
-
-		// ...
-	}
-}
-?>
-```
-
-#### default
-
-The `default` option is used as the default value of the foreign key column, by default it is 0.
-
-```php
-<?php 
-
-class Model_Order extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('customer', Jam::association('belongsto', array(
-			'default' => NULL
-		)));
-
-		// ...
-	}
-}
-
-$order = Jam::factory('order');
-
-echo $order->customer_id; // NULL instead of 0
 ?>
 ```
 
@@ -1084,9 +1129,9 @@ If you set the `dependent` option to `Jam_Association::DELETE`, then deleting th
 
 > __Be careful__ You should not specify this option on a `belongsto` association that is connected with a `hasmany` association on the other class. Doing so can lead to orphaned records in your database.
 
-#### foreign
+#### foreign_model
 
-The `foreign` option is used to configure the associated model and its unique key used. you can pass a string with the model name, and its primary_key will be used but you can also be more specific and pass a string in the form of "customer.uid" and then the field "uid" of the customer model will be used for linking the associations. 
+The `foreign_model` option is used to configure the associated model.
 
 ```php
 <?php 
@@ -1095,35 +1140,16 @@ class Model_Order extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('customer', Jam::association('belongsto', array(
-			'foreign' => 'customer.uid'
+			'foreign_model' => 'customer'
 		)));
 
 		// ...
 	}
 }
 
-$order = Jam::factory('order');
+$order = Jam::build('order');
 
 echo $order->customer_id; // NULL instead of 0
-?>
-```
-
-You can also go very low level and pass an array with the model and foreign key explicitly:
-
-```php
-<?php 
-
-class Model_Order extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('customer', Jam::association('belongsto', array(
-			'foreign' => array('model' => 'customer', 'field' => 'uid')
-		)));
-
-		// ...
-	}
-}
 ?>
 ```
 
@@ -1172,11 +1198,6 @@ Change the name of the association - this name will be used in cache keys and su
 
 Passing TRUE to the `polymorphic` option indicates that this is a polymorphic association. Polymorphic associations were discussed in detail earlier in this guide.
 
-#### touch
-
-If you pass TRUE to the `touch` option the `updated` field of the associated model will update upon each save.
-Passing a string to the `touch` option changes the field which will be updated with the current timestamp after every save.
-
 ### hasone Association Reference
 
 The `hasone` association creates a one-to-one match with another model. In database terms, this association says that the other class contains the foreign key. If this class contains the foreign key, then you should use `belongsto` instead.
@@ -1191,7 +1212,8 @@ class Model_Supplier extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('order', Jam::association('hasone', array(
-			'foreign' => 'customer_order.order_uid',
+			'foreign_model' => 'customer_order',
+			'foreign_key' => 'order_uid',
 			'label' => 'Purchase'
 		)));
 
@@ -1204,10 +1226,10 @@ class Model_Supplier extends Jam_Model {
 The `hasone` association supports these options:
 
 * as
-* conditions
 * dependent
-* foreign
-* foreign_default
+* foreign_model
+* foreign_key
+* polymorphic_key
 * inverse_of
 * label
 * model
@@ -1217,55 +1239,13 @@ The `hasone` association supports these options:
 
 Setting the `as` option indicates that this is a polymorphic association. Polymorphic associations were discussed in detail earlier in this guide.
 
-#### conditions
-
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the Jam_Builder retrieving the object). It is an associative array of "method_name" and arguments array:
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasone', array(
-			'conditions' => array(
-				'where' => array('customer.is_active', '=', TRUE),
-				'or_where' => array('customer.is_paid', '=', TRUE)
-			)
-		)));
-
-		// ...
-	}
-}
-
-?>
-```
-
 #### dependent
 
 If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated object to delete that object. If you set the `dependent` option to Jam_Association::ERASE, then deleting this object will delete the associated object without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association object to NULL.
 
-#### foreign
+#### foreign_model
 
-The `foreign` option is used to configure the associated model and its foreign key used. you can pass a string with the model name, and its foreign_key will be used but you can also be more specific and pass a string in the form of "order.order_uid" and then the field "order_uid" of the order model will be used for linking the associations. 
-
-```php
-<?php
-class Model_Customer extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasone', array(
-			'foreign' => 'order.customer_uid'
-		)));
-
-		// ...
-	}
-}
-?>
-```
-
-You can also go very low level and pass an array with the model and foreign key explicitly:
+The `foreign` option is used to configure the associated model. 
 
 ```php
 <?php
@@ -1274,7 +1254,28 @@ class Model_Customer extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('order', Jam::association('hasone', array(
-			'foreign' => array('model' => 'order', 'field' => 'customer_uid')
+			'foreign_model' => 'order'
+		)));
+
+		// ...
+	}
+}
+?>
+
+```
+
+#### foreign_key
+
+The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name. 
+
+```php
+<?php
+class Model_Customer extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('order', Jam::association('hasone', array(
+			'foreign_key' => 'my_order_id'
 		)));
 
 		// ...
@@ -1283,9 +1284,9 @@ class Model_Customer extends Jam_Model {
 ?>
 ```
 
-#### foreign_default
+#### polymorphic_key
 
-When using the `dependent` option you can set it as `Jam_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
+You can use the `polymorphic_key` option to customize the name of the field, use for polymorphic asociaiton. By default its `$as.'_model'`.
 
 #### inverse_of
 
@@ -1344,8 +1345,8 @@ class Model_Customer extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('order', Jam::association('hasmany', array(
-			'foreign' => 'order_customer',
-			'column' => 'order_customer_uid'
+			'foreign_model' => 'order_customer',
+			'foreign_key' => 'order_customer_uid'
 		)));
 
 		// ...
@@ -1357,13 +1358,12 @@ class Model_Customer extends Jam_Model {
 The `hasmany` association supports these options:
 
 * as
-* conditions
 * dependent
 * extend
-* foreign
-* foreign_default
+* foreign_model
+* foreign_key
+* polymorphic_key
 * inverse_of
-* through
 * model
 * label
 * name
@@ -1372,148 +1372,13 @@ The `hasmany` association supports these options:
 
 Setting the `as` option indicates that this is a polymorphic association. Polymorphic associations were discussed in detail earlier in this guide.
 
-#### conditions
-
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'conditions' => array(
-				'where' => array('customer.is_active', '=', TRUE),
-				'or_where' => array('customer.is_paid', '=', TRUE)
-			)
-		)));
-
-		// ...
-	}
-}
-
-?>
-```
-
 #### dependent
 
 If you set the `dependent` option to `Jam_Association::DELETE`, then deleting this object will call the delete method on the associated objects to delete that object. If you set the `dependent` option to `Jam_Association::ERASE`, then deleting this object will delete the associated objects without calling its delete method. If you set the `dependent` option to `Jam_Association::NULLIFY`, then deleting this object will set the foreign key in the association objects to NULL.
 
-#### extend
+#### foreign_model
 
-Jam allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'extend' => array(
-				'paid' => function($builder) {
-					$builder->where('order.is_paid', '=', TRUE);
-				},
-				'total' => function($builder, $data) {
-					$orders = $builder->select_all();
-					$prices = $orders->as_array(NULL, 'price');
-
-					$data->return = array_sum($prices);
-				}
-			)
-		)));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-// Get all the paid orders for this supplier
-echo $supplier->builder('orders')->paid()->select_all(); // Jam_Collection: Model_Order(2)
-
-// Get the total sum of all orders
-echo $supplier->builder('orders')->total(); // 520.59
-
-?>
-```
-
-The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md) Section.
-
-The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
-
-```php
-<?php 
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'extend' => array(
-				'paid' => 'Model_Supplier::paid',
-				'total' => array('Model_Supplier', 'total')
-			)
-		)));
-
-		// ...
-	}
-
-	public static function paid(Jam_Builder $builder) 
-	{
-		$builder->where('order.is_paid', '=', TRUE);
-	}
-
-	public static function total(Jam_Builder $builder, Jam_Event_Data $data)
-	{
-		$orders = $builder->select_all();
-		$prices = $orders->as_array(NULL, 'price');
-		$data->return = array_sum($prices);
-	}
-}
-
-class Model_Customer extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'extend' => 'Model_Customer_Extension'
-		)));
-
-		// ...
-	}
-}
-
-class Model_Customer_Extension {
-
-	public static function approved(Jam_Builder $builder, Jam_Event_Data $data, $is_approved = TRUE) 
-	{
-		$builder->where('order.is_approved', '=', $is_approved);
-	}
-}
-
-
-$supplier = Jam::factory('supplier', 1);
-$customer = Jam::factory('customer', 1);
-
-// Get all the paid orders for this supplier
-echo $supplier->builder('orders')->paid()->select_all(); // Jam_Collection: Model_Order(2)
-
-// Get the total sum of all orders
-echo $supplier->builder('orders')->total(); // 520.59
-
-// Get the approved orders using the Model_Customer_Extension class
-echo $customer->builder('orders')->approved()->select_all();  // Jam_Collection: Model_Order(3)
-
-// Get the non approved orders using the Model_Customer_Extension class
-echo $customer->builder('orders')->approved(FALSE)->select_all();  // Jam_Collection: Model_Order(1)
-
-?>
-```
-
-#### foreign
-
-The `foreign` option is used to configure the associated model and its foreign key used. you can pass a string with the model name, and its foreign_key will be used but you can also be more specific and pass a string in the form of "order.order_uid" and then the field "order_uid" of the order model will be used for linking the associations. 
+The `foreign` option is used to configure the associated model. 
 
 ```php
 <?php
@@ -1521,17 +1386,20 @@ class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'foreign' => 'order.customer_uid'
+		$meta->association('order', Jam::association('hasone', array(
+			'foreign_model' => 'order'
 		)));
 
 		// ...
 	}
 }
 ?>
+
 ```
 
-You can also go very low level and pass an array with the model and foreign key explicitly:
+#### foreign_key
+
+The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name. 
 
 ```php
 <?php
@@ -1539,8 +1407,8 @@ class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('order', Jam::association('hasmany', array(
-			'foreign' => array('model' => 'order', 'field' => 'customer_uid')
+		$meta->association('order', Jam::association('hasone', array(
+			'foreign_key' => 'my_order_id'
 		)));
 
 		// ...
@@ -1549,9 +1417,9 @@ class Model_Customer extends Jam_Model {
 ?>
 ```
 
-#### foreign_default
+#### polymorphic_key
 
-When using the `dependent` option you can set it as `Jam_Association::NULLIFY`, but if you want to set a specific value instead of 0 to the "nullified" items - you can set it with the `foreign_default` option. By default it is 0.
+You can use the `polymorphic_key` option to customize the name of the field, use for polymorphic asociaiton. By default its `$as.'_model'`.
 
 #### inverse_of
 
@@ -1611,8 +1479,8 @@ class Model_Supplier extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('parts', Jam::association('manytomany', array(
-			'through' => 'assemblies',
-			'column' => 'order_customer_uid'
+			'join_table' => 'assemblies',
+			'foreign_key' => 'order_customer_uid'
 		)));
 
 		// ...
@@ -1623,217 +1491,63 @@ class Model_Supplier extends Jam_Model {
 
 The `manytomany` association supports these options:
 
-* extend
-* through
-* foreign
-* conditions
+* join_table
+* foreign_model
+* foreign_key
+* association_foreign_key
 * label
 * model
 * name
 
-#### extend
+#### join_table
 
-Jam allows you to extend the `Jam_Builder` for each model, but you might want to add functionality for the builder of only the specific association (it might not make sense outside of it). To do this you can use the `extend` option. For example lets add a specific condition to the orders of a supplier
+The `join_table` option allows you to configure the join table for the association. By default its the names of the two models being associated, pluralized and alphabetically orderd. E.g. `$supplier->parts` will have a default join_table `suppliers_parts`
+
+```php
+<?php 
+
+class Model_Supplier extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->association('parts', Jam::association('manytomany', array(
+			'join_table' => 'assembly'
+		));
+
+		// ...
+	}
+}
+?>
+```
+
+#### foreign_model
+
+The `foreign` option is used to configure the associated model. 
 
 ```php
 <?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'extend' => array(
-				'assembled' => function($builder) {
-					$builder->where('part.is_assembled', '=', TRUE);
-				},
-				'total_weight' => function($builder, $data) {
-					$parts = $builder->select_all();
-					$weights = $parts->as_array(NULL, 'weight');
-
-					$data->return = array_sum($weights);
-				}
-			)
-		)));
-
-		// ...
-	}
-}
-
-$supplier = Jam::factory('supplier', 1);
-
-// Get all the assembled parts from this supplier
-echo $supplier->builder('parts')->assembled()->select_all(); // Jam_Collection: Model_Part(2)
-
-// Get the total weight of all parts for this supplier
-echo $supplier->builder('parts')->total_weight(); // 130
-
-?>
-```
-
-The extension function receives the builder as its first argument, and then the `Jam_Event_Data` object as a second, all other arguments are the arguments passed to the function when it's invoked. You could have multiple extension methods and they will all be called, but this behavior can be changed using the `Jam_Event_Data` object. This is all explained in depth in the [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md) Section.
-
-The easiest way to add extensions is with anonymous functions, however you can also use traditional function name strings / arrays, or even pass a class name and all of its static methods will be used as extensions:
-
-```php
-<?php
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'extend' => array(
-				'assembled' => 'Model_Supplier::assembled',
-				'total_weight' => array('Model_Supplier', 'total_weight')
-			)
-		)));
-
-		// ...
-	}
-
-	public static function assembled(Jam_Builder $builder) 
-	{
-		$builder->where('part.is_assembled', '=', TRUE);
-	}
-
-	public static function total_weight(Jam_Builder $builder, Jam_Event_Data $data)
-	{
-		$parts = $builder->select_all();
-		$weights = $parts->as_array(NULL, 'weight');
-
-		$data->return = array_sum($weights);
-	}
-}
-
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'extend' => 'Model_Customer_Extension'
-		)));
-
-		// ...
-	}
-}
-
-class Model_Customer_Extension {
-
-	public static function approved(Jam_Builder $builder, Jam_Event_Data $data, $is_approved = TRUE) 
-	{
-		$builder->where('part.is_approved', '=', $is_approved);
-	}
-}
-
-
-$supplier = Jam::factory('supplier', 1);
-$customer = Jam::factory('customer', 1);
-
-// Get all the assembled parts for this supplier
-echo $supplier->builder('parts')->assembled()->select_all(); // Jam_Collection: Model_Part(2)
-
-// Get the total sum of all parts
-echo $supplier->builder('parts')->total_weight(); // 520.59
-
-// Get the approved parts using the Model_Customer_Extension class
-echo $customer->builder('parts')->approved()->select_all();  // Jam_Collection: Model_Part(3)
-
-// Get the non approved parts using the Model_Customer_Extension class
-echo $customer->builder('parts')->approved(FALSE)->select_all();  // Jam_Collection: Model_Part(1)
-
-?>
-```
-
-#### through
-
-The `through` option allows you to configure the join table for the association. If you pass a string - it will use this for the joining table name (or you can pass the name of a model). The fields on this table that are used for the joining are the foreign_key for the current and the foreign model, however you can change that too, you can pass an array like this:
-
-```php
-<?php 
-
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'through' => array(
-				'model' => 'assembly',
-				'fields' => array(
-					'our' => 'supplier_uid',
-					'foreign' => 'parts_uid'
-				)
-			)
+		$meta->association('order', Jam::association('hasone', array(
+			'foreign_model' => 'order'
 		)));
 
 		// ...
 	}
 }
 ?>
+
 ```
 
-#### foreign
+#### foreign_key
 
-The `foreign` option is used to configure the associated model and its primary key used. you can pass a string with the model name, and its primary_key will be used but you can also be more specific and pass a string in the form of "part.uid" and then the field "uid" of the order model will be used for linking the associations. 
+The `foreign_key` option is used to configure the field pointing to the the parent model from the association table. E.g. `$supplier->parts` will have a foreign_key of `supplier_id` by default on the `suppliers_parts` table
 
-```php
-<?php 
+#### association_foreign_key
 
-class Model_Customer extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'foreign' => 'part.uid'
-		)));
-
-		// ...
-	}
-}
-?>
-```
-
-You can also go very low level and pass an array with the model and field explicitly:
-
-```php
-<?php 
-
-class Model_Customer extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'foreign' => array('model' => 'part', 'field' => 'uid')
-		)));
-
-		// ...
-	}
-}
-?>
-```
-
-#### conditions
-
-The `conditions` option lets you specify the conditions that the associated object must meet (used on the `Jam_Builder` retrieving the object). It is an associative array of "method_name" and arguments array:
-
-```php
-<?php 
-
-class Model_Supplier extends Jam_Model {
-
-	public static function initialize(Jam_Meta $meta)
-	{
-		$meta->association('parts', Jam::association('manytomany', array(
-			'conditions' => array(
-				'where' => array('part.is_available', '=', TRUE),
-				'or_where' => array('part.is_paid', '=', TRUE)
-			)
-		)));
-
-		// ...
-	}
-}
-
-?>
-```
+The `association_foreign_key` option is used to configure the field pointing to the the foreign_model from the association table. E.g. `$supplier->parts` will have a foreign_key of `part_id` by default on the `suppliers_parts` table
 
 #### label
 
