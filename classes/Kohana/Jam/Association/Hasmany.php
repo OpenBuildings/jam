@@ -295,4 +295,4 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	{
 		return (bool) $this->as;
 	}
-} // End Kohana_Jam_Association_HasMany
+}

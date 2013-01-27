@@ -63,7 +63,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return $this;
 	}
 
-	public function compile(Database $db)
+	public function compile($db = NULL)
 	{
 		$original_select = $this->_select;
 		$original_from = $this->_from;

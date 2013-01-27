@@ -56,7 +56,7 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
-	public function compile(Database $db)
+	public function compile($db = NULL)
 	{
 		$this->_table = $this->meta()->table();
 

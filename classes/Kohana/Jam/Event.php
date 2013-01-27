@@ -119,14 +119,14 @@ abstract class Kohana_Jam_Event {
 	 * @param  string $method 
 	 * @param  array  $params passed to the method
 	 * @return mixed          returns the response from the callback
-	 * @throws Jam_Exception_MethodMissing If no method is found
+	 * @throws Jam_Exception_Methodmissing If no method is found
 	 */
 	public function trigger_callback($type, $sender, $method, $params)
 	{
 		$event = "{$type}.call_{$method}";
 
 		if (empty($this->_events[$event]))
-			throw new Jam_Exception_MethodMissing($sender, $method, $params);
+			throw new Jam_Exception_Methodmissing($sender, $method, $params);
 
 		return $this->trigger($event, $sender, $params);
 	}

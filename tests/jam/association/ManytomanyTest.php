@@ -1,14 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Tests ManyToMany fields.
+ * Tests Manytomany fields.
  *
  * @package Jam
  * @group   jam
  * @group   jam.association
  * @group   jam.association.manytomany
  */
-class Jam_Association_ManyToManyTest extends Unittest_Jam_TestCase {
+class Jam_Association_ManytomanyTest extends Unittest_Jam_TestCase {
 
 	public $meta;
 

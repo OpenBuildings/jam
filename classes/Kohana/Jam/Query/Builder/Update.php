@@ -58,7 +58,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 		return $this;
 	}
 
-	public function compile(Database $db)
+	public function compile($db = NULL)
 	{
 		$this->_table = $this->meta()->table();
 

@@ -8,7 +8,7 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
+abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	/**
 	 * Set this for polymorphic association, this has to be the name of the opposite belongsto relation,

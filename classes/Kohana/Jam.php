@@ -121,7 +121,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function field($type, $options = NULL)
 	{
-		$field = Jam::$_field_prefix.$type;
+		$field = Jam::$_field_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
 
 		return new $field($options);
 	}
@@ -135,7 +135,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function association($type, $options = NULL)
 	{
-		$association = Jam::$_association_prefix.$type;
+		$association = Jam::$_association_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
 
 		return new $association($options);
 	}
@@ -150,7 +150,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function behavior($type, $options = array())
 	{
-		$behavior = Jam::$_behavior_prefix.$type;
+		$behavior = Jam::$_behavior_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
 
 		return new $behavior($options);
 	}
@@ -164,7 +164,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function validator_rule($type, $options = array())
 	{
-		$rule = Jam::$_validator_rule_prefix.$type;
+		$rule = Jam::$_validator_rule_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
 
 		return new $rule($options);
 	}
@@ -228,11 +228,11 @@ abstract class Kohana_Jam {
 	{
 		if ($model instanceof Jam_Validated)
 		{
-			return strtolower(get_class($model));
+			return get_class($model);
 		}
 		else
 		{
-			return strtolower(Jam::$_model_prefix.$model);
+			return Jam::$_model_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $model)));
 		}
 	}
 

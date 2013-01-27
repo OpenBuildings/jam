@@ -64,7 +64,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 		return $this;
 	}
 
-	public function compile(Database $db)
+	public function compile($db = NULL)
 	{
 		$this->_table = $this->meta()->table();
 		

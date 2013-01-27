@@ -135,7 +135,7 @@ abstract class Kohana_Jam_Meta {
 			return;
 
 		// Set the name of a possible behavior class
-		$behavior_class = Jam::behavior_prefix().$model;
+		$behavior_class = Jam::behavior_prefix().str_replace(' ', '_', ucwords(str_replace('_', ' ', $model)));
 
 		// See if we have a special behavior class to use
 		if (class_exists($behavior_class))
