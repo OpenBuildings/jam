@@ -9,11 +9,14 @@
  * @category   Events
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
- * @author     Jonathan Geiger
- * @copyright  (c) 2010-2011 Jonathan Geiger
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Event {
+
+	const ATTRIBUTE_PRIORITY = 20;
+	const BEHAVIOR_PRIORITY = 10;
+
+	protected $serial = 0;
 
 	/**
 	 * @var  array  The current model
@@ -42,26 +45,19 @@ abstract class Kohana_Jam_Event {
 	 * @param   callback  $callback
 	 * @return  Jam_Event
 	 */
-	public function bind($event, $callback, $prepend = FALSE)
+	public function bind($event, $callback, $priority = 0)
 	{
 		if ( ! isset($this->_events[$event]))
 		{
-			$this->_events[$event] = array();
+			$this->_events[$event] = new SplPriorityQueue();
 		}
 
-		if ($prepend)
-		{
-			array_unshift($this->_events[$event], $callback);
-		}
-		else
-		{
-			array_push($this->_events[$event], $callback);
-		}
-		
+		$this->_events[$event]->insert($callback, $priority*100000 + $this->serial--);
+
 		return $this;
 	}
 
-	public function discover_events($from, $prepend = FALSE)
+	public function discover_events($from, $priority = 0)
 	{
 		foreach (get_class_methods($from) as $method)
 		{
@@ -69,7 +65,7 @@ abstract class Kohana_Jam_Event {
 			OR  ($ns = substr($method, 0, 4)) === 'meta'
 			OR  ($ns = substr($method, 0, 7)) === 'builder')
 			{
-				$this->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($from, $method), $prepend);
+				$this->bind(strtolower($ns.'.'.substr($method, strlen($ns) + 1)), array($from, $method), $priority);
 			}
 		}
 	}
@@ -97,7 +93,9 @@ abstract class Kohana_Jam_Event {
 			array_unshift($params, $data);
 			array_unshift($params, $sender);
 
-			foreach ($this->_events[$event] as $callback)
+			$queue = clone $this->_events[$event];
+			
+			foreach ($queue as $callback)
 			{
 				call_user_func_array($callback, $params);
 

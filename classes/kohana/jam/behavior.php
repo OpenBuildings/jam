@@ -65,6 +65,6 @@ abstract class Kohana_Jam_Behavior {
 		$this->_name  = $name;
 		$this->_model = $meta->model();
 		
-		$meta->events()->discover_events($this);
+		$meta->events()->discover_events($this, Jam_Event::BEHAVIOR_PRIORITY);
 	}
 } // End Kohana_Jam_Behavior
