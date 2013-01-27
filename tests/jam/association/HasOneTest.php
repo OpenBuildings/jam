@@ -157,7 +157,7 @@ class Jam_Association_HasoneTest extends Unittest_TestCase {
 
 		$author = Jam::build('test_author')->load_fields(array('id' => 5));
 
-		$this->assertEquals($expected_sql, (string) $association->query_builder(Jam_Query_Builder::SELECT, $author));
+		$this->assertEquals($expected_sql, (string) $association->query_builder('select', $author));
 	}
 
 	public function data_update_builder()
