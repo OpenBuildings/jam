@@ -135,6 +135,15 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return $this;
 	}
 
+	public function on($c1, $op, $c2)
+	{
+		if ( ! $this->_last_join)
+			throw new Kohana_Exception('You must specifiy a JOIN first!');
+
+		return parent::on($c1, $op, $c2);
+	}
+
+
 	public function join_nested($model, $type = NULL)
 	{
 		return $this->_join($model, $type)->end($this);
