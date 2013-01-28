@@ -144,7 +144,15 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			}
 			elseif ($association = $this->meta()->association($key))
 			{
-				$this->_retrieved[$association->name] = $association->load_fields($this, $value, FALSE);
+				$association_value = $association->load_fields($this, $value, FALSE);
+				if (is_object($association_value))
+				{
+					$this->_retrieved[$association->name] = $association->load_fields($this, $value, FALSE);
+				}
+				else
+				{
+					$this->_changed[$association->name] = $association_value;
+				}
 			}
 			else
 			{
