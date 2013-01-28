@@ -478,14 +478,5 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$this->_saved = $data['saved'];
 		$this->_loaded = $data['loaded'];
 		$this->_deleted = $data['deleted'];
-
-		foreach ($this->_changed as $name => & $value) 
-		{
-			if ($association = $this->meta()->association($name))
-			{
-				$value = $association->load_fields($this, $value, FALSE);
-			}
-		}
 	}
-
-}  // End Kohana_Jam_Model
+}
