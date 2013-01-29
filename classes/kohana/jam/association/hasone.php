@@ -142,7 +142,14 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 			$key = Jam_Association::primary_key($this->foreign_model, $value);
 		
-			$item = $this->_find_item($this->foreign_model, $key);
+			if ($key)
+			{
+				$item = $this->_find_item($this->foreign_model, $key);
+			}
+			else
+			{
+				$item = Jam::build($this->foreign_model);
+			}
 		
 			if ($item)
 			{
