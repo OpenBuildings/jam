@@ -466,6 +466,8 @@ abstract class Kohana_Jam {
 		{
 			$class = Kohana::$config->load('jam.default_form');
 		}
+
+		$class = str_replace(' ', '_', ucwords(str_replace('_', ' ', $class)));
 		
 		if (is_string($model))
 		{
