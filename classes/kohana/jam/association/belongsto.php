@@ -161,6 +161,10 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$item = Jam::build($this->foreign_model($model));
 		}
+		else
+		{
+			$item = NULL;
+		}
 
 
 		if ($item)

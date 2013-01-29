@@ -150,6 +150,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 			{
 				$item = Jam::build($this->foreign_model);
 			}
+			else
+			{
+				$item = NULL;
+			}
 		
 			if ($item AND is_array($value))
 			{
