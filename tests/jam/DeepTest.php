@@ -21,7 +21,8 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 				'test_images' => Jam::build('test_image', array(
 					'file' => 'file11',
 					'test_copyright' => Jam::build('test_copyright', array('name' => 'copy 1'))
-				))
+				)),
+				'test_blog' => array('name' => 'new blog')
 			)),
 			Jam::build('test_post', array(
 				'name' => 'software',
@@ -29,11 +30,35 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 					Jam::build('test_category', array('name' => 'cat3', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat4', 'test_author' => $author)),
 					'Category Two',
-				)
+				),
+				'test_blog' => array('id' => 1, 'name' => 'new blog title')
 			)),
+			array(
+				'name' => 'new post',
+				'test_cover_image' => array(
+					'file' => 'new file',
+				)
+			),
 		);
 
 		$this->assertSame($author, $author->test_posts[0]->test_categories[0]->test_author, 'Should be the same object');
+
+		$this->assertInstanceOf('Model_Test_Blog', $author->test_posts[0]->test_blog);
+		$this->assertEquals('new blog', $author->test_posts[0]->test_blog->name());
+		$this->assertFalse($author->test_posts[0]->test_blog->loaded());
+
+		$this->assertInstanceOf('Model_Test_Blog', $author->test_posts[1]->test_blog);
+		$this->assertEquals('new blog title', $author->test_posts[1]->test_blog->name());
+		$this->assertEquals(1, $author->test_posts[1]->test_blog->id());
+		$this->assertTrue($author->test_posts[1]->test_blog->loaded());
+
+		$this->assertInstanceOf('Model_Test_Post', $author->test_posts[2]);
+		$this->assertEquals('new post', $author->test_posts[2]->name());
+		$this->assertFalse($author->test_posts[2]->loaded());
+
+		$this->assertInstanceOf('Model_Test_Image', $author->test_posts[2]->test_cover_image);
+		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
+		$this->assertFalse($author->test_posts[2]->test_cover_image->loaded());
 
 		$author->save();
 
@@ -53,5 +78,18 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 		$this->assertEquals('cat3', $author->test_posts[1]->test_categories[0]->name, 'Should have created the test_category');
 		$this->assertEquals('Category Two', $author->test_posts[1]->test_categories[2]->name(), 'Should have loaded the category based on name');
 		$this->assertEquals($author->id(), $author->test_posts[1]->test_categories[1]->test_author->id(), 'Should be the same author');
+
+		$this->assertInstanceOf('Model_Test_Blog', $author->test_posts[0]->test_blog);
+		$this->assertEquals('new blog', $author->test_posts[0]->test_blog->name());
+		$this->assertTrue($author->test_posts[0]->test_blog->loaded());
+
+		$this->assertInstanceOf('Model_Test_Blog', $author->test_posts[1]->test_blog);
+		$this->assertEquals('new blog title', $author->test_posts[1]->test_blog->name());
+		$this->assertEquals(1, $author->test_posts[1]->test_blog->id());
+		$this->assertTrue($author->test_posts[1]->test_blog->loaded());
+
+		$this->assertInstanceOf('Model_Test_Image', $author->test_posts[2]->test_cover_image);
+		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
+		$this->assertTrue($author->test_posts[2]->test_cover_image->loaded());
 	}
 }
