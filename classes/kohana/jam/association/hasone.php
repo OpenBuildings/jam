@@ -197,7 +197,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($value = Arr::get($changed, $this->name))
 		{
-			$this->update_query($model, NULL, NULL)->execute();
+			$nullify_query = $this->update_query($model, NULL, NULL);
 
 			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{
@@ -205,6 +205,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 				{
 					$this->set($model, $item, TRUE)->save();
 				}
+				$nullify_query->where('id', '!=', $item->id())->execute();
 			}
 			else
 			{
@@ -219,6 +220,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 					$query
 						->value($this->polymorphic_key, $model->meta()->model());
 				}
+				$nullify_query->execute();
 				$query->execute();
 			}
 		}
@@ -299,6 +301,7 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		{
 			$query->value($this->polymorphic_key, $new_model);
 		}
+
 		return $query;
 	}
 }

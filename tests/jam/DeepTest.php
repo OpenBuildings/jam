@@ -7,6 +7,35 @@
  */
 class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 
+	public function test_hasone_deep()
+	{
+		$author = Jam::find('test_author', 1);
+
+		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
+		$this->assertEquals(1, $author->test_post->id());
+		$author->test_post = array('id' => 2, 'name' => 'changed post');
+
+		$author->save();
+
+		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
+		$this->assertEquals(2, $author->test_post->id());
+		$this->assertEquals('changed post', $author->test_post->name());
+
+		$author = Jam::find('test_author', 1);		
+
+		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
+		$this->assertEquals(2, $author->test_post->id());
+		$author->test_post = array('id' => 3, 'name' => 'changed post');
+
+		$author->save();
+
+		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
+		$this->assertEquals(3, $author->test_post->id());
+		$this->assertEquals('changed post', $author->test_post->name());
+
+
+	}
+
 	public function test_association_create()
 	{
 		$author = Jam::build('test_author', array('name' => 'Joe'));
