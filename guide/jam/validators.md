@@ -411,7 +411,7 @@ class Model_Person extends Jam_Model {
 ?>
 ```
 
-It can validate associations as well, it checks for `->loaded()` for Jam_Model and `->count()` for Jam_Collection
+It can validate associations as well, it checks for `->loaded()` for Jam_Model and `->count()` for Jam_Array_Association
 
 ### unique
 

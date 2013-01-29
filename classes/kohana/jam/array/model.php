@@ -13,7 +13,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	public static function factory()
 	{
-		return new Jam_Collection_Model();
+		return new Jam_Array_Model();
 	}
 
 	/**

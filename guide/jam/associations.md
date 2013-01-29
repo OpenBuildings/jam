@@ -478,7 +478,7 @@ class Controller_Supliers extends Controller_Template {
 	{
 		$supplier = Jam::find('supplier', $this->request->parma('id'));
 
-		// This line will not perform an SQL query, just create a Jam_Collection object
+		// This line will not perform an SQL query, just create a Jam_Query_Builder_Collection object
 		$this->template->content = View::factory("suppliers/show", array('orders' => $supplier->orders));
 	}
 }

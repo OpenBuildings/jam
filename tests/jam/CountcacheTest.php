@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Tests for Jam_Collection.
- *
  * @package Jam
  * @group   jam
  * @group   jam.countcache

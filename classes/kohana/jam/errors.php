@@ -208,4 +208,4 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	{
 		return count($this->_container);
 	}
-} // End Kohana_Jam_Collection
+}

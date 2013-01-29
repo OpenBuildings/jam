@@ -126,7 +126,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * This should only be used for setting from database results
 	 * since the model declares itself as saved and loaded after.
 	 *
-	 * @param   Jam_Collection|Jam_Model|array  $values
+	 * @param   Jam_Query_Builder_Collection|Jam_Model|array  $values
 	 * @return  Jam_Model
 	 */
 	public function load_fields($values)
