@@ -32,6 +32,16 @@ class Jam_Query_Builder_SelectTest extends Unittest_TestCase {
 		$this->assertEquals('SELECT `author_table`.* FROM `test_authors` AS `author_table`', (string) $select, 'Should not double quote selects');
 	}
 
+	public function test_select()
+	{
+		$select = new Jam_Query_Builder_Select('test_author');
+		$select
+			->select(array(':primary_key', 'primary_key'))
+			->select(array(':name_key', 'name_key'));
+
+		$this->assertEquals('SELECT `test_authors`.`id` AS `primary_key`, `test_authors`.`name` AS `name_key` FROM `test_authors`', (string) $select);
+	}
+
 	public function test_alias()
 	{
 		$select = new Jam_Query_Builder_Select('test_author');

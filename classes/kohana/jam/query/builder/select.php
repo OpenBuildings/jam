@@ -85,7 +85,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		foreach ($this->_select as & $attribute)
 		{
-			$attribute = Jam_Query_Builder::resolve_attribute_name($attribute);
+			$attribute = Jam_Query_Builder::resolve_attribute_name($attribute, $this->meta()->model());
 		}
 
 		$this->meta()->events()->trigger('builder.before_select', $this);
