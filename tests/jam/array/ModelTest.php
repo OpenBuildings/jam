@@ -97,7 +97,7 @@ class Jam_Array_ModelTest extends Unittest_TestCase {
 
 		$model1 = Jam::build('test_element')->load_fields(array('id' => 2, 'name' => 'two'));
 
-		$this->array->set(array(array('id' => 2, 'name' => 'two'), $model1));
+		$this->array->set(array(array(), array('id' => 2, 'name' => 'two'), $model1));
 
 		$this->assertTrue($this->array->changed());
 		$this->assertEquals(array(array('id' => 2, 'name' => 'two'), $model1), $this->array->content());
@@ -106,6 +106,8 @@ class Jam_Array_ModelTest extends Unittest_TestCase {
 		$this->assertTrue($this->array->changed(1));
 		$this->assertSame($model1, $this->array[1]);
 
+		$this->array->set(array());
+		$this->assertTrue($this->array->changed());
 	}
 
 	public function test_add()
