@@ -184,10 +184,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		foreach ($this->_retrieved as $column => $value) 
 		{
-			if ( ! isset($this->_changed[$column])
-				AND $association = $this->meta()->association($column)
-				AND $association instanceof Jam_Association_Collection
-				AND $value->changed())
+			if ($value instanceof Jam_Array_Association	AND $value->changed())
 			{
 				$this->_changed[$column] = $value;
 			}
@@ -451,7 +448,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		return (string) get_class($this).'('.($this->loaded() ? $this->id() : 'NULL').')';
 	}
-
 
 	public function serialize()
 	{

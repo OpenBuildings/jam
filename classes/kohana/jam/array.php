@@ -98,10 +98,10 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	 */
 	public function reload()
 	{
-		$this->_original = NULL;
 		$this->_changed = array();
 		$this->_removed = FALSE;
 		$this->_current = 0;
+		$this->_content = NULL;
 
 		return $this;
 	}
@@ -166,7 +166,6 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 			$this->_content[$offset] = $value;
 			$this->_changed[$offset] = TRUE;
 		}
-		
 	}
 
 	/**

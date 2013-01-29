@@ -425,14 +425,15 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	{
 		$this->_load_content();
 
+
 		return serialize(array(
 			'original' => $this->_original,
-			'model' => $this->_model,
-			'replace' => $this->_replace,
-			'changed' => $this->_changed,
-			'content' => $this->_content,
-			'removed' => $this->_removed,
-			'current' => $this->_current,
+			'model'    => $this->_model,
+			'replace'  => $this->_replace,
+			'changed'  => $this->_changed,
+			'content'  => $this->_content,
+			'removed'  => $this->_removed,
+			'current'  => $this->_current,
 		));
 	}
 
@@ -441,11 +442,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		$data = unserialize($data);
 
 		$this->_original = $data['original'];
-		$this->_model = $data['model'];
-		$this->_replace = $data['replace'];
-		$this->_changed = $data['changed'];
-		$this->_content = $data['content'];
-		$this->_removed = $data['removed'];
-		$this->_current = $data['current'];
+		$this->_model    = $data['model'];
+		$this->_replace  = $data['replace'];
+		$this->_changed  = $data['changed'];
+		$this->_content  = $data['content'];
+		$this->_removed  = $data['removed'];
+		$this->_current  = $data['current'];
 	}
 } 

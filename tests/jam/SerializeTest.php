@@ -28,6 +28,22 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 		}
 	}
 
+	public function test_repeat_collection()
+	{
+		$test_blog = Jam::build('test_blog');
+
+		$test_blog->test_posts->add(Jam::build('test_post'));
+
+		$test_blog = unserialize(serialize($test_blog));
+
+		$test_blog->test_posts->add(Jam::build('test_post'));
+
+		$test_blog = unserialize(serialize($test_blog));
+
+		$this->assertCount(2, $test_blog->test_posts);
+	}
+
+
 	public function test_deep()
 	{
 		$blog = Jam::find_or_create('test_blog', array('id' => 10, 'name' => 'created blog'));
