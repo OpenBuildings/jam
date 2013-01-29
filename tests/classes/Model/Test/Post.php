@@ -21,16 +21,7 @@ class Model_Test_Post extends Jam_Model {
 			'test_blog'       => Jam::association('belongsto', array('inverse_of' => 'test_posts')),
 			'test_author'     => Jam::association('belongsto', array()),
 			'test_tags'       => Jam::association('hasmany', array(
-				'conditions' => array(
-					'where' => array(DB::expr('LEFT(test_tags.name, 2)'), '!=', "--")
-				),
 				'inverse_of' => 'test_post',
-				'extend' => array(
-					'list_items' => function ($builder) {
-						$builder->where(DB::expr('LEFT(test_tags.name, 2)'), '=', '* ');
-					},
-					'non_list_items' => 'Model_Test_Post::_non_list_items'
-				)
 			)),
 			'approved_by'     => Jam::association('belongsto', array(
 				'foreign_model' => 'test_author',

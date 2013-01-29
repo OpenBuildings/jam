@@ -13,7 +13,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	public static function factory()
 	{
-		return new Jam_Collection_Model();
+		return new Jam_Array_Model();
 	}
 
 	/**
@@ -35,7 +35,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		{
 			$array = $collection;
 		}
-		return array_filter($array);
+		return array_values(array_filter($array));
 	}
 
 	/**
@@ -307,6 +307,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		$this->_content = Jam_Array_Model::convert_collection_to_array($items);
 		$this->_changed = count($this->_content) ? array_fill(0, count($this->_content), TRUE) : array();
 		$this->_replace = TRUE;
+		$this->_removed = TRUE;
 
 		return $this;
 	}

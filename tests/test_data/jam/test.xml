@@ -330,6 +330,19 @@
 			<value>3</value>
 			<value>1</value>
 			<null />
+		</row>		
+		<row>
+			<value>3</value>
+			<value>Third Post</value>
+			<value>third-post</value>
+			<value>draft</value>
+			<value>1264985737</value>
+			<value>1264985740</value>
+			<value>1264985737</value>
+			<null />
+			<null />
+			<null />
+			<null />
 		</row>
 	</table>
 	<table name="test_categories_test_posts">

@@ -8,7 +8,7 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
+abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 
 	/**
 	 * Set this for polymorphic association, this has to be the name of the opposite belongsto relation,
@@ -68,12 +68,12 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	 */
 	public function load_fields(Jam_Validated $model, $value)
 	{
-		if ( ! ($value instanceof Jam_Model))
+		if (is_array($value))
 		{
 			$value = Jam::build($this->foreign_model)->load_fields($value);
 		}
 
-		if ($this->inverse_of)
+		if ($value instanceof Jam_Model AND $this->inverse_of)
 		{
 			$value->retrieved($this->inverse_of, $model);
 		}
@@ -142,14 +142,22 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 			$key = Jam_Association::primary_key($this->foreign_model, $value);
 		
-			$item = $this->_find_item($this->foreign_model, $key);
-		
-			if ($item)
+			if ($key)
 			{
-				if (is_array($value))
-				{
-					$item->set($value);
-				}
+				$item = $this->_find_item($this->foreign_model, $key);
+			}
+			elseif (is_array($value))
+			{
+				$item = Jam::build($this->foreign_model);
+			}
+			else
+			{
+				$item = NULL;
+			}
+		
+			if ($item AND is_array($value))
+			{
+				$item->set($value);
 			}
 		}
 		else
@@ -189,7 +197,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	{
 		if ($value = Arr::get($changed, $this->name))
 		{
-			$this->update_query($model, NULL, NULL)->execute();
+			$nullify_query = $this->update_query($model, NULL, NULL);
 
 			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{
@@ -197,6 +205,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 				{
 					$this->set($model, $item, TRUE)->save();
 				}
+				$nullify_query->where('id', '!=', $item->id())->execute();
 			}
 			else
 			{
@@ -211,6 +220,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 					$query
 						->value($this->polymorphic_key, $model->meta()->model());
 				}
+				$nullify_query->execute();
 				$query->execute();
 			}
 		}
@@ -291,6 +301,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 		{
 			$query->value($this->polymorphic_key, $new_model);
 		}
+
 		return $query;
 	}
 }

@@ -126,7 +126,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * This should only be used for setting from database results
 	 * since the model declares itself as saved and loaded after.
 	 *
-	 * @param   Jam_Collection|Jam_Model|array  $values
+	 * @param   Jam_Query_Builder_Collection|Jam_Model|array  $values
 	 * @return  Jam_Model
 	 */
 	public function load_fields($values)
@@ -144,7 +144,15 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			}
 			elseif ($association = $this->meta()->association($key))
 			{
-				$this->_retrieved[$association->name] = $association->load_fields($this, $value, FALSE);
+				$association_value = $association->load_fields($this, $value, FALSE);
+				if (is_object($association_value))
+				{
+					$this->_retrieved[$association->name] = $association->load_fields($this, $value, FALSE);
+				}
+				else
+				{
+					$this->_changed[$association->name] = $association_value;
+				}
 			}
 			else
 			{
@@ -470,14 +478,5 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$this->_saved = $data['saved'];
 		$this->_loaded = $data['loaded'];
 		$this->_deleted = $data['deleted'];
-
-		foreach ($this->_changed as $name => & $value) 
-		{
-			if ($association = $this->meta()->association($name))
-			{
-				$value = $association->load_fields($this, $value, FALSE);
-			}
-		}
 	}
-
-}  // End Kohana_Jam_Model
+}

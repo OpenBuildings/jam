@@ -282,7 +282,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	/**
 	 * HTML input select field
 	 * available options
-	 * 	- choices - this can be Jam_Builder, Jam_Collection or a simple array
+	 * 	- choices - this can be Jam_Query_Builder_Collection or a simple array
 	 * 	- include_blank - bool|string - include an empty option
 	 * 
 	 * @param string $name       the name of the Jam_Model attribute

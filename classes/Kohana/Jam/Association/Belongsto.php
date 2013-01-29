@@ -90,7 +90,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function load_fields(Jam_Validated $model, $value)
 	{
-		if ( ! ($value instanceof Jam_Model))
+		if (is_array($value))
 		{
 			$value = Jam::build($this->foreign_model)->load_fields($value);
 		}
@@ -153,7 +153,19 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$key = $model->{$this->foreign_key};
 		}
 
-		$item = $this->_find_item($this->foreign_model($model), $key);
+		if ($key)
+		{
+			$item = $this->_find_item($this->foreign_model($model), $key);
+		}
+		elseif (is_array($value)) 
+		{
+			$item = Jam::build($this->foreign_model($model));
+		}
+		else
+		{
+			$item = NULL;
+		}
+
 
 		if ($item)
 		{

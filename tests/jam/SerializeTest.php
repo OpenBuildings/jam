@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * Tests for Jam_Collection.
- *
  * @package Jam
  * @group   jam
  * @group   jam.serialize
@@ -32,6 +30,8 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 
 	public function test_deep()
 	{
+		$blog = Jam::find_or_create('test_blog', array('id' => 10, 'name' => 'created blog'));
+
 		$author = Jam::build('test_author')->load_fields(array(
 			'id' => 4,
 			'name' => 'Joe',
@@ -42,6 +42,10 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 					'test_categories' => array(
 						array('id' => 1, 'name' => 'cat1'),
 						array('id' => 2, 'name' => 'cat2'),
+					),
+					'test_blog' => array(
+						'id' => 2,
+						'name' => 'loaded'
 					)
 				),
 				array(
@@ -50,7 +54,8 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 					'test_categories' => array(
 						array('id' => 1, 'name' => 'cat1'),
 						array('id' => 3, 'name' => 'cat3'),
-					)
+					),
+					'test_blog' => 10
 				)
 			)
 		));
@@ -77,6 +82,15 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 		$this->assertTrue($unserialized->test_posts[0]->loaded());
 		$this->assertEquals($author->test_posts[0]->as_array(), $unserialized->test_posts[0]->as_array());
 
+		$this->assertNotNull($unserialized->test_posts[0]->test_blog);
+		$this->assertTrue($unserialized->test_posts[0]->test_blog->loaded());
+		$this->assertEquals($author->test_posts[0]->test_blog->as_array(), $unserialized->test_posts[0]->test_blog->as_array());
+
+		$this->assertNotNull($unserialized->test_posts[1]->test_blog);
+		$this->assertTrue($unserialized->test_posts[1]->test_blog->loaded());
+		$this->assertEquals($author->test_posts[1]->test_blog->as_array(), $unserialized->test_posts[1]->test_blog->as_array());
+		$this->assertEquals($blog->as_array(), $unserialized->test_posts[1]->test_blog->as_array());
+
 		$this->assertTrue($unserialized->test_posts[1]->loaded());
 		$this->assertEquals($author->test_posts[1]->as_array(), $unserialized->test_posts[1]->as_array());
 
@@ -85,5 +99,7 @@ class Jam_SerializeTest extends Unittest_Jam_TestCase {
 
 		$this->assertFalse($unserialized->test_posts[3]->loaded());
 		$this->assertEquals($author->test_posts[3]->as_array(), $unserialized->test_posts[3]->as_array());
+
+		$blog->delete();
 	}
 }

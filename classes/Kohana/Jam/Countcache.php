@@ -19,7 +19,7 @@ class Kohana_Jam_Countcache {
 			$change = (int) $change;
 			$operator = $change < 0 ? '-' : '+';
 
-			$query->value($name, DB::expr(strtr('COALESCE(:name, 0) :operator :value)', array(
+			$query->value($name, DB::expr(strtr('(COALESCE(:name, 0) :operator :value)', array(
 				':value' => abs($change),
 				':operator' => $operator,
 				':name' => Database::instance($query->meta()->db())->quote_column($name),
