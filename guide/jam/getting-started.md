@@ -220,7 +220,7 @@ class Controller_Posts extends Controller_Template {
 		$post = Jam::find('post', $this->request->param('id'));
 		$post->delete();
 
-		$this->request->redirect('posts/new');
+		$this->redirect('posts/new');
 	}
 }
 ?>
