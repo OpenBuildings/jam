@@ -88,9 +88,9 @@ class Jam_CoreTest extends Unittest_TestCase {
 	public function provider_class_name()
 	{
 		return array(
-			array('test_alias', 'model_test_alias'),
-			array(new Model_Test_Alias, 'model_test_alias'),
-			array('model_test_alias', 'model_model_test_alias'), // Should add prefix even if it already exists
+			array('test_alias', 'Model_Test_Alias'),
+			array(new Model_Test_Alias, 'Model_Test_Alias'),
+			array('model_test_alias', 'Model_Model_Test_Alias'), // Should add prefix even if it already exists
 		);
 	}
 	

@@ -2,8 +2,8 @@
 
 class Kohana_Unittest_Jam_Database_TestCase extends Unittest_Database_TestCase {
 
-	static public $database_connection = 30;
-	static public $database_type = 'mysql';
+	static public $database_connection = 'alternate';
+	static public $database_type = 'MySQL';
 
 	public function setUp()
 	{
