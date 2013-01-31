@@ -1,12 +1,12 @@
-<phpunit colors="true" bootstrap="../../unittest/bootstrap.php">
+<phpunit colors="true" bootstrap="../unittest/bootstrap.php">
 	<testsuites>
 		<testsuite name="Jam Tests">
-			<file>../../unittest/tests.php</file>
+			<file>../unittest/tests.php</file>
 		</testsuite>
 	</testsuites>
 	<groups>
 	  <include>
-		<group>jam</group>
+			<group>jam</group>
 	  </include>
 	</groups>
 </phpunit>

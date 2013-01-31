@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Resource_Jam_Exception_Notfound class
+ * Resource_Jam_Exception_NotFound class
  * Jam NotFound Exception
  *
  * @package    Despark/http-resource

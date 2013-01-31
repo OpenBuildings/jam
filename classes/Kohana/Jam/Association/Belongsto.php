@@ -18,6 +18,12 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	public $polymorphic = FALSE;
 
 	/**
+	 * This will be set to the polymorphic model column automatically if nothing is set there
+	 * @var model
+	 */
+	public $polymorphic_default_model = NULL;
+
+	/**
 	 * The name of the actual field holding the id of the associated model. Defaults to
 	 * <name>_id
 	 * @var string
@@ -159,6 +165,11 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 		elseif (is_array($value)) 
 		{
+			if ($this->polymorphic_default_model AND ! $model->{$this->polymorphic})
+			{
+				$model->{$this->polymorphic} = $this->polymorphic_default_model;
+			}
+
 			$item = Jam::build($this->foreign_model($model));
 		}
 		else
@@ -191,6 +202,11 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
+		if ($this->polymorphic_default_model)
+		{
+			$model->{$this->polymorphic} = $this->polymorphic_default_model;
+		}
+
 		if (is_array($value) AND $this->is_polymorphic())
 		{
 			$model->{$this->polymorphic} = key($value);

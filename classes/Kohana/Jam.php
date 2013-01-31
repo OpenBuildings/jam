@@ -18,9 +18,16 @@ abstract class Kohana_Jam {
 	/**
 	 * @var  string  The prefix to use for all model's class names
 	 *               This can be overridden to allow you to place
-	 *               models and builders in a different location.
+	 *               models and collections in a different location.
 	 */
 	protected static $_model_prefix = 'Model_';
+
+	/**
+	 * @var  string  The prefix to use for all model's collection class names
+	 *               This can be overridden to allow you to place
+	 *               models and collections in a different location.
+	 */
+	protected static $_collection_prefix = 'Model_Collection_';
 
 	/**
 	 * @var  string  This prefix to use for all model's field classes
@@ -121,7 +128,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function field($type, $options = NULL)
 	{
-		$field = Jam::$_field_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
+		$field = Jam::$_field_prefix.Jam::capitalize_class_name($type);
 
 		return new $field($options);
 	}
@@ -135,7 +142,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function association($type, $options = NULL)
 	{
-		$association = Jam::$_association_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
+		$association = Jam::$_association_prefix.Jam::capitalize_class_name($type);
 
 		return new $association($options);
 	}
@@ -150,7 +157,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function behavior($type, $options = array())
 	{
-		$behavior = Jam::$_behavior_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
+		$behavior = Jam::$_behavior_prefix.Jam::capitalize_class_name($type);
 
 		return new $behavior($options);
 	}
@@ -164,7 +171,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function validator_rule($type, $options = array())
 	{
-		$rule = Jam::$_validator_rule_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $type)));
+		$rule = Jam::$_validator_rule_prefix.Jam::capitalize_class_name($type);
 
 		return new $rule($options);
 	}
@@ -196,7 +203,7 @@ abstract class Kohana_Jam {
 		if (class_exists($class))
 		{
 			// Prevent accidentally trying to load ORM or Sprig models
-			if ( ! is_subclass_of($class, "Jam_Validated"))
+			if ( ! is_subclass_of($class, 'Jam_Validated'))
 			{
 				return FALSE;
 			}
@@ -232,8 +239,13 @@ abstract class Kohana_Jam {
 		}
 		else
 		{
-			return Jam::$_model_prefix.str_replace(' ', '_', ucwords(str_replace('_', ' ', $model)));
+			return Jam::$_model_prefix.Jam::capitalize_class_name($model);
 		}
+	}
+
+	public static function capitalize_class_name($class_name)
+	{
+		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $class_name)));
 	}
 
 	/**
@@ -261,13 +273,23 @@ abstract class Kohana_Jam {
 	}
 
 	/**
-	 * Returns the prefix to use for all models and builders.
+	 * Returns the prefix to use for all models and collections.
 	 *
 	 * @return  string
 	 */
 	public static function model_prefix()
 	{
 		return Jam::$_model_prefix;
+	}
+
+	/**
+	 * Returns the prefix to use for all models and collections.
+	 *
+	 * @return  string
+	 */
+	public static function collection_prefix()
+	{
+		return Jam::$_collection_prefix;
 	}
 
 	/**
@@ -364,12 +386,17 @@ abstract class Kohana_Jam {
 	 */
 	public static function all($model)
 	{
-		return new Jam_Query_Builder_Collection($model);
+		$class = Jam::meta($model)->collection();
+		if ( ! $class)
+		{
+			$class = 'Jam_Query_Builder_Collection';
+		}
+		return new $class($model);
 	}
 
 	protected static function find_or($method, $model, array $values)
 	{
-		$collection = new Jam_Query_Builder_Collection($model);
+		$collection = Jam::all($model);
 		$converted_keys = array();
 		foreach ($values as $key => $value) 
 		{
@@ -418,7 +445,7 @@ abstract class Kohana_Jam {
 	 */
 	public static function find($model, $key)
 	{
-		$collection = new Jam_Query_Builder_Collection($model);
+		$collection = Jam::all($model);
 		$collection->where_key($key);
 		return is_array($key) ? $collection : $collection->first();
 	}
@@ -467,7 +494,7 @@ abstract class Kohana_Jam {
 			$class = Kohana::$config->load('jam.default_form');
 		}
 
-		$class = str_replace(' ', '_', ucwords(str_replace('_', ' ', $class)));
+		$class = Jam::capitalize_class_name($class);
 		
 		if (is_string($model))
 		{

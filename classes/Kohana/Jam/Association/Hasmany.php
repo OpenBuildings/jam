@@ -87,7 +87,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 	public function collection(Jam_Model $model)
 	{
-		$collection = new Jam_Query_Builder_Collection($this->foreign_model);
+		$collection = Jam::all($this->foreign_model);
 
 		$collection->where($this->foreign_key, '=', $model->id());
 
@@ -295,4 +295,4 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	{
 		return (bool) $this->as;
 	}
-}
+} // End Kohana_Jam_Association_HasMany

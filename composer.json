@@ -1,0 +1,20 @@
+{
+	"name"       :"openbuildings/jam",
+	"type"       :"kohana-module",
+	"description":"Small but feature rich ORM",
+	"keywords"   :["kohana", "database", "ORM", "upload", "kohana module"],
+	"homepage"   :"https://github.com/OpenBuildings/Jam",
+	"license"    :"ICS",
+	"authors"    :[
+		{
+			"name"    :"Ivan Kerin",
+			"email"   :"ivan@openbuildings.com",
+			"homepage":"https://github.com/OpenBuildings/Jam",
+			"role"    :"Author"
+		}
+	],
+	"require"    :{
+		"php"                :">=5.3.0",
+		"composer/installers":"*"
+	}
+}

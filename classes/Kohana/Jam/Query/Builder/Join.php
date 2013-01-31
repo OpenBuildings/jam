@@ -54,10 +54,16 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 
 	public function compile($db = NULL)
 	{
-		if ($this->context_model() AND $meta = Jam::meta(Jam_Query_Builder::aliased_model($this->context_model())))
+		$model_name = $this->context_model() ? $this->context_model() : $this->_table;
+		if ($model_name)
 		{
-			$db = Database::instance($meta->db());
+			$model_name = Jam_Query_Builder::aliased_model($model_name);
+			if ( ! is_object($model_name) AND $meta = Jam::meta($model_name))
+			{
+				$db = Database::instance($meta->db());
+			}
 		}
+		
 		$original_on = $this->_on;
 		$original_using = $this->_using;
 		$original_table = $this->_table;
@@ -70,6 +76,7 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 				$condition[2] = Jam_Query_Builder::resolve_attribute_name($condition[2], $this->context_model());
 			}
 		}
+		
 		$this->_table = Jam_Query_Builder::resolve_table_alias($this->_table);
 
 		if ( ! empty($this->_using))

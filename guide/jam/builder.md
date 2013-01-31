@@ -56,12 +56,12 @@ If you have a more complex query and want to get only one model out of it (the f
 
 ### Retrieving multiple models with specific ids
 
-If you want to get objects with a specific primary_key, just use the `find()` pass an array of keys. It will restrict the search to those ids with a IN SQL clause. If you use a find_insist with multiple ids, then if any of the records is missing, it will throw a Jam_Exception_NotFound exception.
+If you want to get objects with a specific primary_key, just use the `find()` pass an array of keys. It will restrict the search to those ids with a IN SQL clause. If you use a find_insist with multiple ids, then if any of the records is missing, it will throw a Jam_Exception_Notfound exception.
 
 ```php
 <?php
 Jam::find('client', array(1, 2));                 // Jam_Collection: Model_Client(2)
-Jam::find_insist('client', array(1, 2, 100));     // Throws Jam_Exception_NotFound
+Jam::find_insist('client', array(1, 2, 100));     // Throws Jam_Exception_Notfound
 ?>
 ```
 
@@ -128,7 +128,7 @@ Jam::all('client')->where('id', '=', 5)->first();
 
 ### first_insist()
 
-The same as the `first()` method, but throws Jam_Exception_NotFound if nothing is found.
+The same as the `first()` method, but throws Jam_Exception_Notfound if nothing is found.
 
 ### where_key()
 

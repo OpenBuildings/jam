@@ -107,7 +107,12 @@ abstract class Kohana_Jam_Query_Builder {
 	 */
 	public static function resolve_table_alias($model)
 	{
-		if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($model)))
+		$model_name = Jam_Query_Builder::aliased_model($model);
+
+		if (is_object($model_name))
+			return $model;
+		
+		if ($meta = Jam::meta($model_name))
 		{
 			$model = Jam_Query_Builder::set_table_name($model, $meta->table());
 		}

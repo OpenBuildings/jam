@@ -157,6 +157,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	 */
 	abstract public function add_items_query(Jam_Model $model, array $ids);
 
+	/**
+	 * Get the colleciton to get the models of the association
+	 * @param  Jam_Model $model 
+	 * @return Jam_Query_Builder_Collection           
+	 */
 	abstract public function collection(Jam_Model $model);
 
 	/**

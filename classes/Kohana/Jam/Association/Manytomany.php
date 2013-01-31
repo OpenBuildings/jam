@@ -80,7 +80,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 
 	public function collection(Jam_Model $model)
 	{
-		$collection = new Jam_Query_Builder_Collection($this->foreign_model);
+		$collection = Jam::all($this->foreign_model);
 
 		return $collection	
 			->join_table($this->join_table)

@@ -65,6 +65,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function compile($db = NULL)
 	{
+		if ($this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+		
 		$original_select = $this->_select;
 		$original_from = $this->_from;
 
@@ -102,7 +107,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
 	{
-		if ($db === NULL AND $this->meta())
+		if ($this->meta())
 		{
 			$db = Database::instance($this->meta()->db());
 		}
@@ -112,7 +117,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	protected function _join($model, $type, $resolve_table_model = TRUE)
 	{
-		$join_key = is_array($model) ? join(':', $model) : $model;
+		$join_key = is_array($model) ? (is_object($model[0]) ? get_class($model[0]) : $model[0]).':'.$model[1] : $model;
 
 		if ( ! isset($this->_join[$join_key]))
 		{

@@ -110,6 +110,8 @@ abstract class Kohana_Jam_Meta {
 
 	protected $_with_options;
 
+	protected $_collection = NULL;
+
 	/**
 	 * The most basic initialization possible
 	 * @param string $model Model name
@@ -135,7 +137,7 @@ abstract class Kohana_Jam_Meta {
 			return;
 
 		// Set the name of a possible behavior class
-		$behavior_class = Jam::behavior_prefix().str_replace(' ', '_', ucwords(str_replace('_', ' ', $model)));
+		$behavior_class = Jam::behavior_prefix().$model;
 
 		// See if we have a special behavior class to use
 		if (class_exists($behavior_class))
@@ -212,6 +214,11 @@ abstract class Kohana_Jam_Meta {
 			$this->_defaults[$column] = $field->default;
 		}
 
+		if ( ! $this->_collection AND class_exists(Jam::collection_prefix().$this->_model))
+		{
+			$this->_collection = Jam::collection_prefix().$this->_model;
+		}
+
 		// Meta object is initialized and no longer writable
 		$this->_initialized = TRUE;
 
@@ -237,6 +244,15 @@ abstract class Kohana_Jam_Meta {
 	public function initialized()
 	{
 		return $this->_initialized;
+	}
+
+	public function collection()
+	{
+		if (func_num_args() !== 0)
+		{
+			return $this->set('collection', $value);
+		}
+		return $this->_collection;
 	}
 
 	public function validator($field, $options)

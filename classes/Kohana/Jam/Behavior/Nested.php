@@ -77,7 +77,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 
 		return DB::select()
 			->select(array(DB::expr('@row'), '_id'))
-			->select(array(DB::expr("(SELECT @row := `{$this->_field}` FROM `{$meta->table()}` WHERE `{$meta->primary_key()}` = _id)"), $this->_field))
+			->select(array(DB::expr("(SELECT @row := {$this->_field} FROM {$meta->table()} WHERE {$meta->primary_key()} = _id)"), $this->_field))
 			->select(array(DB::expr('@l := @l + 1'), 'lvl'))
 			->from(array(DB::expr('(SELECT @row := :id, @l := 0)', array(':id' => $child_id)), 'vars'))
 			->from($meta->table())
