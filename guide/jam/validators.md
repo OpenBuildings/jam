@@ -1,27 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [Validations Overview](#validations-overview)
-	- [Why Use Validations?](#why-use-validations?)
-	- [When Does Validation Happen?](#when-does-validation-happen?)
-	- [Skipping Validation](#skipping-validation)
-	- [check(), check_insist()](#check-check_insist)
-	- [errors()](#errors)
-	- [Validators](#validators)
-		- [accepted](#accepted)
-		- [confirmed](#confirmed)
-		- [choice](#choice)
-		- [format](#format)
-		- [length](#length)
-		- [numeric](#numeric)
-		- [present](#present)
-		- [unique](#unique)
-	- [Conditional Validation](#conditional-validation)
-		- [Using a model method or attribute with 'if' and 'unless'](#using-a-model-method-or-attribute-with-'if'-and-'unless')
-		- [Using a Callable with 'if' and 'unless'](#using-a-callable-with-'if'-and-'unless')
-		- [Grouping conditional validations](#grouping-conditional-validations)
-	- [Performing Custom Validations](#performing-custom-validations)
-	- [Models only for validation](#models-only-for-validation)
-
 # Validations Overview
 
 Validations allow you to ensure that only valid data is stored in your database. Before you dive into the detail of validations with Jam, you should understand a bit about how validations fit into the big picture.
@@ -38,7 +14,7 @@ There are several ways to validate data before it is saved into your database, i
 
 ## When Does Validation Happen?
 
-There are two kinds of Jam objects: those that correspond to a row inside your database and those that do not. When you create a fresh object, for example using Jam::factory('model'), that object does not belong to the database yet. Once you call save upon that object it will be saved into the appropriate database table. Jam uses the ->loaded() instance method to determine whether an object is already in the database or not. Consider the following simple Active Record class:
+There are two kinds of Jam objects: those that correspond to a row inside your database and those that do not. When you create a fresh object, for example using Jam::build('model'), that object does not belong to the database yet. Once you call save upon that object it will be saved into the appropriate database table. Jam uses the ->loaded() instance method to determine whether an object is already in the database or not. Consider the following simple Active Record class:
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -61,7 +37,7 @@ You can now use this model like this:
 
 ```php
 <?php 
-$post = Jam::factory("post");
+$post = Jam::build("post");
 
 // Will return false
 echo $post->loaded();
@@ -93,10 +69,10 @@ If you want to skip the validation of a model, you can insert / update data expl
 ```php
 <?php 
 // Insert a new record
-$post = Jam::query("post")->set(array('name' => 'value'))->insert();
+$post = Jam::insert('post')->set(array('name' => 'value'))->execute();
 
 // Update an existing one
-$post = Jam::query("post")->key(1)->set(array('name' => 'value'))->update();
+$post = Jam::update('post', 1)->set(array('name' => 'value'))->execute();
 ?>
 ```
 
@@ -104,7 +80,7 @@ Note that save also has the ability to skip validations if passed FALSE as argum
 
 ```php
 <?php 
-$post = Jam::factory("post", 1);
+$post = Jam::find("post", 1);
 $post->save(FALSE);
 ?>
 ```
@@ -129,7 +105,7 @@ class Model_Post extends Jam_Model {
 	}
 }
 
-$post = Jam::factory("post");
+$post = Jam::build("post");
 
 // Will return TRUE
 echo $post->set('title', 'New Post')->check();
@@ -435,7 +411,7 @@ class Model_Person extends Jam_Model {
 ?>
 ```
 
-It can validate associations as well, it checks for `->loaded()` for Jam_Model and `->count()` for Jam_Collection
+It can validate associations as well, it checks for `->loaded()` for Jam_Model and `->count()` for Jam_Array_Association
 
 ### unique
 

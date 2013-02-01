@@ -1,19 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [Jam Events](#jam-events)
-	- [Available events](#available-events)
-	- [Binding events](#binding-events)
-- [Jam behaviors](#jam-behaviors)
-	- [Nested Behavior](#nested-behavior)
-	- [Paranoid Behavior](#paranoid-behavior)
-- [Sluggable Behavior](#sluggable-behavior)
-		- [uses_primary_key, default TRUE](#uses_primary_key-default-true)
-		- [unique, default TRUE](#unique-default-true)
-		- [pattern](#pattern)
-		- [slug](#slug)
-	- [Sortable Behavior](#sortable-behavior)
-	- [Uploadable Behavior](#uploadable-behavior)
-
 ## Jam Events
 
 In the lifetime of each model(and builder) there are several events being triggered. 
@@ -22,6 +6,8 @@ In the lifetime of each model(and builder) there are several events being trigge
 
 * model.before_construct
 * model.after_construct
+* model.before_load
+* model.after_load
 * model.before_create
 * model.before_update
 * model.before_save
@@ -42,22 +28,31 @@ In the lifetime of each model(and builder) there are several events being trigge
 
 On model save, `before_create` and `after_create` are called for newly created models, `before_update` and `after_update` are triggered for loaded model that have already been previously saved to the database, and `before_save` and `after_save` are called in both cases.
 
-	$new_client = Jam::factory('client');
-	$new_client->save();                                       // before_create, before_save, after_create after_save events triggered
+```php
+<?php
+$new_client = Jam::build('client');
+$new_client->save();                                       // before_create, before_save, after_create after_save events triggered
 
-	$old_client = Jam::factory('client', 1);
-	$old_client->save();                                       // before_update, before_save, after_update after_save events triggered
-
+$old_client = Jam::find('client', 1);
+$old_client->save();                                       // before_update, before_save, after_update after_save events triggered
+?>
+```
 `before_validate` and `after_validate` are triggered when `check()` is called
 
-	$old_client = Jam::factory('client', 1);
-	$old_client->check();                                      // before_validate, after_validate events triggered
-
+```php
+<?php
+$old_client = Jam::find('client', 1);
+$old_client->check();                                      // before_validate, after_validate events triggered
+?>
+```
 `before_validate` and `after_validate` are triggered when `delete()` is called
 
-	$old_client = Jam::factory('client', 1);
-	$old_client->delete();                                     // before_delete, after_delete events triggered
-
+```php
+<?php
+$old_client = Jam::find('client', 1);
+$old_client->delete();                                     // before_delete, after_delete events triggered
+?>
+```
 `before_finalize` and `after_finalize` are triggered when `initialize()` method is called that creates the Jam_Meta. This is executed only once for each model.
 
 `before_select` is triggered on every builder select performed
@@ -66,14 +61,18 @@ On model save, `before_create` and `after_create` are called for newly created m
 
 To tap into that functionality you'll have to bind events to your custom functions that perform one task or another. This is usually done in the initialize phase of the model
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			// ...
-			$meta->events()->bind('model.after_save', 'Model_Order::after_save');
-		}
+	public static function initialize(Jam_Meta $meta)
+	{
+		// ...
+		$meta->events()->bind('model.after_save', 'Model_Order::after_save');
 	}
+}
+?>
+```
 
 ## Jam behaviors
 
@@ -92,16 +91,20 @@ Specify this behavior if you want to model a tree structure by providing a paren
 Example :
 
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			// ...
-			$meta->behaviors(array(
-				'nested' => Jam::behavior('nested', array('field' => 'parent_id'))
-			));
-		}
+	public static function initialize(Jam_Meta $meta)
+	{
+		// ...
+		$meta->behaviors(array(
+			'nested' => Jam::behavior('nested', array('field' => 'parent_id'))
+		));
 	}
+}
+?>
+```
 
 <pre>
 root
@@ -112,98 +115,110 @@ root
 
 Create the nested tree:
 
-	$root      = Jam::factory('order', 'root');
-	$child1    = Jam::factory('child1', 'child1');
-	$subchild1 = Jam::factory('subchild1', 'subchild1');
+```php
+<?php
+$root      = Jam::find('order', 'root');
+$child1    = Jam::find('child1', 'child1');
+$subchild1 = Jam::find('subchild1', 'subchild1');
 
-	// Get all root elements
-	Jam::factory('order')->root()->select_all(); // Jam_Collection: Model_Order(1)
+// Get all root elements
+Jam::all('order')->root(); // Jam_Arr_Association: Model_Order(1)
 
-	// Check if element is root
-	$root->is_root();                                          // TRUE
+// Check if element is root
+$root->is_root();                                          // TRUE
 
-	// Get parent element
-	$root->parent->loaded();                                   // FALSE
-	$child->parent->name;                                      // 'root'
-	$subchild->parent->name;                                   // 'child1'
-	
-	// Get children elements
-	$root->children;                                           // Jam_Collection: Model_Order(1)
+// Get parent element
+$root->parent->loaded();                                   // FALSE
+$child->parent->name;                                      // 'root'
+$subchild->parent->name;                                   // 'child1'
 
-	// Get the root element
-	$subchild->root()->name;                                   // 'root'
-	$child->root()->name;                                      // 'root'
+// Get children elements
+$root->children;                                           // Jam_Arr_Association: Model_Order(1)
 
-	// Get a chain of parents
-	$subchild->parents();                                      // Jam_Collection: Model_Order(2)
+// Get the root element
+$subchild->root()->name;                                   // 'root'
+$child->root()->name;                                      // 'root'
+
+// Get a chain of parents
+$subchild->parents();                                      // Jam_Arr_Association: Model_Order(2)
+?>
+```
 
 ### Paranoid Behavior
 
 When you want to keep deleted object inside the database and when you call `delete()` only to mark a flag as is_deleted to TRUE and then exclude those objects from the general selects, you can use `paranoid` behavior. This behavior requires that you have a boolean column, which by default is called is_deleted.
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			// ...
-			$meta->behaviors(array(
-				'paranoid' => Jam::behavior('paranoid', array('field' => 'is_deleted'))
-			));
-		}
+	public static function initialize(Jam_Meta $meta)
+	{
+		// ...
+		$meta->behaviors(array(
+			'paranoid' => Jam::behavior('paranoid', array('field' => 'is_deleted'))
+		));
 	}
+}
 
-	$order = Jam::factory('order', 1);
-	echo Jam::factory('order')->count();                     // 5
+$order = Jam::find('order', 1);
+echo Jam::all('order')->count_all();                     // 5
 
-	$order->delete();
-	echo Jam::factory('order')->count();                     // 4
+$order->delete();
+echo Jam::all('order')->count_all();                     // 4
 
-	// Get the count of all the objects (deleted or no)
-	echo Jam::factory('order')->deleted('all')->count();     // 5
+// Get the count of all the objects (deleted or no)
+echo Jam::all('order')->deleted('all')->count_all();     // 5
 
-	// Get the count of deleted objects
-	echo Jam::factory('order')->deleted('deleted')->count(); // 1
+// Get the count of deleted objects
+echo Jam::all('order')->deleted('deleted')->count_all(); // 1
 
 
-	// Get deleted object
-	$order = Jam::query('order')->key(1)->deleted('deleted')->find();
-	$order->restore_delete();
+// Get deleted object
+$order = Jam::all('order')->where_key(1)->deleted('deleted')->first();
+$order->restore_delete();
 
-	echo Jam::factory('order')->count();                     // 5
+echo Jam::all('order')->count_all();                     // 5
 
-	// Permanently delete an object
-	$order->real_delete();
-	echo Jam::factory('order')->count();                     // 4
-	echo Jam::factory('order')->deleted('all')->count();     // 4
+// Permanently delete an object
+$order->real_delete();
+echo Jam::all('order')->count_all();                     // 4
+echo Jam::all('order')->deleted('all')->count_all();     // 4
+?>
+```
 
 ## Sluggable Behavior
 
 The sluggable behavior is used for the use case where you want to have a human readable urls, that are automatically generated from your titles. You add a special field, called "slug" that gets automatically populated with the title, stripped down of all the undesirable characters that will not show well in the URL, and letters get converted to ASCII whenever possible. Additionally the ID of the object gets added, so you can then search by ID and handle the case of changing URLS.
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			// ...
-			$meta->field('title', Jam::field('name'));
-			$meta->name_key('title');
-			$meta->behaviors(array(
-				'sluggable' => Jam::behavior('sluggable')
-			));
-		}
+	public static function initialize(Jam_Meta $meta)
+	{
+		// ...
+		$meta->field('title', Jam::field('name'));
+		$meta->name_key('title');
+		$meta->behaviors(array(
+			'sluggable' => Jam::behavior('sluggable')
+		));
 	}
+}
 
-	$order->title = 'new title';
+$order->title = 'new title';
 
-	// Get the right slug before the model is saved
-	echo $order->build_slug();                                 // 'new-title-1';
-	
-	$order->save();
-	echo $order->slug;                                         // 'new-title-1';
+// Get the right slug before the model is saved
+echo $order->build_slug();                                 // 'new-title-1';
 
-	Jam::query('order')->where_slug('new-title-1')->find();
-	Jam::query('order')->find_by_slug('new-title-1');
-	Jam::query('order')->find_by_slug_insist('new-title-1');
+$order->save();
+echo $order->slug;                                         // 'new-title-1';
+
+Jam::all('order')->where_slug('new-title-1')->first();
+Jam::all('order')->find_by_slug('new-title-1');
+Jam::all('order')->find_by_slug_insist('new-title-1');
+?>
+```
 
 The last 3 rows need a more deeper explanation. If the id (1) at the end of the string matches an order id, and the whole string matches the slug in the database, then we'll return the order with that slug / id. However if the id does match, but the slug is different, then a special exception Jam_Exception_Sluggable will be thrown, containing the slug and the object that's been found, but that has different slug. This will allow you to implement auto redirecting URLS that go to the correct address even if the user has changed the title / slug for the link.
 
@@ -232,50 +247,56 @@ If you want to really do a custom slug, you can manually set the regex that matc
 
 If you want a custom slug, based on different fields of the model you can use the `slug` option - this has to be a callable function that will be given the model as the first argument and will construct the source for the string. After that the string goes through transliteration, lowercase conversion and trimming so don't worry about this stuff in this function
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			$meta->behaviors(array(
-				'sluggable' => Jam::behavior('sluggable', array('uses_primary_key' => FALSE, 'slug' => 'Model_Test_Tag::_slug'))
-			));
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->behaviors(array(
+			'sluggable' => Jam::behavior('sluggable', array('uses_primary_key' => FALSE, 'slug' => 'Model_Test_Tag::_slug'))
+		));
 
-			// Set fields
-			$meta->fields(array(
-				'id'              => Jam::field('primary'),
-				'name'            => Jam::field('string'),
-				'date'            => Jam::field('timestamp'),
-			));
-		}
-
-		public static function _slug(Jam_Model $model)
-		{
-			return $model->name().'-'.date('Y-m', $model->date);
-		}
+		// Set fields
+		$meta->fields(array(
+			'id'              => Jam::field('primary'),
+			'name'            => Jam::field('string'),
+			'date'            => Jam::field('timestamp'),
+		));
 	}
 
+	public static function _slug(Jam_Model $model)
+	{
+		return $model->name().'-'.date('Y-m', $model->date);
+	}
+}
+?>
+```
 
 ### Sortable Behavior
 
 When you want to have a user-ordered list of items you can use the `sortbale` behavior. You will need a position field in your database (configurable with the `field` option). And any new objects will be added at the end of the list.
 
-	class Model_Order extends Jam_Model {
+```php
+<?php
+class Model_Order extends Jam_Model {
 
-		public static function initialize(Jam_Meta $meta)
-		{
-			// ...
+	public static function initialize(Jam_Meta $meta)
+	{
+		// ...
 
-			$meta->behaviors(array(
-				'sortable' => Jam::behavior('sortable', array('field' => 'position'))
-			));
-		}
-
-		// Get all the orders, ordered by position
-		$orders = Jam::query('order')->select_all();
-
-		// Add element to the end of the list (position is last inserted ID)
-		$orders = Jam::factory('order')->set('name', 'new order')->save();
+		$meta->behaviors(array(
+			'sortable' => Jam::behavior('sortable', array('field' => 'position'))
+		));
 	}
+}
+// Get all the orders, ordered by position
+$orders = Jam::all('order');
+
+// Add element to the end of the list (position is last inserted ID)
+$orders = Jam::update('order')->set('name', 'new order')->execute();
+?>
+```
 
 ### Uploadable Behavior
 

@@ -1,12 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [Jam Upload Fields](#jam-upload-fields)
-		- [Upload_Server_Local](#upload_server_local)
-		- [Upload_Server_Ftp](#upload_server_ftp)
-		- [Upload_Server_Rackspace](#upload_server_rackspace)
-		- [Jam_Field_Upload](#jam_field_upload)
-	- [Forms](#forms)
-
 # Jam Upload Fields
 
 In order to use Jam::field('upload'), you first have to configure where to save the information. This is done by configuring "servers" where to store the information, but a server can also be "local" so to store the files locally. After you configure those servers, all of the `upload` fields will use them will use them.

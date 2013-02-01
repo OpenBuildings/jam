@@ -12,7 +12,7 @@ class Controller_Articles extends Controller {
 
 	public function action_new()
 	{
-		$article = Jam::factory('article');
+		$article = Jam::build('article');
 
 		$view = View::factory('article/form');
 
@@ -48,7 +48,7 @@ The corresponding view views/articles/form.php using Jam_Form looks like this:
 
 Here's how all of this work:
 
-* First off, we create an empty Jam_Model object with `Jam::factory('article')`.
+* First off, we create an empty Jam_Model object with `Jam::build('article')`.
 * At first pass, when te request is only GET, we show the form populated by $article (which is empty)
 * We enter a bunch of stuff and press "Create"
 * In the controller we see that it's a POST request, and proceed by getting the data from the post and setting it to the model

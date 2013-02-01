@@ -2,7 +2,6 @@
 
 return array(
 	'default_form' => 'general',
-	
 	'upload' => array(
 		'temp' => array(
 			'path' => DOCROOT.'upload'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR, 

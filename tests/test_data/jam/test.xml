@@ -284,6 +284,14 @@
 			<value>1</value>
 			<value>3</value>
 		</row>
+		<row>
+			<value>5</value>
+			<value>Category Five</value>
+			<value>3</value>
+			<value>0</value>
+			<value>0</value>
+			<value>0</value>
+		</row>
 	</table>
 	<table name="test_posts">
 		<column>id</column>
@@ -321,6 +329,19 @@
 			<value>1</value>
 			<value>3</value>
 			<value>1</value>
+			<null />
+		</row>		
+		<row>
+			<value>3</value>
+			<value>Third Post</value>
+			<value>third-post</value>
+			<value>draft</value>
+			<value>1264985737</value>
+			<value>1264985740</value>
+			<value>1264985737</value>
+			<null />
+			<null />
+			<null />
 			<null />
 		</row>
 	</table>
