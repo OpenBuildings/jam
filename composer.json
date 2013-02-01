@@ -2,8 +2,8 @@
 	"name"       :"openbuildings/jam",
 	"version"    :"0.5.0",
 	"type"       :"kohana-module",
-	"description":"Small but feature rich ORM",
-	"keywords"   :["kohana", "database", "ORM", "upload", "kohana module"],
+	"description":"Small but feature rich ORM, has extensible models and builders, baked in upload functionality, supporting multiple backends (rackspace, ftp), polymorphic associations, form builders, nested forms, validators",
+	"keywords"   :["kohana", "database", "ORM", "upload", "form builder", "validation"],
 	"homepage"   :"https://github.com/OpenBuildings/jam",
 	"license"    :"ICS",
 	"authors"    :[
@@ -12,7 +12,7 @@
 			"email"   :"ivan@openbuildings.com",
 			"homepage":"https://github.com/OpenBuildings/jam",
 			"role"    :"Author"
-		}
+		},
 	],
 	"require"    :{
 		"php"                :">=5.3.0",
