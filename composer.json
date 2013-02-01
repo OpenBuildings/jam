@@ -1,5 +1,6 @@
 {
 	"name"       :"openbuildings/jam",
+	"version"    :"0.5.0",
 	"type"       :"kohana-module",
 	"description":"Small but feature rich ORM",
 	"keywords"   :["kohana", "database", "ORM", "upload", "kohana module"],
