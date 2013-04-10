@@ -19,7 +19,7 @@ class Controller_Articles extends Controller {
 
 		if ($this->request->method() === Request::POST)
 		{
-			if ($article->set($this->request->post()->check())
+			if ($article->set($this->request->post())->check())
 			{
 				$article->save();
 				$view->set('message', 'Successfully saved');
