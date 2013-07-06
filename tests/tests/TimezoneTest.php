@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.timezone
  */
-class Jam_TimezoneTest extends Unittest_Jam_TestCase {
+class Jam_TimezoneTest extends PHPUnit_Framework_TestCase {
 
 	public $date;
 	public $timezone;

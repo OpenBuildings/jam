@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
  *  Uploadable behavior for Jam ORM library
@@ -26,8 +26,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 		{
 			$meta
 				->field($name.'_width', Jam::field('integer'))
-				->field($name.'_height', Jam::field('integer'))
-				->field('is_portrait', Jam::field('boolean'));
+				->field($name.'_height', Jam::field('integer'));
 		}
 
 		if ($this->_dynamic_server)
@@ -55,11 +54,6 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 			if ($dims)
 			{
 				list($model->{$this->_name.'_width'}, $model->{$this->_name.'_height'}) = $dims;
-				
-				if ($model->{$this->_name.'_width'} AND $model->{$this->_name.'_height'})
-				{
-					$model->is_portrait = (bool) (($model->{$this->_name.'_width'} / $model->{$this->_name.'_height'}) < 1);
-				}
 			}
 		}
 	}

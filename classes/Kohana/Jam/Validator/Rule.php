@@ -34,6 +34,11 @@ abstract class Kohana_Jam_Validator_Rule {
 		return $model->$attribute !== NULL;
 	}
 
+	public function html5_validation()
+	{
+		return NULL;
+	}
+
 	abstract public function validate(Jam_Validated $model, $attribute, $value);
 
 }

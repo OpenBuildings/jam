@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * A base iterator class, execute _load_contnet on any interation with the array. Can be serialized properly
+ * A base iterator class, execute _load_contnet on any interaction with the array. Can be serialized properly
  * 
  * @package    Jam
  * @category   Associations
@@ -251,8 +251,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 
 	/**
 	 * Implement Serializable.
-	 * @param  [type] $data [description]
-	 * @return [type]       [description]
+	 * @param  string $data [description]
 	 */
 	public function unserialize($data)
 	{

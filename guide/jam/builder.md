@@ -51,7 +51,7 @@ $client; // FALSE
 
 ### Using the find_insist() Method
 
-This is the same as find, but throws a `Jam_Exception_NotFound` exception if the model is not found.
+This is the same as find, but throws a `Jam_Exception_Notfound` exception if the model is not found.
 If you have a more complex query and want to get only one model out of it (the first one) then you s
 
 ### Retrieving multiple models with specific ids

@@ -109,6 +109,11 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		{
 			$this->empty_value = NULL;
 		}
+
+		if ( ! empty($options['filters']))
+		{
+			$this->filters = $options['filters'];
+		}
 	}
 
 	/**
@@ -138,20 +143,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 **/
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		if ( ! empty($this->filters))
-		{
-			foreach ($this->filters as $filter => $arguments) 
-			{
-				if (is_numeric($filter))
-				{
-					$filter = $arguments;
-					$arguments = array();
-				}
-				$value = $this->run_filter($model, $value, $filter, $arguments);
-			}
-		}
-
-		list($value, $return) = $this->_default($value);
+		list($value, $return) = $this->_default($model, $value);
 
 		return $value;
 	}
@@ -207,9 +199,11 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	 * @param   mixed  $value
 	 * @return  array
 	 */
-	protected function _default($value)
+	protected function _default(Jam_Validated $model, $value)
 	{
 		$return = FALSE;
+
+		$value = $this->run_filters($model, $value);
 
 		// Convert empty values to NULL, if needed
 		if ($this->convert_empty AND empty($value))
@@ -225,6 +219,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 			$return = TRUE;
 		}
 
+
 		return array($value, $return);
 	}
 
@@ -234,6 +229,24 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 			return $value === $this->empty_value;
 		
 		return ($value === NULL OR $value === $this->default);
+	}
+
+	public function run_filters(Jam_Validated $model, $value)
+	{
+		if ( ! empty($this->filters))
+		{
+			foreach ($this->filters as $filter => $arguments) 
+			{
+				if (is_numeric($filter))
+				{
+					$filter = $arguments;
+					$arguments = array();
+				}
+
+				$value = $this->run_filter($model, $value, $filter, $arguments);
+			}
+		}
+		return $value;
 	}
 
 	public function run_filter(Jam_Validated $model, $value, $filter, array $arguments = array())

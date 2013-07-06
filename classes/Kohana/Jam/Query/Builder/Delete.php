@@ -66,11 +66,6 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	public function compile($db = NULL)
 	{
-		if ($this->meta())
-		{
-			$db = Database::instance($this->meta()->db());
-		}
-		
 		$this->_table = $this->meta()->table();
 		
 		$this->meta()->events()->trigger('builder.before_delete', $this);
@@ -84,7 +79,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
 	{
-		if ($this->meta())
+		if ($db === NULL AND $this->meta())
 		{
 			$db = Database::instance($this->meta()->db());
 		}

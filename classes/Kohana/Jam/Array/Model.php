@@ -193,9 +193,17 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			$key = $this->meta()->primary_key();
 			if (isset($value[$key]) AND $value[$key])
 			{
-				$model = $this->_find_item($value[$key]);
-					
-				unset($value[$key]);
+				$item_key = is_array($value[$key]) ? reset($value[$key]) : $value[$key];
+				
+				$model = $this->_find_item($item_key);
+				if ( ! $model)
+				{
+					$model = clone $this->model_template();
+				}
+				else
+				{
+					unset($value[$key]);
+				}
 			}
 			else
 			{
@@ -419,6 +427,27 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			throw new Kohana_Exception('Cannot call method :method on collection because collection not loaded for Jam_Array(:model)', array(':method' => $method, ':model' => $this->model()));
 
 		return call_user_func_array(array(clone $this->collection(), $method), $args);
+	}
+
+	/**
+	 * Getter for the changed array - check if any or a particular item has been changed
+	 * @param  int $offset 
+	 * @return bool         
+	 */
+	public function changed($offset = NULL)
+	{
+		if ($this->_content)
+		{
+			foreach ($this->_content as $key => $value) 
+			{
+				if ( ! isset($this->_changed[$key]) AND $value instanceof Jam_Model AND $value->changed())
+				{
+					$this->_changed[$key] = TRUE;
+				}
+			}
+		}
+
+		return parent::changed($offset);
 	}
 
 	public function serialize()

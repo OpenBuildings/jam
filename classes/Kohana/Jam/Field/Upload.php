@@ -86,11 +86,27 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 		return $upload_file->path($this->path($model));
 	}
 
+	/**
+	 * Move the file to the temp directory even before it validates, so validaitons can be properly performed
+	 * @param  Jam_Model $model 
+	 */
 	public function model_before_check(Jam_Model $model)
 	{
 		if ($model->changed($this->name) AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
 			$upload_file->save_to_temp();
+		}
+	}
+
+	/**
+	 * After the validation for this field passes without any errors, fire up transformations and thumbnail generation
+	 * @param  Jam_Model $model      
+	 */
+	public function model_after_check(Jam_Model $model)
+	{
+		if ($model->changed($this->name) AND ! $model->errors($this->name) AND $upload_file = $model->{$this->name} AND $upload_file->source())
+		{
+			$upload_file->transform();
 		}
 	}
 

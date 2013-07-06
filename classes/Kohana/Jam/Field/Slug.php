@@ -42,7 +42,7 @@ abstract class Kohana_Jam_Field_Slug extends Jam_Field_String {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		list($value, $return) = $this->_default($value);
+		list($value, $return) = $this->_default($model, $value);
 
 		if ( ! $return)
 		{

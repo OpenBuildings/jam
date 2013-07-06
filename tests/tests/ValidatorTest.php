@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.validator
  */
-class Jam_ValidatorTest extends Unittest_Jam_TestCase {
+class Jam_ValidatorTest extends Testcase_Validate {
 
 	public $element;
 

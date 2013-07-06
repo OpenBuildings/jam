@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Jam Errors
- * 
+ *
  * @package    Jam
  * @category   Model
  * @author     Ivan Kerin
@@ -15,7 +15,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		if ($message = Kohana::message($error_filename, "{$attribute}.{$error}"))
 		{
 
-		}	
+		}
 		elseif ($message = Kohana::message('validators', $error))
 		{
 
@@ -28,13 +28,27 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		return strtr($message, $params);
 	}
 
+	public static function attribute_label(Jam_Meta $meta, $attribute_name)
+	{
+		if ($attribute = $meta->attribute($attribute_name))
+		{
+			$label = $attribute->label;
+		}
+		else
+		{
+			$label = Inflector::humanize($attribute_name);
+		}
+
+		return ucfirst($label);
+	}
+
 	/**
 	 * @var  Jam_Meta  The current meta object, based on the model we're returning
 	 */
 	protected $_meta = NULL;
 
 	/**
-	 * @var  Jam_Model  The current class we're placing results into
+	 * @var  Jam_Validated  The current class we're placing results into
 	 */
 	protected $_model = NULL;
 
@@ -55,6 +69,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	public function __construct(Jam_Validated $model, $error_filename)
 	{
 		$this->_model = $model;
+		$this->_meta = $model->meta();
 		$this->_error_filename = $error_filename;
 	}
 
@@ -79,31 +94,15 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	{
 		$messages = array();
 
-		if ($attribute !== NULL AND ( ! is_array($attribute) OR $attribute))
+		if ($attribute !== NULL)
 		{
-			foreach ( (array) $attribute as $attribute_item)
+			foreach (array_filter(Arr::extract($this->_container, (array) $attribute)) as $attribute_name => $errors)
 			{
-				if (empty($this->_container[$attribute_item]))
-					continue;
-				
-				foreach ($this->_container[$attribute_item] as $error => $params) 
+				foreach ($errors as $error => $params) 
 				{
-					if ($association = $this->_model->meta()->association($attribute_item))
-					{
-						$label = $association->label;
-					}
-					elseif ($field = $this->_model->meta()->field($attribute_item)) 
-					{
-						$label = $field->label;
-					}
-					else
-					{
-						$label = $attribute_item;
-					}
-
-					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_item, $error, Arr::merge($params, array(
-						':model' => $this->_model->meta()->model(), 
-						':attribute' => $label
+					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_name, $error, Arr::merge($params, array(
+						':model' => $this->_meta->model(),
+						':attribute' => Jam_Errors::attribute_label($this->_meta, $attribute_name),
 					)));
 				}
 			}
@@ -111,7 +110,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			return $messages;
 		}
 
-		foreach ($this->_container as $attribute => $errors) 
+		foreach ($this->_container as $attribute => $errors)
 		{
 			$messages[$attribute] = $this->messages($attribute);
 		}
@@ -119,17 +118,57 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		return $messages;
 	}
 
+	public function messages_all()
+	{
+		return $this->get_errors($this->_model);
+	}
+
+	private function get_errors(Jam_Model $model)
+	{
+		$messages = array();
+		foreach ($model->errors() as $attribute_name => $errors) 
+		{
+			if ($model->meta()->association($attribute_name) instanceof Jam_Association_Collection)
+			{
+				foreach ($model->$attribute_name as $i => $item) 
+				{
+					$messages[] = ucfirst(Inflector::humanize($attribute_name)).' ['.$i.']: '.join(', ', $this->get_errors($item));
+				}
+			}	
+			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
+			{
+				$messages[] = ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->get_errors($model->$attribute_name));
+			}
+			else
+			{
+				foreach ($errors as $error => $params)
+				{
+					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_name, $error, Arr::merge($params, array(
+						':model' => $model->meta()->model(),
+						':attribute' => Jam_Errors::attribute_label($model->meta(), $attribute_name),
+					)));
+				}
+			}
+		}
+
+		return $messages;
+	}
+
 	public function __toString()
 	{
+		return $this->render();
+	}
+
+	public function render()
+	{
 		$all_messages = array();
-		foreach ($this->messages() as $field => $messages) 
+		foreach ($this->messages() as $field => $messages)
 		{
 			$all_messages[] = join(', ', $messages);
 		}
 
 		return join(', ', $all_messages);
 	}
-		
 
 	public function seek($offset)
 	{
@@ -145,12 +184,12 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		}
 	}
 
-	public function offsetSet($offset, $value) 
+	public function offsetSet($offset, $value)
 	{
 		throw new Kohana_Exception('Cannot set the errors directly, must use add() method');
 	}
 
-	public function offsetExists($offset) 
+	public function offsetExists($offset)
 	{
 	 return isset($this->_container[$offset]);
 	}
@@ -164,28 +203,28 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		}
 	}
 
-	public function offsetGet($offset) 
+	public function offsetGet($offset)
 	{
 		return isset($this->_container[$offset]) ? $this->_container[$offset] : NULL;
 	}
 
-	public function rewind() 
+	public function rewind()
 	{
 		reset($this->_container);
 		$this->_current = key($this->_container);
 	}
 
-	public function current() 
+	public function current()
 	{
 		return $this->offsetGet($this->_current);
 	}
 
-	public function key() 
+	public function key()
 	{
 		return $this->_current;
 	}
 
-	public function next() 
+	public function next()
 	{
 		next($this->_container);
 		$this->_current = key($this->_container);
@@ -199,12 +238,12 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		return $this->current();
 	}
 
-	public function valid() 
+	public function valid()
 	{
 		return isset($this->_container[$this->_current]);
 	}
 
-	public function count() 
+	public function count()
 	{
 		return count($this->_container);
 	}

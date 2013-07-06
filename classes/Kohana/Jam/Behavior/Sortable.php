@@ -12,6 +12,7 @@
 class Kohana_Jam_Behavior_Sortable extends Jam_Behavior 
 { 
 	public $_field = 'sort_position';
+	public $_scope = NULL;
 
 	public function initialize(Jam_Meta $meta, $name) 
 	{			
@@ -21,10 +22,37 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	}
 
 	/**
-	 * Perform an order by position at the end of the select
-	 * 
-	 * @param Jam_Builder $select 
+	 * Sort all the ids (in the order given), with one query
+	 * @param  array  $ids 
+	 * @return $this      
 	 */
+	public function sort_ids(array $ids)
+	{
+		$case = 'CASE  `id` ';
+		$template = 'WHEN :id THEN :position ';
+
+		foreach ($ids as $i => $id) 
+		{
+			$case .= strtr($template, array(':id' => $id, ':position' => $i));
+		}
+		
+		$case .= 'END';
+
+		Jam::update($this->_model)->value($this->_field, DB::expr($case))->execute();
+
+		return $this;
+	}
+
+	/**
+	 * $select->order_by_position()
+	 * 
+	 * @param Jam_Builder $builder 
+	 */
+	public function builder_call_order_by_position(Database_Query_Builder $builder, Jam_Event_Data $data, $direction = NULL)
+	{
+		$builder->order_by($this->_field, $direction);
+	}
+
 	public function builder_before_select(Jam_Query_Builder_Select $select)
 	{
 		if ( ! $select->order_by)
@@ -33,14 +61,15 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 		}
 	}
 
-	/**
-	 * $select->order_by_position()
-	 * 
-	 * @param Jam_Builder $select 
-	 */
-	public function builder_call_order_by_position(Jam_Query_Builder_Select $select)
+	public function builder_call_where_in_scope(Database_Query_Builder $builder, Jam_Event_Data $data, Jam_Model $model)
 	{
-		$select->order_by($this->_field, 'ASC');
+		if ($this->_scope)
+		{
+			foreach ( (array) $this->_scope as $scope_field)
+			{
+				$builder->where($scope_field, '=', $model->$scope_field);
+			}
+		}
 	}
 
 	/**
@@ -52,7 +81,78 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	{
 		if ( ! $model->changed($this->_field))
 		{
-			$model->{$this->_field} = Jam::select($this->_model)->count_all();
+			$last = Jam::all($this->_model)
+				->where_in_scope($model)
+				->order_by($this->_field, 'DESC')
+				->first();
+
+			$model->{$this->_field} = $last ? $last->{$this->_field} + 1 : 0;
+		}
+	}
+
+	public function model_call_switch_position_with(Jam_Model $model, Jam_Event_Data $data, Jam_Model $switch_with)
+	{
+		$current_position = $model->{$this->_field};
+		$model->update_fields($this->_field, $switch_with->{$this->_field});
+		$switch_with->update_fields($this->_field, $current_position);
+	}
+
+	public function model_call_move_position_to(Jam_Model $model, Jam_Event_Data $data, Jam_Model $to)
+	{
+		$builder = Jam::update($this->_model)
+			->where_in_scope($model);
+
+		if ($model->{$this->_field} !== $to->{$this->_field})
+		{
+			if ($model->{$this->_field} > $to->{$this->_field})
+			{
+				$builder
+					->where($this->_field, '>=', $to->{$this->_field})
+					->where($this->_field, '<', $model->{$this->_field})
+					->value($this->_field, DB::expr($this->_field.' + 1'));
+			}
+			else
+			{
+				$builder
+					->where($this->_field, '<=', $to->{$this->_field})
+					->where($this->_field, '>', $model->{$this->_field})
+					->value($this->_field, DB::expr($this->_field.' - 1'));
+			}
+			$builder->execute();
+			$model->update_fields($this->_field, $to->{$this->_field});
+		}
+	}
+
+	public function model_call_sibling(Jam_Model $model, Jam_Event_Data $data, $offset)
+	{
+		$offset = (int) $offset;
+
+		$data->return = Jam::all($this->_model)
+			->where_in_scope($model)
+			->order_by($this->_field, ($offset > 0) ? 'ASC' : 'DESC')
+			->where($this->_field, ($offset > 0) ? '>=' : '<=', $model->{$this->_field} + $offset)
+			->first();
+
+		$data->stop = TRUE;
+	}
+
+	public function model_call_decrease_position(Jam_Model $model)
+	{
+		$sibling = $model->sibling(-1);
+
+		if ($sibling)
+		{
+			$model->switch_position_with($sibling);
+		}
+	}
+
+	public function model_call_increase_position(Jam_Model $model)
+	{
+		$sibling = $model->sibling(+1);
+
+		if ($sibling)
+		{
+			$model->switch_position_with($sibling);
 		}
 	}
 

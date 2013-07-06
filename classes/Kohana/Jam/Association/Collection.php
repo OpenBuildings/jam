@@ -62,7 +62,12 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 			$collection
 				->load_fields($value);
 		}
+		
+		return $this->assign_internals($model, $collection);
+	}
 
+	public function assign_internals(Jam_Validated $model, Jam_Array_Association $collection)
+	{
 		return $collection
 			->model($this->foreign_model)
 			->parent($model)
@@ -173,12 +178,20 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	{
 		if ($old_ids = array_values(array_diff($collection->original_ids(), $collection->ids())))
 		{
-			$this->remove_items_query($model, $old_ids)->execute(Jam::meta($this->model)->db());
+			$query = $this->remove_items_query($model, $old_ids);
+			if ($query)
+			{
+				$query->execute(Jam::meta($this->model)->db());
+			}
 		}
 		
 		if ($new_ids = array_values(array_diff($collection->ids(), $collection->original_ids())))
 		{
-			$this->add_items_query($model, $new_ids)->execute(Jam::meta($this->model)->db());
+			$query = $this->add_items_query($model, $new_ids);
+			if ($query)
+			{
+				$query->execute(Jam::meta($this->model)->db());
+			}
 		}
 	}
 
@@ -191,7 +204,11 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	{
 		if ($ids = array_filter($collection->ids()))
 		{
-			$this->remove_items_query($model, $ids)->execute(Jam::meta($this->model)->db());
+			$query = $this->remove_items_query($model, $old_ids);
+			if ($query)
+			{
+				$query->execute(Jam::meta($this->model)->db());
+			}
 		}
 	}
 

@@ -31,7 +31,7 @@ abstract class Kohana_Jam_Field_Float extends Jam_Field {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		list($value, $return) = $this->_default($value);
+		list($value, $return) = $this->_default($model, $value);
 
 		// Convert to a float and set the places properly
 		if ( ! $return)

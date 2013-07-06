@@ -18,7 +18,7 @@ abstract class Kohana_Jam_Form {
 	 * @param string $name 
 	 * @return string
 	 */
-	static public function generate_prefix($prefix, $name)
+	public static function generate_prefix($prefix, $name)
 	{
 		$additional = array_slice(func_get_args(), 2);
 		foreach ($additional as $additional_name)
@@ -43,7 +43,7 @@ abstract class Kohana_Jam_Form {
 	 * @param mixed $choices 
 	 * @return  array 
 	 */
-	static public function list_choices($choices)
+	public static function list_choices($choices)
 	{
 		if ($choices instanceof Jam_Query_Builder_Select OR $choices instanceof Jam_Array_Model)
 		{
@@ -59,7 +59,7 @@ abstract class Kohana_Jam_Form {
 	 * @param int|array $id 
 	 * @param bool $force_single if a value is an array get the first value
 	 */
-	static public function list_id($id, $force_single = FALSE)
+	public static function list_id($id, $force_single = FALSE)
 	{
 		if ($id instanceof Jam_Model)
 		{
@@ -79,6 +79,43 @@ abstract class Kohana_Jam_Form {
 	}
 
 	/**
+	 * Add a class to the 'class' attribute, without removing existing value
+	 * 
+	 * @param array  $attributes 
+	 * @param array $class      
+	 */
+	public static function add_class(array $attributes, $class)
+	{
+		$attributes['class'] = (isset($attributes['class']) ? $attributes['class'].' ' : '').$class;
+		return $attributes;
+	}
+
+	public static function common_params($collection, array $params = array())
+	{
+		$collection = ($collection instanceof Jam_Query_Builder_Collection OR $collection instanceof Jam_Array_Model) ? $collection->as_array() : $collection;
+
+		$common = array();
+		foreach ($params as $name => $param) 
+		{
+			$attribute_name = is_numeric($name) ? $param : $name;
+			$param_collection = array_map(function($item) use ($attribute_name) { return $item->$attribute_name; }, $collection);
+
+			if (is_numeric($name))
+			{
+				$common[$param] = array_reduce($param_collection, function($result, $item){
+					return Jam_Form::list_id($result) !== Jam_Form::list_id($item) ? NULL : $item;
+				}, reset($param_collection));
+			}
+			else
+			{
+				$common[$name] = Jam_Form::common_params($param_collection, $param);
+			}
+		}
+
+		return $common;
+	}
+
+	/**
 	 * The "prefix" of the form - this is used to implement nesting with html forms
 	 * 
 	 * @var string
@@ -93,6 +130,12 @@ abstract class Kohana_Jam_Form {
 	protected $_object;
 
 	/**
+	 * This flag determines if we want to have html5 validation of the form
+	 * @var boolean
+	 */
+	protected $_validation = TRUE;
+
+	/**
 	 * The meta of the Jam_Object the form is bound to
 	 * 
 	 * @var Jam_Meta
@@ -103,6 +146,20 @@ abstract class Kohana_Jam_Form {
 	{
 		$this->_object = $model;
 		$this->_meta = Jam::meta($model);
+	}
+
+	/**
+	 * Getter / setter of validation flag
+	 * @param boolean $validation
+	 */
+	public function validation($validation = NULL)
+	{
+		if ($validation !== NULL)
+		{
+			$this->_validation = (bool) $validation;
+			return $this;
+		}
+		return $this->_validation;
 	}
 
 	/**
@@ -159,6 +216,11 @@ abstract class Kohana_Jam_Form {
 				$object = $object->build();
 			}
 		}
+		elseif ( ! $object) 
+		{
+			$object = $this->object()->build($name);
+		}
+
 
 		$new_prefix = Jam_Form::generate_prefix($this->prefix(), $name, $index);
 
@@ -206,8 +268,14 @@ abstract class Kohana_Jam_Form {
 			$overrides['name'] = $this->default_name($name);
 		}
 
+		if ($this->validation())
+		{
+			foreach ($this->object()->meta()->validators() as $validator) 
+			{
+				$overrides = Arr::merge($validator->html5_validation($this->object(), $name), $overrides);
+			}
+		}
+
 		return $overrides;
 	}
-
-
-} // End Kohana_Jam_Form
+}

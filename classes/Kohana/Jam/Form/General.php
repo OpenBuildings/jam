@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		$slots = array(
 			':name' => $name,
 			':type' => $type,
-			':label' => $this->label($name, Arr::get($options, 'label'), $attributes),
+			':label' => $this->label($name, Arr::get($options, 'label')),
 			':with-errors' => $errors ? 'with-errors' : '',
 			':errors' => $errors,
 			':help' => $help ? "<span class=\"help-block\">{$help}</span>" : '',
@@ -82,13 +82,20 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 */
 	public function label($name, $label = NULL, array $attributes = array())
 	{
-		$attributes = $this->default_attributes($name, $attributes);
+		$field_attributes = $this->default_attributes($name, $attributes);
 
 		if ($label === NULL)
 		{
-			$label = ucfirst(Inflector::humanize($name));
+			if ($this->meta()->field($name) AND $this->meta()->field($name)->label !== NULL)
+			{
+				$label = ucfirst($this->meta()->field($name)->label);
+			}
+			else
+			{
+				$label = ucfirst(Inflector::humanize($name));
+			}
 		}
-		return Form::label($attributes['id'], $label);
+		return Form::label($field_attributes['id'], $label, $attributes);
 	}
 
 	/**
@@ -154,9 +161,10 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		$attributes = $this->default_attributes($name, $attributes);
 
 		$value = Arr::get($options, 'value', 1);
+		$empty = Arr::get($options, 'empty', 0);
 
 		return 
-			Form::hidden($attributes['name'], 0)
+			Form::hidden($attributes['name'], $empty)
 			.Form::checkbox($attributes['name'], $value, $this->object()->$name, $attributes);	
 	}
 
@@ -170,10 +178,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 */
 	public function radio($name, array $options = array(), array $attributes = array())
 	{
-		$value = Arr::get($options, 'value');
-
-		if ($value === NULL)
-			throw new Kohana_Exception("form widget 'radio' needs a 'value' option");
+		$value = Arr::get($options, 'value', '');
 
 		if ( ! isset($attributes['id']))
 		{
@@ -242,11 +247,11 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		$attributes = $this->default_attributes($name, $attributes);
 
 		return 
-			(Arr::get($options, 'temp_source', FALSE) 
-				? Form::hidden($attributes['name'], $this->object()->$name->temp_source()) 
+			Form::file($attributes['name'], $attributes)
+			.(Arr::get($options, 'temp_source', FALSE) 
+				? Form::hidden($attributes['name'], $this->object()->$name->temp_source(), Arr::get($options, 'temp_attributes', array('class' => 'hidden-input'))) 
 				: ''
-			)
-			.Form::file($attributes['name'], $attributes);
+			);
 	}
 
 	/**

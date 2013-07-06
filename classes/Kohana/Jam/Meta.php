@@ -137,7 +137,7 @@ abstract class Kohana_Jam_Meta {
 			return;
 
 		// Set the name of a possible behavior class
-		$behavior_class = Jam::behavior_prefix().$model;
+		$behavior_class = Jam::behavior_prefix().Jam::capitalize_class_name($model);
 
 		// See if we have a special behavior class to use
 		if (class_exists($behavior_class))
@@ -214,9 +214,9 @@ abstract class Kohana_Jam_Meta {
 			$this->_defaults[$column] = $field->default;
 		}
 
-		if ( ! $this->_collection AND class_exists(Jam::collection_prefix().$this->_model))
+		if ( ! $this->_collection AND $class = Jam::collection_prefix().Jam::capitalize_class_name($this->_model) AND class_exists($class))
 		{
-			$this->_collection = Jam::collection_prefix().$this->_model;
+			$this->_collection = $class;
 		}
 
 		// Meta object is initialized and no longer writable
@@ -280,6 +280,11 @@ abstract class Kohana_Jam_Meta {
 	{
 		$this->_with_options = NULL;
 		return $this;
+	}
+
+	public function validators()
+	{
+		return $this->_validators;
 	}
 
 	public function execute_validators(Jam_Validated $model)

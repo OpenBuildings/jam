@@ -126,4 +126,15 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 			$this->association()->item_unset($this->parent(), $item);
 		}
 	}
+
+	public function current()
+	{
+		$item = parent::current();
+		if ($item instanceof Jam_Model)
+		{
+			$this->association()->item_get($this->parent(), $item);
+		}
+		return $item;
+
+	}
 } 

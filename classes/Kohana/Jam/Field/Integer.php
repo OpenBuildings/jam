@@ -23,7 +23,7 @@ abstract class Kohana_Jam_Field_Integer extends Jam_Field {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		list($value, $return) = $this->_default($value);
+		list($value, $return) = $this->_default($model, $value);
 
 		if ( ! $return AND ! $value instanceof Database_Expression)
 		{

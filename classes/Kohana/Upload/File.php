@@ -64,7 +64,7 @@ class Kohana_Upload_File {
 		if ( ! $this->server()->is_file($old_file))
 			throw new Kohana_Exception('File '.$old_file.' does not exist');
 
-		$this->server()->move_to_local($old_file, $file);
+		$this->server()->download_move($old_file, $file);
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
@@ -74,17 +74,17 @@ class Kohana_Upload_File {
 			if ( ! $this->server()->is_file($old_thumbnail_file))
 				throw new Kohana_Exception('File '.$old_thumbnail_file.' does not exist');
 
-			$this->server()->move_to_local($old_thumbnail_file, $thumbnail_file);
+			$this->server()->download_move($old_thumbnail_file, $thumbnail_file);
 		}
 
 		$this->server($new_server);
 
-		$this->server()->save_from_local($this->full_path(), $file);
+		$this->server()->upload_move($this->full_path(), $file);
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
 			$thumbnail_file = Upload_Util::combine($this->temp()->directory_path($thumbnail), $this->filename());
-			$this->server()->save_from_local($this->full_path($thumbnail), $thumbnail_file);
+			$this->server()->upload_move($this->full_path($thumbnail), $thumbnail_file);
 		}
 	}
 
@@ -193,6 +193,19 @@ class Kohana_Upload_File {
 		return $this->_filename;
 	}
 
+	public function transform()
+	{
+		if (($this->_transformations OR $this->_thumbnails) AND @ getimagesize($this->file()))
+		{
+			if ($this->_transformations)
+			{
+				Upload_Util::transform_image($this->file(), $this->file(), $this->transformations());
+			}
+
+			$this->generate_thumbnails();
+		}
+	}
+
 	/**
 	 * Save the current source to the temp folder
 	 */
@@ -207,15 +220,6 @@ class Kohana_Upload_File {
 			$this->filename($this->source()->filename());
 		}
 
-		if (($this->_transformations OR $this->_thumbnails) AND @ getimagesize($this->file()))
-		{
-			if ($this->_transformations)
-			{
-				Upload_Util::transform_image($this->file(), $this->file(), $this->transformations());
-			}
-
-			$this->generate_thumbnails();
-		}
 		return $this;
 	}
 
@@ -249,11 +253,11 @@ class Kohana_Upload_File {
 			$this->generate_thumbnails();
 		}
 			
-		$this->server()->save_from_local($this->full_path(), $this->file());
+		$this->server()->upload_move($this->full_path(), $this->file());
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
 		{
-			$this->server()->save_from_local($this->full_path($thumbnail), $this->file($thumbnail));
+			$this->server()->upload_move($this->full_path($thumbnail), $this->file($thumbnail));
 		}
 
 		$this->_source = NULL;
@@ -306,9 +310,9 @@ class Kohana_Upload_File {
 	 * @param  mixed $protocol  
 	 * @return string            
 	 */
-	public function url($thumbnail = NULL, $protocol = NULL)
+	public function url($thumbnail = NULL)
 	{
-		return $this->location('webpath', $thumbnail, $protocol);
+		return $this->location('url', $thumbnail);
 	}
 
 	/**
@@ -329,20 +333,25 @@ class Kohana_Upload_File {
 		return $this->temp()->directory().'/'.$this->filename();
 	}
 
-	protected function location($method, $thumbnail = NULL, $protocol = NULL)
+	protected function location($method, $thumbnail = NULL)
 	{
 		if ( ! $this->filename())
 			return NULL;
 
-		$server = $this->_source ? $this->temp() : $this->server();
-
-		if ($this->_source)
+		try 
 		{
-			return $this->temp()->$method(Upload_Util::combine($this->temp()->directory(), $thumbnail, $this->filename()));
-		}
-		else
+			if ($this->_source)
+			{
+				return $this->temp()->$method(Upload_Util::combine($this->temp()->directory(), $thumbnail, $this->filename()));
+			}
+			else
+			{
+				return $this->server()->$method($this->full_path($thumbnail));
+			}
+		} 
+		catch (Flex\Storage\Exception_Notsupported $exception) 
 		{
-			return $this->server()->$method($this->full_path($thumbnail), $protocol);
+			return NULL;
 		}
 	}
 

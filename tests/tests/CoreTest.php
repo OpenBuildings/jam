@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.core
  */
-class Jam_CoreTest extends Unittest_TestCase {
+class Jam_CoreTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Provides for test_register

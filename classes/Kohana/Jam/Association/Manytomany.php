@@ -71,6 +71,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	{
 		return Jam_Query_Builder_Join::factory($this->join_table, $type)
 			->context_model($this->model)
+			->model($this->foreign_model)
 			->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
 			->join_table($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
 				->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)

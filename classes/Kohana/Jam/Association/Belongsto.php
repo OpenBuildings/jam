@@ -185,7 +185,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 				$item->set($value);
 			}
 
-			if ($item instanceof Jam_Model AND $this->inverse_of AND $model->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
+			if ($item instanceof Jam_Model AND $this->inverse_of AND $item->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
 			{
 				$item->retrieved($this->inverse_of, $model);
 			}
@@ -224,12 +224,29 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$model->{$this->foreign_key} = $key;
 		}
 
-		if ($value instanceof Jam_Model AND $this->inverse_of AND $model->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
+		if ($value instanceof Jam_Model AND $this->inverse_of AND $value->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
 		{
 			$value->retrieved($this->inverse_of, $model);
 		}
 
 		return $value;
+	}
+
+	public function build(Jam_Validated $model)
+	{
+		$foreign = Jam::meta($this->foreign_model($model));
+
+		if ( ! $foreign)
+			return NULL;
+		
+		$item = Jam::build($foreign->model());
+
+		if ($this->inverse_of AND $foreign->association($this->inverse_of) instanceof Jam_Association_Hasone)
+		{
+			$item->retrieved($this->inverse_of, $model);
+		}
+		
+		return $item;
 	}
 
 	/**
@@ -291,7 +308,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function model_before_delete(Jam_Model $model)
 	{
-		if ($this->dependent == Jam_Association::DELETE)
+		if ($this->dependent == Jam_Association::DELETE AND $model->{$this->name})
 		{
 			$model->{$this->name}->delete();
 		}

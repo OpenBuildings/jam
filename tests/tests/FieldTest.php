@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.field
  */
-class Jam_FieldTest extends Unittest_TestCase {
+class Jam_FieldTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Provider for test_construction
@@ -203,6 +203,30 @@ class Jam_FieldTest extends Unittest_TestCase {
 	{
 		$model = Jam::build('test_position');
 		$this->assertSame($expected, $field->set($model, $value, TRUE));
+	}
+
+	public static function filter_test($model, $value, $field)
+	{
+		return get_class($model).':'.$value.':'.$field;
+	}
+
+	public function data_filters()
+	{
+		return array(
+			array(new Jam_Field_String(array('filters' => array('trim'))), '  text ', 'text'),
+			array(new Jam_Field_Integer(array('filters' => array('trim'))), '  12 ', 12),
+			array(new Jam_Field_Text(array('filters' => array('Jam_FieldTest::filter_test' => array(':model', ':value', ':field')))), 'value12', 'Model_Test_Position:value12:myfield'),
+		);
+	}
+	
+	/**
+	 * @dataProvider data_filters
+	 */
+	public function test_filters($field, $value, $expected)
+	{
+		$model = Jam::build('test_position');
+		$field->name = 'myfield';
+		$this->assertEquals($expected, $field->set($model, $value, TRUE));
 	}
 
 }

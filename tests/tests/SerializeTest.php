@@ -5,7 +5,7 @@
  * @group   jam
  * @group   jam.serialize
  */
-class Jam_SerializeTest extends Unittest_Jam_TestCase {
+class Jam_SerializeTest extends PHPUnit_Framework_TestCase {
 
 	public function test_collection()
 	{

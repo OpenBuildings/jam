@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.event
  */
-class Jam_EventTest extends Unittest_TestCase {
+class Jam_EventTest extends PHPUnit_Framework_TestCase {
 
 	public $event;
 

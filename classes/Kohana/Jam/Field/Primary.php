@@ -53,7 +53,7 @@ abstract class Kohana_Jam_Field_Primary extends Jam_Field {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		list($value, $return) = $this->_default($value);
+		list($value, $return) = $this->_default($model, $value);
 
 		// Allow only strings and integers as primary keys
 		if ( ! $return)

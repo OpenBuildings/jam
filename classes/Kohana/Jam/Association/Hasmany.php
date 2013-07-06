@@ -40,6 +40,12 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	public $inverse_of = NULL;
 
 	/**
+	 * Optionally delete the item when it is removed from the association
+	 * @var string
+	 */
+	public $delete_on_remove = NULL;
+
+	/**
 	 * Initialize foreign_key, as, and polymorphic_key with default values
 	 *
 	 * @param   string  $model
@@ -207,13 +213,36 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
 	{
-		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
-			->where(':primary_key', 'IN', $ids)
-			->value($this->foreign_key, NULL);
-
-		if ($this->is_polymorphic())
+		switch ($this->delete_on_remove) 
 		{
-			$query->value($this->polymorphic_key, NULL);
+			case TRUE:
+			case Jam_Association::DELETE:
+				foreach (Jam::all($this->foreign_model)->where_key($ids) as $item )
+				{
+					$item->delete();
+				}
+				$query = NULL;
+			break;
+
+			case Jam_Association::ERASE:
+				$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
+					->where(':primary_key', 'IN', $ids);
+
+				if ($this->is_polymorphic())
+				{
+					$query->value($this->polymorphic_key, NULL);
+				}
+			break;
+
+			default:
+				$query = Jam_Query_Builder_Update::factory($this->foreign_model)
+					->where(':primary_key', 'IN', $ids)
+					->value($this->foreign_key, NULL);
+
+				if ($this->is_polymorphic())
+				{
+					$query->value($this->polymorphic_key, NULL);
+				}
 		}
 
 		return $query; 

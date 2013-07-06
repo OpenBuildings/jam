@@ -25,18 +25,21 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 	protected $_joins = array();
 
 	protected $_context_model = NULL;
-	
+
+	protected $_model = NULL;
+
 	protected $_end = NULL;
 
 	public function join($model, $type = NULL)
 	{
-		$this->_joins[] = Jam_Query_Builder::resolve_join($model, $type, $this->_table);
+		$this->_joins[] = Jam_Query_Builder::resolve_join($model, $type, $this->model() ? $this->model() : $this->_table);
+
 		return $this;
 	}
 
 	public function join_nested($model, $type = NULL)
 	{
-		$join = Jam_Query_Builder::resolve_join($model, $type, $this->_table)
+		$join = Jam_Query_Builder::resolve_join($model, $type, $this->model() ? $this->model() : $this->_table)
 			->end($this);
 			
 		$this->_joins[] = $join;
@@ -54,16 +57,10 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 
 	public function compile($db = NULL)
 	{
-		$model_name = $this->context_model() ? $this->context_model() : $this->_table;
-		if ($model_name)
+		if ($this->context_model() AND $meta = Jam::meta(Jam_Query_Builder::aliased_model($this->context_model())))
 		{
-			$model_name = Jam_Query_Builder::aliased_model($model_name);
-			if ( ! is_object($model_name) AND $meta = Jam::meta($model_name))
-			{
-				$db = Database::instance($meta->db());
-			}
+			$db = Database::instance($meta->db());
 		}
-		
 		$original_on = $this->_on;
 		$original_using = $this->_using;
 		$original_table = $this->_table;
@@ -72,11 +69,10 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		{
 			foreach ($this->_on as & $condition) 
 			{
-				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->_table);
+				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->model() ? $this->model() : $this->_table);
 				$condition[2] = Jam_Query_Builder::resolve_attribute_name($condition[2], $this->context_model());
 			}
 		}
-		
 		$this->_table = Jam_Query_Builder::resolve_table_alias($this->_table);
 
 		if ( ! empty($this->_using))
@@ -111,6 +107,16 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		return $this->_context_model;
 	}
 
+	public function model($model = NULL)
+	{
+		if ($model !== NULL)
+		{
+			$this->_model = $model;
+			return $this;
+		}
+		return $this->_model;
+	}
+	
 	public function end(Database_Query_Builder $end = NULL)
 	{
 		if ($end !== NULL)

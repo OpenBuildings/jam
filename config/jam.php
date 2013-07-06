@@ -7,7 +7,7 @@ return array(
 			'path' => DOCROOT.'upload'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR, 
 			'web' => 'upload/temp/'
 		),
-		'image_driver' => 'gd',
+		'image_driver' => 'GD',
 		'servers' => array(
 			'local' => array(
 				'type' => 'local',

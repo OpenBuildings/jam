@@ -225,6 +225,11 @@ abstract class Kohana_Jam {
 		return TRUE;
 	}
 
+	public static function capitalize_class_name($class_name)
+	{
+		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $class_name)));
+	}
+
 	/**
 	 * Returns the class name of a model
 	 *
@@ -241,11 +246,6 @@ abstract class Kohana_Jam {
 		{
 			return Jam::$_model_prefix.Jam::capitalize_class_name($model);
 		}
-	}
-
-	public static function capitalize_class_name($class_name)
-	{
-		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $class_name)));
 	}
 
 	/**
@@ -386,7 +386,11 @@ abstract class Kohana_Jam {
 	 */
 	public static function all($model)
 	{
-		$class = Jam::meta($model)->collection();
+		if ( ! ($meta = Jam::meta($model)))
+			throw new Kohana_Exception('Model :model does not exist', array(':model' => $model));
+			
+		$class = $meta->collection();
+		
 		if ( ! $class)
 		{
 			$class = 'Jam_Query_Builder_Collection';
@@ -451,8 +455,8 @@ abstract class Kohana_Jam {
 	}
 
 	/**
-	 * Find a model with its unique key. Throw Jam_Exception_NotFound on failure 
-	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_NotFound
+	 * Find a model with its unique key. Throw Jam_Exception_Notfound on failure 
+	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_Notfound
 	 * @param  string $model 
 	 * @param  string|array $key
 	 * @return Jam_Model
@@ -471,7 +475,7 @@ abstract class Kohana_Jam {
 		}
 		
 		if ($missing)
-			throw new Jam_Exception_NotFound(":model (:missing) not found", $model, array(':missing' => join(', ', $missing)));
+			throw new Jam_Exception_Notfound(':model (:missing) not found', $model, array(':missing' => join(', ', $missing)));
 	
 		return $result;
 	}

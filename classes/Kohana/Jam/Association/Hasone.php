@@ -8,7 +8,7 @@
  * @copyright  (c) 2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
+abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	/**
 	 * Set this for polymorphic association, this has to be the name of the opposite belongsto relation,
@@ -81,27 +81,6 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $value;
 	}
 
-	public function set(Jam_Validated $model, $value, $is_changed)
-	{
-		if ($value instanceof Jam_Model)
-		{
-			if ($this->is_polymorphic())
-			{
-				$value->{$this->polymorphic_key} = $model->meta()->model();
-			}
-			if ($model->loaded())
-			{
-				$value->{$this->foreign_key} = $model->id();
-			}
-			if ($this->inverse_of)
-			{
-				$value->retrieved($this->inverse_of, $model);
-			}
-		}
-
-		return $value;
-	}
-
 	/**
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
 	 * 
@@ -168,6 +147,38 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 		return $this->set($model, $item, $is_changed);
 	}
 
+	public function set(Jam_Validated $model, $value, $is_changed)
+	{
+		if ($value instanceof Jam_Model)
+		{
+			if ($this->is_polymorphic())
+			{
+				$value->{$this->polymorphic_key} = $model->meta()->model();
+			}
+
+			if ($model->loaded())
+			{
+				$value->{$this->foreign_key} = $model->id();
+			}
+
+			if ($this->inverse_of)
+			{
+				$value->retrieved($this->inverse_of, $model);
+			}
+		}
+
+		return $value;
+	}
+
+	public function build(Jam_Validated $model)
+	{
+		$item = Jam::build($this->foreign_model);
+
+		$this->set($model, $item, TRUE);
+
+		return $item;
+	}
+
 	/**
 	 * Perform validation on the belonging model, if it was changed. 
 	 * @param  Jam_Model      $model   
@@ -205,7 +216,10 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 				{
 					$this->set($model, $item, TRUE)->save();
 				}
-				$nullify_query->where('id', '!=', $item->id())->execute();
+				if ($item->id())
+				{
+					$nullify_query->where('id', '!=', $item->id())->execute();
+				}
 			}
 			else
 			{
@@ -266,6 +280,9 @@ abstract class Kohana_Jam_Association_HasOne extends Jam_Association {
 	{
 		if ($key instanceof Jam_Model)
 		{
+			if ( ! $key->loaded())
+				return;
+			
 			$query = $this->query_builder('all', $key);
 		}
 		else

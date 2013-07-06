@@ -142,17 +142,57 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	}
 
 	/**
-	 * Return the first model, throw Jam_Exception_NotFound if there was no result
+	 * Return the first model, throw Jam_Exception_Notfound if there was no result
 	 * @return Jam_Model
-	 * @throws Jam_Exception_NotFound
+	 * @throws Jam_Exception_Notfound
 	 */
 	public function first_insist()
 	{
 		$result = $this->first();
 		if ( ! $result)
-			throw new Jam_Exception_NotFound(":model not found", $this->meta()->model());
+			throw new Jam_Exception_Notfound(":model not found", $this->meta()->model());
 
 		return $result;
+	}
+
+	/**
+	 * Find out the primary_key of an item of the $_content
+	 * @param  mixed $value 
+	 * @return int        
+	 */
+	protected function _id($value)
+	{
+		if ($value instanceof Jam_Model)
+			return $value->id();
+
+		if (is_numeric($value))
+			return (int) $value;
+
+		if (is_array($value) AND isset($value[$this->meta()->primary_key()]))
+			return (int) $value[$this->meta()->primary_key()];
+	}
+
+	public function search($item)
+	{
+		$search_id = $this->_id($item);
+
+		if ( ! $search_id)
+			return NULL;
+
+		foreach ($this as $offset => $current)
+		{
+			if ($this->_id($current) === $search_id)
+			{
+				return (int) $offset;
+			}
+		}
+
+		return NULL;
+	}
+
+	public function has($item)
+	{
+		return $this->search($item) !== NULL;
 	}
 
 	/**

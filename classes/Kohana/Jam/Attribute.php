@@ -32,12 +32,6 @@ abstract class Kohana_Jam_Attribute {
 	protected $_events;
 
 	/**
-	 * An array of extension objects for easy reference
-	 * @var array
-	 */
-	protected $_extensions = array();
-
-	/**
 	 * Sets all options.
 	 *
 	 * @param  array  $options

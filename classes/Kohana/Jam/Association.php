@@ -46,6 +46,8 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 
 	public $foreign_model = NULL;
 
+	public $readonly = NULL;
+
 	/**
 	 * If set to true, will delete the association object when this one gets deleted
 	 * possible values are Jam_Association::DELETE and Jam_Association::ERASE and Jam_Association::NULLIFY

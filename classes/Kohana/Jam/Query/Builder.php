@@ -72,10 +72,16 @@ abstract class Kohana_Jam_Query_Builder {
 	{
 		if (is_array($key))
 		{
+			if ( ! $key)
+				throw new Kohana_Exception('Arrays of primary keys is empty');
+			
 			$query->where(':primary_key', 'IN', $key);
 		}
 		else
 		{
+			if ( ! $key)
+				throw new Kohana_Exception('Primary key must not be empty');
+
 			$query->where(':unique_key', '=', $key);
 		}
 		return $query;
@@ -107,12 +113,7 @@ abstract class Kohana_Jam_Query_Builder {
 	 */
 	public static function resolve_table_alias($model)
 	{
-		$model_name = Jam_Query_Builder::aliased_model($model);
-
-		if (is_object($model_name))
-			return $model;
-		
-		if ($meta = Jam::meta($model_name))
+		if ($meta = Jam::meta(Jam_Query_Builder::aliased_model($model)))
 		{
 			$model = Jam_Query_Builder::set_table_name($model, $meta->table());
 		}

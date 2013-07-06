@@ -65,11 +65,6 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function compile($db = NULL)
 	{
-		if ($this->meta())
-		{
-			$db = Database::instance($this->meta()->db());
-		}
-		
 		$original_select = $this->_select;
 		$original_from = $this->_from;
 
@@ -107,7 +102,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
 	{
-		if ($this->meta())
+		if ($db === NULL AND $this->meta())
 		{
 			$db = Database::instance($this->meta()->db());
 		}
@@ -115,13 +110,13 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return parent::execute($db, $as_object, $object_params);
 	}
 
-	protected function _join($model, $type, $resolve_table_model = TRUE)
+	protected function _join($association, $type, $resolve_table_model = TRUE)
 	{
-		$join_key = is_array($model) ? (is_object($model[0]) ? get_class($model[0]) : $model[0]).':'.$model[1] : $model;
+		$join_key = is_array($association) ? join(':', $association) : $association;
 
 		if ( ! isset($this->_join[$join_key]))
 		{
-			$join = Jam_Query_Builder::resolve_join($model, $type, $this->meta()->model(), $resolve_table_model);
+			$join = Jam_Query_Builder::resolve_join($association, $type, $this->meta()->model(), $resolve_table_model);
 
 			$this->_join[$join_key] = $join;
 
@@ -133,9 +128,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		}
 	}
 
-	public function join($model, $type = NULL)
+	public function join($association, $type = NULL)
 	{
-		$this->_last_join = $this->_join($model, $type);
+		$this->_last_join = $this->_join($association, $type);
 
 		return $this;
 	}
@@ -149,9 +144,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	}
 
 
-	public function join_nested($model, $type = NULL)
+	public function join_nested($association, $type = NULL)
 	{
-		return $this->_join($model, $type)->end($this);
+		return $this->_join($association, $type)->end($this);
 	}
 
 	public function join_table($table, $type = NULL)
@@ -223,15 +218,15 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		if ($without_grouping)
 		{
-			$query->except('group_by', 'order_by');
+			$query->except('group_by', 'order_by', 'limit', 'offset');
 		}
 
-		return $query->execute()->get('result');
+		return (int) $query->execute()->get('result');
 	}
 
 	public function count_with_subquery()
 	{
-		return DB::select(array(DB::expr('COUNT(*)', 'result')))->from($this)->execute($this->meta()->db())->get('result');
+		return (int) DB::select(array(DB::expr('COUNT(*)'), 'result'))->from(array($this, 'result_table'))->execute($this->meta()->db())->get('result');
 	}
 
 	/**
@@ -300,12 +295,14 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		$except = func_get_args();
 
-		if ($not_modifieable = array_diff($except, Jam_Query_Builder_Select::$_modifiable))
-				throw new Kohana_Exception('You cannot modify :not_modifieable, only :modifiable', array(':not_modifieable' => join(', ', $not_modifieable), ':modifiable' => join(', ', Jam_Query_Builder_Select::$_modifiable)));
+		if ($not_modifiable = array_diff($except, Jam_Query_Builder_Select::$_modifiable))
+				throw new Kohana_Exception('You cannot modify :not_modifiable, only :modifiable', array(':not_modifiable' => join(', ', $not_modifiable), ':modifiable' => join(', ', Jam_Query_Builder_Select::$_modifiable)));
 
-		foreach ($except as $name) 
+		$new = new Database_Query_Builder_Select;
+
+		foreach ($except as $name)
 		{
-			$this->{'_'.$name} = NULL;
+			$this->{'_'.$name} = $new->{'_'.$name};
 		}
 		
 		return $this;

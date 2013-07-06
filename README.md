@@ -1,4 +1,4 @@
-Jam is a small ORM for Kohana 3.3+ that builds on top of Jelly - the project was originally started by [Jonathan Geiger](http://jonathan-geiger.com/) and co-developed by [Paul Banks](http://blog.banksdesigns.co.uk/).
+Jam is a small ORM for Kohana 3.2+ that builds on top of Jelly - the project was originally started by [Jonathan Geiger](http://jonathan-geiger.com/) and co-developed by [Paul Banks](http://blog.banksdesigns.co.uk/).
 
 Jam adds some much needed features to Jelly project, 
 

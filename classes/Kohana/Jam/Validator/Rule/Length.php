@@ -42,8 +42,21 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 		{
 			$model->errors()->add($attribute, 'length_is', array('is' => $this->is));
 		}
+	}
 
-
-
+	public function html5_validation()
+	{
+		if ($this->is)
+		{
+			return array('pattern' => ".{{$this->is}}");
+		}
+		elseif ($this->between)
+		{
+			return array('pattern' => ".{{$this->between[0]},{$this->between[1]}}");
+		}
+		elseif ($this->minimum OR $this->maximum)
+		{
+			return array('pattern' => ".{{$this->minimum},{$this->maximum}}");
+		}
 	}
 }

@@ -31,9 +31,7 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 		$meta->events()
 			->bind('builder.before_select', array($this, 'builder_paranoid_filter'))
-			->bind('builder.before_delete', array($this, 'builder_paranoid_filter'))
 			->bind('builder.before_update', array($this, 'builder_paranoid_filter'));
-
 	}
 
 	/**

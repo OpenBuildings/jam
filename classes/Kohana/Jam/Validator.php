@@ -70,13 +70,29 @@ abstract class Kohana_Jam_Validator {
 		return $this->condition_negative ? ! $result : $result;
 	}
 
+	public function html5_validation(Jam_Validated $model, $name)
+	{
+		$attributes = array();
+		if (in_array($name, $this->attributes) AND $model instanceof Jam_Validated AND $this->condition_met($model))
+		{
+			foreach ($this->rules as $rule) 
+			{
+				if ($rule_attributes = $rule->html5_validation($name))
+				{
+					$attributes = Arr::merge($attributes, $rule_attributes);
+				}
+			}
+		}
+		return $attributes;
+	}
+
 	public function validate_model(Jam_Validated $model)
 	{
 		foreach ($this->attributes as $attribute) 
 		{
-			if ($model instanceof Jam_Model AND $this->condition_met($model))
+			if ($model instanceof Jam_Validated AND $this->condition_met($model))
 			{
-				if ( ( ! $model->loaded() OR $model->changed($attribute)) OR $model->unmapped($attribute))
+				if ( (($model instanceof Jam_Model AND ! $model->loaded()) OR $model->changed($attribute)) OR $model->unmapped($attribute))
 				{
 					foreach ($this->rules as $rule) 
 					{

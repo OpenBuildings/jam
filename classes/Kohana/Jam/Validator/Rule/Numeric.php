@@ -79,6 +79,44 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 		{
 			$model->errors()->add($attribute, 'numeric_even', array(':even' => $this->even));
 		}
+	}
 
+	public function html5_validation()
+	{
+		$attributes = array();
+
+		if ($this->greater_than_or_equal_to !== NULL)
+		{
+			$attributes = array('min' => $this->greater_than_or_equal_to);
+		}		
+
+		if ($this->less_than_or_equal_to !== NULL)
+		{
+			$attributes = array('max' => $this->less_than_or_equal_to);
+		}
+
+		if ($this->between)
+		{
+			$attributes = array('min' => $this->between[0], 'max' => $this->between[1]);
+		}
+
+		if ($this->greater_than !== NULL AND $this->only_integer)
+		{
+			$attributes = array('min' => $this->greater_than + 1);
+		}
+
+		if ($this->less_than !== NULL AND $this->only_integer)
+		{
+			$attributes = array('max' => $this->less_than - 1);
+		}
+
+		if ($this->only_integer)
+		{
+			return Arr::merge($attributes, array('type' => 'number'));
+		}
+		else
+		{
+			return Arr::merge($attributes, array('type' => 'number', 'step' => 'any'));
+		}
 	}
 }

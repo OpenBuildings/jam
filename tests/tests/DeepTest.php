@@ -5,7 +5,7 @@
  * @group   jam
  * @group   jam.deep
  */
-class Jam_deepTest extends Unittest_Jam_Database_TestCase {
+class Jam_deepTest extends Testcase_Functest {
 
 	public function test_hasone_deep()
 	{
@@ -46,6 +46,7 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 					Jam::build('test_category', array('name' => 'cat1', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat2', 'test_author' => $author)),
 					array('id' => 1),
+					5,
 				),
 				'test_images' => Jam::build('test_image', array(
 					'file' => 'file11',
@@ -89,6 +90,9 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
 		$this->assertFalse($author->test_posts[2]->test_cover_image->loaded());
 
+		$this->assertTrue($author->test_posts[0]->test_categories->has(1));		
+		$this->assertTrue($author->test_posts[0]->test_categories->has(5));		
+
 		$author->save();
 
 		$author = Jam::all('test_author')->where('name', '=', 'Joe')->first();
@@ -120,5 +124,9 @@ class Jam_deepTest extends Unittest_Jam_Database_TestCase {
 		$this->assertInstanceOf('Model_Test_Image', $author->test_posts[2]->test_cover_image);
 		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
 		$this->assertTrue($author->test_posts[2]->test_cover_image->loaded());
+
+		$this->assertTrue($author->test_posts[0]->test_categories->has(1));		
+		$this->assertTrue($author->test_posts[0]->test_categories->has(5));		
+
 	}
 }

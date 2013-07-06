@@ -244,8 +244,8 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 
 	/**
 	 * Set preloaded values, without changing the save, loaded and changed flags
-	 * @param  array|string $values 
-	 * @param  mixed $value  
+	 * @param  array|string $values
+	 * @param  mixed $value
 	 * @return Jam_Model         $this
 	 */
 	public function retrieved($values, $value = NULL)
@@ -323,6 +323,9 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 		// Run validation only when new or changed
 		if ($this->changed() OR $force)
 		{
+			// Reset the errors before checking
+			$this->_errors = FALSE;
+
 			$this->meta()->events()->trigger('model.before_check', $this, array($this->_changed));
 
 			$this->meta()->execute_validators($this);
@@ -339,7 +342,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	{
 		if ( ! $this->check())
 			throw new Jam_Exception_Validation('There was an error validating the :model: :errors', $this);
-		
+
 		return $this;
 	}
 
@@ -347,7 +350,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 * Get the errors from the previous check, if you provide a name, will return the errors only for that name
 	 * Automatically loads the error messages file from messages/jam-validation/<model_name>
 	 * If there are no errors yet - return NULL
-	 * 
+	 *
 	 * @param  string $name the name of the field to get errors of
 	 * @return array|NULL
 	 */
@@ -459,7 +462,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	{
 		if ( ! $this->_meta)
 			throw new Kohana_Exception('Model for class :class does not have a meta', array(':class' => get_class($this)));
-		
+
 		return $this->_meta;
 	}
 
@@ -472,8 +475,8 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	public function serialize()
 	{
 		return serialize(array(
-			'original' => $this->_original, 
-			'changed' => $this->_changed, 
+			'original' => $this->_original,
+			'changed' => $this->_changed,
 			'unmapped' => $this->_unmapped,
 		));
 	}

@@ -24,7 +24,7 @@ abstract class Kohana_Upload_Server
 	 * it will be loaded from the Upload_Server configuration file using the same
 	 * group as the name.
 	 *
-	 *     // Load the default database
+	 *     // Load the default server
 	 *     $server = Upload_Server::instance();
 	 *
 	 *     // Create a custom configured instance
@@ -47,202 +47,99 @@ abstract class Kohana_Upload_Server
 			if ($config === NULL)
 			{
 				// Load the configuration for this database
-				$config = Arr::get(Kohana::$config->load("jam.upload.servers"), $name);
+				$config = Arr::get(Kohana::$config->load('jam.upload.servers'), $name);
 			}
 
-			if ( ! isset($config['type']))
-			{
-				throw new Kohana_Exception('Upload_server type not defined in :name configuration',
-					array(':name' => $name));
-			}
+			$validation = Validation::factory($config)
+				->rule('type', 'not_empty')
+				->rule('params', 'not_empty')
+				->rule('params', 'is_array');
 
-			if ( ! isset($config['params']))
-			{
-				throw new Kohana_Exception('Upload_server params not defined in :name configuration',
-					array(':name' => $name));
-			}			
+			if ( ! $validation->check())
+				throw new Kohana_Exception('Upload server config had errors: :errors',
+					array(':errors' => join(', ', $validation->errors('upload_server'))));
 
-			// Set the driver class name
-			$driver = 'Upload_Server_'.ucfirst($config['type']);
-
-			// Create the database connection instance
-			new $driver($name, $config['params']);
+			$server = 'server_'.$validation['type'];
+			Upload_Server::$instances[$name] = Upload_Server::$server($validation['params']);
 		}
 
 		return Upload_Server::$instances[$name];
 	}
 
-	// Configuration array
-	protected $_config;
-
-	// Instance name
-	protected $_instance;	
-
-	/**
-	 * Stores the Upload_Server configuration locally and name the instance.
-	 *
-	 * [!!] This method cannot be accessed directly, you must use [Upload_Server::instance].
-	 *
-	 * @return  void
-	 */
-	protected function __construct($name, array $config, array $required_keys)
+	public static function server_local(array $params = array())
 	{
-		// Set the instance name
-		$this->_instance = $name;
+		$validation = Validation::factory($params)
+			->rule('path', 'not_empty')
+			->rule('path', 'is_dir')
+			->rule('web', 'not_empty')
+			->rule('url_type', 'in_array', array(':value', array(Flex\Storage\Server::URL_HTTP, Flex\Storage\Server::URL_SSL, Flex\Storage\Server::URL_STREAMING)));
 
-		// Store the config locally
-		$this->_config = $config;
+		if ( ! $validation->check())
+			throw new Kohana_Exception('Upload server local params had errors: :errors',
+				array(':errors' => join(', ', $validation->errors())));
 
-		// Store the database instance
-		Upload_Server::$instances[$name] = $this;
+		$server = new Flex\Storage\Server_Local($validation['path'], $validation['web']);
 
-		if(($missing_keys = array_diff($required_keys, array_keys($config))))
-			throw new Kohana_Exception("Missing config options :missing", array(":missing" => join(", ", $missing_keys)));
+		if (isset($validation['url_type']))
+		{
+			$server->url_type($validation['url_type']);
+		}
+
+		return $server;
 	}
 
-	/**
-	 * Check if the file actually exists
-	 *
-	 * @param string $file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function file_exists($file);
+	public static function server_rackspace(array $params = array())
+	{
+		$validation = Validation::factory($params)
+			->rule('username', 'not_empty')
+			->rule('api_key', 'not_empty')
+			->rule('container', 'not_empty')
+			->rule('url_type', 'in_array', array(':value', array(Flex\Storage\Server::URL_HTTP, Flex\Storage\Server::URL_SSL, Flex\Storage\Server::URL_STREAMING)))
+			->rule('cdn_uri', 'url')
+			->rule('cdn_ssl', 'url')
+			->rule('cdn_streaming', 'url');
 
-	/**
-	 * Check if the file actually exists and is a file
-	 *
-	 * @param string $file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function is_file($file);
+		if ( ! $validation->check())
+			throw new Kohana_Exception('Upload server local params had errors: :errors',
+				array(':errors' => join(', ', $validation->errors('upload_server'))));
 
-	/**
-	 * Check if the file actually exists and is a directory
-	 *
-	 * @param string $file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function is_dir($file);
+		$server = new Flex\Storage\Server_Rackspace($validation['container'], $validation['region'], array(
+			'username' => $validation['username'],
+			'apiKey' => $validation['api_key'],
+		));
 
-	/**
-	 * Delete the specified file
-	 *
-	 * @param string $file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function unlink($file);
+		foreach (array('cdn_uri', 'cdn_ssl', 'cdn_streaming', 'url_type') as $param) 
+		{
+			if (isset($validation[$param]))
+			{
+				$server->$param($validation[$param]);
+			}
+		}
 
-	/**
-	 * Create a directory
-	 *
-	 * @param string $file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function mkdir($dir_name);
+		return $server;
+	}
 
-	/**
-	 * Move a file to the destination
-	 *
-	 * @param string $file
-	 * @param string $new_file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function rename($file, $new_file);
+	public static function server_local_fallback(array $params = array())
+	{
+		$validation = Validation::factory($params)
+			->rule('path', 'not_empty')
+			->rule('fallback', 'not_empty')
+			->rule('path', 'is_dir')
+			->rule('url_type', 'in_array', array(':value', array(Flex\Storage\Server::URL_HTTP, Flex\Storage\Server::URL_SSL, Flex\Storage\Server::URL_STREAMING)))
+			->rule('web', 'not_empty');
 
-	/**
-	 * Copy a file to the destination
-	 *
-	 * @param string $file
-	 * @param string $new_file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function copy($file, $new_file);
+		if ( ! $validation->check())
+			throw new Kohana_Exception('Upload server local params had errors: :errors',
+				array(':errors' => join(', ', $validation->errors('upload_server'))));
 
-	/**
-	 * Copy a local file to the server, optionaly deleting it ( Local filesystems implement this with rename so its significatly faster)
-	 *
-	 * @param string $file
-	 * @param string $local_file
-	 * @param bool $remove_file	defaults to true
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function save_from_local($file, $local_file, $remove_file = TRUE);
+		$server = new Flex\Storage\Server_Local_Fallback($validation['path'], $validation['web']);
+		$server->fallback(Upload_Server::instance($validation['fallback']));
 
-	/**
-	 * Copy a file from the server to a local file
-	 *
-	 * @param string $file
-	 * @param string $local_file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function copy_to_local($file, $local_file);
+		if (isset($validation['url_type']))
+		{
+			$server->url_type($validation['url_type']);
+		}
 
-	/**
-	 * Copy a file from the server to a local file and delete it from the server ( Local filesystems implement this with rename so its significatly faster)
-	 *
-	 * @param string $file
-	 * @param string $local_file
-	 * @return bool
-	 * @author Ivan K
-	 **/
-	abstract public function move_to_local($file, $local_file);
-
-	/**
-	 * Return file contents
-	 *
-	 * @param string $file
-	 * @return string
-	 * @author Ivan K
-	 **/
-	abstract public function read($file);
-
-	/**
-	 * Write contents to a file
-	 *
-	 * @param string $file
-	 * @param string $content
-	 * @return string
-	 * @author Ivan K
-	 **/
-	abstract public function write($file, $content);
-
-	/**
-	 * Check if the file is writable
-	 *
-	 * @param string $file
-	 * @param string $content
-	 * @return string
-	 * @author Ivan K
-	 **/	
-	abstract public function is_writable($file);
-
-	/**
-	 * Return the local file path, used by local filesystems
-	 *
-	 * @param string $file
-	 * @return string
-	 * @author Ivan K
-	 **/	
-	abstract public function realpath($file);
-
-	/**
-	 * Return a publicly accessable location of a file
-	 *
-	 * @param string $file
-	 * @param string|boolean $protocol
-	 * @return string
-	 * @author Ivan K
-	 **/	
-	abstract public function webpath($file, $protocol = NULL);
-
-		
+		return $server;
+	}
 }

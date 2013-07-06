@@ -48,6 +48,11 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 		$this->_meta = Jam::meta($model);
 
+		if ($key !== NULL)
+		{
+			Jam_Query_Builder::find_primary_key($this, $key);
+		}
+
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
@@ -60,11 +65,6 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	public function compile($db = NULL)
 	{
-		if ($this->meta())
-		{
-			$db = Database::instance($this->meta()->db());
-		}
-		
 		$this->_table = $this->meta()->table();
 
 		$this->meta()->events()->trigger('builder.before_update', $this);
@@ -78,7 +78,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
 	{
-		if ($this->meta())
+		if ($db === NULL AND $this->meta())
 		{
 			$db = Database::instance($this->meta()->db());
 		}

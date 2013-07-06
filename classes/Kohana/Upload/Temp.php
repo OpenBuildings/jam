@@ -80,7 +80,7 @@ class Kohana_Upload_Temp
 		return Upload_Util::combine(Upload_Temp::config('path'), $path, $thumbnail);
 	}
 
-	public function webpath($path, $thumbnail = NULL)
+	public function url($path, $thumbnail = NULL)
 	{
 		return Upload_Util::combine(Upload_Temp::config('web'), $path, $thumbnail);
 	}

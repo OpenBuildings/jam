@@ -167,6 +167,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	{
 		if (preg_match($this->_pattern, $slug, $matches))
 		{
+			
 			$builder->where($this->_uses_primary_key ? ':primary_key' : 'slug', '=', $matches[$this->_uses_primary_key ? 2 : 0]);	
 		}
 		else
