@@ -10,7 +10,7 @@
 			"name": "Ivan Kerin",
 			"email": "ivan@openbuildings.com",
 			"role": "Author"
-		},
+		}
 	],
 	"require": {
 		"php": ">=5.3.0",
