@@ -11,6 +11,7 @@ script:
 before_script:
   - composer install --dev
   - mysql -e 'create database `test-jam`;'
+  - mysql test-jam < tests/database/structure/mysql.sql'
 
 after_script:
   - php vendor/bin/coveralls -v
