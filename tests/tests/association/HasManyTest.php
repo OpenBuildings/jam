@@ -158,7 +158,6 @@ class Jam_Association_HasmanyTest extends PHPUnit_Framework_TestCase {
 		$association->initialize($this->meta, $name);
 
 		$model = Jam::build('test_author')->load_fields(array('id' => 1));
-
 		$this->assertEquals($expected_sql, (string) $association->erase_query($model));
 	}
 

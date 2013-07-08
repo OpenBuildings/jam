@@ -6,7 +6,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.cascade
  */
-class Jam_Behavior_CascadeTest extends Testcase_Functest {
+class Jam_Behavior_CascadeTest extends Testcase_Database {
 
 	public function data_get_current_children()
 	{

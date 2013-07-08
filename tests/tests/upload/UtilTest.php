@@ -15,7 +15,6 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 			array('filename.jpg', 'filename.jpg'),
 			array('file 1 name.jpg', 'file-1-name.jpg'),
 			array('filênàme.jpg', 'filename.jpg'),
-			array('филенаме.jpg', 'filename.jpg'),
 			array('file- -1.jpg', 'file-1.jpg'),
 		);
 	}

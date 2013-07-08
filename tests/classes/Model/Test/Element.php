@@ -13,7 +13,7 @@ class Model_Test_Element extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		// Set database to connect to
-		$meta->db(Functest_Fixture_Database::instance()->db_name());
+		$meta->db(Kohana::TESTING);
 
 		$meta->associations(array(
 			'test_author'     => Jam::association('belongsto'),

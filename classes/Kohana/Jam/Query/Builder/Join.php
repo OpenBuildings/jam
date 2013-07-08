@@ -61,6 +61,7 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 		{
 			$db = Database::instance($meta->db());
 		}
+		
 		$original_on = $this->_on;
 		$original_using = $this->_using;
 		$original_table = $this->_table;
@@ -125,6 +126,19 @@ abstract class Kohana_Jam_Query_Builder_Join extends Database_Query_Builder_Join
 			return $this;
 		}
 		return $this->_end;
+	}
+
+	public function __toString()
+	{
+		try
+		{
+			// Return the SQL string
+			return $this->compile();
+		}
+		catch (Exception $e)
+		{
+			return Kohana_Exception::text($e);
+		}
 	}
 
 } // End Kohana_Jam_Association

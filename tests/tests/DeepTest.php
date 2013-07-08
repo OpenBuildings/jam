@@ -5,7 +5,7 @@
  * @group   jam
  * @group   jam.deep
  */
-class Jam_deepTest extends Testcase_Functest {
+class Jam_deepTest extends Testcase_Database {
 
 	public function test_hasone_deep()
 	{

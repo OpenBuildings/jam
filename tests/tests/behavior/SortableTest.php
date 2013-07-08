@@ -8,7 +8,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.sortable
  */
-class Jam_Behavior_SortableTest extends Testcase_Functest {
+class Jam_Behavior_SortableTest extends Testcase_Database {
 
 	
 	public function test_set()

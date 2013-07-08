@@ -65,6 +65,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function compile($db = NULL)
 	{
+		if ($db === NULL AND $this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+
 		$original_select = $this->_select;
 		$original_from = $this->_from;
 
@@ -290,6 +295,18 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		return $this->{'_'.$name};
 	}
 
+	public function __toString()
+	{
+		try
+		{
+			// Return the SQL string
+			return $this->compile();
+		}
+		catch (Exception $e)
+		{
+			return Kohana_Exception::text($e);
+		}
+	}
 
 	public function except($name)
 	{

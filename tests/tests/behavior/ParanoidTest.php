@@ -8,7 +8,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.paranoid
  */
-class Jam_Behavior_ParanoidTest extends Testcase_Functest {
+class Jam_Behavior_ParanoidTest extends Testcase_Database {
 
 	
 	public function test_select()

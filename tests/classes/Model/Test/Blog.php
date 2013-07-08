@@ -10,7 +10,7 @@ class Model_Test_Blog extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		// Set database to connect to
-		$meta->db(Functest_Fixture_Database::instance()->db_name());
+		$meta->db(Kohana::TESTING);
 
 		$meta->associations(array(
 			'test_owner'             => Jam::association('belongsto', array('foreign_model' => 'test_author', 'foreign_key' => 'test_owner_id')),

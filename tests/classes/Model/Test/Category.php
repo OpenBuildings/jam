@@ -10,7 +10,7 @@ class Model_Test_Category extends Jam_Model {
 	public static function initialize(Jam_Meta $meta)
 	{
 		// Set database to connect to
-		$meta->db(Functest_Fixture_Database::instance()->db_name());
+		$meta->db(Kohana::TESTING);
 
 		$meta->behaviors(array(
 			'nested' => Jam::behavior('nested')

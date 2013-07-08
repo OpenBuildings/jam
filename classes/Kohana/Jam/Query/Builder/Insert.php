@@ -58,6 +58,11 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 
 	public function compile($db = NULL)
 	{
+		if ($db === NULL AND $this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+		
 		$this->_table = $this->meta()->table();
 
 		$this->meta()->events()->trigger('builder.before_insert', $this);
@@ -126,4 +131,16 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 		return $this->_params;
 	}
 
+	public function __toString()
+	{
+		try
+		{
+			// Return the SQL string
+			return $this->compile();
+		}
+		catch (Exception $e)
+		{
+			return Kohana_Exception::text($e);
+		}
+	}
 }

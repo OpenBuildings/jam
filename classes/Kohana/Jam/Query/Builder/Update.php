@@ -65,6 +65,11 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	public function compile($db = NULL)
 	{
+		if ($db === NULL AND $this->meta())
+		{
+			$db = Database::instance($this->meta()->db());
+		}
+
 		$this->_table = $this->meta()->table();
 
 		$this->meta()->events()->trigger('builder.before_update', $this);
@@ -172,4 +177,16 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 		return $this->{'_'.$name};
 	}
 
+	public function __toString()
+	{
+		try
+		{
+			// Return the SQL string
+			return $this->compile();
+		}
+		catch (Exception $e)
+		{
+			return Kohana_Exception::text($e);
+		}
+	}
 }

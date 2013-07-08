@@ -8,7 +8,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.sluggable
  */
-class Jam_Behavior_SluggableTest extends Testcase_Functest {
+class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 	public function test_set_no_primary_key()
 	{
