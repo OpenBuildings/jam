@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b9c30f73b84f3548c86849951f99e1be",
+    "hash": "2e2931d9f201a053c17ac4bbd0f6ce72",
     "packages": [
         {
             "name": "composer/installers",
@@ -83,12 +83,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenBuildings/flex-storage.git",
-                "reference": "5a1f347e1300e2747049e7eaf51a601657c706ab"
+                "reference": "5489e51aca49f197b270ca36df922ef85e0365ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenBuildings/flex-storage/zipball/5a1f347e1300e2747049e7eaf51a601657c706ab",
-                "reference": "5a1f347e1300e2747049e7eaf51a601657c706ab",
+                "url": "https://api.github.com/repos/OpenBuildings/flex-storage/zipball/5489e51aca49f197b270ca36df922ef85e0365ed",
+                "reference": "5489e51aca49f197b270ca36df922ef85e0365ed",
                 "shasum": ""
             },
             "require": {
@@ -117,7 +117,7 @@
                 }
             ],
             "description": "Flexible storage provider for files (rackspace, aws, ftp, local)",
-            "time": "2013-07-05 12:47:51"
+            "time": "2013-07-05 12:53:53"
         },
         {
             "name": "rackspace/php-opencloud",
