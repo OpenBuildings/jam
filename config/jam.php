@@ -13,7 +13,7 @@ return array(
 				'type' => 'local',
 				'params' => array(
 					'path' => DOCROOT.'upload',
-					'web' => 'upload',
+					'web' => '/upload',
 				)
 			)
 		)
