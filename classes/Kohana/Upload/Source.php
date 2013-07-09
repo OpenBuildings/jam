@@ -123,7 +123,7 @@ abstract class Kohana_Upload_Source {
 	 */
 	public static function process_type_upload(array $data, $directory)
 	{
-		if ( ! Valid::not_empty($data))
+		if ( ! Upload::not_empty($data))
 		{
 			$errors = array(
 				UPLOAD_ERR_OK          => 'No errors.', 
@@ -134,9 +134,8 @@ abstract class Kohana_Upload_Source {
 				UPLOAD_ERR_NO_TMP_DIR  => 'missing a temporary folder.', 
 				UPLOAD_ERR_CANT_WRITE  => 'failed to write file to disk.', 
 				UPLOAD_ERR_EXTENSION   => 'file upload stopped by extension.', 
-				UPLOAD_ERR_EMPTY       => 'file is empty.',
 			);
-			throw new Kohana_Exception("File not uploaded properly. Error: :error", Arr::get($errors, Arr::get($data, 'error'), '-'));
+			throw new Kohana_Exception("File not uploaded properly. Error: :error", array(':error' => Arr::get($errors, Arr::get($data, 'error'), '-')));
 		}
 		
 		if ( ! move_uploaded_file($data['tmp_name'], Upload_Util::combine($directory, $data['name'])))

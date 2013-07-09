@@ -9,8 +9,6 @@
  */
 class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 
-	
-
 	public function data_guess_type()
 	{
 		$test_local = join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', 'test_data', 'test_local')).DIRECTORY_SEPARATOR;
@@ -35,5 +33,64 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 	{
 		$this->assertEquals($expected_type, Upload_Source::guess_type($source));
 		$this->assertEquals($expected_type !== FALSE, Upload_Source::valid($source));
+	}
+
+
+	public function data_process_type_upload()
+	{
+		return array(
+			array(
+				UPLOAD_ERR_INI_SIZE,
+				'File not uploaded properly. Error: must not be larger than '.Num::bytes(ini_get('post_max_size'))
+			),			
+			array(
+				UPLOAD_ERR_PARTIAL,
+				'File not uploaded properly. Error: was only partially uploaded.'
+			),			
+			array(
+				UPLOAD_ERR_NO_TMP_DIR,
+				'File not uploaded properly. Error: missing a temporary folder.'
+			),
+			array(
+				UPLOAD_ERR_CANT_WRITE,
+				'File not uploaded properly. Error: failed to write file to disk.'
+			),
+			array(
+				UPLOAD_ERR_EXTENSION,
+				'File not uploaded properly. Error: file upload stopped by extension.'
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_process_type_upload
+	 */
+	public function test_process_type_upload($upload_error, $expected_exception)
+	{
+		$data = array(
+			'name' => 'file1.txt',
+			'type' => 'text/plain',
+			'size' => '4',
+			'tmp_name' => $this->test_temp.'/test_file',
+			'error' => $upload_error,
+		);
+
+		$this->setExpectedException('Kohana_Exception', $expected_exception);
+
+		Upload_Source::process_type_upload($data, $this->test_local);
+	}
+
+	public function test_process_type_stream()
+	{
+		$file = $this->test_local.'file_stream_source.txt';
+		file_put_contents($file, 'test data');
+
+		Upload_Source::process_type_stream($file, $this->test_local2, 'file_stream_copy.txt');
+
+		$this->assertFileExists($this->test_local2.'file_stream_copy.txt');
+		$this->assertFileEquals($file, $this->test_local2.'file_stream_copy.txt');
+
+		unlink($file);
+		unlink($this->test_local2.'file_stream_copy.txt');
 	}
 }
