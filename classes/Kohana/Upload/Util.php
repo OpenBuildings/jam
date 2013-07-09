@@ -21,7 +21,6 @@ class Kohana_Upload_Util {
 		$curl = curl_init($url);
 		$file = Upload_Util::combine($directory, uniqid());
 
-
 		$handle = fopen($file, 'w');
 		$headers = new HTTP_Header();
 
@@ -31,6 +30,9 @@ class Kohana_Upload_Util {
 		
 		if (curl_exec($curl) === FALSE OR curl_getinfo($curl, CURLINFO_HTTP_CODE) !== 200)
 		{
+			fclose($handle);
+			unlink($file);
+			
 			throw new Kohana_Exception('Curl: Download Error: :error, status :status on url :url', array(':url' => $url, ':status' => curl_getinfo($curl, CURLINFO_HTTP_CODE), ':error' => curl_error($curl)));
 		}
 
@@ -38,7 +40,7 @@ class Kohana_Upload_Util {
 
 		if ($filename === NULL)
 		{
-			if (isset($headers['Content-Disposition']) AND preg_match('/^filename="?(.*)"?$/', $headers['Content-Disposition'], $matches))
+			if (isset($headers['content-disposition']) AND preg_match('/filename="?(.*)"?$/', $headers['content-disposition'], $matches))
 			{
 				$filename = $matches[1];
 			}

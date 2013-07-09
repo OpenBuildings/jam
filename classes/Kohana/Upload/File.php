@@ -76,9 +76,8 @@ class Kohana_Upload_File {
 
 			$this->server()->download_move($old_thumbnail_file, $thumbnail_file);
 		}
-
+		
 		$this->server($new_server);
-
 		$this->server()->upload_move($this->full_path(), $file);
 
 		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
@@ -86,6 +85,8 @@ class Kohana_Upload_File {
 			$thumbnail_file = Upload_Util::combine($this->temp()->directory_path($thumbnail), $this->filename());
 			$this->server()->upload_move($this->full_path($thumbnail), $thumbnail_file);
 		}
+
+		$this->temp()->clear();
 	}
 
 	/**
@@ -259,6 +260,8 @@ class Kohana_Upload_File {
 		{
 			$this->server()->upload_move($this->full_path($thumbnail), $this->file($thumbnail));
 		}
+
+		$this->server()->unlink(dirname($this->file()));
 
 		$this->_source = NULL;
 

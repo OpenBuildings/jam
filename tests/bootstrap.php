@@ -4,6 +4,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 Kohana::modules(array(
 	'database' => MODPATH.'database',
+	'image'    => MODPATH.'image',
 	'jam'      => __DIR__.'/..',
 ));
 

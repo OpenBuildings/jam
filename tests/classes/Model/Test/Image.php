@@ -23,13 +23,6 @@ class Model_Test_Image extends Jam_Model {
 			'id'              => Jam::field('primary'),
 			'file'            => Jam::field('upload', array(
 				'delete_file' => FALSE,
-				'thumbnails' => array(
-					'small' => array(
-						'transformations' => array(
-							'resize' => array(50, 50),
-						)
-					),
-				),
 			)),
 		));
 	}

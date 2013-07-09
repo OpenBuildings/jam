@@ -9,6 +9,44 @@
  */
 class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 
+	public function test_stream_copy_to_file()
+	{
+		$from = $this->test_local.'file_stream.txt';
+		$to = $this->test_local.'file_stream_copy.txt';
+		file_put_contents($from, 'test');
+
+		Upload_Util::stream_copy_to_file($from, $to);
+
+		$this->assertFileExists($to);
+		$this->assertFileEquals($from, $to);
+		unlink($from);
+		unlink($to);
+	}
+
+	public function data_download()
+	{
+		return array(
+			array('http://721914653bc38b6913f5-e8d9ed0d9bf85920b3a97a5af61edabd.r41.cf3.rackcdn.com/logo.jpg', NULL, 'logo.jpg'),
+			array('http://721914653bc38b6913f5-e8d9ed0d9bf85920b3a97a5af61edabd.r41.cf3.rackcdn.com/logo_png?file=filename.jpg', NULL, 'filename.jpg'),
+			array('http://721914653bc38b6913f5-e8d9ed0d9bf85920b3a97a5af61edabd.r41.cf3.rackcdn.com/test_txt', NULL, 'downloaded.txt'),
+			array('http://721914653bc38b6913f5-e8d9ed0d9bf85920b3a97a5af61edabd.r41.cf3.rackcdn.com/test_txt_not_exists', NULL, NULL),
+		);
+	}
+
+	/**
+	 * @dataProvider data_download
+	 */
+	public function test_download($url, $filename, $expected_filename)
+	{
+		if ($expected_filename == NULL) 
+		{
+			$this->setExpectedException('Kohana_Exception');
+		}
+		Upload_Util::download($url, $this->test_local, $filename);
+		$this->assertFileExists($this->test_local.$expected_filename);
+		unlink($this->test_local.$expected_filename);
+	}
+
 	public function data_sanitize()
 	{
 		return array(
