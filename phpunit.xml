@@ -4,4 +4,10 @@
 			<directory>tests/tests</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+		<blacklist>
+			<directory suffix=".php">vendor/</directory>
+			<directory suffix=".php">tests/classes/</directory>
+		</blacklist>
+	</filter>
 </phpunit>
