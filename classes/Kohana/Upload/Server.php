@@ -76,7 +76,7 @@ abstract class Kohana_Upload_Server
 
 		if ( ! $validation->check())
 			throw new Kohana_Exception('Upload server local params had errors: :errors',
-				array(':errors' => join(', ', $validation->errors())));
+				array(':errors' => join(', ', Arr::flatten($validation->errors()))));
 
 		$server = new Flex\Storage\Server_Local($validation['path'], $validation['web']);
 
