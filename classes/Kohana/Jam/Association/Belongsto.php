@@ -165,11 +165,6 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 		elseif (is_array($value)) 
 		{
-			if ($this->polymorphic_default_model AND ! $model->{$this->polymorphic})
-			{
-				$model->{$this->polymorphic} = $this->polymorphic_default_model;
-			}
-
 			$item = Jam::build($this->foreign_model($model));
 		}
 		else
@@ -202,7 +197,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		if ($this->polymorphic_default_model)
+		if ($this->polymorphic_default_model AND ! $model->{$this->polymorphic})
 		{
 			$model->{$this->polymorphic} = $this->polymorphic_default_model;
 		}
@@ -346,7 +341,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function foreign_model(Jam_Model $model)
 	{
-		return $this->is_polymorphic() ? $model->{$this->polymorphic} : $this->foreign_model;
+		return $this->is_polymorphic() ? ($model->{$this->polymorphic} ?: $this->polymorphic_default_model) : $this->foreign_model;
 	}
 
 	/**

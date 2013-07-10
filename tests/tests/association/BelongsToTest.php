@@ -23,10 +23,12 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 	{
 		return array(
 			array('test_author', array(), 'test_author_id', NULL, NULL),
+			array('test_author', array('count_cache' => TRUE), 'test_author_id', NULL, NULL),
 			array('creator',     array('foreign_model' => 'test_author'), 'creator_id', NULL, NULL),
 			array('test_author', array('foreign_key' => 'author_uid'), 'author_uid', NULL, NULL),
 			array('test_author', array('foreign_key' => 'test_author'), 'test_author', NULL, 'In association "test_author" for model "test_post" - invalid foreign_key name. Field and Association cannot be the same name'),
 			array('test_author', array('polymorphic' => TRUE), 'test_author_id', 'test_author_model', NULL),
+			array('test_author', array('polymorphic' => TRUE, 'count_cache' => TRUE), 'test_author_id', 'test_author_model', 'Cannot use count cache on polymorphic associations'),
 			array('creator',     array('foreign_model' => 'test_author', 'polymorphic' => TRUE), 'creator_id', 'creator_model', NULL),
 			array('test_author', array('polymorphic' => 'author_type'), 'test_author_id', 'author_type', NULL),
 			array('test_author', array('foreign_key' => 'author_uid', 'polymorphic' => 'author_type'), 'author_uid', 'author_type', NULL),
@@ -112,26 +114,27 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 	public function data_get()
 	{
 		return array(
-			array(FALSE, NULL, TRUE, NULL, NULL),
-			array(FALSE, NULL, FALSE, 10, 'test_author'),
-			array(FALSE, 1, TRUE, 1, 'test_author'),
-			array(FALSE, 'test', TRUE, 'test', 'test_author'),
-			array(FALSE, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_author'),
-			array(TRUE, 1, TRUE, 1, 'test_category'),
-			array(TRUE, NULL, FALSE, 10, 'test_category'),
-			array(TRUE, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_category'),
+			array(FALSE, NULL, NULL, TRUE, NULL, NULL),
+			array(FALSE, NULL, NULL, FALSE, 10, 'test_author'),
+			array(FALSE, NULL, 1, TRUE, 1, 'test_author'),
+			array(FALSE, NULL, 'test', TRUE, 'test', 'test_author'),
+			array(FALSE, NULL, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_author'),
+			array(TRUE, NULL, 1, TRUE, 1, 'test_category'),
+			array(TRUE, NULL, NULL, FALSE, 10, 'test_category'),
+			array(TRUE, 'test_blog', array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_blog'),
+			array(TRUE, NULL, array('id' => 2, 'name' => 'Test'), TRUE, 2, 'test_category'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_get
 	 */
-	public function test_get($is_polymorphic, $value, $is_changed, $expected_id, $expected_model)
+	public function test_get($is_polymorphic, $polymorphic_default_model, $value, $is_changed, $expected_id, $expected_model)
 	{
-		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('polymorphic' => $is_polymorphic)));
+		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('polymorphic' => $is_polymorphic, 'polymorphic_default_model' => $polymorphic_default_model)));
 		$association->initialize($this->meta, 'test_author');
 
-		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
+		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => $polymorphic_default_model ? NULL : 'test_category'));
 
 		if ($expected_model)
 		{
@@ -151,24 +154,42 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	public function test_get_inverse_of()
+	{
+		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('inverse_of' => 'test_post')));
+		$association->initialize($this->meta, 'test_author');
+
+		$author = Jam::build('test_author');
+		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 1));
+
+		$association
+			->expects($this->once())
+			->method('_find_item')
+			->will($this->returnValue($author));
+
+		$this->assertSame($post, $association->get($post, 1, FALSE)->test_post);
+	}
+
 	public function data_set()
 	{
 		return array(
-			array(FALSE, NULL, NULL, NULL, NULL),
-			array(FALSE, 1, 1, 1, NULL),
-			array(FALSE, 'test', 'test', NULL, NULL),
-			array(FALSE, array('id' => 2, 'name' => 'Test'), array('id' => 2, 'name' => 'Test'), 2, NULL),
-			array(TRUE, array('test_author' => 1), 1, 1, 'test_author'),
-			array(TRUE, array('test_author' => array('id' => 2, 'name' => 'Test')), array('id' => 2, 'name' => 'Test'), 2, 'test_author'),
+			array(FALSE, NULL, NULL, NULL, NULL, NULL),
+			array(FALSE, NULL, 1, 1, 1, NULL),
+			array(FALSE, NULL, 'test', 'test', NULL, NULL),
+			array(FALSE, NULL, array('id' => 2, 'name' => 'Test'), array('id' => 2, 'name' => 'Test'), 2, NULL),
+			array(TRUE, NULL, array('test_author' => 1), 1, 1, 'test_author'),
+			array(TRUE, NULL, array('test_author' => array('id' => 2, 'name' => 'Test')), array('id' => 2, 'name' => 'Test'), 2, 'test_author'),
+			array(TRUE, 'test_author', array('test_author' => 1), 1, 1, 'test_author'),
+			array(TRUE, 'test_author', 1, 1, 1, 'test_author'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_set
 	 */
-	public function test_set($is_polymorphic, $value, $expected_value, $expected_foreign_key, $expected_polymorphic)
+	public function test_set($is_polymorphic, $polymorphic_default_model, $value, $expected_value, $expected_foreign_key, $expected_polymorphic)
 	{
-		$association = new Jam_Association_Belongsto(array('polymorphic' => $is_polymorphic));
+		$association = new Jam_Association_Belongsto(array('polymorphic' => $is_polymorphic, 'polymorphic_default_model' => $polymorphic_default_model));
 		$association->initialize($this->meta, 'test_author');
 
 		$model = new Model_Test_Post();
@@ -182,6 +203,17 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 		{
 			$this->assertEquals($expected_polymorphic, $model->{$association->polymorphic}, 'Should have correct value for column '.$association->polymorphic);
 		}
+	}
+
+	public function test_set_inverse_of()
+	{
+		$association = new Jam_Association_Belongsto(array('inverse_of' => 'test_post'));
+		$association->initialize($this->meta, 'test_author');
+
+		$author = Jam::build('test_author');
+		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 1));
+
+		$this->assertSame($post, $association->set($post, $author, TRUE)->test_post);
 	}
 
 	public function test_build()
