@@ -19,7 +19,7 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$first_in_group = Jam::create('test_video', array('file' => 'file3.jpg', 'group' => 'nogroup'));
 
 		$this->assertGreaterThan($last_in_group->position, $new->position);
-		$this->assertEquals(0, $first_in_group->position);
+		$this->assertEquals(1, $first_in_group->position);
 	}
 
 	public function assertPositions($group, array $expected_positions)
