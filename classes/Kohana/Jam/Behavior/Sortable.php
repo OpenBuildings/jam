@@ -86,7 +86,7 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 				->order_by($this->_field, 'DESC')
 				->first();
 
-			$model->{$this->_field} = $last ? $last->{$this->_field} + 1 : 0;
+			$model->{$this->_field} = $last ? $last->{$this->_field} + 1 : 1;
 		}
 	}
 
@@ -120,6 +120,10 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 			}
 			$builder->execute();
 			$model->update_fields($this->_field, $to->{$this->_field});
+		}
+		else
+		{
+			$model->update_fields($this->_field, $model->{$this->_field} + 1);
 		}
 	}
 
