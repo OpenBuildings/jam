@@ -45,7 +45,7 @@ $old_client = Jam::find('client', 1);
 $old_client->check();                                      // before_validate, after_validate events triggered
 ?>
 ```
-`before_validate` and `after_validate` are triggered when `delete()` is called
+`before_delete` and `after_delete` are triggered when `delete()` is called
 
 ```php
 <?php
