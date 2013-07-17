@@ -225,7 +225,7 @@ class Model_Order extends Jam_Model {
 		// ...
 	}
 
-	public statoc function unique_key($value)
+	public static function unique_key($value)
 	{
 		if (Valid::ip($value))
 		{
