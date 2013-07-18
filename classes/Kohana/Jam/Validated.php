@@ -192,7 +192,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 			}
 		}
 		// Return unmapped data from custom queries
-		elseif (isset($this->_unmapped[$name]))
+		elseif ($this->unmapped($name))
 		{
 			return $this->_unmapped[$name];
 		}
@@ -468,7 +468,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 
 	public function unmapped($name)
 	{
-		return isset($this->_unmapped[$name]);
+		return array_key_exists($name, $this->_unmapped);
 	}
 
 
