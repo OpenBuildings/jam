@@ -65,7 +65,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$name = $association->name;
 
-			return $association->get($this, Arr::get($this->_changed, $name), isset($this->_changed[$name]));
+			return $association->get($this, Arr::get($this->_changed, $name), $this->changed($name));
 		}
 
 		return parent::get($name);
