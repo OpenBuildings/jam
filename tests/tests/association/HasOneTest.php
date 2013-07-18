@@ -192,4 +192,11 @@ class Jam_Association_HasoneTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected_sql, (string) $association->update_query($author, $id, $model));
 	}
 
+	public function test_set_null()
+	{
+		$author = Jam::find_insist('test_author', 1);
+		$author->test_post = NULL;
+		$this->assertNull($author->test_post);
+	}
+
 }
