@@ -252,4 +252,11 @@ class Jam_Array_ModelTest extends PHPUnit_Framework_TestCase {
 		$expected_sql = 'SELECT `test_elements`.* FROM `test_elements` WHERE `test_elements`.`id` = 2 OR `test_elements`.`name` = \'one\'';
 		$this->assertEquals($expected_sql, (string) $this->array->where('id', '=', 2)->or_where('name', '=', 'one'));
 	}
+
+	public function test_null_content()
+	{
+		$association_array = Jam_Array_Association::factory();
+		$association_array->model('test_blog');
+		$this->assertSame(array(), $association_array->as_array());
+	}
 }

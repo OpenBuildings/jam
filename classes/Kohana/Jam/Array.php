@@ -130,7 +130,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	{
 		$this->_load_content();
 
-		if ( ! array_key_exists($offset, $this->_content))
+		if (is_array($this->_content) AND ! array_key_exists($offset, $this->_content))
 			return NULL;
 		
 		return $this->_load_item($this->_content[$offset], isset($this->_changed[$offset]), $offset);
@@ -229,8 +229,7 @@ abstract class Kohana_Jam_Array implements Countable, ArrayAccess, Iterator, Ser
 	public function valid()
 	{
 		$this->_load_content();
-
-		return array_key_exists($this->_current, $this->_content);
+		return is_array($this->_content) AND array_key_exists($this->_current, $this->_content);
 	}
 
 	/**
