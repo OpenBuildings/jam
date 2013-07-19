@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.hasone
  */
-class Jam_Association_HasoneTest extends PHPUnit_Framework_TestCase {
+class Jam_Association_HasoneTest extends Testcase_Database {
 
 	public function setUp()
 	{
