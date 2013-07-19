@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.hasone
  */
-class Jam_Association_HasoneTest extends PHPUnit_Framework_TestCase {
+class Jam_Association_HasoneTest extends Testcase_Database {
 
 	public function setUp()
 	{
@@ -196,6 +196,14 @@ class Jam_Association_HasoneTest extends PHPUnit_Framework_TestCase {
 	{
 		$author = Jam::find_insist('test_author', 1);
 		$author->test_post = NULL;
+		$this->assertNull($author->test_post);
+	}
+
+	public function test_set_null_and_save()
+	{
+		$author = Jam::find_insist('test_author', 1);
+		$author->test_post = NULL;
+		$author->save();
 		$this->assertNull($author->test_post);
 	}
 

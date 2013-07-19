@@ -206,9 +206,10 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	 */
 	public function model_after_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
+		$nullify_query = $this->update_query($model, NULL, NULL);
+
 		if ($value = Arr::get($changed, $this->name))
 		{
-			$nullify_query = $this->update_query($model, NULL, NULL);
 
 			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
 			{
@@ -237,6 +238,10 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 				$nullify_query->execute();
 				$query->execute();
 			}
+		}
+		elseif (array_key_exists($this->name, $changed))
+		{
+			$nullify_query->execute();
 		}
 	}
 
