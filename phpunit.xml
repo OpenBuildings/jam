@@ -10,4 +10,7 @@
 			<directory suffix=".php">tests/classes/</directory>
 		</blacklist>
 	</filter>
+	<logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>
