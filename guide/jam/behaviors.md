@@ -14,8 +14,8 @@ In the lifetime of each model(and builder) there are several events being trigge
 * model.after_create
 * model.after_update
 * model.after_save
-* model.before_validate
-* model.after_validate
+* model.before_check
+* model.after_check
 * model.before_delete
 * model.after_delete
 
@@ -37,12 +37,12 @@ $old_client = Jam::find('client', 1);
 $old_client->save();                                       // before_update, before_save, after_update after_save events triggered
 ?>
 ```
-`before_validate` and `after_validate` are triggered when `check()` is called
+`before_check` and `after_check` are triggered when `check()` is called
 
 ```php
 <?php
 $old_client = Jam::find('client', 1);
-$old_client->check();                                      // before_validate, after_validate events triggered
+$old_client->check();                                      // before_check, after_check events triggered
 ?>
 ```
 `before_delete` and `after_delete` are triggered when `delete()` is called
