@@ -283,6 +283,9 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	protected function _find_item($foreign_model, $key)
 	{
+		if ( ! $key) 
+			return;
+		
 		if ($key instanceof Jam_Model)
 		{
 			if ( ! $key->loaded())
