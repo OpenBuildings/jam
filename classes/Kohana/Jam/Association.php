@@ -39,9 +39,8 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	{
 		if ($value instanceof Jam_Model AND ( ! $value->loaded() OR $value->changed()))
 			return TRUE;
-
-		if (is_array($value)) 
-			return TRUE;
+		
+		return is_array($value);
 	}
 
 	public $foreign_model = NULL;
