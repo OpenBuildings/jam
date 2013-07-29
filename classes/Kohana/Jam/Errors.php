@@ -25,7 +25,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			return $error_filename.":{$attribute}.{$error}";
 		}
 
-		return strtr($message, $params);
+		return __($message, $params);
 	}
 
 	public static function attribute_label(Jam_Meta $meta, $attribute_name)
