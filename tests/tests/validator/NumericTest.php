@@ -14,52 +14,52 @@ class Jam_Validator_NumericTest extends Testcase_Validate {
 	{
 		return array(
 			// BASIC
-			array('', array(), 'numeric', array('type' => 'number', 'step' => 'any'), FALSE),
-			array('asdf', array(), 'numeric', array('type' => 'number', 'step' => 'any'), FALSE),
-			array('12', array(), 'numeric', array('type' => 'number', 'step' => 'any'), TRUE),
+			array('', array(), 'numeric', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array('asdf', array(), 'numeric', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array('12', array(), 'numeric', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
 
 			// Greater Than Or Equal To
-			array(12, array('only_integer' => TRUE), 'numeric_only_integer', array('type' => 'number'), TRUE),
-			array(12.4, array('only_integer' => TRUE), 'numeric_only_integer', array('type' => 'number'), FALSE),
-			array('12', array('only_integer' => TRUE), 'numeric_only_integer', array('type' => 'number'), TRUE),
-			array('12.123', array('only_integer' => TRUE), 'numeric_only_integer', array('type' => 'number'), FALSE),
+			array(12, array('only_integer' => TRUE), 'numeric_only_integer', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), TRUE),
+			array(12.4, array('only_integer' => TRUE), 'numeric_only_integer', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), FALSE),
+			array('12', array('only_integer' => TRUE), 'numeric_only_integer', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), TRUE),
+			array('12.123', array('only_integer' => TRUE), 'numeric_only_integer', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), FALSE),
 
 			// Greater Than Or Equal To
-			array(12, array('greater_than_or_equal_to' => 10), 'numeric_greater_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'min' => 10), TRUE),
-			array(12, array('greater_than_or_equal_to' => 12), 'numeric_greater_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'min' => 12), TRUE),
-			array(12, array('greater_than_or_equal_to' => 20), 'numeric_greater_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'min' => 20), FALSE),
+			array(12, array('greater_than_or_equal_to' => 10), 'numeric_greater_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('greater_than_or_equal_to' => 12), 'numeric_greater_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('greater_than_or_equal_to' => 20), 'numeric_greater_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 
 			// Greater Than 
-			array(12, array('greater_than' => 10), 'numeric_greater_than', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(12, array('greater_than' => 20), 'numeric_greater_than', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(12, array('greater_than' => 20, 'only_integer' => TRUE), 'numeric_greater_than', array('type' => 'number', 'min' => 21), FALSE),
+			array(12, array('greater_than' => 10), 'numeric_greater_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('greater_than' => 20), 'numeric_greater_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(12, array('greater_than' => 20, 'only_integer' => TRUE), 'numeric_greater_than', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), FALSE),
 
 			// Equal To
-			array(12, array('equal_to' => 10), 'numeric_equal_to', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(12, array('equal_to' => 20), 'numeric_equal_to', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(12, array('equal_to' => 12), 'numeric_equal_to', array('type' => 'number', 'step' => 'any'), TRUE),
+			array(12, array('equal_to' => 10), 'numeric_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(12, array('equal_to' => 20), 'numeric_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(12, array('equal_to' => 12), 'numeric_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
 
 			// Greater Than
-			array(12, array('less_than' => 20), 'numeric_less_than', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(12, array('less_than' => 10), 'numeric_less_than', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(12, array('less_than' => 10, 'only_integer' => TRUE), 'numeric_less_than', array('type' => 'number', 'max' => 9), FALSE),
+			array(12, array('less_than' => 20), 'numeric_less_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('less_than' => 10), 'numeric_less_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(12, array('less_than' => 10, 'only_integer' => TRUE), 'numeric_less_than', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), FALSE),
 
 			// Greater Than
-			array(12, array('less_than_or_equal_to' => 20), 'numeric_less_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'max' => 20), TRUE),
-			array(12, array('less_than_or_equal_to' => 12), 'numeric_less_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'max' => 12), TRUE),
-			array(12, array('less_than_or_equal_to' => 10), 'numeric_less_than_or_equal_to', array('type' => 'number', 'step' => 'any', 'max' => 10), FALSE),
+			array(12, array('less_than_or_equal_to' => 20), 'numeric_less_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('less_than_or_equal_to' => 12), 'numeric_less_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('less_than_or_equal_to' => 10), 'numeric_less_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 
 			// Odd
-			array(12, array('odd' => TRUE), 'numeric_odd', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(11, array('odd' => TRUE), 'numeric_odd', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(10, array('odd' => TRUE), 'numeric_odd', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(3, array('odd' => TRUE), 'numeric_odd', array('type' => 'number', 'step' => 'any'), FALSE),
+			array(12, array('odd' => TRUE), 'numeric_odd', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(11, array('odd' => TRUE), 'numeric_odd', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(10, array('odd' => TRUE), 'numeric_odd', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(3, array('odd' => TRUE), 'numeric_odd', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 
 			// Odd
-			array(13, array('even' => TRUE), 'numeric_even', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(12, array('even' => TRUE), 'numeric_even', array('type' => 'number', 'step' => 'any'), FALSE),
-			array(11, array('even' => TRUE), 'numeric_even', array('type' => 'number', 'step' => 'any'), TRUE),
-			array(2, array('even' => TRUE), 'numeric_even', array('type' => 'number', 'step' => 'any'), FALSE),
+			array(13, array('even' => TRUE), 'numeric_even', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(12, array('even' => TRUE), 'numeric_even', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
+			array(11, array('even' => TRUE), 'numeric_even', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
+			array(2, array('even' => TRUE), 'numeric_even', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 		);
 	}
 
