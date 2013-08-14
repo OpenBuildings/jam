@@ -5,11 +5,12 @@ php:
   - 5.3
 
 script:
-  - mkdir -p build/logs
   - phpunit --coverage-clover build/logs/clover.xml
 
 before_script:
-  - composer install --dev
+  - mkdir -p build/logs
+  - composer require satooshi/php-coveralls:0.6.*
+  - composer install
   - mysql -e 'create database `test-jam`;'
   - mysql test-jam < tests/database/structure/mysql.sql
 
