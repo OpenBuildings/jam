@@ -220,7 +220,7 @@ Jam::all('order')->find_by_slug_insist('new-title-1');
 ?>
 ```
 
-The last 3 rows need a more deeper explanation. If the id (1) at the end of the string matches an order id, and the whole string matches the slug in the database, then we'll return the order with that slug / id. However if the id does match, but the slug is different, then a special exception Jam_Exception_Sluggable will be thrown, containing the slug and the object that's been found, but that has different slug. This will allow you to implement auto redirecting URLS that go to the correct address even if the user has changed the title / slug for the link.
+The last 3 rows need a more deeper explanation. If the id (1) at the end of the string matches an order id, and the whole string matches the slug in the database, then we'll return the order with that slug / id. However if the id does match, but the slug is different, then a special exception Jam_Exception_Slugmismatch will be thrown, containing the slug and the object that's been found, but that has different slug. This will allow you to implement auto redirecting URLs that go to the correct address even if the user has changed the title / slug for the link.
 
 If the ID does not match, `find_by_slug_insist()` will throw the normal Jam_Exception_Notfound.
 
@@ -233,7 +233,7 @@ This behavior has some options:
 
 #### uses_primary_key, default TRUE
 
-If you set `uses_primary_key` to FALSE then it will not add the id at the end of the string and the special functionality for throwing Jam_Exception_Sluggable exceptions will not be available. Only the name key will be used for the slug
+If you set `uses_primary_key` to FALSE then it will not add the id at the end of the string and the special functionality for throwing Jam_Exception_Slugmismatch exceptions will not be available. Only the name key will be used for the slug
 
 #### unique, default TRUE
 
