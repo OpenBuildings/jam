@@ -10,6 +10,10 @@
  */
 class Jam_Behavior_SluggableTest extends Testcase_Database {
 
+	/**
+	 * @covers Jam_Behavior_Sluggable::model_call_build_slug
+	 * @covers Jam_Behavior_Sluggable::model_after_save
+	 */
 	public function test_set_no_primary_key()
 	{
 		$tag = Jam::find('test_tag', 1);
@@ -23,12 +27,19 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		$this->assertEquals('new-tag-j320lt', $tag->slug);
 	}
 
+	/**
+	 * @covers Jam_Behavior_Sluggable::builder_call_find_by_slug_insist
+	 */
 	public function test_select_no_primary_key()
 	{
 		$this->setExpectedException('Jam_Exception_Notfound');
 		Jam::all('test_tag')->find_by_slug_insist('-j320lt');
 	}
 
+	/**
+	 * @covers Jam_Behavior_Sluggable::model_call_build_slug
+	 * @covers Jam_Behavior_Sluggable::model_after_save
+	 */
 	public function test_set()
 	{
 		$video = Jam::find('test_video', 1);
@@ -36,7 +47,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		$this->assertNotNull($video);
 		$this->assertNotNull($video->slug);
 
-		$video->name = 'new video.png';
+		$video->file = 'new video.png';
 
 		$slug = $video->build_slug();
 		$this->assertEquals('new-videopng-1', $slug, 'Should have a method build_slug() that builds the correct slug');
@@ -46,9 +57,12 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		$this->assertEquals('new-videopng-1', $video->slug);
 	}
 
-	public function test_select()
+	/**
+	 * @covers Jam_Behavior_Sluggable::builder_call_find_by_slug_insist
+	 */
+	public function test_slug_mismatch()
 	{
-		$this->setExpectedException('Jam_Exception_Sluggable');
+		$this->setExpectedException('Jam_Exception_Slugmismatch');
 		Jam::all('test_video')->find_by_slug_insist('video-jp2g-1');
 	}
 
@@ -65,7 +79,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 	/**
 	 * @dataProvider provider_pattern
-	 * @return NULL
+	 * @covers Jam_Behavior_Sluggable::builder_call_where_slug
 	 */
 	public function test_where_pattern($pattern, $correct)
 	{
@@ -78,7 +92,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 	/**
 	 * @dataProvider provider_pattern
-	 * @return NULL
+	 * @covers Jam_Behavior_Sluggable::builder_call_find_by_slug
 	 */
 	public function test_find($pattern, $correct)
 	{
@@ -86,7 +100,141 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		{
 			$this->setExpectedException('Kohana_Exception');
 		}
-		Jam::all('test_video')->where_slug($pattern)->first();
+		Jam::all('test_video')->find_by_slug($pattern);
 	}
 
+	/**
+	 * Test setting a slug explicitly when the auto_save option is set.
+	 * @covers Jam_Behavior_Sluggable::model_after_save
+	 */
+	public function test_set_explicit_slug()
+	{
+		$video = Jam::find('test_video', 1);
+
+		$video->set(array(
+			'file' => 'viiideeoo.jpg',
+			'slug' => 'some-other-video-1'
+		));
+		$this->assertSame('some-other-video-1', $video->slug);
+		
+		$video->save();
+		$this->assertSame('some-other-video-1', $video->slug);
+
+		$video = Jam::find('test_video', 1);
+		$this->assertSame('some-other-video-1', $video->slug);
+	}
+
+	public function data_matches_slug()
+	{
+		return array(
+			array(
+				'test_video',
+				'abcde',
+				'abcde',
+				TRUE
+			),
+			array(
+				'test_video',
+				'abcde',
+				'abcdeeew',
+				FALSE
+			),
+			array(
+				'test_video',
+				'',
+				'abcdeeew',
+				TRUE
+			),
+			array(
+				'test_video',
+				'',
+				'',
+				TRUE
+			),
+			array(
+				'test_tag',
+				'abcde',
+				'abcde',
+				TRUE
+			),
+			array(
+				'test_tag',
+				'abcde',
+				'abcdeeew',
+				TRUE
+			),
+			array(
+				'test_tag',
+				'',
+				'abcdeeew',
+				TRUE
+			),
+			array(
+				'test_tag',
+				'',
+				'',
+				TRUE
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_matches_slug
+	 * @covers Jam_Behavior_Sluggable::model_call_matches_slug
+	 */
+	public function test_matches_slug($model_name, $model_slug, $slug, $expected)
+	{
+		$model = Jam::build($model_name);
+		$model->slug = $model_slug;
+		$this->assertSame($expected, $model->matches_slug($slug));
+	}
+
+	public function data_matches_slug_insist()
+	{
+		return array(
+			array(
+				'abcde',
+				TRUE,
+				NULL,
+				TRUE
+			),
+			array(
+				'abcde',
+				FALSE,
+				'Jam_Exception_Slugmismatch',
+				NULL
+			),
+			array(
+				'abcde',
+				NULL,
+				'Jam_Exception_Slugmismatch',
+				NULL
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_matches_slug_insist
+	 * @covers Jam_Behavior_Sluggable::model_call_matches_slug_insist
+	 * @covers Jam_Exception_Slugmismatch::__construct
+	 */
+	public function test_matches_slug_insist($slug, $return_value, $expected_exception, $expected_result)
+	{
+		$model = $this->getMock('Model_Test_Video', array('matches_slug'), array('test_video'), '', TRUE, TRUE, TRUE, FALSE, TRUE);
+
+		$model
+			->expects($this->once())
+			->method('matches_slug')
+			->with($this->equalTo($slug))
+			->will($this->returnValue($return_value));
+
+		if ($expected_exception)
+		{
+			$this->setExpectedException($expected_exception);
+		}
+
+		$actual_result = $model->matches_slug_insist($slug);
+
+		$this->assertSame($expected_result, $actual_result);
+	}
 }

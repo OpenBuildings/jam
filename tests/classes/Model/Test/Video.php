@@ -12,6 +12,8 @@ class Model_Test_Video extends Jam_Model {
 		// Set database to connect to
 		$meta->db(Kohana::TESTING);
 
+		$meta->name_key('file');
+
 		$meta->behaviors(array(
 			'paranoid' => Jam::behavior('paranoid', array('field' => 'deleted')),
 			'sortable' => Jam::behavior('sortable', array('field' => 'position', 'scope' => 'group')),

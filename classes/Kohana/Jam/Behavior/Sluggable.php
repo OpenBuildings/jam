@@ -115,17 +115,19 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 */
 	public function model_after_save(Jam_Model $model)
 	{
-		if ($this->auto_save())
+		if ($this->auto_save() AND ! $model->changed('slug'))
 		{
-			$original = $model->slug;
-
 			// Use the built in slug transformation
 			$model->slug = $model->build_slug();
-			
-			if ($original != $model->slug)
+
+			if ($model->slug != $model->original('slug'))
 			{
-				Jam::update($this->_model)->where_key($model->id())->value('slug', $model->slug)->execute();
+				Jam::update($this->_model)
+					->where_key($model->id())
+					->value('slug', $model->slug)
+					->execute();
 			}
+
 		}
 	}
 
@@ -167,7 +169,6 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	{
 		if (preg_match($this->_pattern, $slug, $matches))
 		{
-			
 			$builder->where($this->_uses_primary_key ? ':primary_key' : 'slug', '=', $matches[$this->_uses_primary_key ? 2 : 0]);	
 		}
 		else
@@ -200,13 +201,24 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	public function builder_call_find_by_slug_insist(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $slug)
 	{
 		$this->builder_call_where_slug($builder, $data, $slug);
-		$data->return = $builder->first_insist();
+		$model = $builder->first_insist();
 
-		if ($this->_uses_primary_key AND $data->return->slug AND $data->return->slug != $slug)
-		{
-			throw new Jam_Exception_Sluggable("Stale slug :slug for model :model ", $data->return, $slug);
-		}
+		$model->matches_slug_insist($slug);
 
+		$data->return = $model;
 		$data->stop = TRUE;
-	}  
+	}
+
+	public function model_call_matches_slug(Jam_Model $model, Jam_Event_Data $data, $slug)
+	{
+		$data->return = ! ($this->_uses_primary_key AND $model->slug AND $model->slug != $slug);
+	}
+
+	public function model_call_matches_slug_insist(Jam_Model $model, Jam_Event_Data $data, $slug)
+	{
+		if ( ! $model->matches_slug($slug))
+			throw new Jam_Exception_Slugmismatch("Stale slug :slug for model :model ", $model, $slug);
+
+		$data->return = TRUE;
+	}
 } // End Jam_Behavior_Sluggable
