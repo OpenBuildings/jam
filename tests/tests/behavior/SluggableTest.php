@@ -237,4 +237,12 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 		$this->assertSame($expected_result, $actual_result);
 	}
+
+	public function test_create_and_auto_build_slug()
+	{
+		$model = Jam::build('test_video');
+		$model->file = 'abcde';
+		$model->save();
+		$this->assertEquals('abcde-'.$model->id(), $model->slug);
+	}
 }

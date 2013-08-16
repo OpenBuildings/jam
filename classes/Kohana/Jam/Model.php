@@ -241,7 +241,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$this->_is_saving = TRUE;
 
 		// These will be processed later
-		$values = $saveable = array();
+		$values = $defaults = array();
 
 		if ($this->meta()->events()->trigger('model.before_save', $this, array($this->_changed)) === FALSE)
 		{
@@ -279,7 +279,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 					// Or if we're INSERTing and we need to set the defaults for the first time
 					elseif ( ! $key AND ! $this->changed($field->name) AND ! $field->primary)
 					{
-						$values[$field->name] = $field->default;
+						$defaults[$field->name] = $field->default;
 					}
 				}
 			}
@@ -299,9 +299,10 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		}
 		else
 		{
+			$insert_values = array_merge($defaults, $values);
 			list($id) = Jam::insert($this)
-				->columns(array_keys($values))
-				->values(array_values($values))
+				->columns(array_keys($insert_values))
+				->values(array_values($insert_values))
 				->execute();
 
 			// Gotta make sure to set this
