@@ -7,7 +7,7 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Jam_Behavior_Tokenable extends Jam_Behavior {
+class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 
 	protected $_field = 'token';
 

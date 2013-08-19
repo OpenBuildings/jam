@@ -80,6 +80,7 @@ CREATE TABLE `test_videos` (
   `position` int(11) DEFAULT 0 NOT NULL,
   `slug` varchar(255) NULL,
   `group` varchar(255) NULL,
+  `token` varchar(255) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

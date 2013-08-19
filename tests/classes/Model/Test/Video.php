@@ -17,7 +17,8 @@ class Model_Test_Video extends Jam_Model {
 		$meta->behaviors(array(
 			'paranoid' => Jam::behavior('paranoid', array('field' => 'deleted')),
 			'sortable' => Jam::behavior('sortable', array('field' => 'position', 'scope' => 'group')),
-			'sluggable' => Jam::behavior('sluggable', array('auto_save' => TRUE))
+			'sluggable' => Jam::behavior('sluggable', array('auto_save' => TRUE)),
+			'tokenable' => Jam::behavior('tokenable', array('uppercase' => TRUE))
 		));
 
 		$meta->associations(array(
