@@ -182,6 +182,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 */
 	public function check($force = FALSE)
 	{
+		$this->_move_retrieved_to_changed();
+
 		return parent::check( ! $this->loaded() OR $force);
 	}
 
@@ -229,8 +231,6 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		
 
 		$key = $this->_original[$this->meta()->primary_key()];
-
-		$this->_move_retrieved_to_changed();
 
 		// Run validation
 		if ($validate !== FALSE)
