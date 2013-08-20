@@ -24,15 +24,15 @@ As the original Jelly had a lot of great but undocumented functionality This gui
 Jam
 ===
 
-* [Getting Started](/OpenBuildings/Jam/blob/master/guide/jam/getting-started.md)
-* [Writing Models & Builders](/OpenBuildings/Jam/blob/master/guide/jam/models-and-builders.md)
-* [Validators](/OpenBuildings/Jam/blob/master/guide/jam/validators.md)
-* [Fields](/OpenBuildings/Jam/blob/master/guide/jam/fields.md)
-* [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/uploads.md)
-* [Associations](/OpenBuildings/Jam/blob/master/guide/jam/associations.md)
-* [Builder](/OpenBuildings/Jam/blob/master/guide/jam/builder.md)
-* [Behaviors](/OpenBuildings/Jam/blob/master/guide/jam/behaviors.md)
-* [Form Builder](/OpenBuildings/Jam/blob/master/guide/jam/form-builder.md)
+* [Getting Started](guide/jam/getting-started.md)
+* [Writing Models & Builders](guide/jam/models-and-builders.md)
+* [Validators](guide/jam/validators.md)
+* [Fields](guide/jam/fields.md)
+* [Uploads](guide/jam/uploads.md)
+* [Associations](guide/jam/associations.md)
+* [Builder](guide/jam/builder.md)
+* [Behaviors](guide/jam/behaviors.md)
+* [Form Builder](guide/jam/form-builder.md)
 
 --------
 
