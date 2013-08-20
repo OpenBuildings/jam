@@ -44,7 +44,7 @@ abstract class Kohana_Upload_Source {
 	{
 		if (is_array($source)) 
 		{
-			return Upload::valid($source) ? Upload_Source::TYPE_UPLOAD : FALSE;
+			return (Upload::valid($source) AND $source['error'] !== UPLOAD_ERR_NO_FILE) ? Upload_Source::TYPE_UPLOAD : FALSE;
 		}
 		elseif ($source == 'php://input')
 		{
