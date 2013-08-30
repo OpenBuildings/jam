@@ -213,4 +213,25 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 		$this->setExpectedException('Jam_Exception_Validation');
 		$video->check_insist();
 	}
+
+	/**
+	 * @expectedException Jam_Exception_Notfound
+	 */
+	public function test_get_insist()
+	{
+		$post = Jam::build('test_post')->load_fields(array(
+			'id' => 1, 
+			'name' => 'blog',
+			'test_author' => array(
+				'id' => 1,
+				'name' => 'author',
+			)
+		));
+
+		$this->assertNotNull($post->get_insist('test_author'));
+
+		$post->test_author = NULL;
+
+		$post->get_insist('test_author');
+	}
 }

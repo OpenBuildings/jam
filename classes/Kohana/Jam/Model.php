@@ -395,7 +395,20 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		return $this;
 	}
 
-	public function build($association_name)
+	public function get_insist($attribute_name)
+	{
+		$attribute = $this->{$attribute_name};
+
+		if ($attribute === NULL) 
+			throw new Jam_Exception_Notfound('The association :name was empty on :model', NULL, array(
+				':name' => $attribute_name,
+				':model' => $this->meta()->model(),
+			));
+
+		return $attribute;
+	}
+
+	public function build($association_name, array $attributes = array())
 	{
 		$association = $this->meta()->association($association_name);
 		
@@ -405,7 +418,12 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		if ($association instanceof Jam_Association_Collection)
 			throw new Kohana_Exception(':association_name association must not be a collection on model :model', array(':association_name' => $association_name, ':model' => $this->meta()->model()));
 		
-		return $this->_changed[$association_name] = $association->build($this);
+		$this->_changed[$association_name] = $association->build($this);
+		if ($attributes) 
+		{
+			$this->_changed[$association_name]->set($attributes);
+		}
+		return $this->_changed[$association_name];
 	}
 
 	/**
