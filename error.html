@@ -1,26 +1,1133 @@
-PHPUnit 3.7.21 by Sebastian Bergmann.
+<style type="text/css">
+#kohana_error { background: #ddd; font-size: 1em; font-family:sans-serif; text-align: left; color: #111; }
+#kohana_error h1,
+#kohana_error h2 { margin: 0; padding: 1em; font-size: 1em; font-weight: normal; background: #911; color: #fff; }
+	#kohana_error h1 a,
+	#kohana_error h2 a { color: #fff; }
+#kohana_error h2 { background: #222; }
+#kohana_error h3 { margin: 0; padding: 0.4em 0 0; font-size: 1em; font-weight: normal; }
+#kohana_error p { margin: 0; padding: 0.2em 0; }
+#kohana_error a { color: #1b323b; }
+#kohana_error pre { overflow: auto; white-space: pre-wrap; }
+#kohana_error table { width: 100%; display: block; margin: 0 0 0.4em; padding: 0; border-collapse: collapse; background: #fff; }
+	#kohana_error table td { border: solid 1px #ddd; text-align: left; vertical-align: top; padding: 0.4em; }
+#kohana_error div.content { padding: 0.4em 1em 1em; overflow: hidden; }
+#kohana_error pre.source { margin: 0 0 1em; padding: 0.4em; background: #fff; border: dotted 1px #b7c680; line-height: 1.2em; }
+	#kohana_error pre.source span.line { display: block; }
+	#kohana_error pre.source span.highlight { background: #f0eb96; }
+		#kohana_error pre.source span.line span.number { color: #666; }
+#kohana_error ol.trace { display: block; margin: 0 0 0 2em; padding: 0; list-style: decimal; }
+	#kohana_error ol.trace li { margin: 0; padding: 0; }
+.js .collapsed { display: none; }
+</style>
+<script type="text/javascript">
+document.documentElement.className = document.documentElement.className + ' js';
+function koggle(elem)
+{
+	elem = document.getElementById(elem);
 
-Configuration read from /vagrant/libs/jam/phpunit.xml
+	if (elem.style && elem.style['display'])
+		// Only works with the "style" attr
+		var disp = elem.style['display'];
+	else if (elem.currentStyle)
+		// For MSIE, naturally
+		var disp = elem.currentStyle['display'];
+	else if (window.getComputedStyle)
+		// For most other browsers
+		var disp = document.defaultView.getComputedStyle(elem, null).getPropertyValue('display');
 
-...............................................................  63 / 593 ( 10%)
-.....................................[41;37mF[0m......................... 126 / 593 ( 21%)
-............................................................... 189 / 593 ( 31%)
-............................................................... 252 / 593 ( 42%)
-............................................................... 315 / 593 ( 53%)
-............................................................... 378 / 593 ( 63%)
-............................................................... 441 / 593 ( 74%)
-............................................................... 504 / 593 ( 84%)
-............................................................... 567 / 593 ( 95%)
-..........................
-
-Time: 5 seconds, Memory: 23.00Mb
-
-There was 1 failure:
-
-1) Jam_ModelTest::test_get_insist
-Failed asserting that exception of type "ErrorException" matches expected exception "Jam_Exception_Notfound". Message was: "Undefined variable: association_name".
-
-
-[37;41m[2KFAILURES!
-[0m[37;41m[2KTests: 593, Assertions: 1304, Failures: 1.
-[0m[2K
+	// Toggle the state of the "display" style
+	elem.style.display = disp == 'block' ? 'none' : 'block';
+	return false;
+}
+</script>
+<div id="kohana_error">
+	<h1><span class="type">ErrorException [ Parse Error ]:</span> <span class="message">syntax error, unexpected &#039;;&#039;, expecting &#039;)&#039;</span></h1>
+	<div id="error5225d4f509049" class="content">
+		<p><span class="file">/vagrant/libs/jam/tests/tests/RangeTest.php [ 13 ]</span></p>
+		<pre class="source"><code><span class="line"><span class="number"> 8</span> class Jam_RangeTest extends PHPUnit_Framework_TestCase {
+</span><span class="line"><span class="number"> 9</span> 
+</span><span class="line"><span class="number">10</span> 	public function data_construct()
+</span><span class="line"><span class="number">11</span> 	{
+</span><span class="line"><span class="number">12</span> 		return array(
+</span><span class="line highlight"><span class="number">13</span> 			array(NULL, NULL, NULL);
+</span><span class="line"><span class="number">14</span> 		)
+</span><span class="line"><span class="number">15</span> 	}
+</span><span class="line"><span class="number">16</span> 
+</span><span class="line"><span class="number">17</span> 	/**
+</span><span class="line"><span class="number">18</span> 	 * @dataProvider data_construct
+</span></code></pre>		<ol class="trace">
+					<li>
+				<p>
+					<span class="file">
+													{PHP internal call}
+											</span>
+					&raquo;
+					Kohana_Core::shutdown_handler()
+				</p>
+											</li>
+							</ol>
+	</div>
+	<h2><a href="#error5225d4f509049environment" onclick="return koggle('error5225d4f509049environment')">Environment</a></h2>
+	<div id="error5225d4f509049environment" class="content collapsed">
+				<h3><a href="#error5225d4f509049environment_included" onclick="return koggle('error5225d4f509049environment_included')">Included files</a> (243)</h3>
+		<div id="error5225d4f509049environment_included" class="collapsed">
+			<table cellspacing="0">
+								<tr>
+					<td><code>/usr/local/bin/phpunit</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/TextUI/Command.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/Getopt.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/Configuration.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/XML.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/Fileloader.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/bootstrap.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/autoload.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/composer/autoload_real.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/composer/ClassLoader.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/composer/autoload_namespaces.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/composer/autoload_classmap.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/vendor/composer/autoload_files.php</code></td>
+				</tr>
+								<tr>
+					<td><code>DOCROOT/bootstrap.php</code></td>
+				</tr>
+								<tr>
+					<td><code>APPPATH/bootstrap.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Core.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/I18n.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/I18n.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Exception.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Kohana/Exception.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Log.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Log.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Config.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Log/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Log/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Log/Writer.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Log/Writer.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Config/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config/File/Reader.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config/Reader.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config/Source.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Route.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Route.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Arr.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Arr.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/config/database.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Config/Group.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Config/Group.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/MySQL.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/MySQL.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Profiler.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Profiler.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/MySQL/Result.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/MySQL/Result.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Result.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Result.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/database/fixtures/data.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder/Insert.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder/Insert.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder/Insert.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder/Insert.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Element.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validated.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validated.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Meta.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Meta.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Event.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Event.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association/Belongsto.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association/Belongsto.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Attribute.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Attribute.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Primary.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Primary.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/String.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/String.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Integer.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Integer.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Present.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Present.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Count.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Count.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Format.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Format.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Numeric.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Numeric.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Length.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Length.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Inflector.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Inflector.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/config/inflector.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Blog.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association/Hasone.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association/Hasone.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association/Hasmany.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association/Hasmany.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association/Collection.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association/Collection.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Association/Manytomany.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Association/Manytomany.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Weblink.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Weblink.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Event/Data.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Event/Data.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Errors.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Errors.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder/Update.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder/Update.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder/Update.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder/Update.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder/Where.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder/Where.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Category.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior/Nested.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior/Nested.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Boolean.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Boolean.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Position.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Author.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Password.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Password.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Collection/Test/Author.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder/Collection.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder/Collection.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder/Select.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder/Select.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder/Select.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder/Select.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Array/Association.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Array/Association.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Array/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Array/Model.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Array.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Array.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Post.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Slug.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Slug.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Timestamp.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Timestamp.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Timezone.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Timezone.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/UTF8.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/UTF8.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/utf8/transliterate_to_ascii.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Image.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Upload.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Upload.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Query/Builder/Join.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Query/Builder/Join.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Query/Builder/Join.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Query/Builder/Join.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/DB.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/DB.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Tag.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior/Sluggable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior/Sluggable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Validator/Rule/Unique.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Validator/Rule/Unique.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Video.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior/Paranoid.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior/Paranoid.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior/Sortable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior/Sortable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Behavior/Tokenable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Behavior/Tokenable.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Database/Expression.php</code></td>
+				</tr>
+								<tr>
+					<td><code>MODPATH/database/classes/Kohana/Database/Expression.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Upload/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Upload/File.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Upload/Source.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Upload/Source.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Valid.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Valid.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Copyright.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Upload/Temp.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Upload/Temp.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/TestSuite.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/Test.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/SelfDescribing.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/File_Iterator-1.3.3/File/Iterator/Facade.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/File_Iterator-1.3.3/File/Iterator/Factory.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/File_Iterator-1.3.3/File/Iterator.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/Class.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/ArrayTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/TestCase.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/Assert.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Runner/BaseTestRunner.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Util/Test.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/AssociationTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>phar:///usr/local/bin/phpunit/PHPUnit/Framework/TestSuite/DataProvider.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/CoreTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Model/Test/Alias.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/CountcacheTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/DeepTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/classes/Testcase/Database.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/EventTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/FieldTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Float.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Float.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Range.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Range.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Serialized.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Serialized.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Jam/Field/Text.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/classes/Kohana/Jam/Field/Text.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/FormTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/MetaTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/ModelTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>/vagrant/libs/jam/tests/tests/RangeTest.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Debug.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Debug.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Date.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Date.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/View.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/View.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Response.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/Response.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/HTTP/Response.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/HTTP/Response.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/HTTP/Message.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/HTTP/Message.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/HTTP/Header.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/HTTP/Header.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/views/kohana/error.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/HTML.php</code></td>
+				</tr>
+								<tr>
+					<td><code>SYSPATH/classes/Kohana/HTML.php</code></td>
+				</tr>
+							</table>
+		</div>
+				<h3><a href="#error5225d4f509049environment_loaded" onclick="return koggle('error5225d4f509049environment_loaded')">Loaded extensions</a> (53)</h3>
+		<div id="error5225d4f509049environment_loaded" class="collapsed">
+			<table cellspacing="0">
+								<tr>
+					<td><code>Core</code></td>
+				</tr>
+								<tr>
+					<td><code>date</code></td>
+				</tr>
+								<tr>
+					<td><code>ereg</code></td>
+				</tr>
+								<tr>
+					<td><code>libxml</code></td>
+				</tr>
+								<tr>
+					<td><code>openssl</code></td>
+				</tr>
+								<tr>
+					<td><code>pcre</code></td>
+				</tr>
+								<tr>
+					<td><code>zlib</code></td>
+				</tr>
+								<tr>
+					<td><code>bcmath</code></td>
+				</tr>
+								<tr>
+					<td><code>bz2</code></td>
+				</tr>
+								<tr>
+					<td><code>calendar</code></td>
+				</tr>
+								<tr>
+					<td><code>ctype</code></td>
+				</tr>
+								<tr>
+					<td><code>dba</code></td>
+				</tr>
+								<tr>
+					<td><code>dom</code></td>
+				</tr>
+								<tr>
+					<td><code>hash</code></td>
+				</tr>
+								<tr>
+					<td><code>fileinfo</code></td>
+				</tr>
+								<tr>
+					<td><code>filter</code></td>
+				</tr>
+								<tr>
+					<td><code>ftp</code></td>
+				</tr>
+								<tr>
+					<td><code>gettext</code></td>
+				</tr>
+								<tr>
+					<td><code>SPL</code></td>
+				</tr>
+								<tr>
+					<td><code>iconv</code></td>
+				</tr>
+								<tr>
+					<td><code>json</code></td>
+				</tr>
+								<tr>
+					<td><code>mbstring</code></td>
+				</tr>
+								<tr>
+					<td><code>pcntl</code></td>
+				</tr>
+								<tr>
+					<td><code>session</code></td>
+				</tr>
+								<tr>
+					<td><code>posix</code></td>
+				</tr>
+								<tr>
+					<td><code>Reflection</code></td>
+				</tr>
+								<tr>
+					<td><code>standard</code></td>
+				</tr>
+								<tr>
+					<td><code>shmop</code></td>
+				</tr>
+								<tr>
+					<td><code>SimpleXML</code></td>
+				</tr>
+								<tr>
+					<td><code>soap</code></td>
+				</tr>
+								<tr>
+					<td><code>sockets</code></td>
+				</tr>
+								<tr>
+					<td><code>Phar</code></td>
+				</tr>
+								<tr>
+					<td><code>exif</code></td>
+				</tr>
+								<tr>
+					<td><code>sysvmsg</code></td>
+				</tr>
+								<tr>
+					<td><code>sysvsem</code></td>
+				</tr>
+								<tr>
+					<td><code>sysvshm</code></td>
+				</tr>
+								<tr>
+					<td><code>tokenizer</code></td>
+				</tr>
+								<tr>
+					<td><code>wddx</code></td>
+				</tr>
+								<tr>
+					<td><code>xml</code></td>
+				</tr>
+								<tr>
+					<td><code>xmlreader</code></td>
+				</tr>
+								<tr>
+					<td><code>xmlwriter</code></td>
+				</tr>
+								<tr>
+					<td><code>zip</code></td>
+				</tr>
+								<tr>
+					<td><code>PDO</code></td>
+				</tr>
+								<tr>
+					<td><code>curl</code></td>
+				</tr>
+								<tr>
+					<td><code>gd</code></td>
+				</tr>
+								<tr>
+					<td><code>geoip</code></td>
+				</tr>
+								<tr>
+					<td><code>memcache</code></td>
+				</tr>
+								<tr>
+					<td><code>mysql</code></td>
+				</tr>
+								<tr>
+					<td><code>mysqli</code></td>
+				</tr>
+								<tr>
+					<td><code>pdo_mysql</code></td>
+				</tr>
+								<tr>
+					<td><code>imagick</code></td>
+				</tr>
+								<tr>
+					<td><code>mhash</code></td>
+				</tr>
+								<tr>
+					<td><code>xdebug</code></td>
+				</tr>
+							</table>
+		</div>
+																<h3><a href="#error5225d4f509049environment_server" onclick="return koggle('error5225d4f509049environment_server')">$_SERVER</a></h3>
+		<div id="error5225d4f509049environment_server" class="collapsed">
+			<table cellspacing="0">
+								<tr>
+					<td><code>TERM</code></td>
+					<td><pre><small>string</small><span>(14)</span> "xterm-256color"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SHELL</code></td>
+					<td><pre><small>string</small><span>(9)</span> "/bin/bash"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SSH_CLIENT</code></td>
+					<td><pre><small>string</small><span>(17)</span> "10.0.2.2 59157 22"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SSH_TTY</code></td>
+					<td><pre><small>string</small><span>(10)</span> "/dev/pts/0"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_POSTMARK_API_KEY</code></td>
+					<td><pre><small>string</small><span>(36)</span> "852fa749-7e77-4042-a5fe-1c1e687d488a"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_RCLOUD_USER</code></td>
+					<td><pre><small>string</small><span>(13)</span> "openbuildings"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_PAYPAL_PAYPAL_EMAIL</code></td>
+					<td><pre><small>string</small><span>(23)</span> "admin@openbuildings.com"</pre></td>
+				</tr>
+								<tr>
+					<td><code>USER</code></td>
+					<td><pre><small>string</small><span>(7)</span> "vagrant"</pre></td>
+				</tr>
+								<tr>
+					<td><code>LS_COLORS</code></td>
+					<td><pre><small>string</small><span>(1302)</span> "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:&nbsp;&hellip;"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_EMP_API_KEY</code></td>
+					<td><pre><small>string</small><span>(20)</span> "grX52GzjoraUgWcaUXcH"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SSH_AUTH_SOCK</code></td>
+					<td><pre><small>string</small><span>(30)</span> "/tmp/ssh-I65LhyjQLx/agent.5331"</pre></td>
+				</tr>
+								<tr>
+					<td><code>MAIL</code></td>
+					<td><pre><small>string</small><span>(17)</span> "/var/mail/vagrant"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PATH</code></td>
+					<td><pre><small>string</small><span>(56)</span> "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PWD</code></td>
+					<td><pre><small>string</small><span>(17)</span> "/vagrant/libs/jam"</pre></td>
+				</tr>
+								<tr>
+					<td><code>LANG</code></td>
+					<td><pre><small>string</small><span>(5)</span> "en_US"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_PAYPAL_PAYPAL_PASSWORD</code></td>
+					<td><pre><small>string</small><span>(12)</span> "0v27y5fORg5o"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_PAYPAL_CLIENT_ID</code></td>
+					<td><pre><small>string</small><span>(60)</span> "AT2QsxBBuvgvwamUQlY7tu-4_Dvk1eTD3jCXe1iybkhfFf2D6M2Nlb1GlcyM"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_PAYPAL_SECRET</code></td>
+					<td><pre><small>string</small><span>(60)</span> "ELvs1xCfMVILGF5aqa8ZQMU61G2R21tm2DoxtDqvyseWYEcOSdIh-wR9ug9a"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_RCLOUD_API_KEY</code></td>
+					<td><pre><small>string</small><span>(32)</span> "b598ffaf3940108650fa7a5153f4594f"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SHLVL</code></td>
+					<td><pre><small>string</small><span>(1)</span> "1"</pre></td>
+				</tr>
+								<tr>
+					<td><code>HOME</code></td>
+					<td><pre><small>string</small><span>(13)</span> "/home/vagrant"</pre></td>
+				</tr>
+								<tr>
+					<td><code>LOGNAME</code></td>
+					<td><pre><small>string</small><span>(7)</span> "vagrant"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_THREATMATRIX_ORG_ID</code></td>
+					<td><pre><small>string</small><span>(8)</span> "lygdph9h"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SSH_CONNECTION</code></td>
+					<td><pre><small>string</small><span>(27)</span> "10.0.2.2 59157 10.0.2.15 22"</pre></td>
+				</tr>
+								<tr>
+					<td><code>LC_CTYPE</code></td>
+					<td><pre><small>string</small><span>(5)</span> "UTF-8"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_EMP_CLIENT_ID</code></td>
+					<td><pre><small>string</small><span>(6)</span> "635092"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_POSTMARK_INBOUND_ADDRESS</code></td>
+					<td><pre><small>string</small><span>(56)</span> "322671c123eaa11274ed957ea631a6f5@inbound.postmarkapp.com"</pre></td>
+				</tr>
+								<tr>
+					<td><code>OLDPWD</code></td>
+					<td><pre><small>string</small><span>(38)</span> "/vagrant/libs/kohana-modules/purchases"</pre></td>
+				</tr>
+								<tr>
+					<td><code>_</code></td>
+					<td><pre><small>string</small><span>(22)</span> "/usr/local/bin/phpunit"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PHP_SELF</code></td>
+					<td><pre><small>string</small><span>(22)</span> "/usr/local/bin/phpunit"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SCRIPT_NAME</code></td>
+					<td><pre><small>string</small><span>(22)</span> "/usr/local/bin/phpunit"</pre></td>
+				</tr>
+								<tr>
+					<td><code>SCRIPT_FILENAME</code></td>
+					<td><pre><small>string</small><span>(22)</span> "/usr/local/bin/phpunit"</pre></td>
+				</tr>
+								<tr>
+					<td><code>PATH_TRANSLATED</code></td>
+					<td><pre><small>string</small><span>(22)</span> "/usr/local/bin/phpunit"</pre></td>
+				</tr>
+								<tr>
+					<td><code>DOCUMENT_ROOT</code></td>
+					<td><pre><small>string</small><span>(0)</span> ""</pre></td>
+				</tr>
+								<tr>
+					<td><code>REQUEST_TIME_FLOAT</code></td>
+					<td><pre><small>float</small> 1378211060.6739</pre></td>
+				</tr>
+								<tr>
+					<td><code>REQUEST_TIME</code></td>
+					<td><pre><small>integer</small> 1378211060</pre></td>
+				</tr>
+								<tr>
+					<td><code>argv</code></td>
+					<td><pre><small>array</small><span>(3)</span> <span>(
+    0 => <small>string</small><span>(22)</span> "/usr/local/bin/phpunit"
+    1 => <small>string</small><span>(7)</span> "--group"
+    2 => <small>string</small><span>(9)</span> "jam.range"
+)</span></pre></td>
+				</tr>
+								<tr>
+					<td><code>argc</code></td>
+					<td><pre><small>integer</small> 3</pre></td>
+				</tr>
+							</table>
+		</div>
+			</div>
+</div>

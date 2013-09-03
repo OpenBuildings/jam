@@ -92,6 +92,14 @@ class Jam_FieldTest extends PHPUnit_Framework_TestCase {
 					'allow_null' => FALSE,
 					'null_set'   => ''
 				)	
+				),
+
+			// Range
+			array(
+				new Jam_Field_Range,
+				array(
+					'default' => NULL,
+				)	
 			)
 		);
 	}
@@ -184,13 +192,18 @@ class Jam_FieldTest extends PHPUnit_Framework_TestCase {
 			array(new Jam_Field_Timestamp, '1264985682', '1264985682'),
 			array(new Jam_Field_Timestamp, '03/15/2010 12:56:32', '03/15/2010 12:56:32'),
 			
-			//Weblink
+			// Weblink
 			array(new Jam_Field_Weblink, 'example.com', 'http://example.com'),
 			array(new Jam_Field_Weblink, 'http://example.com', 'http://example.com'),
 			array(new Jam_Field_Weblink, 'www.example.com', 'http://www.example.com'),
 			array(new Jam_Field_Weblink, '', ''),
 			array(new Jam_Field_Weblink, 'abc.e-fsdf-43xample.com', 'http://abc.e-fsdf-43xample.com'),
 			array(new Jam_Field_Weblink, 'https://example.com', 'https://example.com'),
+
+			// Range
+			array(new Jam_Field_Range, '', ''),
+			array(new Jam_Field_Range, '12|20', '12|20'),
+			array(new Jam_Field_Range, array(2,3), array(2,3)),
 		);
 	}
 	
