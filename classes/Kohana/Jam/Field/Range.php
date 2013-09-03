@@ -21,7 +21,14 @@ abstract class Kohana_Jam_Field_Range extends Jam_Field {
 
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		return ($value instanceof Jam_Range) ? $value : new Jam_Range($value);
+		list($value, $return) = $this->_default($model, $value);
+
+		if ( ! $return AND ! ($value instanceof Jam_Range))
+		{
+			$value = new Jam_Range($value);
+		}
+
+		return $value;
 	}
 
 	public function convert(Jam_Validated $model, $value, $is_loaded)

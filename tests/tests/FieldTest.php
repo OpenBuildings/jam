@@ -199,11 +199,6 @@ class Jam_FieldTest extends PHPUnit_Framework_TestCase {
 			array(new Jam_Field_Weblink, '', ''),
 			array(new Jam_Field_Weblink, 'abc.e-fsdf-43xample.com', 'http://abc.e-fsdf-43xample.com'),
 			array(new Jam_Field_Weblink, 'https://example.com', 'https://example.com'),
-
-			// Range
-			array(new Jam_Field_Range, '', ''),
-			array(new Jam_Field_Range, '12|20', '12|20'),
-			array(new Jam_Field_Range, array(2,3), array(2,3)),
 		);
 	}
 	
