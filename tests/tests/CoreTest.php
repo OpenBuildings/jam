@@ -111,4 +111,20 @@ class Jam_CoreTest extends PHPUnit_Framework_TestCase {
 		$this->assertCount(1, $collection->where);
 		$this->assertInstanceOf('Jam_Query_Builder_Collection', Jam::all('test_blog'));
 	}
+
+	public function test_build_template()
+	{
+		$model = Jam::build_template('test_author');
+		$this->assertInstanceOf('Model_Test_Author', $model);
+		$this->assertFalse($model->loaded());
+
+		$model2 = Jam::build_template('test_author');
+		$this->assertSame($model, $model2);
+
+		$model = Jam::build_template('test_position');
+		$this->assertInstanceOf('Model_Test_Position', $model);
+		
+		$model = Jam::build_template('test_position', array('model' => 'test_position_big'));
+		$this->assertInstanceOf('Model_Test_Position_Big', $model);
+	}
 }

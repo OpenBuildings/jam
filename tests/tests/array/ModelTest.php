@@ -53,13 +53,6 @@ class Jam_Array_ModelTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->data, $this->array->content());
 	}
 
-	public function test_load_model_template()
-	{
-		$new_model = $this->array->model_template();
-		$this->assertInstanceOf('Model_Test_Element', $new_model);
-		$this->assertFalse($new_model->loaded());
-	}
-
 	public function test_search_and_has()
 	{
 		$model1 = Jam::build('test_element')->load_fields(array('id' => 1, 'name' => 'one'));

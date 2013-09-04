@@ -18,9 +18,9 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		parent::setUp();
 
 		$this->data = array(
-			array('id' => 1, 'name' => 'Staff'),
-			array('id' => 2, 'name' => 'Freelancer'),
-			array('id' => 3, 'name' => 'Manager'),
+			array('id' => 1, 'name' => 'Staff', 'model' => 'test_position'),
+			array('id' => 2, 'name' => 'Freelancer', 'model' => 'test_position'),
+			array('id' => 3, 'name' => 'Manager', 'model' => 'test_position'),
 		);
 		
 		$this->collection = new Jam_Query_Builder_Collection('test_position');
@@ -81,7 +81,8 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 
 	public function test_load_fields()
 	{
-		$collection = new Jam_Query_Builder_Collection('test_position', $this->data);
+		$collection = new Jam_Query_Builder_Collection('test_position');
+		$collection->load_fields($this->data);
 
 		foreach ($collection as $i => $item) 
 		{
@@ -108,6 +109,26 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$author = $collection[2]->test_author;
 		$this->assertTrue($author->loaded());
 		$this->assertEquals($author->name(), 'Author 2');
+	}
+
+	public function test_load_polymorphic()
+	{
+		$collection = new Jam_Query_Builder_Collection('test_position');
+		$data = array(
+			array('id' => 2, 'name' => 'Freelancer', 'model' => 'test_position_big', 'size' => 'big'),
+			array('id' => 1, 'name' => 'Staff', 'model' => 'test_position'),
+		);
+		$collection->load_fields($data);
+
+		$this->assertInstanceOf('Model_Test_Position_Big', $collection[0]);
+		$this->assertEquals($data[0], $collection[0]->as_array());
+
+		$this->assertInstanceOf('Model_Test_Position_Big', $collection->first());
+		$this->assertEquals($data[0], $collection->first()->as_array());
+
+		$this->assertInstanceOf('Model_Test_Position', $collection[1]);
+		$this->assertEquals($data[1], $collection[1]->as_array());
+
 	}
 
 	public function test_as_array()

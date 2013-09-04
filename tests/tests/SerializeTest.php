@@ -11,9 +11,9 @@ class Jam_SerializeTest extends PHPUnit_Framework_TestCase {
 	{
 		$collection = new Jam_Query_Builder_Collection('test_position');
 		$data = array(
-			array('id' => 1, 'name' => 'name 1'),
-			array('id' => 2, 'name' => 'name 2'),
-			array('id' => 3, 'name' => 'name 3'),
+			array('id' => 1, 'name' => 'name 1', 'model' => 'test_position'),
+			array('id' => 2, 'name' => 'name 2', 'model' => 'test_position'),
+			array('id' => 3, 'name' => 'name 3', 'model' => 'test_position'),
 		);
 		$collection->load_fields($data);
 

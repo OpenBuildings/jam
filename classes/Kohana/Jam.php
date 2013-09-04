@@ -70,6 +70,12 @@ abstract class Kohana_Jam {
 	public static $_models = array();
 
 	/**
+	 * Hold model objects for templates
+	 * @var array
+	 */
+	protected static $_build_templates = array();
+
+	/**
 	 * Make a new object of the given model, optionally setting some fields
 	 * @param  string $model      
 	 * @param  array  $attributes 
@@ -511,6 +517,20 @@ abstract class Kohana_Jam {
 		}
 
 		return new $class($model);
+	}
+
+	public static function build_template($model_name, array $values = NULL)
+	{
+		$meta = Jam::meta($model_name);
+
+		$model_name = $meta->polymorphic_key() ? Arr::get($values, $meta->polymorphic_key(), $model_name) : $model_name;
+
+		if ( ! isset(Jam::$_build_templates[$model_name])) 
+		{
+			Jam::$_build_templates[$model_name] = Jam::build($model_name);
+		}
+
+		return Jam::$_build_templates[$model_name];
 	}
 
 } // End Kohana_Jam

@@ -14,8 +14,9 @@ class Model_Test_Position extends Jam_Model {
 
 		// Define fields
 		$meta->fields(array(
-			'id'   => Jam::field('primary'),
-			'name' => Jam::field('string'),
+			'id'    => Jam::field('primary'),
+			'name'  => Jam::field('string'),
+			'model' => Jam::field('polymorphic')
 		));
 	}
 

@@ -89,6 +89,8 @@ DROP TABLE IF EXISTS `test_positions`;
 CREATE TABLE `test_positions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
+  `model` varchar(32) NOT NULL,
+  `size` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

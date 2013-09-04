@@ -47,6 +47,12 @@ $position2 = Jam::create('test_position', array(
 	'name' => 'Freelancer',
 ));
 
+$position3 = Jam::create('test_position_big', array(
+	'id' => 3,
+	'name' => 'Freelancer',
+	'size' => 'Huge',
+));
+
 /**
  * Authors
  */

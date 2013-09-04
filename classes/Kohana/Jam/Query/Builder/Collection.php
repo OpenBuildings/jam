@@ -28,12 +28,6 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	protected $_result;
 
 	/**
-	 * The model of this collection
-	 * @var Jam_Model
-	 */
-	protected $_model_template;
-
-	/**
 	 * Result Setter / Getter
 	 * @param  Database_Result $result
 	 * @return Database_Result|Jam_Query_Builder_Collection
@@ -65,20 +59,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	}
 
 	/**
-	 * Get a jam model template to use for _Load_model
-	 * @return Jam_Model 
-	 */
-	public function model_template()
-	{
-		if ( ! $this->_model_template)
-		{
-			$this->_model_template = Jam::build($this->meta()->model());
-		}
-		return $this->_model_template;
-	}
-
-	/**
-	 * Use the model_template() to return the model for the row in the results
+	 * Use the Jam::build_template() to return the model for the row in the results
 	 * @param  array $value 
 	 * @return Jam_Model        
 	 */
@@ -87,7 +68,8 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 		if ( ! $value)
 			return NULL;
 
-		$model = clone $this->model_template();
+
+		$model = clone Jam::build_template($this->meta()->model(), $value);
 		$model = $model->load_fields($value);
 
 		return $model;

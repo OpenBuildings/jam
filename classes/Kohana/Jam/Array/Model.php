@@ -45,12 +45,6 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	protected $_collection;
 
 	/**
-	 * A template for the models of this iterator. Used to load the model quickly
-	 * @var Jam_Model
-	 */
-	protected $_model_template;
-
-	/**
 	 * The name of the models in this iterator
 	 * @var string
 	 */
@@ -150,18 +144,6 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	}
 
 	/**
-	 * Get a jam model template to use for _load_model
-	 * @return Jam_Model 
-	 */
-	public function model_template()
-	{
-		if ( ! $this->_model_template)
-		{
-			$this->_model_template = Jam::build($this->model());
-		}
-		return $this->_model_template;
-	}
-	/**
 	 * Load an item from the database, based on a unique key
 	 * @param  string $key 
 	 * @return Jam_Model      
@@ -198,7 +180,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 				$model = $this->_find_item($item_key);
 				if ( ! $model)
 				{
-					$model = clone $this->model_template();
+					$model = clone Jam::build_template($this->model(), $value);
 				}
 				else
 				{
@@ -207,14 +189,14 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			}
 			else
 			{
-				$model = clone $this->model_template();
+				$model = clone Jam::build_template($this->model(), $value);
 			}
 				
 			$item = $model->set($value);
 		}
 		else
 		{
-			$item = clone $this->model_template();
+			$item = clone Jam::build_template($this->model(), $value);
 			$item = $item->load_fields($value);
 		}
 
@@ -354,7 +336,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	 */
 	public function build(array $values = NULL)
 	{
-		$item = clone $this->model_template();
+		$item = clone Jam::build_template($this->model(), $values);
 		if ($values)
 		{
 			$item->set($values);
