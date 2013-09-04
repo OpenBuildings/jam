@@ -77,17 +77,29 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make a new object of the given model, optionally setting some fields
-	 * @param  string $model      
+	 * @param  string $model_name      
 	 * @param  array  $attributes 
 	 * @return Jam_Model
 	 */
-	public static function build($model, array $attributes = array())
+	public static function build($model_name, array $attributes = NULL)
 	{
-		$class = Jam::class_name($model);
+		$meta = Jam::meta($model_name);
+
+		if ($meta->polymorphic_key() AND ! empty($attributes[$meta->polymorphic_key()])) 
+		{
+			$model_name = $attributes[$meta->polymorphic_key()];
+		}
+
+		$class = Jam::class_name($model_name);
 
 		$object = new $class();
 
-		return $object->set($attributes);
+		if ($attributes) 
+		{
+			$object->set($attributes);
+		}
+
+		return $object;
 	}
 
 	/**

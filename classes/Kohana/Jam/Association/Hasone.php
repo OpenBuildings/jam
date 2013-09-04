@@ -170,9 +170,9 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 		return $value;
 	}
 
-	public function build(Jam_Validated $model)
+	public function build(Jam_Validated $model, array $attributes = NULL)
 	{
-		$item = Jam::build($this->foreign_model);
+		$item = Jam::build($this->foreign_model, $attributes);
 
 		$this->set($model, $item, TRUE);
 

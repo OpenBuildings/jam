@@ -227,14 +227,14 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		return $value;
 	}
 
-	public function build(Jam_Validated $model)
+	public function build(Jam_Validated $model, array $attributes = NULL)
 	{
 		$foreign = Jam::meta($this->foreign_model($model));
 
 		if ( ! $foreign)
 			return NULL;
 		
-		$item = Jam::build($foreign->model());
+		$item = Jam::build($foreign->model(), $attributes);
 
 		if ($this->inverse_of AND $foreign->association($this->inverse_of) instanceof Jam_Association_Hasone)
 		{

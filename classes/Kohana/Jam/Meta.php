@@ -197,13 +197,13 @@ abstract class Kohana_Jam_Meta {
 		foreach ($this->_fields as $column => $field)
 		{
 			// Ensure a default primary key is set
-			if ($field instanceof Jam_Field_Primary AND $field->primary AND empty($this->_primary_key))
+			if ($field instanceof Jam_Field AND $field->primary AND empty($this->_primary_key))
 			{
 				$this->_primary_key = $column;
 			}
 
 			// Ensure a default plymorphic key is set
-			if ($field instanceof Jam_Field_Polymorphic AND $field->polymorphic AND empty($this->_polymorphic_key))
+			if ($field instanceof Jam_Field_Polymorphic AND empty($this->_polymorphic_key))
 			{
 				$this->_polymorphic_key = $column;
 			}

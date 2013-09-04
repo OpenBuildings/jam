@@ -46,7 +46,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	/**
 	 * @var  Boolean  A flag that keeps track of whether or not the model is valid
 	 */
-	 protected $_errors = FALSE;
+	 protected $_errors = NULL;
 
 	/**
 	 * Constructor.
