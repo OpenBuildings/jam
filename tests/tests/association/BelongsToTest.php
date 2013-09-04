@@ -238,6 +238,16 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 		$value = $association->build($model);
 		$this->assertInstanceOf('Model_Test_Author', $value);
 		$this->assertSame($value->test_post, $model);
+
+		$association = new Jam_Association_Belongsto(array('inverse_of' => 'test_post'));
+		$association->initialize($this->meta, 'test_position');
+
+		$value = $association->build($model);
+		$this->assertInstanceOf('Model_Test_Position', $value);
+
+		$value = $association->build($model, array('model' => 'test_position_big'));
+		$this->assertInstanceOf('Model_Test_Position_Big', $value);
+		
 	}
 
 	public function test_load_fields()

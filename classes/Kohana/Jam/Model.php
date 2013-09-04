@@ -418,12 +418,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		if ($association instanceof Jam_Association_Collection)
 			throw new Kohana_Exception(':association_name association must not be a collection on model :model', array(':association_name' => $association_name, ':model' => $this->meta()->model()));
 		
-		$this->_changed[$association_name] = $association->build($this);
-		if ($attributes) 
-		{
-			$this->_changed[$association_name]->set($attributes);
-		}
-		return $this->_changed[$association_name];
+		return $this->_changed[$association_name] = $association->build($this, $attributes);
 	}
 
 	/**
