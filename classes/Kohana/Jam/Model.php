@@ -277,7 +277,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 						$values[$field->name] = $value;
 					}
 					// Or if we're INSERTing and we need to set the defaults for the first time
-					elseif ( ! $key AND ! $this->changed($field->name) AND ! $field->primary)
+					elseif ( ! $key AND ( ! $this->changed($field->name) OR $field->default === $value) AND ! $field->primary)
 					{
 						$defaults[$field->name] = $field->default;
 					}

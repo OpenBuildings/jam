@@ -85,7 +85,7 @@ abstract class Kohana_Jam {
 	{
 		$meta = Jam::meta($model_name);
 
-		if ($meta->polymorphic_key() AND ! empty($attributes[$meta->polymorphic_key()])) 
+		if ($meta AND $meta->polymorphic_key() AND ! empty($attributes[$meta->polymorphic_key()])) 
 		{
 			$model_name = $attributes[$meta->polymorphic_key()];
 		}
@@ -535,7 +535,7 @@ abstract class Kohana_Jam {
 	{
 		$meta = Jam::meta($model_name);
 
-		$model_name = $meta->polymorphic_key() ? Arr::get($values, $meta->polymorphic_key(), $model_name) : $model_name;
+		$model_name = ($meta AND $meta->polymorphic_key()) ? Arr::get($values, $meta->polymorphic_key(), $model_name) : $model_name;
 
 		if ( ! isset(Jam::$_build_templates[$model_name])) 
 		{
