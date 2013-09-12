@@ -62,11 +62,12 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 		}
 		elseif ($this->minimum OR $this->maximum)
 		{
+			$minimum = $this->minimum ? $this->minimum : 0;
 			return array(
-				'pattern' => ".{{$this->minimum ?: '0'},{$this->maximum}}",
+				'pattern' => ".{{$minimum},{$this->maximum}}",
 				'title' => 'Value must be '
-					.($this->minimum ? "shorter than $this->minimum".($this->maximum ? ' and ' : '') : '')
-					.($this->maximum ? "longer than $this->maximum" : '').' letters'
+					.($this->minimum ? "longer than $this->minimum".($this->maximum ? ' and ' : '') : '')
+					.($this->maximum ? "shorter than $this->maximum" : '').' letters'
 			);
 		}
 	}
