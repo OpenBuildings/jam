@@ -48,15 +48,26 @@ class Kohana_Jam_Validator_Rule_Length extends Jam_Validator_Rule {
 	{
 		if ($this->is)
 		{
-			return array('pattern' => ".{{$this->is}}");
+			return array(
+				'pattern' => ".{{$this->is}}",
+				'title' => "Value must be $this->is letters"
+			);
 		}
 		elseif ($this->between)
 		{
-			return array('pattern' => ".{{$this->between[0]},{$this->between[1]}}");
+			return array(
+				'pattern' => ".{{$this->between[0]},{$this->between[1]}}",
+				'title' => "Value must be longer than {$this->between[0]} and shorter than {$this->between[1]} letters"
+			);
 		}
 		elseif ($this->minimum OR $this->maximum)
 		{
-			return array('pattern' => ".{{$this->minimum},{$this->maximum}}");
+			return array(
+				'pattern' => ".{{$this->minimum ?: '0'},{$this->maximum}}",
+				'title' => 'Value must be '
+					.($this->minimum ? "shorter than $this->minimum".($this->maximum ? ' and ' : '') : '')
+					.($this->maximum ? "longer than $this->maximum" : '').' letters'
+			);
 		}
 	}
 }
