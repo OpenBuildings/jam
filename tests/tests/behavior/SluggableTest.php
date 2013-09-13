@@ -245,4 +245,48 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		$model->save();
 		$this->assertEquals('abcde-'.$model->id(), $model->slug);
 	}
+
+	public function data_where_slug()
+	{
+		return array(
+			array(
+				'video-jpg-1',
+				1
+			),
+			array(
+				'video-jpg-2',
+				2
+			),
+			array(
+				'blabla-bla-2',
+				2
+			),
+			array(
+				'3-blabla-bla-2',
+				2
+			),
+			array(
+				'300-blabla-bla-2',
+				2
+			),
+			array(
+				'4',
+				4
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_where_slug
+	 * @covers Kohana_Jam_Behavior_Sluggable::builder_call_where_slug
+	 */
+	public function test_where_slug($slug, $expected_primary_key)
+	{
+		$model = Jam::all('test_video')
+			->where_slug($slug)
+			->first();
+
+		$this->assertNotNull($model);
+		$this->assertSame($expected_primary_key, $model->id());
+	}
 }
