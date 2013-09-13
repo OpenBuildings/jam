@@ -22,6 +22,8 @@ abstract class Kohana_Jam_Field_Password extends Jam_Field_String {
 	 */
 	public $hash_with = 'sha1';
 
+	public $allow_null = TRUE;
+
 	/**
 	 * Hash and set the password to the database
 	 * @param  Jam_Model $model  

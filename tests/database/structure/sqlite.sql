@@ -27,7 +27,7 @@ CREATE TABLE test_authors (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  password TEXT NOT NULL,
+  password TEXT DEFAULT '',
   test_position_id INTEGER NOT NULL
 );
 
