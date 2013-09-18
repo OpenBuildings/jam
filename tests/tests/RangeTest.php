@@ -66,4 +66,39 @@ class Jam_RangeTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(124, $range[1]);
 		$this->assertEquals(124, $range->max());
 	}
+
+	public function test_add()
+	{
+		$range1 = new Jam_Range(array(10, 30));
+		$range2 = new Jam_Range(array(3, 12));
+
+		$range_added = $range1->add($range2);
+
+		$this->assertInstanceOf('Jam_Range', $range_added);
+		$this->assertEquals(array(13, 42), $range_added->as_array());
+	}
+
+	public function test_sum()
+	{
+		$range1 = new Jam_Range(array(10, 30));
+		$range2 = new Jam_Range(array(3, 12));
+		$range3 = new Jam_Range(array(5, 21));
+
+		$sum = Jam_Range::sum(array($range1, $range2, $range3));
+
+		$this->assertInstanceOf('Jam_Range', $sum);
+		$this->assertEquals(array(10+3+5, 30+12+21), $sum->as_array());
+	}
+
+	public function test_merge()
+	{
+		$range1 = new Jam_Range(array(10, 30));
+		$range2 = new Jam_Range(array(3, 12));
+		$range3 = new Jam_Range(array(5, 42));
+
+		$merge = Jam_Range::merge(array($range1, $range2, $range3));
+
+		$this->assertInstanceOf('Jam_Range', $merge);
+		$this->assertEquals(array(10, 42), $merge->as_array());
+	}
 }

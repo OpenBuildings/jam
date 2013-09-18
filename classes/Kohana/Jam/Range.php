@@ -15,6 +15,34 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	protected $_max;
 
+	public static function sum(array $ranges)
+	{
+		$min = 0;
+		$max = 0;
+
+		foreach ($ranges as $range)
+		{
+			$min += $range->min();
+			$max += $range->max();
+		}
+
+		return new Jam_Range(array($min, $max));
+	}
+
+	public static function merge(array $ranges)
+	{
+		$min = 0;
+		$max = 0;
+
+		foreach ($ranges as $range)
+		{
+			$min = max($min, $range->min());
+			$max = max($max, $range->max());
+		}
+
+		return new Jam_Range(array($min, $max));
+	}
+
 	public function __construct($source = NULL)
 	{
 		if (is_string($source))
@@ -52,6 +80,11 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 			return $this;
 		}
 		return $this->_max;
+	}
+
+	public function add(Jam_Range $addition)
+	{
+		return Jam_Range::sum(array($this, $addition));
 	}
 
 	public function offsetSet($offset, $value) 
