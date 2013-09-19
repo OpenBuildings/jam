@@ -470,6 +470,19 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	}
 
 	/**
+	 * Build a new model object based on the current one, but without an ID, so it can be saved as a new object
+	 * @return Jam_Model
+	 */
+	public function duplicate()
+	{
+		$fields = $this->as_array();
+
+		unset($fields[$this->meta()->primary_key()]);
+
+		return Jam::build($this->meta()->model(), $fields);
+	}
+
+	/**
 	 * Returns a string representation of the model in the
 	 * form of `Model_Name (id)` or `Model_Name (NULL)` if
 	 * the model is not loaded.

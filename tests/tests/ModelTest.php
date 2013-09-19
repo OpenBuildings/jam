@@ -214,6 +214,19 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 		$video->check_insist();
 	}
 
+	public function test_duplicate()
+	{
+		$video = Jam::build('test_video')->load_fields(array('id' => 1, 'file' => 'file11.mov'));
+
+		$duplicated = $video->duplicate();
+
+		$this->assertTrue($video->loaded());
+		$this->assertNotSame($video, $duplicated);
+		$this->assertEquals($video->file, $duplicated->file);
+		$this->assertFalse($duplicated->loaded());
+		$this->assertNull($duplicated->id());
+	}
+
 	/**
 	 * @expectedException Jam_Exception_Notfound
 	 */
