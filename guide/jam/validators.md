@@ -347,12 +347,39 @@ class Model_Person extends Jam_Model {
 ?>
 ```
 
+### range
+
+This validator is used specifically for range fields:
+
+```php
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+class Model_Person extends Jam_Model {
+
+	public static function initialize(Jam_Meta $meta)
+	{
+		$meta->fields(array(
+			'id'                   => Jam::field('primary'),
+			'delivery_time'        => Jam::field('range'),
+			'processing_time'      => Jam::field('range'),
+			'date_range'           => Jam::field('range'),
+		));
+
+		$meta->validator('delivery_time', array('range' => array('minimum' => 2)));
+		$meta->validator('processing_time', array('range' => array('maximum' => 500)));
+		$meta->validator('date_range', array('range' => array('between' => array(2, 20))));
+		$meta->validator('date_range', array('range' => array('consecutive' => TRUE)));
+	}
+}
+?>
+```
+
 The possible length constraint options are:
 
-* 'minimum' – The attribute cannot have less than the specified length.
-* 'maximum' – The attribute cannot have more than the specified length.
-* 'between' – The attribute length must be included in a given interval. The value for this option must be an array with 2 values (min, max).
-* 'is' – The attribute length must be equal to the given value.
+* 'minimum' – The attribute cannot have a value less than the specified.
+* 'maximum' – The attribute cannot have a value more than the specified.
+* 'between' – The attribute values must be included in a given interval. The value for this option must be an array with 2 values (min, max).
+* 'consecutive' – The first value must be less than or equal to the first value.
 
 ### numeric
 

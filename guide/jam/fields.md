@@ -108,6 +108,28 @@ Represents a string of any length. `NULL` values are not allowed by default on t
 
 Currently, this field behaves exactly the same as Jam::field('String').
 
+#### Jam::field('range')
+
+This is a field representing two values - min and max, that is stored in the database as a single colum (first_value|second_value). You can set / retrieve it as string or as an array like this:
+
+```php
+$model->range = array(2, 3);
+echo $model->range->min(); // Will return 2
+echo $model->range->max(); // Will return 3
+
+$model->range = '5|10';
+echo $model->range->min(); // Will return 5
+echo $model->range->max(); // Will return 10
+
+echo (string) $model->range; // Will return '5|10'
+print_r($model->range->as_array()); // Will return array(5, 10)
+
+echo $model->range[0]; // Will return 5
+echo $model->range[1]; // Will return 10
+
+```
+
+
 #### Jam::field('timestamp')
 
 Represents a timestamp. This field always returns its value as a UNIX timestamp, however you can choose to save it as any type of value you'd like by setting the `format` property.
