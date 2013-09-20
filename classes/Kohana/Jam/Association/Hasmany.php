@@ -113,7 +113,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
-		if ($this->inverse_of AND is_array($value))
+		if (($this->inverse_of OR $this->as) AND is_array($value))
 		{
 			foreach ($value as & $item) 
 			{
@@ -281,6 +281,12 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		{
 			$item->retrieved($this->inverse_of, $inverse_of);
 		}
+
+		if ($this->as)
+		{
+			$item->retrieved($this->as, $inverse_of);
+		}
+
 	}
 
 	/**

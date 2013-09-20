@@ -148,6 +148,14 @@ class Jam_Association_HasoneTest extends Testcase_Database {
 		$value = $association->build($model);
 		$this->assertInstanceOf('Model_Test_Post', $value);
 		$this->assertSame($value->test_author, $model);
+
+		$association = new Jam_Association_Hasone(array('as' => 'test_author'));
+		$association->initialize($this->meta, 'test_post');
+
+		$model = new Model_Test_Author();
+		$value = $association->build($model);
+		$this->assertInstanceOf('Model_Test_Post', $value);
+		$this->assertSame($value->test_author, $model);
 	}
 
 	public function data_query_builder()

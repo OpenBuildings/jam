@@ -83,6 +83,18 @@ class Jam_Association_HasmanyTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertSame($author, $posts[0]->test_author);
 		$this->assertSame($author, $posts[1]->test_author);
+
+		$association = new Jam_Association_Hasmany(array('as' => 'test_author'));
+		$association->initialize($this->meta, 'test_posts');
+
+		$posts = array(Jam::build('test_post'), Jam::build('test_post'));
+		$author = Jam::build('test_author');
+
+		$association->set($author, $posts, TRUE);
+
+		$this->assertSame($author, $posts[0]->test_author);
+		$this->assertSame($author, $posts[1]->test_author);
+
 	}
 
 	public function test_load_fields()

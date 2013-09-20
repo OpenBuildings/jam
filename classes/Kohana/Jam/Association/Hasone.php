@@ -160,6 +160,11 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 			{
 				$value->{$this->foreign_key} = $model->id();
 			}
+			
+			if ($this->as)
+			{
+				$value->retrieved($this->as, $model);
+			}
 
 			if ($this->inverse_of)
 			{
