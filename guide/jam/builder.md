@@ -335,7 +335,7 @@ class Model_Supplier extends Jam_Model {
 Jam::all('customer')
 	->join_nested('orders')
 		->join_nested('supliers')
-			->join_nested('addresses')
+			->join('addresses')
 		->end()
 	->end()
 	->where('address.city', '=', 'London')
