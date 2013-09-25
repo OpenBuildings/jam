@@ -98,7 +98,7 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 		);
 	}
 
-		/**
+	/**
 	 * @dataProvider data_filename_from_url
 	 */
 	public function test_filename_from_url($url, $mime, $expected_regexp)
@@ -108,6 +108,29 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 		$this->assertRegExp($expected_regexp, $filename);
 	}
 
+	public function data_filename_from_content_disposition()
+	{
+		return array(
+			array('attachement; filename="logo.gif"', 'logo.gif'),
+			array('attachement;filename="logo.gif"', 'logo.gif'),
+			array('attachement;filename="logo"', 'logo'),
+			array('inline; token; filename="logo.gif"', 'logo.gif'),
+			array('inline; token="some token"; filename="logo.gif"', 'logo.gif'),
+			array('attachement', NULL),
+			array('attachement; filename', NULL),
+			array('inline;token="filename";filename="logo"', 'logo'),
+		);
+	}
+
+	/**
+	 * @dataProvider data_filename_from_content_disposition
+	 */
+	public function test_filename_from_content_disposition($content_disposition, $expected_filename)
+	{
+		$filename = Upload_Util::filename_from_content_disposition($content_disposition);
+
+		$this->assertSame($expected_filename, $filename);
+	}
 
 	public function data_combine()
 	{

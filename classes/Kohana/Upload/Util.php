@@ -40,11 +40,8 @@ class Kohana_Upload_Util {
 
 		if ($filename === NULL)
 		{
-			if (isset($headers['content-disposition']) AND preg_match('/filename="?(.*)"?$/', $headers['content-disposition'], $matches))
-			{
-				$filename = $matches[1];
-			}
-			else
+			if ( ! isset($headers['content-disposition'])
+			 OR ! ($filename = Upload_Util::filename_from_content_disposition($headers['content-disposition'])))
 			{
 				$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 				$url = urldecode(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
@@ -207,6 +204,14 @@ class Kohana_Upload_Util {
 		$extension = reset($extension_candiates);
 
 		return Upload_Util::sanitize(pathinfo($file, PATHINFO_FILENAME)).'.'.$extension;
+	}
+
+	public static function filename_from_content_disposition($content_disposition)
+	{
+		if (preg_match('/filename="?(.*?)"?$/', $content_disposition, $matches))
+			return $matches[1];
+
+		return NULL;
 	}
 
 	/**
