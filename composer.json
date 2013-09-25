@@ -19,5 +19,11 @@
 	},
 	"require-dev": {
 		"openbuildings/kohana-test-bootsrap": "0.1.*"
+	},
+	"suggest": {
+		"openbuildings/jam-auth": "A Kohana Auth implementation for Jam, with services",
+		"openbuildings/jam-monetary": "Convert and format currencies and amounts with a Jam field",
+		"openbuildings/jam-tart": "Jam admin builder",
+		"openbuildings/jam-closuretable": "Closuretable implementation for Jam ORM"
 	}
 }
