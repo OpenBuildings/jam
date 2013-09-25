@@ -82,7 +82,7 @@ abstract class Kohana_Upload_Source {
 	{
 		$this->_data = $data;
 
-		if ($type = Upload_Source::guess_type($data))
+		if (($type = Upload_Source::guess_type($data)))
 		{
 			$this->_type = $type;
 		}
@@ -142,26 +142,6 @@ abstract class Kohana_Upload_Source {
 			throw new Kohana_Exception('There was an error moving the file to :directory', array(':directory' => $directory));
 
 		return $data['name'];
-	}
-
-	/**
-	 * Move the contents of the stream to a specified directory with a given name
-	 * @param  string $stream    
-	 * @param  string $directory 
-	 * @param  string $filename  
-	 */
-	public static function process_type_stream($stream, $directory, $filename)
-	{
-		$stream_handle = fopen($stream, "r");
-		$result_handle = fopen(Upload_Util::combine($directory, $filename), 'w');
-
-		$transfered_bytes = stream_copy_to_stream($stream_handle,  $result_handle);
-		
-		if ((int) $transfered_bytes <= 0)
-			throw new Kohana_Exception('No data (:t) was transfered from :stream to :directory ', array(':stream' => $stream, ':directory' => $directory));
-
-		fclose($stream_handle);
-		fclose($result_handle);
 	}
 
 	/**

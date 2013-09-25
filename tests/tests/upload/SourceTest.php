@@ -79,18 +79,4 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 
 		Upload_Source::process_type_upload($data, $this->test_local);
 	}
-
-	public function test_process_type_stream()
-	{
-		$file = $this->test_local.'file_stream_source.txt';
-		file_put_contents($file, 'test data');
-
-		Upload_Source::process_type_stream($file, $this->test_local2, 'file_stream_copy.txt');
-
-		$this->assertFileExists($this->test_local2.'file_stream_copy.txt');
-		$this->assertFileEquals($file, $this->test_local2.'file_stream_copy.txt');
-
-		unlink($file);
-		unlink($this->test_local2.'file_stream_copy.txt');
-	}
 }
