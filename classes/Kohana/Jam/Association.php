@@ -15,24 +15,26 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	const ERASE    = 'erase';
 	const DELETE   = 'delete';
 
+	/**
+	 * Get the primary key from whatever value you have
+	 *
+	 * @param  string $model_name The name of the model
+	 * @param  string|integer|Jam_Validated|array $value the value or a container of the value
+	 * @return string|integer|NULL NULL when no value is provided or could be extracted.
+	 */
 	public static function primary_key($model_name, $value)
 	{
 		if ( ! $value)
-		{
 			return NULL;
-		}			
-		elseif ($value instanceof Jam_Validated) 
-		{
+
+		if ($value instanceof Jam_Validated) 
 			return $value->id();
-		}
-		elseif (is_integer($value) OR is_string($value)) 
-		{
+
+		if (is_integer($value) OR is_string($value)) 
 			return $value;
-		}
-		elseif (is_array($value)) 
-		{
+
+		if (is_array($value)) 
 			return Arr::get($value, Jam::meta($model_name)->primary_key());
-		}
 	}
 
 	public static function is_changed($value)

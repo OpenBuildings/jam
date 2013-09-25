@@ -192,7 +192,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	 */
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
+		if (($value = Arr::get($changed, $this->name)) AND Jam_Association::is_changed($value))
 		{
 			if ( ! $model->{$this->name}->is_validating() AND ! $model->{$this->name}->check())
 			{
@@ -213,10 +213,9 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	{
 		$nullify_query = $this->update_query($model, NULL, NULL);
 
-		if ($value = Arr::get($changed, $this->name))
+		if (($value = Arr::get($changed, $this->name)))
 		{
-
-			if (Jam_Association::is_changed($value) AND $item = $model->{$this->name})
+			if (Jam_Association::is_changed($value) AND ($item = $model->{$this->name}))
 			{
 				if ( ! $item->is_saving())
 				{
@@ -229,7 +228,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 			}
 			else
 			{
-				$key = Jam_Association::primary_key($value);
+				$key = Jam_Association::primary_key($this->foreign_model, $value);
 
 				$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 					->where(':unique_key', '=', $key)
