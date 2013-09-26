@@ -34,6 +34,14 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	public $count_cache = NULL;
 
+	public $field_options = array();
+
+	protected $_default_field_options = array(
+		'default' => NULL,
+		'allow_null' => TRUE,
+		'convert_empty' => TRUE,
+	);
+	
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -56,11 +64,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 					':name' => $name,
 				));
 		
-		$meta->field($this->foreign_key, Jam::field('integer', array(
-			'default' => NULL,
-			'allow_null' => TRUE,
-			'convert_empty' => TRUE,
-		)));
+		$meta->field($this->foreign_key, Jam::field('integer', array_merge($this->_default_field_options, $this->field_options)));
 
 		if ($this->is_polymorphic())
 		{
