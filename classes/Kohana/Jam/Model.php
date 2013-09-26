@@ -400,9 +400,9 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$attribute = $this->__get($attribute_name);
 
 		if ($attribute === NULL) 
-			throw new Jam_Exception_Notfound('The association :name was empty on :model', NULL, array(
+			throw new Jam_Exception_Notfound('The association :name was empty on :model_name', NULL, array(
 				':name' => $attribute_name,
-				':model' => $this->meta()->model(),
+				':model_name' => $this->meta()->model(),
 			));
 
 		return $attribute;
