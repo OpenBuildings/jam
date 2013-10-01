@@ -14,9 +14,11 @@
  */
 abstract class Kohana_Jam_Field_Range extends Jam_Field {
 
+	public $format;
+
 	public function get(Jam_Validated $model, $value, $is_loaded)
 	{
-		return ($value instanceof Jam_Range) ? $value : new Jam_Range($value);
+		return ($value instanceof Jam_Range) ? $value : new Jam_Range($value, $this->format);
 	}
 
 	public function set(Jam_Validated $model, $value, $is_changed)
@@ -25,7 +27,7 @@ abstract class Kohana_Jam_Field_Range extends Jam_Field {
 
 		if ( ! $return AND ! ($value instanceof Jam_Range))
 		{
-			$value = new Jam_Range($value);
+			$value = new Jam_Range($value, $this->format);
 		}
 
 		return $value;

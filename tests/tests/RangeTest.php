@@ -10,24 +10,25 @@ class Jam_RangeTest extends PHPUnit_Framework_TestCase {
 	public function data_construct()
 	{
 		return array(
-			array(NULL, NULL, NULL),
-			array('30|40', 30, 40),
-			array('-2|19', -2, 19),
-			array('|', NULL, NULL),
-			array('-19.2|10.12', -19.2, 10.12),
-			array(array(4,10), 4, 10),
-			array(array(10.3,10), 10.3, 10),
+			array(NULL, NULL, NULL, NULL, ' - '),
+			array('30|40', NULL, 30, 40, '30 - 40'),
+			array('-2|19', ':min / :max time', -2, 19, '-2 / 19 time'),
+			array('|', NULL, NULL, NULL, ' - '),
+			array('-19.2|10.12', NULL, -19.2, 10.12, '-19.2 - 10.12'),
+			array(array(4,10), ':min - ?', 4, 10, '4 - ?'),
+			array(array(10.3,10), ':min - :max days', 10.3, 10, '10.3 - 10 days'),
 		);
 	}
 
 	/**
 	 * @dataProvider data_construct
 	 */
-	public function test_construct($source, $expected_min, $expected_max)
+	public function test_construct($source, $format, $expected_min, $expected_max, $expected_humanize)
 	{
-		$range = new Jam_Range($source);
+		$range = new Jam_Range($source, $format);
 		$this->assertEquals($expected_min, $range->min());
 		$this->assertEquals($expected_max, $range->max());
+		$this->assertEquals($expected_humanize, $range->humanize());
 	}
 
 	public function data_toString()

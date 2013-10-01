@@ -42,4 +42,16 @@ class Jam_Field_RangeTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(10, $range->min());
 		$this->assertEquals(20, $range->max());
 	}
+
+	public function test_format()
+	{
+		$field = new Jam_Field_Range();
+		$field->format = ':min - :max days';
+		$model = Jam::build('test_position');
+
+		$range = $field->get($model, '10|20', FALSE);
+
+		$this->assertInstanceOf('Jam_Range', $range);
+		$this->assertEquals('10 - 20 days', $range->humanize());
+	}
 }

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "652afd41b73f955e40ce9225cbbf4f10",
+    "hash": "f1381888121e85496e31c171b03b063a",
     "packages": [
         {
             "name": "composer/installers",
@@ -165,16 +165,16 @@
     "packages-dev": [
         {
             "name": "openbuildings/kohana-test-bootsrap",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenBuildings/kohana-test-bootstrap.git",
-                "reference": "0.1.0"
+                "reference": "a3f9e8756d0a3262063fd904ef31ead324639a0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenBuildings/kohana-test-bootstrap/zipball/0.1.0",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/OpenBuildings/kohana-test-bootstrap/zipball/a3f9e8756d0a3262063fd904ef31ead324639a0e",
+                "reference": "a3f9e8756d0a3262063fd904ef31ead324639a0e",
                 "shasum": ""
             },
             "type": "library",
@@ -196,7 +196,7 @@
                 }
             ],
             "description": "Kohana core classes repackaged with composer, used to test modules",
-            "time": "2013-08-12 09:28:25"
+            "time": "2013-09-20 19:43:58"
         }
     ],
     "aliases": [

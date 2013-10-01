@@ -15,6 +15,18 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	protected $_max;
 
+	protected $_format = ":min - :max";
+	
+	public function format($format = NULL)
+	{
+		if ($format !== NULL)
+		{
+			$this->_format = $format;
+			return $this;
+		}
+		return $this->_format;
+	}
+
 	public static function sum(array $ranges)
 	{
 		$min = 0;
@@ -43,7 +55,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		return new Jam_Range(array($min, $max));
 	}
 
-	public function __construct($source = NULL)
+	public function __construct($source = NULL, $format = NULL)
 	{
 		if (is_string($source))
 		{
@@ -60,6 +72,8 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 			$this->min($source->min());
 			$this->max($source->max());
 		}
+
+		$this->format($format);
 	}
 	
 	public function min($min = NULL)
@@ -135,6 +149,11 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	public function __toString()
 	{
 		return $this->min().'|'.$this->max();
+	}
+
+	public function humanize()
+	{
+		return strtr($this->format(), array(':min' => $this->min(), ':max' => $this->max()));
 	}
 
 	public function as_array()
