@@ -45,4 +45,51 @@ class Jam_Behavior_ParanoidTest extends Testcase_Database {
 		$this->assertCount(4, Jam::all('test_video')->deleted(Jam_Behavior_Paranoid::ALL));
 		$this->assertCount(1, Jam::all('test_video')->deleted(Jam_Behavior_Paranoid::DELETED));
 	}
+
+	public function tearDown()
+	{
+		parent::tearDown();
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::NORMAL);
+	}
+
+	public function test_default_filter()
+	{
+		$video = Jam::find('test_video', 1);
+
+		$video->delete();
+
+		$this->assertCount(3, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::ALL);
+		$this->assertCount(5, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::DELETED);
+		$this->assertCount(2, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::ALL);
+		$video = Jam::all('test_video')->where(':primary_key', '=', 1)->first();
+
+		$video->restore_delete();
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::NORMAL);
+		$this->assertCount(4, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::ALL);
+		$this->assertCount(5, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::DELETED);
+		$this->assertCount(1, Jam::all('test_video'));
+
+		$video->real_delete();
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::NORMAL);
+		$this->assertCount(3, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::ALL);
+		$this->assertCount(4, Jam::all('test_video'));
+
+		Jam_Behavior_Paranoid::filter(Jam_Behavior_Paranoid::DELETED);
+		$this->assertCount(1, Jam::all('test_video'));
+	}
 }

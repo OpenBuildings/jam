@@ -11,6 +11,18 @@
  */
 class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 {
+	protected static $_default_filter = 'normal';
+
+	public static function filter($filter = NULL)
+	{
+		if ($filter !== NULL) 
+		{
+			Jam_Behavior_Paranoid::$_default_filter = $filter;
+		}
+
+		return Jam_Behavior_Paranoid::$_default_filter;
+	}
+
 	const ALL = 'all';
 	const DELETED = 'deleted';
 	const NORMAL = 'normal';
@@ -41,8 +53,9 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	 */
 	public function builder_paranoid_filter(Database_Query $builder)
 	{
+		$filter_type = $builder->params('paranoid_filter_type') ?: Jam_Behavior_Paranoid::filter();
 
-		switch ($builder->params('paranoid_type'))
+		switch ($filter_type)
 		{
 			case Jam_Behavior_Paranoid::ALL:
 			break;
@@ -65,14 +78,14 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	 * 
 	 * @param Jam_Builder    $builder       
 	 * @param Jam_Event_Data $data          
-	 * @param string         $paranoid_type 
+	 * @param string         $paranoid_filter_type 
 	 */
-	public function builder_call_deleted(Database_Query $builder, Jam_Event_Data $data, $paranoid_type = Jam_Behavior_Paranoid::NORMAL)
+	public function builder_call_deleted(Database_Query $builder, Jam_Event_Data $data, $paranoid_filter_type = Jam_Behavior_Paranoid::NORMAL)
 	{
-		if ( ! in_array($paranoid_type, array(Jam_Behavior_Paranoid::DELETED, Jam_Behavior_Paranoid::NORMAL, Jam_Behavior_Paranoid::ALL)))
+		if ( ! in_array($paranoid_filter_type, array(Jam_Behavior_Paranoid::DELETED, Jam_Behavior_Paranoid::NORMAL, Jam_Behavior_Paranoid::ALL)))
 			throw new Kohana_Exception("Deleted type should be Jam_Behavior_Paranoid::DELETED, Jam_Behavior_Paranoid::NORMAL or Jam_Behavior_Paranoid::ALL");
 
-		$builder->params('paranoid_type', $paranoid_type);
+		$builder->params('paranoid_filter_type', $paranoid_filter_type);
 	}
 
 	/**
