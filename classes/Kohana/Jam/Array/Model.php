@@ -395,6 +395,14 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		return $this;
 	}
 
+	public function clear_changed()
+	{
+		$this->_changed = array();
+		$this->_original = $this->_content;
+
+		return $this;
+	}
+
 	public function __toString()
 	{
 		if ( ! $this->collection())

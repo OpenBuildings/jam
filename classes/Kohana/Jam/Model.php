@@ -321,7 +321,22 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
 
-		$this->_retrieved = $this->_changed = array();
+		$this->_changed = array();
+
+		foreach ($this->_retrieved as $name => $retrieved) 
+		{
+			if (($association = $this->meta()->association($name)))
+			{
+				if ($association instanceof Jam_Association_Collection) 
+				{
+					$retrieved->clear_changed();
+				}
+			}
+			else
+			{
+				unset($this->_retrieved[$name]);
+			}
+		}
 
 		$this->_is_saving = FALSE;
 
