@@ -17,6 +17,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	public $_save_size = FALSE;
 	public $_path = NULL;
 	public $_dynamic_server = NULL;
+	public $_delete_file = TRUE;
 
 	public function initialize(Jam_Meta $meta, $name) 
 	{			
@@ -42,7 +43,8 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 			'transformations' => $this->_transformations, 
 			'server' => $this->_server, 
 			'dynamic_server' => $this->_dynamic_server,
-			'save_size' => $this->_save_size
+			'save_size' => $this->_save_size,
+			'delete_file' => $this->_delete_file
 		)));	
 	}
 
