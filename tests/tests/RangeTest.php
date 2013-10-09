@@ -260,6 +260,16 @@ class Jam_RangeTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @coversNothing
+	 */
+	public function test_serializable()
+	{
+		$range = new Jam_Range(array(4, 5));
+		$serialized = serialize($range);
+		$this->assertEquals($range, unserialize($serialized));
+	}
+
+	/**
 	 * @covers Jam_Range::serialize
 	 */
 	public function test_serialize()
