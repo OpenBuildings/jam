@@ -27,7 +27,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		return $this->_format;
 	}
 
-	public static function sum(array $ranges)
+	public static function sum(array $ranges, $format = NULL)
 	{
 		$min = 0;
 		$max = 0;
@@ -38,7 +38,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 			$max += $range->max();
 		}
 
-		return new Jam_Range(array($min, $max));
+		return new Jam_Range(array($min, $max), $format);
 	}
 
 	public static function merge(array $ranges)
@@ -98,7 +98,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	public function add(Jam_Range $addition)
 	{
-		return Jam_Range::sum(array($this, $addition));
+		return Jam_Range::sum(array($this, $addition), $this->format());
 	}
 
 	public function offsetSet($offset, $value) 
@@ -132,18 +132,10 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	public function offsetGet($offset)
 	{
-		if ($offset == 0)
-		{
-			return $this->min();
-		}
-		elseif ($offset == 1) 
-		{
-			return $this->max();
-		}
-		else
-		{
+		if ( ! $this->offsetExists($offset))
 			throw new Kohana_Exception('Use offset 0 for min and offset 1 for max, offset :offset not supported', array(':offset' => $offset));
-		}
+			
+		return $offset ? $this->max() : $this->min();
 	}
 
 	public function __toString()
@@ -161,7 +153,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		return array($this->min(), $this->max());
 	}
 
-	public function serialize($data)
+	public function serialize()
 	{
 		return $this->__toString();
 	}
