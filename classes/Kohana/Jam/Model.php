@@ -332,7 +332,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 					$retrieved->clear_changed();
 				}
 			}
-			else
+			elseif (($field = $this->meta()->field($name)) AND $field->in_db)
 			{
 				unset($this->_retrieved[$name]);
 			}
