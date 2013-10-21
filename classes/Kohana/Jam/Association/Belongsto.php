@@ -274,9 +274,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
-		if ($value = Arr::get($changed, $this->name) AND Jam_Association::is_changed($value))
+		if ($value = Arr::get($changed, $this->name))
 		{
-			if ($item = $model->{$this->name})
+			if (Jam_Association::is_changed($value) AND ($item = $model->{$this->name}))
 			{
 				if ( ! $item->is_saving())
 				{
@@ -284,8 +284,13 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 				}
 				$this->set($model, $item, TRUE);
 			}
+			else
+			{
+				$this->set($model, $value, TRUE);
+			}
 		}
 	}
+
 
 	/**
 	 * If we're using count_cache, increment the count_cache field on the foreign model
