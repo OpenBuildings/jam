@@ -120,10 +120,51 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 	public function messages_all()
 	{
-		return $this->get_errors($this->_model);
+		$messages = array();
+		return $this->_add_messages_all($this->_model, $messages);
 	}
 
-	private function get_errors(Jam_Model $model)
+	private function _add_messages_all(Jam_Model $model, array & $messages)
+	{
+		foreach ($model->errors() as $attribute_name => $errors) 
+		{
+			if ($model->meta()->association($attribute_name) instanceof Jam_Association_Collection)
+			{
+				foreach ($model->$attribute_name as $i => $item) 
+				{
+					if ( ! $item->is_valid()) 
+					{
+						$this->_add_messages_all($item, $messages);
+					}
+				}
+			}	
+			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
+			{
+				$this->_add_messages_all($item, $messages);
+			}
+			else
+			{
+				foreach ($errors as $error => $params)
+				{
+					$model_name = ucfirst(Inflector::humanize($model->meta()->model()));
+
+					$messages[] = $model_name.': '.Jam_Errors::message($model->meta()->errors_filename(), $attribute_name, $error, Arr::merge($params, array(
+						':model' => $model->meta()->model(),
+						':attribute' => Jam_Errors::attribute_label($model->meta(), $attribute_name),
+					)));
+				}
+			}
+		}
+
+		return $messages;
+	}
+
+	public function messages_dump()
+	{
+		return $this->_model_messages_dump($this->_model);
+	}
+
+	private function _model_messages_dump(Jam_Model $model)
 	{
 		$messages = array();
 		foreach ($model->errors() as $attribute_name => $errors) 
@@ -132,18 +173,21 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			{
 				foreach ($model->$attribute_name as $i => $item) 
 				{
-					$messages[] = ucfirst(Inflector::humanize($attribute_name)).' ['.$i.']: '.join(', ', $this->get_errors($item));
+					if ( ! $item->is_valid()) 
+					{
+						$messages[] = ucfirst(Inflector::humanize($attribute_name)).' ('.$i.'): '.join(', ', $this->_model_messages_dump($item));
+					}
 				}
 			}	
 			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
 			{
-				$messages[] = ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->get_errors($model->$attribute_name));
+				$messages[] = ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->_model_messages_dump($model->$attribute_name));
 			}
 			else
 			{
 				foreach ($errors as $error => $params)
 				{
-					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_name, $error, Arr::merge($params, array(
+					$messages[] = Jam_Errors::message($model->meta()->errors_filename(), $attribute_name, $error, Arr::merge($params, array(
 						':model' => $model->meta()->model(),
 						':attribute' => Jam_Errors::attribute_label($model->meta(), $attribute_name),
 					)));
