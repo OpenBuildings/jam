@@ -195,11 +195,18 @@ class Jam_RangeTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_format()
 	{
-		$range = new Jam_Range;
+		$range = new Jam_Range(array(2, 3));
 		$this->assertSame(':min - :max', $range->format());
 
 		$range->format('some other format');
 		$this->assertSame('some other format', $range->format());
+		$this->assertSame('some other format', $range->humanize());
+
+		$range->format(function($min, $max){
+			return 'some closure '.$min.' - '.$max;
+		});
+
+		$this->assertSame('some closure 2 - 3', $range->humanize());
 	}
 
 	/**
