@@ -140,7 +140,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			}	
 			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
 			{
-				$this->_add_messages_all($item, $messages);
+				$this->_add_messages_all($model->$attribute_name, $messages);
 			}
 			else
 			{
