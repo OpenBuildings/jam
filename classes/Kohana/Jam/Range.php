@@ -145,10 +145,9 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	public function humanize()
 	{
-		if ($this->format() instanceof Closure)
+		if (is_callable($this->format()))
 		{
-			$format = $this->format();
-			return $format($this->min(), $this->max());
+			return call_user_func($this->format(), $this->min(), $this->max());
 		}
 		else
 		{
