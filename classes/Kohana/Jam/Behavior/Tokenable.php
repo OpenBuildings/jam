@@ -15,6 +15,8 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 
 	protected $_uppercase = FALSE;
 
+	protected $_token_function = 'Jam_Behavior_Tokenable::generate_token';
+
 	public function initialize(Jam_Meta $meta, $name)
 	{
 		parent::initialize($meta, $name);
@@ -27,9 +29,14 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 		$model->update_token();
 	}
 
-	public function generate_token()
+	public static function generate_token()
 	{
-		$token = base_convert(rand(1, 1000000000), 10, 36);
+		return base_convert(rand(1, 1000000000), 10, 36);
+	}
+
+	public function new_token()
+	{
+		$token = call_user_func($this->_token_function);
 		
 		if ($this->_uppercase)
 		{
@@ -43,7 +50,7 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 	{
 		do
 		{
-			$model->{$this->_field} = $this->generate_token();
+			$model->{$this->_field} = $this->new_token();
 		}
 		while (Jam::all($model->meta()->model())->where($this->_field, '=', $model->{$this->_field})->count_all() > 0);
 		

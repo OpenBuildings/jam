@@ -22,13 +22,18 @@ class Jam_Behavior_TokenableTest extends Testcase_Database {
 		$this->assertNotNull($video->token);
 	}
 
-	public function test_generate_token()
+	public static function new_token_test()
+	{
+		return 'new test token';
+	}
+
+	public function test_new_token()
 	{
 		$behavior = new Jam_Behavior_Tokenable();
 
 		foreach (range(0, 10) as $i) 
 		{
-			$token = $behavior->generate_token();
+			$token = $behavior->new_token();
 			$this->assertRegExp('/[a-z0-9]/', $token);
 		}
 
@@ -36,8 +41,14 @@ class Jam_Behavior_TokenableTest extends Testcase_Database {
 
 		foreach (range(0, 10) as $i) 
 		{
-			$token = $behavior->generate_token();
+			$token = $behavior->new_token();
 			$this->assertRegExp('/[A-Z0-9]/', $token);
 		}
+
+		$behavior = new Jam_Behavior_Tokenable(array('token_function' => 'Jam_Behavior_TokenableTest::new_token_test'));
+
+		$token = $behavior->new_token();
+
+		$this->assertEquals('new test token', $token);
 	}
 }
