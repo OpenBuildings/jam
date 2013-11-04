@@ -26,7 +26,10 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 
 	public function model_before_create(Jam_Model $model)
 	{
-		$model->update_token();
+		if ( ! $model->{$this->_field}) 
+		{
+			$model->update_token();
+		}
 	}
 
 	public static function generate_token()
