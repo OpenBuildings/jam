@@ -347,6 +347,18 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	}
 
 	/**
+	 * Override this function to add custom validation after the validators.
+	 * Having an empty validate function allow safely calling parent::validate()
+	 * when extending models.
+	 *
+	 * You need to set errors with:
+	 *     $this->errors()->add('field', 'error_name');
+	 *
+	 * @link http://git.io/5I47Tw docs
+	 */
+	public function validate() {}
+
+	/**
 	 * Get the errors from the previous check, if you provide a name, will return the errors only for that name
 	 * Automatically loads the error messages file from messages/jam-validation/<model_name>
 	 * If there are no errors yet - return NULL
