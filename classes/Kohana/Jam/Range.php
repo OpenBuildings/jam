@@ -41,7 +41,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		return new Jam_Range(array($min, $max), $format);
 	}
 
-	public static function merge(array $ranges)
+	public static function merge(array $ranges, $format = NULL)
 	{
 		$min = 0;
 		$max = 0;
@@ -52,7 +52,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 			$max = max($max, $range->max());
 		}
 
-		return new Jam_Range(array($min, $max));
+		return new Jam_Range(array($min, $max), $format);
 	}
 
 	public function __construct($source = NULL, $format = NULL)
