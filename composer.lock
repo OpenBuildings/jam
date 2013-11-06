@@ -165,16 +165,16 @@
     "packages-dev": [
         {
             "name": "openbuildings/kohana-test-bootsrap",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenBuildings/kohana-test-bootstrap.git",
-                "reference": "a3f9e8756d0a3262063fd904ef31ead324639a0e"
+                "reference": "57c9cae9bd97edbe58d1c41c35c499c7d54f4030"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenBuildings/kohana-test-bootstrap/zipball/a3f9e8756d0a3262063fd904ef31ead324639a0e",
-                "reference": "a3f9e8756d0a3262063fd904ef31ead324639a0e",
+                "url": "https://api.github.com/repos/OpenBuildings/kohana-test-bootstrap/zipball/57c9cae9bd97edbe58d1c41c35c499c7d54f4030",
+                "reference": "57c9cae9bd97edbe58d1c41c35c499c7d54f4030",
                 "shasum": ""
             },
             "type": "library",
@@ -196,7 +196,7 @@
                 }
             ],
             "description": "Kohana core classes repackaged with composer, used to test modules",
-            "time": "2013-09-20 19:43:58"
+            "time": "2013-10-01 08:57:54"
         }
     ],
     "aliases": [
