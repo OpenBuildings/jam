@@ -37,7 +37,6 @@ abstract class Kohana_Jam_Validator {
 			unset($options['unless']);
 		}
 
-
 		foreach ($options as $rule => $params) 
 		{
 			$this->rules[] = ($params instanceof Jam_Validator_Rule) ? $params : Jam::validator_rule($rule, $params);
@@ -67,7 +66,7 @@ abstract class Kohana_Jam_Validator {
 			$result = call_user_func($this->condition, $model, $this->attributes);
 		}
 		
-		return $this->condition_negative ? ! $result : $result;
+		return $this->condition_negative ? ! $result : (bool) $result;
 	}
 
 	public function html5_validation(Jam_Validated $model, $name)
