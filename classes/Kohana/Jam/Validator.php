@@ -85,13 +85,13 @@ abstract class Kohana_Jam_Validator {
 		return $attributes;
 	}
 
-	public function validate_model(Jam_Validated $model)
+	public function validate_model(Jam_Validated $model, $force = FALSE)
 	{
 		foreach ($this->attributes as $attribute) 
 		{
 			if ($model instanceof Jam_Validated AND $this->condition_met($model))
 			{
-				if ( (($model instanceof Jam_Model AND ! $model->loaded()) OR $model->changed($attribute)) OR $model->unmapped($attribute))
+				if ($force OR (($model instanceof Jam_Model AND ! $model->loaded()) OR $model->changed($attribute)) OR $model->unmapped($attribute))
 				{
 					foreach ($this->rules as $rule) 
 					{
@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Validator {
 							$rule->validate($model, $attribute, $model->$attribute);
 						}
 					}
-				}	
+				}
 			}
 		}
 	}

@@ -293,11 +293,11 @@ abstract class Kohana_Jam_Meta {
 		return $this->_validators;
 	}
 
-	public function execute_validators(Jam_Validated $model)
+	public function execute_validators(Jam_Validated $model, $force = FALSE)
 	{
 		foreach ($this->_validators as $validator) 
 		{
-			$validator->validate_model($model);
+			$validator->validate_model($model, $force);
 		}
 
 		if (method_exists($model, 'validate'))

@@ -328,7 +328,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 
 			$this->meta()->events()->trigger('model.before_check', $this, array($this->_changed));
 
-			$this->meta()->execute_validators($this);
+			$this->meta()->execute_validators($this, $force);
 
 			$this->meta()->events()->trigger('model.after_check', $this, array($this->_changed));
 		}

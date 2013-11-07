@@ -111,6 +111,26 @@ class Jam_ValidatorTest extends Testcase_Validate {
 					Jam::validator_rule('format', array('email' => TRUE))
 				),
 			),
+			array(
+				array('abc', 'qwe'),
+				array(
+					'unless' => 'qwe',
+					'if' => 'abc',
+					'present' => TRUE,
+					Jam::validator_rule('numeric', array('greater_than' => 5)),
+					'format' => array(
+						'email' => TRUE
+					)
+				),
+				array('abc', 'qwe'),
+				'qwe',
+				TRUE,
+				array(
+					Jam::validator_rule('present'),
+					Jam::validator_rule('numeric', array('greater_than' => 5)),
+					Jam::validator_rule('format', array('email' => TRUE))
+				),
+			),
 		);
 	}
 
@@ -423,5 +443,218 @@ class Jam_ValidatorTest extends Testcase_Validate {
 		}
 
 		$this->assertSame($expected, $validator->condition_met($model));
+	}
+
+	/**
+	 * @covers Jam_Validator::validate_model
+	 */
+	public function test_validate_model()
+	{
+		$mock_rule_present = $this->getMock('Jam_Validator_Rule_Present', array(
+			'validate',
+			'is_processable_attribute'
+		), array(TRUE));
+
+		$mock_model = $this->getMock('Model_Test_Element', array(
+			'loaded',
+			'changed',
+			'unmapped',
+		), array('test_element'));
+
+		$mock_model->name = 'xyz';
+		$mock_model->url = 'example.com';
+
+		$mock_model
+			->expects($this->exactly(3))
+			->method('loaded')
+			->will($this->returnValue(FALSE));
+
+		$mock_rule_present
+			->expects($this->at(0))
+			->method('is_processable_attribute')
+			->with($mock_model, 'name')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_present
+			->expects($this->at(1))
+			->method('validate')
+			->with($mock_model, 'name', 'xyz');
+
+		$mock_rule_present
+			->expects($this->at(2))
+			->method('is_processable_attribute')
+			->with($mock_model, 'name')
+			->will($this->returnValue(FALSE));
+
+		$mock_rule_present
+			->expects($this->at(3))
+			->method('is_processable_attribute')
+			->with($mock_model, 'url')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_present
+			->expects($this->at(4))
+			->method('validate')
+			->with($mock_model, 'url', 'example.com');
+
+		$mock_validator = $this->getMock('Jam_Validator', array(
+			'condition_met'
+		), array(
+			array(),
+			array(
+				$mock_rule_present
+			)
+		));
+
+		// Test validator with no attributes
+		$mock_validator->validate_model($mock_model);
+
+		$mock_validator = $this->getMock('Jam_Validator', array(
+			'condition_met'
+		), array(
+			array(
+				'name',
+			),
+			array(
+				$mock_rule_present,
+			)
+		));
+
+		$mock_validator
+			->expects($this->at(0))
+			->method('condition_met')
+			->with($mock_model)
+			->will($this->returnValue(TRUE));
+
+		// Test validator with one attribute and one rule
+		$mock_validator->validate_model($mock_model);
+
+		$mock_rule_format = $this->getMock('Jam_Validator_Rule_Format', array(
+			'is_processable_attribute',
+			'validate',
+		), array(array()));
+
+		$mock_rule_format
+			->expects($this->at(0))
+			->method('is_processable_attribute')
+			->with($mock_model, 'name')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_format
+			->expects($this->at(1))
+			->method('validate')
+			->with($mock_model, 'name');
+
+		$mock_rule_format
+			->expects($this->at(2))
+			->method('is_processable_attribute')
+			->with($mock_model, 'url')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_format
+			->expects($this->at(3))
+			->method('validate')
+			->with($mock_model, 'url', 'example.com');
+
+		$mock_validator = $this->getMock('Jam_Validator', array(
+			'condition_met'
+		), array(
+			array(
+				'name',
+				'url',
+			),
+			array(
+				$mock_rule_present,
+				$mock_rule_format,
+			)
+		));
+
+		$mock_validator
+			->expects($this->at(0))
+			->method('condition_met')
+			->with($mock_model)
+			->will($this->returnValue(TRUE));
+
+		$mock_validator
+			->expects($this->at(1))
+			->method('condition_met')
+			->with($mock_model)
+			->will($this->returnValue(TRUE));
+
+		// Test validator with two attributes and two rules
+		$mock_validator->validate_model($mock_model);
+
+		/**
+		 * Test forced validation
+		 */
+
+		$this->markTestIncomplete('Should correct tests for forced validation');
+
+		$mock_rule_present
+			->expects($this->at(5))
+			->method('is_processable_attribute')
+			->with($mock_model, 'name')
+			->will($this->returnValue(FALSE));
+
+		$mock_rule_present
+			->expects($this->at(6))
+			->method('is_processable_attribute')
+			->with($mock_model, 'url')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_present
+			->expects($this->at(7))
+			->method('validate')
+			->with($mock_model, 'url', 'example.com');
+
+		$mock_rule_format
+			->expects($this->at(4))
+			->method('is_processable_attribute')
+			->with($mock_model, 'name')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_format
+			->expects($this->at(5))
+			->method('validate')
+			->with($mock_model, 'name');
+
+		$mock_rule_format
+			->expects($this->at(6))
+			->method('is_processable_attribute')
+			->with($mock_model, 'url')
+			->will($this->returnValue(TRUE));
+
+		$mock_rule_format
+			->expects($this->at(7))
+			->method('validate')
+			->with($mock_model, 'url', 'example.com');
+
+		$mock_validator = $this->getMock('Jam_Validator', array(
+			'condition_met'
+		), array(
+			array(
+				'name',
+				'url',
+			),
+			array(
+				$mock_rule_present,
+				$mock_rule_format,
+			)
+		));
+
+		$mock_validator
+			->expects($this->at(0))
+			->method('condition_met')
+			->with($mock_model)
+			->will($this->returnValue(TRUE));
+
+		$mock_validator
+			->expects($this->at(1))
+			->method('condition_met')
+			->with($mock_model)
+			->will($this->returnValue(TRUE));
+
+		// Forced validation should skip loaded and other checks
+		$mock_validator->validate_model($mock_model, TRUE);
 	}
 }
