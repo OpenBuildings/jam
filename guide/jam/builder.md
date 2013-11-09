@@ -452,7 +452,7 @@ Jam::all('client')->where('client.title', '=', 'Patrik')->count_with_subquery();
 
 ## Update queries
 
-You can perform update queries with Jam::update() query builder. It has most of the select methods and some methods for updating rows.
+You can perform update queries with `Jam::update()` query builder. It has most of the select methods and some methods for updating rows.
 
 * where_key()
 * where()
@@ -494,7 +494,7 @@ Jam::update('client')->where('client.title', '=', 'Patrik')->value('title', 'Mav
 
 ## Insert queries
 
-You can perform insert queries with Jam::insert() query builder. It has most of the select methods and some methods for inserting rows.
+You can perform insert queries with `Jam::insert()` query builder. It has most of the select methods and some methods for inserting rows.
 
 * where_key()
 * where()
@@ -509,31 +509,80 @@ You can perform insert queries with Jam::insert() query builder. It has most of 
 * distinct()
 * order_by()
 * limit()
-* set()
-* value()
 
 ### Inserting a single record
 
-You can use `set()` for multiple column => value pairs or `value()` for a single 'key', 'value' pair.
+Just like you would do with Kohana database query builder.
+With Jam though you would pass the name of the model and get automatic field name resolving.
 
 ```php
 <?php
-Jam::insert('client')->set(array('client.title' => 'Patrik', 'username' => 'patrik76'))->execute()
-// INSERT INTO clients SET title = 'Patrik', username = 'patrik76'
+Jam::insert('client')
+	->columns(array(
+		'client.title',
+		'username' => 'patrick76'
+	))
+	->values(array(
+		'Patrik',
+		'patrik76'
+	))
+	->execute()
+// INSERT INTO clients VALUES (`title`, `username`) VALUES ("Patrik", "patrik76")
+?>
+```
+
+You could also pass columns as a second argument to `Jam::insert()`.
+
+```php
+<?php
+Jam::insert('client', array(
+	'client.title',
+	'username' => 'patrick76'
+))
+	->values(array(
+		'Patrik',
+		'patrik76'
+	))
+	->execute()
+// INSERT INTO clients VALUES (`title`, `username`) VALUES ('Patrik', 'patrik76')
+?>
+```
+
+You could pass any `Database_Query` (or `Database_Query_Builder`) instance to `values()`.
+This way you would insert values from a sub-query.
+
+```php
+<?php
+Jam::insert('client', array(
+	'client.title',
+	'username' => 'patrick76'
+))
+	->values(Jam::all('user')
+		->where('type', '=', 'client')
+		->select('name', 'username')
+		->limit(1))
+	->execute()
+// INSERT INTO clients VALUES (`title`, `username`) VALUES ('Patrik', 'patrik76')
 ?>
 ```
 
 ### Inserting multiple records
 
-You can also set them with `columns()` and `values()` methods. But there's a twist - you can insert multiple rows this way, if you pass multiple arrays to `values()`
+You can pass multiple arrays to `values()` to insert multiple rows.
 
 ```php
 <?php
-Jam::insert('client')->columns('title', 'username')->values(array('Patrik', 'patrick76'))->execute();
-// INSERT INTO clients(title, username) VALUES ('Patrik', 'patrik76');
 
 // Insert multiple rows
-Jam::insert('client')->columns('title', 'username')->values(array('Patrik', 'patrick76'), array('Martin', 'martin87'))->execute();
+Jam::insert('client', array('title', 'username'))
+	->values(array(
+		'Patrik',
+		'patrick76'
+	), array(
+		'Martin',
+		'martin87'
+	))
+	->execute();
 // INSERT INTO clients(title, username) VALUES ('Patrik', 'patrik76'), ('Martin', 'martin87');
 ?>
 ```
@@ -546,7 +595,7 @@ You can also perform INSERT ... SELECT queries with Jam_Builder. This is a bit m
 <?php
 Jam::insert('client')
 	->columns('title', 'username')
-	->select('order.name', 'order.id');
+	->select('order.name', 'order.id')
 	->from('order')
 	->where('order.price', '=', 1);
 // INSERT INTO clients(title, username) SELECT orders.name, orders.id FROM orders WHERE orders.price = 1;

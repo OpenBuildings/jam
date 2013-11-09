@@ -140,4 +140,24 @@ class Jam_CoreTest extends PHPUnit_Framework_TestCase {
 		$model = Jam::build_template('test_position', array('model' => 'test_position_big'));
 		$this->assertInstanceOf('Model_Test_Position_Big', $model);
 	}
+
+	/**
+	 * @covers Jam::insert
+	 */
+	public function test_insert()
+	{
+		$insert = Jam::insert('test_author');
+		$this->assertInstanceOf('Jam_Query_Builder_Insert' ,$insert);
+		$this->assertSame(Jam::meta('test_author'), $insert->meta());
+		$this->assertEquals(
+			'INSERT INTO `test_authors` () VALUES ',
+			$insert->compile()
+		);
+
+		$insert = Jam::insert('test_author', array('name', 'email'));
+		$this->assertEquals(
+			'INSERT INTO `test_authors` (`name`, `email`) VALUES ',
+			$insert->compile()
+		);
+	}
 }
