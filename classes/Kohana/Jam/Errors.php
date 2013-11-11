@@ -214,6 +214,16 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		return join(', ', $all_messages);
 	}
 
+	public function first()
+	{
+		$messages = $this->current();
+
+		if (is_array($messages))
+			return reset($messages);
+
+		return NULL;
+	}
+
 	public function seek($offset)
 	{
 		if ($this->offsetExists($offset))
