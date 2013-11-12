@@ -627,6 +627,45 @@ abstract class Kohana_Jam_Meta {
 		return $this->set_append('behaviors', $behaviors);
 	}
 
+
+	/**
+	 * Get / Set individual behaviors.
+	 *
+	 * @param   string       $name     name of the association
+	 * @param   mixed        $association    the association alias or object
+	 * @return  Jam_Association|Jam_Meta|null
+	 */
+	public function behavior($name, $behavior = NULL, $prepend = FALSE)
+	{
+		if ($behavior === NULL)
+		{
+			// Get the behavior
+			return Arr::get($this->_behaviors, $name);
+		}
+
+		if ($this->_initialized)
+		{
+			// Cannot set after initialization
+			throw new Kohana_Exception(':class already initialized, cannot set :behavior', array(
+				':class' => Jam::class_name($this->_model),
+				':behavior'   => $name,
+			));
+		}
+
+		// Set the behavior
+		if ($prepend)
+		{
+			$this->_behaviors = array($name => $behavior) + $this->_behaviors;
+		}
+		else
+		{
+			$this->_behaviors[$name] = $behavior;
+		}
+
+		// Return Jam_Meta
+		return $this;
+	}
+
 	/**
 	 * Gets the events attached to the object.
 	 *
