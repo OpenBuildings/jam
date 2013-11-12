@@ -23,6 +23,17 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 		return Jam_Behavior_Paranoid::$_default_filter;
 	}
 
+	public static function with_filter($filter, $closure)
+	{
+		$current_filter = static::filter();
+		static::filter($filter);
+
+		$result = call_user_func($closure);
+
+		static::filter($current_filter);
+		return $result;
+	}
+
 	const ALL = 'all';
 	const DELETED = 'deleted';
 	const NORMAL = 'normal';
