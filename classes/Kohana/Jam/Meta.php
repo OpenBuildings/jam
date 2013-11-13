@@ -252,7 +252,7 @@ abstract class Kohana_Jam_Meta {
 		return $this->_initialized;
 	}
 
-	public function collection()
+	public function collection($value = NULL)
 	{
 		if (func_num_args() !== 0)
 		{
