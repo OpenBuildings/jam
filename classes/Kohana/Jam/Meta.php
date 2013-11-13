@@ -220,7 +220,7 @@ abstract class Kohana_Jam_Meta {
 			$this->_defaults[$column] = $field->default;
 		}
 
-		if ( ! $this->_collection AND $class = Jam::collection_prefix().Jam::capitalize_class_name($this->_model) AND class_exists($class))
+		if ( ! $this->_collection AND ($class = Jam::collection_prefix().Jam::capitalize_class_name($this->_model)) AND class_exists($class))
 		{
 			$this->_collection = $class;
 		}
