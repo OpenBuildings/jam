@@ -110,6 +110,27 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test that ->set() correctly sets values on fields, unmapped and properties
+	 */
+	public function test_set()
+	{
+		$element = Jam::build('test_element');
+
+		$params = array(
+			'name_is_email' => 'val1',
+			'email' => 'val2',
+			'unnmapped_field' => 'val3'
+		);
+
+		$element->set($params);
+
+		foreach ($params as $key => $value) 
+		{
+			$this->assertEquals($value, $element->{$key});
+		}
+	}
+
+	/**
 	 * Provider for test_original
 	 */
 	public function provider_original()
