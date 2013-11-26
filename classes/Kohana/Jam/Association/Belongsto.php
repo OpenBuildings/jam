@@ -298,7 +298,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function model_after_create(Jam_Model $model)
 	{
-		if ($this->count_cache)
+		if ($this->count_cache AND $model->{$this->foreign_key})
 		{
 			Jam_Countcache::increment($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
 		}
@@ -328,7 +328,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 */
 	public function model_after_delete(Jam_Model $model)
 	{
-		if ($this->count_cache)
+		if ($this->count_cache AND $model->{$this->foreign_key})
 		{
 			Jam_Countcache::decrement($this->foreign_model, $this->count_cache, $model->{$this->foreign_key});
 		}
