@@ -204,7 +204,7 @@ abstract class Kohana_Jam_Association_Collection extends Jam_Association {
 	{
 		if ($ids = array_filter($collection->ids()))
 		{
-			$query = $this->remove_items_query($model, $old_ids);
+			$query = $this->remove_items_query($model, $ids);
 			if ($query)
 			{
 				$query->execute(Jam::meta($this->model)->db());

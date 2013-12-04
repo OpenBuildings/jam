@@ -9,9 +9,9 @@
  */
 class Kohana_Upload_Temp
 {
-	public static function factory(array $config = NULL)
+	public static function factory()
 	{
-		return new Upload_Temp($config);
+		return new Upload_Temp;
 	}
 
 	public static function config($name = NULL)

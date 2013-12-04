@@ -292,7 +292,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			// Do we even have to update anything in the row?
 			if ($values)
 			{
-				Jam::update($this, $key)
+				Jam::update($this)
 					->where_key($key)
 					->set($values)
 					->execute();
