@@ -155,9 +155,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	 * @param  Jam_Model $model      
 	 * @param  boolean $is_changed 
 	 */
-	public function model_after_delete(Jam_Validated $model)
+	public function model_after_delete(Jam_Validated $model, Jam_Event_Data $data, $delete_finishd)
 	{
-		if ($this->delete_file AND $upload_file = $model->{$this->name})
+		if ($this->delete_file AND $delete_finishd AND $upload_file = $model->{$this->name})
 		{
 			$upload_file->delete();
 		}

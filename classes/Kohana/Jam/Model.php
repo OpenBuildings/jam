@@ -365,7 +365,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		}
 
 		// Trigger the after-delete
-		$this->meta()->events()->trigger('model.after_delete', $this);
+		$this->meta()->events()->trigger('model.after_delete', $this, array($result));
 
 		// Clear the object so it appears deleted anyway
 		$this->clear();
