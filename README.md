@@ -1,4 +1,11 @@
-Jam is a small ORM for Kohana 3.2+ that builds on top of Jelly - the project was originally started by [Jonathan Geiger](http://jonathan-geiger.com/) and co-developed by [Paul Banks](http://blog.banksdesigns.co.uk/).
+Jam is a small ORM for Kohana 3.3+ that builds on top of Jelly - the project was originally started by [Jonathan Geiger](http://jonathan-geiger.com/) and co-developed by [Paul Banks](http://blog.banksdesigns.co.uk/).
+
+[![Build Status](https://travis-ci.org/OpenBuildings/jam.png?branch=master)](https://travis-ci.org/OpenBuildings/jam)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/OpenBuildings/jam/badges/quality-score.png?s=b2c55a305a1bbf8f71019c844844178bd1f8bd3f)](https://scrutinizer-ci.com/g/OpenBuildings/jam/)
+[![Code Coverage](https://scrutinizer-ci.com/g/OpenBuildings/jam/badges/coverage.png?s=1d4e07144e6884988d4ec449cdbdf4ad1312c723)](https://scrutinizer-ci.com/g/OpenBuildings/jam/)
+[![Latest Stable Version](https://poser.pugx.org/openbuildings/jam/v/stable.png)](https://packagist.org/packages/openbuildings/jam)
+
+
 
 Jam adds some much needed features to Jelly project, 
 
