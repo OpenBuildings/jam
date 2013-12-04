@@ -22,7 +22,7 @@ class Model_Test_Image extends Jam_Model {
 		$meta->fields(array(
 			'id'              => Jam::field('primary'),
 			'file'            => Jam::field('upload', array(
-				'delete_file' => FALSE,
+				'delete_file' => TRUE,
 			)),
 		));
 	}

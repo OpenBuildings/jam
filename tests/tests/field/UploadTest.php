@@ -44,17 +44,20 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 		$this->assertEquals('http://example.com/test.png', $upload->filename());
 	}
 
-	public function test_save()
+	public function test_save_and_delete()
 	{
 		$image = Jam::build('test_image');
 
 		$image->file = Upload_Util::combine($this->test_local, 'source', 'logo.gif');
 		$image->save();
 
-		$this->assertFileExists($image->file->file());
+		$file = $image->file->file();
+
+		$this->assertFileExists($file);
 		
-		unlink($image->file->file());
 		$image->delete();
+
+		$this->assertFileNotExists($file);
 	}
 
 }
