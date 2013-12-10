@@ -207,4 +207,22 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 
 		$this->assertHasError($this->model, 'file', 'uploaded_exact_height');
 	}
+
+    public function test_multiple_rules()
+    {
+        // Logo is 127 x 34
+        $this->value
+            ->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
+            ->save_to_temp();
+
+        Jam::validator_rule('uploaded', array(
+            'only' => array('png'),
+            'maximum_size' => '1B',
+            'exact_height' => 20,
+        ))->validate($this->model, 'file', $this->value);
+
+        $this->assertHasError($this->model, 'file', 'uploaded_extension');
+        $this->assertHasError($this->model, 'file', 'uploaded_maximum_size');
+        $this->assertHasError($this->model, 'file', 'uploaded_exact_height');
+    }
 }
