@@ -48,11 +48,11 @@ class Kohana_Jam_Validator_Rule_Uploaded extends Jam_Validator_Rule {
 			{
 				$model->errors()->add($attribute, 'uploaded_is_file');
 			}
-			elseif ($this->only AND ! in_array(strtolower(pathinfo($value->filename(), PATHINFO_EXTENSION)), $this->valid_extensions()))
+			if ($this->only AND ! in_array(strtolower(pathinfo($value->filename(), PATHINFO_EXTENSION)), $this->valid_extensions()))
 			{
 				$model->errors()->add($attribute, 'uploaded_extension', array(':extension' => join(', ', $this->valid_extensions())));
 			}
-			elseif ($this->minimum_size OR $this->maximum_size OR $this->exact_size)
+			if ($this->minimum_size OR $this->maximum_size OR $this->exact_size)
 			{
 				$size = @ filesize($value->file());
 
@@ -69,7 +69,7 @@ class Kohana_Jam_Validator_Rule_Uploaded extends Jam_Validator_Rule {
 					$model->errors()->add($attribute, 'uploaded_exact_size', array(':exact_size' => $this->exact_size));
 				}
 			}
-			elseif ($this->minimum_width OR $this->minimum_height OR $this->maximum_width OR $this->maximum_height OR $this->exact_width OR $this->exact_height)
+			if ($this->minimum_width OR $this->minimum_height OR $this->maximum_width OR $this->maximum_height OR $this->exact_width OR $this->exact_height)
 			{
 				$dims = @ getimagesize($value->file());
 				if ($dims)
