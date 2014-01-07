@@ -124,7 +124,7 @@ class Kohana_Image_Generator
 	{
 		if ($this->filename_generator())
 		{
-			return $this->model()->{"image_generator_{$this->image()}_filename"}();
+			return $this->model()->{"image_generator_{$this->image()}_filename"};
 		}
 		else
 		{
