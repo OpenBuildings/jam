@@ -44,7 +44,11 @@ class Kohana_Jam_Validator_Rule_Uploaded extends Jam_Validator_Rule {
 	{
 		if ($value AND ! $value->is_empty() AND $value->source())
 		{
-			if ( ! is_file($value->file()))
+			if (($error = $value->source()->error()))
+			{
+				$model->errors()->add($attribute, 'uploaded_native', array(':message' => $error));
+			}
+			elseif ( ! is_file($value->file()))
 			{
 				$model->errors()->add($attribute, 'uploaded_is_file');
 			}
