@@ -99,6 +99,7 @@ class Kohana_Image_Generator
 			if ($filename !== NULL)
 			{
 				$this->model()->$field = $filename;
+				$this->_update_model_field($this->model()->$field);
 				return $this;
 			}
 
@@ -124,7 +125,7 @@ class Kohana_Image_Generator
 	{
 		if ($this->filename_generator())
 		{
-			return $this->model()->{"image_generator_{$this->image()}_filename"};
+			return $this->model()->{"image_generator_{$this->image()}_filename"}();
 		}
 		else
 		{
@@ -165,11 +166,6 @@ class Kohana_Image_Generator
 	public function update_cache()
 	{
 		$new_filename = $this->generate_filename();
-
-		if ($new_filename !== $this->filename() AND is_file($this->path()))
-		{
-			unlink($this->path());
-		}
 
 		$this->filename($new_filename);
 	}
