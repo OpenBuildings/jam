@@ -72,6 +72,15 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 		}
 	}
 
+	public function model_before_update(Jam_Model $model)
+	{
+		if ( ! $model->changed($this->_field)
+		 AND $this->_is_scope_changed($model))
+		{
+			$model->{$this->_field} = $model->get_position();
+		}
+	}
+
 	/**
 	 * Set the position to the last item when creating
 	 * 
@@ -81,12 +90,7 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	{
 		if ( ! $model->changed($this->_field))
 		{
-			$last = Jam::all($this->_model)
-				->where_in_scope($model)
-				->order_by($this->_field, 'DESC')
-				->first();
-
-			$model->{$this->_field} = $last ? $last->{$this->_field} + 1 : 1;
+			$model->{$this->_field} = $model->get_position();
 		}
 	}
 
@@ -169,5 +173,36 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	public function compare(Jam_Model $item1, Jam_Model $item2)
 	{
 		return $item1->{$this->_field} - $item2->{$this->_field};
+	}
+
+	/**
+	 * Get a new value for the position field.
+	 * This is called before create and before update (it the scope is changed).
+	 *
+	 * @return int the new position field value
+	 * @uses Jam_Behavior_Sortable::builder_call_where_in_scope
+	 */
+	public function model_call_get_position(Jam_Model $model, Jam_Event_Data $data)
+	{
+		$last = Jam::all($this->_model)
+			->where_in_scope($model)
+			->order_by($this->_field, 'DESC')
+			->first();
+
+		return $data->return = $last ? $last->{$this->_field} + 1 : 1;
+	}
+
+	private function _is_scope_changed(Jam_Model $model)
+	{
+		if ( ! $this->_scope)
+			return FALSE;
+
+		foreach ( (array) $this->_scope as $scope_field)
+		{
+			if ($model->changed($scope_field))
+				return TRUE;
+		}
+
+		return FALSE;
 	}
 } // End Jam_Behavior_Sluggable
