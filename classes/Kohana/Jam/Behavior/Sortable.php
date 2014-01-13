@@ -1,37 +1,38 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- *  Clipping behavior for Jam ORM library 
- *  
+ * Sortable behavior for Jam ORM library
+ *
  * @package    Jam
  * @category   Behavior
- * @author     Ivan Kerin
- * @copyright  (c) 2011-2012 Despark Ltd.
+ * @author     Ivan Kerin <ikerin@gmail.com>
+ * @copyright  (c) 2014 OpenBuildings, Inc.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-class Kohana_Jam_Behavior_Sortable extends Jam_Behavior 
-{ 
+class Kohana_Jam_Behavior_Sortable extends Jam_Behavior {
+
 	public $_field = 'sort_position';
+
 	public $_scope = NULL;
 
-	public function initialize(Jam_Meta $meta, $name) 
-	{			
+	public function initialize(Jam_Meta $meta, $name)
+	{
 		parent::initialize($meta, $name);
 
-		$meta->field($this->_field, Jam::field('integer', array('default' => 0)));	
+		$meta->field($this->_field, Jam::field('integer', array('default' => 0)));
 	}
 
 	/**
 	 * Sort all the ids (in the order given), with one query
-	 * @param  array  $ids 
-	 * @return $this      
+	 * @param  array  $ids
+	 * @return $this
 	 */
 	public function sort_ids(array $ids)
 	{
 		$case = 'CASE  `id` ';
 		$template = 'WHEN :id THEN :position ';
 
-		foreach ($ids as $i => $id) 
+		foreach ($ids as $i => $id)
 		{
 			$case .= strtr($template, array(':id' => $id, ':position' => $i));
 		}
@@ -45,8 +46,8 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 
 	/**
 	 * $select->order_by_position()
-	 * 
-	 * @param Jam_Builder $builder 
+	 *
+	 * @param Jam_Builder $builder
 	 */
 	public function builder_call_order_by_position(Database_Query_Builder $builder, Jam_Event_Data $data, $direction = NULL)
 	{
@@ -83,8 +84,8 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 
 	/**
 	 * Set the position to the last item when creating
-	 * 
-	 * @param Jam_Model $model 
+	 *
+	 * @param Jam_Model $model
 	 */
 	public function model_before_create(Jam_Model $model)
 	{
@@ -166,9 +167,9 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 
 	/**
 	 * Helper method to perform ordering for arrays of models
-	 * 
-	 * @param Jam_Model $item1 
-	 * @param Jam_Model $item2 
+	 *
+	 * @param Jam_Model $item1
+	 * @param Jam_Model $item2
 	 */
 	public function compare(Jam_Model $item1, Jam_Model $item2)
 	{
@@ -186,8 +187,14 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 	{
 		$last = Jam::all($this->_model)
 			->where_in_scope($model)
-			->order_by($this->_field, 'DESC')
-			->first();
+			->order_by($this->_field, 'DESC');
+
+		if ($model->loaded())
+		{
+			$last->where(':primary_key', '!=', $model->id());
+		}
+
+		$last = $last->first();
 
 		return $data->return = $last ? $last->{$this->_field} + 1 : 1;
 	}
@@ -205,4 +212,4 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior
 
 		return FALSE;
 	}
-} // End Jam_Behavior_Sluggable
+}
