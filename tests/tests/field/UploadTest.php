@@ -42,6 +42,12 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 		$this->assertInstanceOf('Upload_File', $upload);
 		$this->assertEquals('http://example.com/test.png', $upload->source()->data());
 		$this->assertEquals('http://example.com/test.png', $upload->filename());
+
+		$upload = $this->field->set($this->model, array('name' => 'file1.png'), FALSE);
+
+		$this->assertInstanceOf('Upload_File', $upload);
+		$this->assertEquals('file1.png', $upload->filename());
+		$this->assertNull($upload->source());
 	}
 
 	public function test_save_and_delete()
