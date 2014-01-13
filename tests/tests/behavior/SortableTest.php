@@ -10,7 +10,14 @@
  */
 class Jam_Behavior_SortableTest extends Testcase_Database {
 
-	
+	/**
+	 * Integration test for:
+	 *  - Kohana_Jam_Behavior_Sortable::model_before_create
+	 *  - Kohana_Jam_Behavior_Sortable::builder_call_where_in_scope
+	 *  - Kohana_Jam_Behavior_Sortable::model_call_get_position
+	 *
+	 * @coversNothing
+	 */
 	public function test_set()
 	{
 		$last_in_group = Jam::all('test_video')->where('group', '=', 'one')->first();
@@ -32,6 +39,9 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$this->assertSame($expected_positions, $positions->as_array('id', 'position'));
 	}
 
+	/**
+	 * @covers Kohana_Jam_Behavior_Sortable::model_call_move_position_to
+	 */
 	public function test_move_position_to()
 	{
 		$item5 = Jam::find('test_video', 5);
@@ -56,6 +66,9 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 
 	}
 
+	/**
+	 * @covers Kohana_Jam_Behavior_Sortable::model_call_decrease_position
+	 */
 	public function test_decrease_position()
 	{
 		$last = Jam::find('test_video', 5);
@@ -85,6 +98,9 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		));
 	}
 
+	/**
+	 * @covers Kohana_Jam_Behavior_Sortable::model_call_increase_position
+	 */
 	public function test_increase_position()
 	{
 		$first = Jam::find('test_video', 2);
@@ -114,6 +130,13 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		));
 	}
 	
+	/**
+	 * Integration test for
+	 *  - Kohana_Jam_Behavior_Sortable::builder_call_order_by_position
+	 *  - Kohana_Jam_Behavior_Sortable::builder_before_select
+	 *
+	 * @coversNothing
+	 */
 	public function test_order()
 	{
 		$this->assertPositions('one', array(
@@ -130,4 +153,177 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		));
 	}
 
+	public function data_get_position()
+	{
+		return array(
+			array(
+				array(),
+				1,
+			),
+			array(
+				array(
+					'group' => 'non-existent-group'
+				),
+				1,
+			),
+			array(
+				array(
+					'group' => 'one'
+				),
+				4,
+			),
+			array(
+				array(
+					'group' => 'two'
+				),
+				4,
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_get_position
+	 * @covers Kohana_Jam_Behavior_Sortable::model_call_get_position
+	 */
+	public function test_get_position($model_data, $expected_position)
+	{
+		$model = Jam::build('test_video', $model_data);
+
+		$this->assertSame($expected_position, $model->get_position());
+	}
+
+	public function data_get_position_loaded()
+	{
+		return array(
+			array(
+				array(
+					'id' => 100,
+				),
+				1,
+			),
+			array(
+				array(
+					'id' => 100,
+					'group' => 'non-existent-$group'
+				),
+				1,
+			),
+			array(
+				array(
+					'id' => 100,
+					'group' => 'one'
+				),
+				4,
+			),
+			array(
+				array(
+					'id' => 100,
+					'group' => 'two'
+				),
+				4,
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_get_position_loaded
+	 * @covers Kohana_Jam_Behavior_Sortable::model_call_get_position
+	 */
+	public function test_get_position_loaded($model_data, $expected_position)
+	{
+		$model = Jam::build('test_video')->load_fields($model_data);
+
+		$this->assertSame($expected_position, $model->get_position());
+	}
+
+	/**
+	 * @covers Jam_Behavior_Sortable::model_before_update
+	 * @covers Jam_Behavior_Sortable::_is_scope_changed
+	 */
+	public function test_model_before_update()
+	{
+		$model = Jam::find('test_video', 1);
+
+		$model->group = 'two';
+		$model->save();
+		$this->assertSame(4, $model->position);
+		
+		$model->file = 'test.jpg';
+		$model->group = 'two';
+		$model->save();
+		$this->assertSame(4, $model->position);
+
+		$model->file = 'testing.jpg';
+		$model->save();
+		$this->assertSame(4, $model->position);
+	}
+
+
+	public function data_model_before_create()
+	{
+		return array(
+			array(
+				array(),
+				1,
+			),
+			array(
+				array(
+					'position' => 55,
+				),
+				55,
+			),
+			array(
+				array(
+					'position' => 3,
+				),
+				3,
+			),
+			array(
+				array(
+					'group' => 'non-existent-group'
+				),
+				1,
+			),
+			array(
+				array(
+					'position' => 666,
+					'group' => 'non-existent-$group'
+				),
+				666,
+			),
+			array(
+				array(
+					'group' => 'one'
+				),
+				4,
+			),
+			array(
+				array(
+					'position' => 125,
+					'group' => 'one'
+				),
+				125,
+			),
+			array(
+				array(
+					'group' => 'two'
+				),
+				4,
+			),
+		);
+	}
+
+
+
+	/**
+	 * @dataProvider data_model_before_create
+	 * @covers Jam_Behavior_Sortable::model_before_create
+	 */
+	public function test_model_before_create($model_data, $expected_position)
+	{
+		$model = Jam::build('test_video', $model_data)
+			->save();
+
+		$this->assertSame($expected_position, $model->position);
+	}
 }
