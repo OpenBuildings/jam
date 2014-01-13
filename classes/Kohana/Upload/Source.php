@@ -143,7 +143,7 @@ abstract class Kohana_Upload_Source {
 		{
 			$errors = array(
 				UPLOAD_ERR_OK          => 'No errors.', 
-				UPLOAD_ERR_INI_SIZE    => 'must not be larger than '.Num::bytes(ini_get('post_max_size')), 
+				UPLOAD_ERR_INI_SIZE    => 'must not be larger than '.ini_get('post_max_size'), 
 				UPLOAD_ERR_FORM_SIZE   => 'must not be larger than specified', 
 				UPLOAD_ERR_PARTIAL     => 'was only partially uploaded.', 
 				UPLOAD_ERR_NO_FILE     => 'no file was uploaded.', 
