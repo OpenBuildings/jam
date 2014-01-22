@@ -41,7 +41,7 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 		return array(
 			array(
 				UPLOAD_ERR_INI_SIZE,
-				'File not uploaded properly. Error: must not be larger than '.Num::bytes(ini_get('post_max_size'))
+				'File not uploaded properly. Error: must not be larger than '.ini_get('post_max_size')
 			),			
 			array(
 				UPLOAD_ERR_PARTIAL,
@@ -75,7 +75,7 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 			'error' => $upload_error,
 		);
 
-		$this->setExpectedException('Kohana_Exception', $expected_exception);
+		$this->setExpectedException('Jam_Exception_Upload', $expected_exception);
 
 		Upload_Source::process_type_upload($data, $this->test_local);
 	}

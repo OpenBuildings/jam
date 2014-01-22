@@ -28,6 +28,22 @@ abstract class Kohana_Upload_Source {
 	}
 
 	/**
+	 * Store any native errors occurred during upload
+	 */
+	protected $_error;
+	
+	public function error($error = NULL)
+	{
+		if ($error !== NULL)
+		{
+			$this->_error = $error;
+			return $this;
+		}
+
+		return $this->_error;
+	}
+
+	/**
 	 * Guess the type of the source: 
 	 * 
 	 *  - Upload_Source::TYPE_URL
@@ -127,7 +143,7 @@ abstract class Kohana_Upload_Source {
 		{
 			$errors = array(
 				UPLOAD_ERR_OK          => 'No errors.', 
-				UPLOAD_ERR_INI_SIZE    => 'must not be larger than '.Num::bytes(ini_get('post_max_size')), 
+				UPLOAD_ERR_INI_SIZE    => 'must not be larger than '.ini_get('post_max_size'), 
 				UPLOAD_ERR_FORM_SIZE   => 'must not be larger than specified', 
 				UPLOAD_ERR_PARTIAL     => 'was only partially uploaded.', 
 				UPLOAD_ERR_NO_FILE     => 'no file was uploaded.', 
@@ -135,11 +151,12 @@ abstract class Kohana_Upload_Source {
 				UPLOAD_ERR_CANT_WRITE  => 'failed to write file to disk.', 
 				UPLOAD_ERR_EXTENSION   => 'file upload stopped by extension.', 
 			);
-			throw new Kohana_Exception("File not uploaded properly. Error: :error", array(':error' => Arr::get($errors, Arr::get($data, 'error'), '-')));
+
+			throw new Jam_Exception_Upload("File not uploaded properly. Error: :error", array(':error' => Arr::get($errors, Arr::get($data, 'error'), '-')));
 		}
 		
 		if ( ! move_uploaded_file($data['tmp_name'], Upload_Util::combine($directory, $data['name'])))
-			throw new Kohana_Exception('There was an error moving the file to :directory', array(':directory' => $directory));
+			throw new Jam_Exception_Upload('There was an error moving the file to :directory', array(':directory' => $directory));
 
 		return $data['name'];
 	}
@@ -170,8 +187,15 @@ abstract class Kohana_Upload_Source {
 			break;
 			
 			case Upload_Source::TYPE_UPLOAD:
-				$filename = Upload_Source::process_type_upload($this->data(), $directory);
-				$this->filename($filename);
+				try 
+				{
+					$filename = Upload_Source::process_type_upload($this->data(), $directory);
+					$this->filename($filename);
+				} 
+				catch (Jam_Exception_Upload $e)
+				{
+					$this->error($e->getMessage());
+				}
 			break;
 
 			case Upload_Source::TYPE_STREAM:

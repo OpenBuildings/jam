@@ -186,7 +186,17 @@ class Kohana_Upload_File {
 	{
 		if ($filename !== NULL)
 		{
-			$this->_filename = $filename;
+			if (is_array($filename))
+			{
+				if (isset($filename['name']))
+				{
+					$this->_filename = $filename['name'];
+				}
+			}
+			else
+			{
+				$this->_filename = $filename;
+			}
 
 			return $this;
 		}

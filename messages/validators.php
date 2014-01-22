@@ -40,6 +40,7 @@ return array(
 	'uploaded_maximum_height'          => ':attribute\'s height must be smaller than :maximum_height',
 	'uploaded_exact_width'             => ':attribute\'s width must be :exact_width',
 	'uploaded_exact_height'            => ':attribute\'s height must be :exact_height',
+	'uploaded_native'            			 => 'Error uploading :attribute: :message',
 	'association'                      => 'There were errors in :attribute: :errors',
 	'format_email'                     => ':attribute must be a valid email address',
 	'format_url'                       => ':attribute must be a valid URL',
