@@ -12,22 +12,24 @@
 abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_Insert {
 
 	/**
-	 * Create object of class Jam_Query_Builder_Insert
-	 * @param  string $model 
-	 * @return Jam_Query_Builder_Insert        
+	 * Create instance of Jam_Query_Builder_Insert
+	 *
+	 * @param  string $model
+	 * @return Jam_Query_Builder_Insert
 	 */
-	public static function factory($model)
+	public static function factory($model, array $columns = array())
 	{
-		return new Jam_Query_Builder_Insert($model);
+		return new Jam_Query_Builder_Insert($model, $columns);
 	}
 
 	/**
-	 * @var  Jam_Meta  The meta object (if found) that is attached to this builder
+	 * @var  Jam_Meta The meta object that is attached to this builder
 	 */
 	protected $_meta = NULL;
 
 	/**
-	 * A store for user defined values for the builder
+	 * User defined values for the builder
+	 *
 	 * @var array
 	 */
 	protected $_params = array();
@@ -39,19 +41,14 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 	 * a default because PHP throws strict errors otherwise.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string|null  $model
-	 * @param   mixed|null   $key
+	 * @param   string  $model
+	 * @param   array   $columns
 	 */
-	public function __construct($model = NULL)
+	public function __construct($model, array $columns = array())
 	{
-		parent::__construct();
-
-		if ( ! $model)
-		{
-			throw new Kohana_Exception('Jam_Query_Builder_Insert requires model to be set in the constructor');
-		}
-
 		$this->_meta = Jam::meta($model);
+
+		parent::__construct($this->meta()->table(), $columns);
 
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
@@ -62,8 +59,6 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 		{
 			$db = Database::instance($this->meta()->db());
 		}
-		
-		$this->_table = $this->meta()->table();
 
 		$this->meta()->events()->trigger('builder.before_insert', $this);
 
@@ -84,53 +79,62 @@ abstract class Kohana_Jam_Query_Builder_Insert extends Database_Query_Builder_In
 		return parent::execute($db, $as_object, $object_params);
 	}
 
+	/**
+	 * Get the Jam_Meta instance attached to the builder
+	 *
+	 * @return Jam_Meta
+	 */
 	public function meta()
 	{
 		return $this->_meta;
 	}
 
 	/**
-	 * Passes unknown methods along to the behaviors.
+	 * Pass unknown methods to the behaviors.
 	 *
 	 * @param   string  $method
 	 * @param   array   $args
 	 * @return  mixed
-	 **/
+	 */
 	public function __call($method, $args)
 	{
-		$return = $this->_meta->events()->trigger_callback('builder', $this, $method, $args);
-		return $return ? $return : $this;
+		$return = $this->meta()
+			->events()
+				->trigger_callback('builder', $this, $method, $args);
+
+		return ($return !== NULL) ? $return : $this;
 	}
 
 	/**
-	 * Getter/setter for the params array used to store arbitrary values by the behaviors
-	 * 
-	 * @param  array|string $params 
-	 * @param  mixed $param  
-	 * @return Jam_Builder         $this
+	 * Get/Set the params used to store arbitrary values for the behaviors
+	 *
+	 * @param  array|string $params
+	 * @param  mixed $param
+	 * @return Jam_Query_Builder_Insert|mixed $this when setting; mixed when getting
 	 */
 	public function params($params = NULL, $param = NULL)
 	{
-		// Accept params('name', 'param');
-		if ($param !== NULL)
-		{
-			$params = array($params => $param);
-		}
-
 		if (is_array($params))
 		{
-			$this->_params = Arr::merge($params, $this->_params);
+			$this->_params = Arr::merge($this->_params, $params);
+
 			return $this;
 		}
 
+		if ($param !== NULL)
+			return $this->params(array($params => $param));
+
 		if (is_string($params))
-		{
 			return Arr::get($this->_params, $params);
-		}
 
 		return $this->_params;
 	}
 
+	/**
+	 * Get the compiled SQL
+	 * or a text representation of exceptions occured during compilation.
+	 * @return string
+	 */
 	public function __toString()
 	{
 		try

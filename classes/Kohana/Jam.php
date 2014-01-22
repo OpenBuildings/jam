@@ -382,9 +382,9 @@ abstract class Kohana_Jam {
 	 * @param  string $model 
 	 * @return Jam_Query_Builder_Insert
 	 */
-	public static function insert($model)
+	public static function insert($model, array $columns = array())
 	{
-		return new Jam_Query_Builder_Insert($model);
+		return Jam_Query_Builder_Insert::factory($model, $columns);
 	}
 
 	/**
