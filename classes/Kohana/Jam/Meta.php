@@ -300,10 +300,7 @@ abstract class Kohana_Jam_Meta {
 			$validator->validate_model($model, $force);
 		}
 
-		if (method_exists($model, 'validate'))
-		{
-			$model->validate();
-		}
+		$model->validate();
 		
 		return $this;
 	}
