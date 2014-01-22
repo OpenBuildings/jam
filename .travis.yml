@@ -1,4 +1,4 @@
---- 
+---
 language: php
 
 php:
@@ -14,6 +14,7 @@ script:
 
 before_script:
   - mkdir -p build/logs
+  - composer selfupdate
   - composer install
   - mysql -e 'create database `test-jam`;'
   - mysql test-jam < tests/database/structure/mysql.sql
