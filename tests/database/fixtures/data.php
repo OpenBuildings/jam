@@ -230,7 +230,7 @@ Jam::create('test_video', array(
 	'id' => 2,
 	'file' => 'video2.jpg',
 	'slug' => 'video2-jpg-2',
-	'position' => 0,
+	'position' => 2,
 	'group' => 'one',
 ));
 

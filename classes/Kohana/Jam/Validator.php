@@ -91,9 +91,9 @@ abstract class Kohana_Jam_Validator {
 		{
 			if ($model instanceof Jam_Validated AND $this->condition_met($model))
 			{
-				if ($force OR (($model instanceof Jam_Model AND ! $model->loaded()) OR $model->changed($attribute)) OR $model->unmapped($attribute))
+				if ($force OR ($model instanceof Jam_Model AND ! $model->loaded()) OR $model->changed($attribute) OR $model->unmapped($attribute) OR ! $model->{$attribute})
 				{
-					foreach ($this->rules as $rule) 
+					foreach ($this->rules as $rule)
 					{
 						if ($rule->is_processable_attribute($model, $attribute))
 						{
