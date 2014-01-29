@@ -49,9 +49,9 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$item5->move_position_to($item2);
 
 		$this->assertPositions('one', array(
-			'5' => '0',
-			'2' => '1',
-			'1' => '2',
+			'1' => '1',
+			'5' => '2',
+			'2' => '3',
 		));
 
 		$item5 = Jam::find('test_video', 5);
@@ -59,9 +59,9 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$item5->move_position_to($item1);
 
 		$this->assertPositions('one', array(
-			'2' => '0',
-			'1' => '1',
-			'5' => '2',
+			'5' => '1',
+			'1' => '2',
+			'2' => '3',
 		));
 
 	}
@@ -76,25 +76,25 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$last->decrease_position();
 
 		$this->assertPositions('one', array(
-			'2' => '0',
+			'1' => '1',
+			'5' => '2',
+			'2' => '3',
+		));
+
+		$last->decrease_position();
+
+		$this->assertPositions('one', array(
 			'5' => '1',
-			'1' => '3',
+			'1' => '2',
+			'2' => '3',
 		));
 
 		$last->decrease_position();
 
 		$this->assertPositions('one', array(
-			'5' => '0',
-			'2' => '1',
-			'1' => '3',
-		));
-
-		$last->decrease_position();
-
-		$this->assertPositions('one', array(
-			'5' => '0',
-			'2' => '1',
-			'1' => '3',
+			'5' => '1',
+			'1' => '2',
+			'2' => '3',
 		));
 	}
 
@@ -103,33 +103,33 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 	 */
 	public function test_increase_position()
 	{
-		$first = Jam::find('test_video', 2);
+		$first = Jam::find('test_video', 1);
 
 		$first->increase_position();
 
 		$this->assertPositions('one', array(
-			'1' => '0',
 			'2' => '1',
+			'1' => '2',
 			'5' => '3',
 		));
 
 		$first->increase_position();
 
 		$this->assertPositions('one', array(
-			'1' => '0',
-			'5' => '1',
-			'2' => '3',
+			'2' => '1',
+			'5' => '2',
+			'1' => '3',
 		));
 
 		$first->increase_position();
 
 		$this->assertPositions('one', array(
-			'1' => '0',
-			'5' => '1',
-			'2' => '3',
+			'2' => '1',
+			'5' => '2',
+			'1' => '3',
 		));
 	}
-	
+
 	/**
 	 * Integration test for
 	 *  - Kohana_Jam_Behavior_Sortable::builder_call_order_by_position
@@ -140,14 +140,14 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 	public function test_order()
 	{
 		$this->assertPositions('one', array(
-			'2' => '0',
 			'1' => '1',
+			'2' => '2',
 			'5' => '3',
 		));
 
 		$this->assertPositions(NULL, array(
-			'2' => '0',
 			'1' => '1',
+			'2' => '2',
 			'4' => '3',
 			'5' => '3',
 		));
@@ -247,7 +247,7 @@ class Jam_Behavior_SortableTest extends Testcase_Database {
 		$model->group = 'two';
 		$model->save();
 		$this->assertSame(4, $model->position);
-		
+
 		$model->file = 'test.jpg';
 		$model->group = 'two';
 		$model->save();

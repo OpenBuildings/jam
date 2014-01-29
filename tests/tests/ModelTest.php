@@ -87,7 +87,7 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 			array(Jam::build('test_alias'), FALSE, FALSE, FALSE),
 			array(Jam::build('test_alias')->set('name', 'Test'), FALSE, FALSE, TRUE),
 			array(Jam::build('test_alias')->load_fields(array('name' => 'Test')), TRUE, TRUE, FALSE),
-			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test'), TRUE, FALSE, TRUE),
+			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test'), TRUE, TRUE, FALSE),
 			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->set('name', 'Test2'), TRUE, FALSE, TRUE),
 			array(Jam::build('test_alias')->set('name', 'Test')->clear(), FALSE, FALSE, FALSE),
 			array(Jam::build('test_alias')->load_fields(array('name' => 'Test'))->clear(), FALSE, FALSE, FALSE),
@@ -186,7 +186,7 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 		return array(
 			array($alias, 'id', TRUE),
 			array($alias, 'name', TRUE),
-			array($alias, 'description', TRUE),
+			array($alias, 'description', FALSE),
 		);
 	}
 
