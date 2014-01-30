@@ -350,4 +350,21 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 
 		$model->meta()->association('test_author')->model_before_save($model, new Jam_Event_Data(array()), $changed);
 	}
+
+	/**
+	 * Test foreign key is not changed when association is updated
+	 * with the same value, but with string type.
+	 *
+	 * @coversNothing
+	 */
+	public function test_foreign_key_not_changed_with_string()
+	{
+		$test_post = Jam::build('test_post')
+			->load_fields(array(
+				'test_blog_id' => 5
+			));
+
+		$test_post->test_blog = '5';
+		$this->assertFalse($test_post->changed('test_blog_id'));
+	}
 }

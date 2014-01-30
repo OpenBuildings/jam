@@ -30,7 +30,10 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 		if ($value instanceof Jam_Validated) 
 			return $value->id();
 
-		if (is_integer($value) OR is_string($value)) 
+		if (is_integer($value) OR is_numeric($value)) 
+			return (int) $value;
+
+		if (is_string($value))
 			return $value;
 
 		if (is_array($value)) 
