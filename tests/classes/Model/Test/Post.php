@@ -56,6 +56,14 @@ class Model_Test_Post extends Jam_Model {
 				'auto_now_update' => TRUE
 			)),	
 		));
+
+		// Set some custom validators
+		$meta
+			->validator('name', array(
+				'present' => TRUE,
+				'if' => 'slug'
+			));
+
 	}
 
 	static public function _non_list_items(Jam_Builder $builder, Jam_Event_Data $data)

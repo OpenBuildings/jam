@@ -272,7 +272,10 @@ abstract class Kohana_Jam_Form {
 		{
 			foreach ($this->object()->meta()->validators() as $validator) 
 			{
-				$overrides = Arr::merge($validator->html5_validation($this->object(), $name), $overrides);
+				if ( ! $validator->condition)
+				{
+					$overrides = Arr::merge($validator->html5_validation($this->object(), $name), $overrides);
+				}
 			}
 		}
 
