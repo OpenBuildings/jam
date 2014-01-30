@@ -17,6 +17,9 @@ class Jam_AssociationTest extends PHPUnit_Framework_TestCase {
 		return array(
 			array('test_position', NULL, NULL),
 			array('test_position', 1, 1),
+			array('test_position', '1', 1),
+			array('test_position', '256', 256),
+			array('test_position', '256abc', '256abc'),
 			array('test_position', 'test', 'test'),
 			array('test_position', $test_position, 10),
 			array('test_position', array('id' => 10), 10),
@@ -25,11 +28,12 @@ class Jam_AssociationTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @covers Jam_Association::primary_key
 	 * @dataProvider data_primary_key
 	 */
 	public function test_primary_key($model_name, $value, $expected_primary_key)
 	{
-		$this->assertEquals($expected_primary_key, Jam_Association::primary_key($model_name, $value));
+		$this->assertSame($expected_primary_key, Jam_Association::primary_key($model_name, $value));
 	}
 
 	public function test_associated()
