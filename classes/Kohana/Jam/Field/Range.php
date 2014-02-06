@@ -18,6 +18,9 @@ abstract class Kohana_Jam_Field_Range extends Jam_Field {
 
 	public function get(Jam_Validated $model, $value, $is_loaded)
 	{
+		if ( ! $value)
+			return NULL;
+
 		return ($value instanceof Jam_Range) ? $value : new Jam_Range($value, $this->format);
 	}
 

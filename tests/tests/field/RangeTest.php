@@ -30,17 +30,30 @@ class Jam_Field_RangeTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(10, $range->max());
 	}
 
+	/**
+	 * @covers Jam_Field_Range::get
+	 */
 	public function test_get()
 	{
 		$field = new Jam_Field_Range();
 
 		$model = Jam::build('test_position');
 
+		$range = $field->get($model, NULL, FALSE);
+		$this->assertNull($range);
+
+		$range = $field->get($model, '', FALSE);
+		$this->assertNull($range);
+
+		$expected = new Jam_Range(array(2, 3));
+
+		$range = $field->get($model, $expected, FALSE);
+		$this->assertSame($expected, $range);
+
 		$range = $field->get($model, '10|20', FALSE);
 
-		$this->assertInstanceOf('Jam_Range', $range);
-		$this->assertEquals(10, $range->min());
-		$this->assertEquals(20, $range->max());
+		$expected = new Jam_Range(array(10, 20));
+		$this->assertEquals($expected, $range);
 	}
 
 	public function test_format()
