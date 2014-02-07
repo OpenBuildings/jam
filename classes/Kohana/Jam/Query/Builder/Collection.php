@@ -106,8 +106,25 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	}
 
 	/**
+	 * Return all of the models in the result as an array by selected values.
+	 *
+	 * @return  array
+	 */
+	public function as_array_by_columns()
+	{
+		$return = array();
+
+		foreach ($this->result() as $arr)
+		{
+			$return[] = $arr;
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Get the ids of the models in an array
-	 * @return array 
+	 * @return array
 	 */
 	public function ids()
 	{
