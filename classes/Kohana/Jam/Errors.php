@@ -39,7 +39,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			$label = Inflector::humanize($attribute_name);
 		}
 
-		return ucfirst($label);
+		return UTF8::ucfirst($label);
 	}
 
 	/**
@@ -146,7 +146,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 			{
 				foreach ($errors as $error => $params)
 				{
-					$model_name = ucfirst(Inflector::humanize($model->meta()->model()));
+					$model_name = UTF8::ucfirst(Inflector::humanize($model->meta()->model()));
 
 					$messages[] = $model_name.': '.Jam_Errors::message($model->meta()->errors_filename(), $attribute_name, $error, Arr::merge($params, array(
 						':model' => $model->meta()->model(),
@@ -175,13 +175,13 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 				{
 					if ( ! $item->is_valid()) 
 					{
-						$messages[] = ucfirst(Inflector::humanize($attribute_name)).' ('.$i.'): '.join(', ', $this->_model_messages_dump($item));
+						$messages[] = UTF8::ucfirst(Inflector::humanize($attribute_name)).' ('.$i.'): '.join(', ', $this->_model_messages_dump($item));
 					}
 				}
 			}	
 			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
 			{
-				$messages[] = ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->_model_messages_dump($model->$attribute_name));
+				$messages[] = UTF8::ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->_model_messages_dump($model->$attribute_name));
 			}
 			else
 			{

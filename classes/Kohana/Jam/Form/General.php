@@ -88,11 +88,11 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		{
 			if ($this->meta()->field($name) AND $this->meta()->field($name)->label !== NULL)
 			{
-				$label = ucfirst($this->meta()->field($name)->label);
+				$label = UTF8::ucfirst($this->meta()->field($name)->label);
 			}
 			else
 			{
-				$label = ucfirst(Inflector::humanize($name));
+				$label = UTF8::ucfirst(Inflector::humanize($name));
 			}
 		}
 		return Form::label($field_attributes['id'], $label, $attributes);
