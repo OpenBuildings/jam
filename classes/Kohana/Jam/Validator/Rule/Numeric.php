@@ -67,7 +67,7 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 
 		if ($this->between !== NULL AND ! ($value >= $this->between[0] AND $value <= $this->between[1]))
 		{
-			$model->errors()->add($attribute, 'range_between', array(':minimum' => $this->between[0], ':maximum' => $this->between[1]));
+			$model->errors()->add($attribute, 'numeric_between', array(':minimum' => $this->between[0], ':maximum' => $this->between[1]));
 		}
 
 		if ($this->odd === TRUE AND ! ($value % 2 == 0))
