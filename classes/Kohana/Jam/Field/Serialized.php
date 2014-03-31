@@ -14,7 +14,7 @@
  */
 abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 
-	public static $allowed = array('native', 'json', 'csv');
+	public static $allowed = array('native', 'json', 'csv', 'query');
 
 	public $method = 'native';
 
@@ -69,31 +69,38 @@ abstract class Kohana_Jam_Field_Serialized extends Jam_Field {
 
 	public function serialize($value)
 	{
-		switch ($this->method) 
+		switch ($this->method)
 		{
-			case 'native':	
+			case 'native':
 				return serialize($value);
 
 			case 'csv':
 				return join(',', $value);
 
-			case 'json':	
+			case 'json':
 				return json_encode($value);
+
+			case 'query':
+				return http_build_query($value);
 		}
 	}
 
 	public function unserialize($value)
 	{
-		switch ($this->method) 
+		switch ($this->method)
 		{
-			case 'native':	
+			case 'native':
 				return unserialize($value);
 
 			case 'csv':
 				return explode(',', $value);
 
-			case 'json':	
+			case 'json':
 				return json_decode($value, TRUE);
+
+			case 'query':
+				parse_str($value, $value);
+				return $value;
 		}
 	}
 
