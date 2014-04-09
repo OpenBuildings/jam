@@ -11,6 +11,8 @@
  */
 abstract class Kohana_Jam_Association_Autocreate extends Jam_Association_Belongsto {
 
+	public $default_fields;
+
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
 		if ($is_changed AND $value AND is_string($value) AND ! is_numeric($value))
@@ -18,6 +20,11 @@ abstract class Kohana_Jam_Association_Autocreate extends Jam_Association_Belongs
 			$value = Jam::find_or_create($this->foreign_model, array(
 				':name_key' => $value
 			));
+
+			if ($default_fields)
+			{
+				$value->set($default_fields);
+			}
 		}
 
 		return parent::set($model, $value, $is_changed);
