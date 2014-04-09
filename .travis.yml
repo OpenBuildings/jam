@@ -3,21 +3,24 @@ language: php
 
 php:
   - 5.3
+  - 5.4
 
 notifications:
   email: false
   slack:
     secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
 
-script:
-  - phpunit --coverage-clover build/logs/clover.xml
+install:
+  - composer selfupdate
+  - composer install --no-interaction
 
 before_script:
   - mkdir -p build/logs
-  - composer selfupdate
-  - composer install
   - mysql -e 'create database `test-jam`;'
   - mysql test-jam < tests/database/structure/mysql.sql
+
+script:
+  - phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
