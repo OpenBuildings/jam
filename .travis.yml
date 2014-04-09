@@ -5,7 +5,9 @@ php:
   - 5.3
 
 notifications:
-  slack: MGu9NifkyAvGNQfQwO9pkylWsiA6w+BT5F0EGLpLdFKSkTNT3oEAHWEADxT/JTbFNFEHap9XM1i2frhz6SMI2Nfvq2bfk1nlqF+EGM1eVV++dL4xJ3Z2Cxhv4zZlYoNr78hWi6ZrkHTOtXXd6QThi4NibGEch3sP8zcfnZ1OAJk=
+  email: false
+  slack:
+    secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
 
 script:
   - phpunit --coverage-clover build/logs/clover.xml
