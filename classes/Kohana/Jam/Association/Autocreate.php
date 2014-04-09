@@ -21,9 +21,9 @@ abstract class Kohana_Jam_Association_Autocreate extends Jam_Association_Belongs
 				':name_key' => $value
 			));
 
-			if ($default_fields)
+			if ($this->default_fields)
 			{
-				$value->set($default_fields);
+				$value->set($this->default_fields);
 			}
 		}
 
