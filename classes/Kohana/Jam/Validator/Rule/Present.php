@@ -22,7 +22,7 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 			OR Jam_Validator_Rule_Present::is_empty_countable($value)
 			OR Jam_Validator_Rule_Present::is_empty_upload_file($value))
 		{
-			$model->errors()->add($attribute, 'present');	
+			$model->errors()->add($attribute, 'present');
 		}
 	}
 

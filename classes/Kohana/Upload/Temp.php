@@ -1,7 +1,7 @@
 <?php
 /**
  *  Utility class for managing the temporary upload directory
- *  
+ *
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.

@@ -26,7 +26,7 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 
 	public function model_before_create(Jam_Model $model)
 	{
-		if ( ! $model->{$this->_field}) 
+		if ( ! $model->{$this->_field})
 		{
 			$model->update_token();
 		}
@@ -40,7 +40,7 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 	public function new_token()
 	{
 		$token = call_user_func($this->_token_function);
-		
+
 		if ($this->_uppercase)
 		{
 			$token = strtoupper($token);
@@ -56,10 +56,10 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 			$model->{$this->_field} = $this->new_token();
 		}
 		while (Jam::all($model->meta()->model())->where($this->_field, '=', $model->{$this->_field})->count_all() > 0);
-		
+
 		$data->return = $model;
 	}
-	
+
 	/**
 	 * Generate a where_token method for Jam_Query_Builder_Select
 	 * @param  Jam_Query_Builder_Select $builder the builder object
@@ -69,7 +69,7 @@ class Kohana_Jam_Behavior_Tokenable extends Jam_Behavior {
 	 */
 	public function builder_call_where_token(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $token)
 	{
-		$builder->where($this->_model.'.'.$this->_field, '=', $token);	
+		$builder->where($this->_model.'.'.$this->_field, '=', $token);
 	}
 
 	/**

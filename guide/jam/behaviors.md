@@ -1,6 +1,6 @@
 ## Jam Events
 
-In the lifetime of each model(and builder) there are several events being triggered. 
+In the lifetime of each model(and builder) there are several events being triggered.
 
 ### Available events
 

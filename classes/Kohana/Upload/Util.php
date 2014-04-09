@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * This class is what the upload field accually returns 
+ * This class is what the upload field accually returns
  * and has all the nesessary info and manipulation abilities to save / delete / validate itself
- * 
+ *
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
@@ -27,12 +27,12 @@ class Kohana_Upload_Util {
 		curl_setopt($curl, CURLOPT_FILE, $handle);
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($curl, CURLOPT_HEADERFUNCTION, array($headers, 'parse_header_string'));
-		
+
 		if (curl_exec($curl) === FALSE OR curl_getinfo($curl, CURLINFO_HTTP_CODE) !== 200)
 		{
 			fclose($handle);
 			unlink($file);
-			
+
 			throw new Kohana_Exception('Curl: Download Error: :error, status :status on url :url', array(':url' => $url, ':status' => curl_getinfo($curl, CURLINFO_HTTP_CODE), ':error' => curl_error($curl)));
 		}
 
@@ -45,7 +45,7 @@ class Kohana_Upload_Util {
 			{
 				$mime_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 				$url = urldecode(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
-				
+
 				$filename = Upload_Util::filename_from_url($url, $mime_type);
 			}
 		}
@@ -53,18 +53,18 @@ class Kohana_Upload_Util {
 		$filename = substr(pathinfo($filename, PATHINFO_FILENAME), 0, 60).'.'.pathinfo($filename, PATHINFO_EXTENSION);
 
 		$result_file = Upload_Util::combine($directory, $filename);
-		
+
 		rename($file, $result_file);
-		
+
 		return is_file($result_file) ? $filename : FALSE;
 	}
 
 	/**
 	 * Move the contents of the stream to a specified directory with a given name
-	 * 
-	 * @param  string $stream    
-	 * @param  string $directory 
-	 * @param  string $filename  
+	 *
+	 * @param  string $stream
+	 * @param  string $directory
+	 * @param  string $filename
 	 */
 	public static function stream_copy_to_file($stream, $file)
 	{
@@ -72,7 +72,7 @@ class Kohana_Upload_Util {
 		$result_handle = fopen($file, 'w');
 
 		$transfered_bytes = stream_copy_to_stream($stream_handle,  $result_handle);
-		
+
 		if ( (int) $transfered_bytes <= 0)
 			throw new Kohana_Exception('No data was transfered from :stream to :file ', array(':stream' => $stream, ':file' => Debug::path($file)));
 
@@ -82,18 +82,18 @@ class Kohana_Upload_Util {
 
 	/**
 	 * recursively delete directory
-	 * 
-	 * @param  string  $directory 
+	 *
+	 * @param  string  $directory
 	 * @return boolean
 	 */
 	public static function rmdir($directory)
 	{
 		if ( ! is_dir($directory))
 			return FALSE;
-		
+
 		$files = array_diff(scandir($directory), array('.', '..'));
 
-		foreach ($files as $file) 
+		foreach ($files as $file)
 		{
 			$current = $directory.DIRECTORY_SEPARATOR.$file;
 
@@ -111,7 +111,7 @@ class Kohana_Upload_Util {
 
 	/**
 	 * Method to make a filename safe for writing on the filesystem, removing all strange characters
-	 * @param  string $filename 
+	 * @param  string $filename
 	 * @return string
 	 */
 	static public function sanitize($filename, $separator = '-')
@@ -133,8 +133,8 @@ class Kohana_Upload_Util {
 
 	/**
 	 * Check if a file looks like a filename ("file.ext")
-	 * @param  string  $filename 
-	 * @return boolean           
+	 * @param  string  $filename
+	 * @return boolean
 	 */
 	public static function is_filename($filename)
 	{
@@ -142,11 +142,11 @@ class Kohana_Upload_Util {
 	}
 
 	/**
-	 * Return possible filenames from a given url. 
+	 * Return possible filenames from a given url.
 	 * Filenames can be in the query or the url of the file itself
-	 * 
-	 * @param  string $url 
-	 * @return array      
+	 *
+	 * @param  string $url
+	 * @return array
 	 */
 	public static function filenames_candidates_from_url($url)
 	{
@@ -178,15 +178,15 @@ class Kohana_Upload_Util {
 		{
 			$arg = $i == 0 ? rtrim($arg, DIRECTORY_SEPARATOR) : trim($arg, DIRECTORY_SEPARATOR);
 		}
-		
+
 		return join(DIRECTORY_SEPARATOR, array_filter($args));
 	}
 
 	/**
 	 * Detirmine the filename from the url
-	 * @param  string $url       
-	 * @param  string $mime_type 
-	 * @return string            
+	 * @param  string $url
+	 * @param  string $mime_type
+	 * @return string
 	 */
 	public static function filename_from_url($url, $mime_type = NULL)
 	{
@@ -216,10 +216,10 @@ class Kohana_Upload_Util {
 
 	/**
 	 * Perform transformations on an image and store it at a different location (or overwrite existing)
-	 * 
-	 * @param  string $from            
-	 * @param  string $to              
-	 * @param  array  $transformations 
+	 *
+	 * @param  string $from
+	 * @param  string $to
+	 * @param  array  $transformations
 	 */
 	public static function transform_image($from, $to, array $transformations = array())
 	{

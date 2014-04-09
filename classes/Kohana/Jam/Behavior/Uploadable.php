@@ -2,15 +2,15 @@
 
 /**
  *  Uploadable behavior for Jam ORM library
- *  
+ *
  * @package    Jam
  * @category   Behavior
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior 
-{	
+abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
+{
 	public $_thumbnails = array();
 	public $_transformations = array();
 	public $_server = NULL;
@@ -19,10 +19,10 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 	public $_dynamic_server = NULL;
 	public $_delete_file = TRUE;
 
-	public function initialize(Jam_Meta $meta, $name) 
-	{			
+	public function initialize(Jam_Meta $meta, $name)
+	{
 		parent::initialize($meta, $name);
-		
+
 		if ($this->_save_size)
 		{
 			$meta
@@ -36,16 +36,16 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 
 			$meta->field($this->_dynamic_server, Jam::field('string', array('default' => $this->_server)));
 		}
-		
+
 		$meta->field($name, Jam::field('upload', array(
-			'path' => $this->_path, 
-			'thumbnails' => $this->_thumbnails, 
-			'transformations' => $this->_transformations, 
-			'server' => $this->_server, 
+			'path' => $this->_path,
+			'thumbnails' => $this->_thumbnails,
+			'transformations' => $this->_transformations,
+			'server' => $this->_server,
 			'dynamic_server' => $this->_dynamic_server,
 			'save_size' => $this->_save_size,
 			'delete_file' => $this->_delete_file
-		)));	
+		)));
 	}
 
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data)
@@ -59,7 +59,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 			}
 		}
 	}
-	
+
 	public function model_call_change_upload_server(Jam_Model $model, Jam_Event_Data $data, $name, $server)
 	{
 		if ($this->_name == $name)
@@ -68,7 +68,7 @@ abstract class Kohana_Jam_Behavior_Uploadable extends Jam_Behavior
 			{
 				$model->{$this->_name}->move_to_server($server);
 				$model->update_fields($this->_dynamic_server, $server);
-			}	
+			}
 		}
 	}
 }

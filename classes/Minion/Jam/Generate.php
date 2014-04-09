@@ -14,7 +14,7 @@ class Minion_Jam_Generate {
 		if ($unlink)
 		{
 			$file_already_exists = is_file($file);
-			
+
 			if ($file_already_exists)
 			{
 				unlink($file);
@@ -59,7 +59,7 @@ class Minion_Jam_Generate {
 				}
 
 				file_put_contents($file, $content);
-				
+
 				Minion_CLI::write(Minion_CLI::color('Generated file '.Debug::path($file), 'light_green'));
 			}
 		}

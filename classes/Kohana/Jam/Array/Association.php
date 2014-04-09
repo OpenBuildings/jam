@@ -16,7 +16,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 
 	protected $_association;
 	protected $_parent;
-	
+
 	public function parent($parent = NULL)
 	{
 		if ($parent !== NULL)
@@ -26,7 +26,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 		}
 		return $this->_parent;
 	}
-	
+
 	public function association($association = NULL)
 	{
 		if ($association !== NULL)
@@ -79,7 +79,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 
 	/**
 	 * Use the association to get the item from the collection
-	 * @param  integer $offset 
+	 * @param  integer $offset
 	 * @return mixed
 	 */
 	public function offsetGet($offset)
@@ -94,8 +94,8 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 
 	/**
 	 * Use the association to set the item to the colleciton
-	 * @param  integer $offset 
-	 * @param  mixed $item   
+	 * @param  integer $offset
+	 * @param  mixed $item
 	 */
 	public function offsetSet($offset, $item)
 	{
@@ -108,7 +108,7 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 
 	/**
 	 * Use the association to remove the item from the collection
-	 * @param  integer $offset 
+	 * @param  integer $offset
 	 */
 	public function offsetUnset($offset)
 	{
@@ -137,4 +137,4 @@ abstract class Kohana_Jam_Array_Association extends Jam_Array_Model {
 		return $item;
 
 	}
-} 
+}

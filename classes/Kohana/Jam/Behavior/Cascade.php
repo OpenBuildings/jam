@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  *  Nested behavior for Jam ORM library
- *  Creates a nested set for this model, where an object can have a parent object of the same model. Requires parent_id field in the database. Reference @ref behaviors  
- * 
+ *  Creates a nested set for this model, where an object can have a parent object of the same model. Requires parent_id field in the database. Reference @ref behaviors
+ *
  * @package    Jam
  * @category   Behavior
  * @author     Ivan Kerin
@@ -34,7 +34,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 		if ($current === $parent)
 			return $children;
 
-		foreach ($children as $association_name => $association_children) 
+		foreach ($children as $association_name => $association_children)
 		{
 			$name = is_numeric($association_name) ? $association_children : $association_name;
 			$association = Jam::meta($parent)->association($name);
@@ -54,7 +54,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 
 	public static function get_current_children($current, array $children = array())
 	{
-		foreach ($children as $model => $associations) 
+		foreach ($children as $model => $associations)
 		{
 			if ($result = Jam_Behavior_Cascade::_get_current_children_of_parent($current, $model, $associations))
 				return $result;
@@ -78,8 +78,8 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 	public static function collect_models(Jam_Model $model, array $children = array())
 	{
 		$collection = array($model);
-		
-		foreach ($children as $child_name => $child_children) 
+
+		foreach ($children as $child_name => $child_children)
 		{
 			if (is_numeric($child_name))
 			{
@@ -87,7 +87,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 			}
 			else
 			{
-				foreach (Jam_Behavior_Cascade::_models($model->$child_name) as $child_item) 
+				foreach (Jam_Behavior_Cascade::_models($model->$child_name) as $child_item)
 				{
 					$collection = array_merge($collection, Jam_Behavior_Cascade::collect_models($child_item, (array) $child_children));
 				}
@@ -106,7 +106,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 
 	/**
 	 * Rollback a level of nesting for model saving, when we reech the top, call the execute method
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function rollback_depth(Jam_Model $model)
 	{
@@ -120,7 +120,7 @@ abstract class Kohana_Jam_Behavior_Cascade extends Jam_Behavior {
 
 	public function execute(Jam_Model $model)
 	{
-		foreach ($this->callbacks() as $method => $model_names) 
+		foreach ($this->callbacks() as $method => $model_names)
 		{
 			$children = Jam_Behavior_Cascade::get_current_children($model->meta()->model(), $model_names);
 			$models = Jam_Behavior_Cascade::collect_models($model, (array) $children);

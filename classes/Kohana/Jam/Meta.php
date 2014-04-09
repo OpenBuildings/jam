@@ -76,7 +76,7 @@ abstract class Kohana_Jam_Meta {
 	/**
 	 * @var  array  A map to the models's associations and how to process each column.
 	 */
-	protected $_associations = array();	
+	protected $_associations = array();
 
 
 	/**
@@ -295,13 +295,13 @@ abstract class Kohana_Jam_Meta {
 
 	public function execute_validators(Jam_Validated $model, $force = FALSE)
 	{
-		foreach ($this->_validators as $validator) 
+		foreach ($this->_validators as $validator)
 		{
 			$validator->validate_model($model, $force);
 		}
 
 		$model->validate();
-		
+
 		return $this;
 	}
 
@@ -459,7 +459,7 @@ abstract class Kohana_Jam_Meta {
 	public function attribute_insist($name)
 	{
 		$attribute = $this->attribute($name);
-		
+
 		if ( ! $attribute)
 			throw new Kohana_Exception('The attrubute :name for this model :model does not exist', array(':name' => $name, ':model' => $this->_model));
 
@@ -491,7 +491,7 @@ abstract class Kohana_Jam_Meta {
 
 		// Return Jam_Meta
 		return $this;
-	}	
+	}
 
 	/**
 	 * Getter / setter for individual associations.

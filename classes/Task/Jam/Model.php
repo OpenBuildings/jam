@@ -19,9 +19,9 @@
 class Task_Jam_Model extends Minion_Task {
 
 	protected $_options = array(
-		'name' => FALSE, 
-		'module' => FALSE, 
-		'author' => FALSE, 
+		'name' => FALSE,
+		'module' => FALSE,
+		'author' => FALSE,
 		'force' => FALSE,
 		'unlink' => FALSE,
 		'collection' => FALSE,
@@ -38,7 +38,7 @@ class Task_Jam_Model extends Minion_Task {
 	{
 		$module_name = $options['module'] ?: 'applicaiton';
 		$module_dir = $options['module'] ? Arr::get(Kohana::modules(), $module_name) : APPPATH;
-		
+
 		$author = $options['author'] ?: '-';
 
 		$name = $options['name'];
@@ -71,7 +71,7 @@ class {$class} extends Jam_Model {
 		\$meta
 			->associations(array(
 			))
-			
+
 			->fields(array(
 				'id' => Jam::field('primary'),
 				'name' => Jam::field('string'),
@@ -81,12 +81,12 @@ class {$class} extends Jam_Model {
 	}
 }
 MODEL;
-	
+
 		Minion_Jam_Generate::modify_file($file, $content, $options['force'] !== FALSE, $options['unlink'] !== FALSE);
 
 		if ($options['collection'] !== FALSE)
 		{
-			
+
 			$dir = $module_dir.'classes'.DIRECTORY_SEPARATOR.'model'.DIRECTORY_SEPARATOR.'collection';
 			$file = $dir.DIRECTORY_SEPARATOR.$path.EXT;
 			$class ='Model_Collection_'.str_replace(' ', '_', $title);
@@ -113,6 +113,6 @@ class {$class} extends Jam_Query_Builder_Collection {
 COLLECTION;
 			Minion_Jam_Generate::modify_file($file, $content, $options['force'] !== FALSE, $options['unlink'] !== FALSE);
 		}
-	
+
 	}
 }

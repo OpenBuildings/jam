@@ -1,6 +1,6 @@
 ## Defining models
 
-Models go in the classes / model folder of your application and their initializations happens with the static method `initialize()`. Jam_Meta is the class that holds all the information about the model - its fields, associations and behaviors. It gets initialized only once and holds the information for all the models of this class. 
+Models go in the classes / model folder of your application and their initializations happens with the static method `initialize()`. Jam_Meta is the class that holds all the information about the model - its fields, associations and behaviors. It gets initialized only once and holds the information for all the models of this class.
 
 	class Model_Order extends Jam_Model {
 
@@ -63,7 +63,7 @@ best_of_user     | best_of_users
 </pre>
 
 But you can change the table name by using this method as a setter
-	
+
 ```php
 <?php
 $meta->table('funky_table_name');

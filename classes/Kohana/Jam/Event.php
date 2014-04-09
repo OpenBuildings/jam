@@ -61,7 +61,7 @@ abstract class Kohana_Jam_Event {
 	{
 		foreach (get_class_methods($from) as $method)
 		{
-			if (($ns = substr($method, 0, 5)) === 'model' 
+			if (($ns = substr($method, 0, 5)) === 'model'
 			OR  ($ns = substr($method, 0, 4)) === 'meta'
 			OR  ($ns = substr($method, 0, 7)) === 'builder')
 			{
@@ -94,7 +94,7 @@ abstract class Kohana_Jam_Event {
 			array_unshift($params, $sender);
 
 			$queue = clone $this->_events[$event];
-			
+
 			foreach ($queue as $callback)
 			{
 				call_user_func_array($callback, $params);
@@ -113,10 +113,10 @@ abstract class Kohana_Jam_Event {
 
 	/**
 	 * Trigger a callback, if there are no callbacks found, throws an exception
-	 * 
+	 *
 	 * @param  string $type   'model', 'builder' or 'meta'
 	 * @param  mixed  $sender Jam_Model, Jam_Builder or Jam_Meta
-	 * @param  string $method 
+	 * @param  string $method
 	 * @param  array  $params passed to the method
 	 * @return mixed          returns the response from the callback
 	 * @throws Jam_Exception_Methodmissing If no method is found

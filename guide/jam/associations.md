@@ -14,7 +14,7 @@ In the remainder of this guide, you'll learn how to declare and use the various 
 A belongsto association sets up a one-to-one connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model. For example, if your application includes customers and orders, and each order can be assigned to exactly one customer, you’d declare the order model this way:
 
 ```php
-<?php 
+<?php
 class Model_Order extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -48,7 +48,7 @@ A `hasone` association also sets up a one-to-one connection with another model, 
 
 
 ```php
-<?php 
+<?php
 class Model_Supplier extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -79,7 +79,7 @@ class Model_Supplier extends Jam_Model {
 A `hasmany` association indicates a one-to-many connection with another model. You'll often find this association on the "other side" of a `belongsto` association. This association indicates that each instance of the model has zero or more instances of another model. For example, in an application containing customers and orders, the customer model could be declared like this:
 
 ```php
-<?php 
+<?php
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -111,7 +111,7 @@ class Model_Customer extends Jam_Model {
 A `manytomany` association creates a many-to-many connection with another model. For example, if your application includes assemblies and parts, with each assembly having many parts and each part appearing in many assemblies, you could declare the models this way:
 
 ```php
-<?php 
+<?php
 class Model_Assembly extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -141,21 +141,21 @@ class Model_Part extends Jam_Model {
 ```
 
 <pre>
-┌───────────────────────┐                               
-│ Model: Assembly       │                               
-│ manytomany: parts     │                               
-├─────────────┬─────────┤                               
+┌───────────────────────┐
+│ Model: Assembly       │
+│ manytomany: parts     │
+├─────────────┬─────────┤
 │ id          │ ingeter │◄──┐  ┌────────────────────────┐
 │ name        │ string  │   │  │ Table:assemblies_parts │
 └─────────────┴─────────┘   │  ├─────────────┬──────────┤
                             └──│ assembly_id │ ingeter  │
 ┌───────────────────────┐   ┌──│ part_id     │ string   │
 │ Model: Parts          │   │  └─────────────┴──────────┘
-│ manytomany: assemblies│   │                           
-├─────────────┬─────────┤   │                            
-│ id          │ ingeter │◄──┘                            
-│ name        │ string  │                               
-└─────────────┴─────────┘                                 
+│ manytomany: assemblies│   │
+├─────────────┬─────────┤   │
+│ id          │ ingeter │◄──┘
+│ name        │ string  │
+└─────────────┴─────────┘
 </pre>
 
 ## Choosing Between belongsto and hasone
@@ -165,7 +165,7 @@ If you want to set up a one-to-one relationship between two models, you'll need 
 The distinction is in where you place the foreign key (it goes on the table for the class declaring the `belongsto` association), but you should give some thought to the actual meaning of the data as well. The `hasone` relationship says that one of something is yours - that is, that something points back to you. For example, it makes more sense to say that a supplier owns an account than that an account owns a supplier. This suggests that the correct relationships are like this:
 
 ```php
-<?php 
+<?php
 class Model_Supplier extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -192,7 +192,7 @@ A slightly more advanced twist on associations is the polymorphic association. W
 
 
 ```php
-<?php 
+<?php
 class Model_Picture extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -241,7 +241,7 @@ If you have an instance of the Model_Picture, you can get to its parent via $pic
 ┌───────────────────────────────────┐   ├──│ imagable_id    │ ingeter │
 │ Model: Product                    │   │  │ imagable_model │ string  │
 │ hasmany: pictures, as => imagable │   │  └────────────────┴─────────┘
-├─────────────────────────┬─────────┤   │  
+├─────────────────────────┬─────────┤   │
 │ id                      │ ingeter │◄──┘
 │ name                    │ string  │
 └─────────────────────────┴─────────┘
@@ -252,7 +252,7 @@ If you have an instance of the Model_Picture, you can get to its parent via $pic
 In designing a data model, you will sometimes find a model that should have a relation to itself. For example, you may want to store all employees in a single database model, but be able to trace relationships such as between manager and subordinates. This situation can be modeled with self-joining associations:
 
 ```php
-<?php 
+<?php
 
 class Model_Employee extends Jam_Model {
 
@@ -314,7 +314,7 @@ Associations are extremely useful, but they are not magic. You are responsible f
 When you declare a belongs_to association, you need to create foreign keys as appropriate. For example, consider this model:
 
 ```php
-<?php 
+<?php
 
 class Model_Order extends Jam_Model {
 
@@ -334,13 +334,13 @@ class Model_Order extends Jam_Model {
 This declaration needs to be backed up by the proper foreign key declaration on the orders table:
 
 <pre>
-┌───────────────────────┐	
-│ Model: Order          │	
-├─────────────┬─────────┤    
-│ id          │ ingeter │    
+┌───────────────────────┐
+│ Model: Order          │
+├─────────────┬─────────┤
+│ id          │ ingeter │
 │ customer_id │ ingeter │
-│ order_date  │ date    │    
-└─────────────┴─────────┘    
+│ order_date  │ date    │
+└─────────────┴─────────┘
 </pre>
 
 If you create an association some time after you build the underlying model, you need to remember to add the column to your database table to provide the necessary foreign key.
@@ -354,7 +354,7 @@ If you create a manytomany association, you need to explicitly create the joinin
 Whatever the name, you must manually generate the join table with an appropriate migration. For example, consider these associations:
 
 ```php
-<?php 
+<?php
 class Model_Assembly extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -383,7 +383,7 @@ You need to manually create the joining table `assemblies_parts` in your databas
 It' normal for associations to work in two directions, requiring declaration on two different models:
 
 ```php
-<?php 
+<?php
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -420,7 +420,7 @@ $customer->first_name == $order->customer->first_name; // FALSE
 This happens because $customer and $order->customer are two different in-memory representations of the same data, and neither one is automatically refreshed from changes to the other. Jam provides the `inverse_of` option so that you can inform it of these relations:
 
 ```php
-<?php 
+<?php
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -456,12 +456,12 @@ $customer->first_name == $order->customer->first_name; // TRUE
 
 ## Association Collections
 
-When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jam_Array_Association` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it. 
+When you want to retrieve `hasmany` and `manytomany` associations, you receive a `Jam_Array_Association` object which behaves like an array (Implements all the array interfaces) so you can iterate through it with `foreach`, retrieve individual rows with `[]` or even add items to it.
 
 It is important to note that `Jam_Array_Association` utilizes lazy loading so the SQL query to retrieve the objects from the database is executed at the last possible moment (in a `foreach` or `[]`).
 
 ```php
-<?php 
+<?php
 class Model_Supplier extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -557,7 +557,7 @@ echo $supplier->orders->model() // 'order'
 
 ### as_array()
 
-Get the contents of the `Jam_Array_Association` as an array, this get rid of the `Jam_Array_Association` object, and gives you a simple array of `Jam_Model` objects. `as_array()` method is a lot more powerful though: 
+Get the contents of the `Jam_Array_Association` as an array, this get rid of the `Jam_Array_Association` object, and gives you a simple array of `Jam_Model` objects. `as_array()` method is a lot more powerful though:
 
 ```
 <?php
@@ -572,31 +572,31 @@ class Model_Supplier extends Jam_Model {
 	}
 }
 
-// You can get the array indexed by "id" or any other field like this 
+// You can get the array indexed by "id" or any other field like this
 $supplier->orders->as_array('id');         // array(1 => Model_Order(), 27 => Model_Order())
 $supplier->orders->as_array('name');       // array('first order' => Model_Order(), 'second order' => Model_Order())
 
-// You can get an array only with one field 
+// You can get an array only with one field
 $supplier->orders->as_array(NULL, 'name'); // array('first order', 'second order')
 
 // Or you can mixed the two and get an array of names indexed by id
 $supplier->orders->as_array('id', 'name'); // array(1 => 'first order', 27 => 'second order')
 
-// Or even the other way around 
+// Or even the other way around
 $supplier->orders->as_array('name', 'id'); // array('first order' => 1, 'second order' => 27)
 ?>
 ```
 
 ### reload()
 
-Forces the association to get reloaded. This way the next `foreach` or `[]` operation will trigger a fresh SQL query 
+Forces the association to get reloaded. This way the next `foreach` or `[]` operation will trigger a fresh SQL query
 
 ```
 <?php
 // Perform the SQL query
-foreach ($supplier->orders as $order) 
+foreach ($supplier->orders as $order)
 {
-	// ... $order	
+	// ... $order
 }
 
 $supplier->orders->reload();
@@ -629,13 +629,13 @@ $supplier->orders->add($order);
 echo $suplier->id() == $order->supplier->id(); // TRUE
 
 // The user is already present in the collection even though its not saved yet.
-echo $supplier->orders->has($order); // TRUE 
+echo $supplier->orders->has($order); // TRUE
 
 // Save associations.
 $supplier->save();
 
 // The new association is persisted in the database.
-echo Jam::find('supplier', 1)->orders->has($order); // TRUE 
+echo Jam::find('supplier', 1)->orders->has($order); // TRUE
 
 // Add by primary key
 $supplier->orders->add(21);
@@ -672,13 +672,13 @@ $order = Jam::find('order', 20);
 $supplier->orders->remove($order);
 
 // The user is already present in the collection even though its not saved yet.
-echo $supplier->orders->has($order); // FALSE 
+echo $supplier->orders->has($order); // FALSE
 
 // Save associations.
 $supplier->save();
 
 // The new association is persisted in the database.
-echo Jam::find('supplier', 1)->orders->has($order); // FALSE 
+echo Jam::find('supplier', 1)->orders->has($order); // FALSE
 
 // Remove by primary key
 $supplier->orders->remove(21);
@@ -813,7 +813,7 @@ echo $supplier->orders->changed(1); // Returns FALSE
 echo $supplier->orders->changed(2); // Returns TRUE
 
 
-?> 
+?>
 ```
 
 ### changed_check()
@@ -850,7 +850,7 @@ $suplier->orders->save();
 
 ### parent()
 
-This method will return the parent model that requested the association. 
+This method will return the parent model that requested the association.
 
 ```php
 <?php
@@ -944,7 +944,7 @@ echo $supplier->orders->has('first order');
 Jam provides a way to set the whole content of an association with nested arrays. This is particularly useful when you have nested forms on your site and you want to save them all in one single save call. Without mass assignment it might get tricky if some of the associated models exist in the database and some must be created. Jam takes care of all of that for you - saving all the items in the correct order so you don't have to worry about this stuff. For example lets assume we have those 2 models
 
 ```php
-<?php 
+<?php
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -993,9 +993,9 @@ $customer->orders = array(
 $customer->save();
 ?>
 ```
-When you perform `$customer->save();` the objects themselves are created and the associations are saved. If you have an "id" in the array, then it will load that object and change its fields with the passed other parameter. In the example above the `Model_Order` with id of 4 will be added to customer 1's orders and its title will be changed to 'change title 4'. The other 2 orders will be created and assign to customer 1. 
+When you perform `$customer->save();` the objects themselves are created and the associations are saved. If you have an "id" in the array, then it will load that object and change its fields with the passed other parameter. In the example above the `Model_Order` with id of 4 will be added to customer 1's orders and its title will be changed to 'change title 4'. The other 2 orders will be created and assign to customer 1.
 
-There's one more cool feature, after you perform the assignment, you can get the item and instead of the array it will return the actual `Model_Order` object (not saved yet). 
+There's one more cool feature, after you perform the assignment, you can get the item and instead of the array it will return the actual `Model_Order` object (not saved yet).
 
 ```php
 <?php
@@ -1017,7 +1017,7 @@ echo $customer->orders[0]->name; // 'one order'
 ?>
 ```
 
-Polymorphic associations also can be populated with mass assignments, but you will have to wrap them in an array where the key is the name of the new object's model. 
+Polymorphic associations also can be populated with mass assignments, but you will have to wrap them in an array where the key is the name of the new object's model.
 
 ```php
 <?php
@@ -1076,14 +1076,14 @@ The `belongsto` association creates a one-to-one match with another model. In da
 While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `belongsto` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
-<?php 
+<?php
 class Model_Order extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
 		$meta->association('customer', Jam::association('belongsto', array(
 			'foreign_model' => 'order_customer',
-			'foreign_key' => 'order_customer_uid'			
+			'foreign_key' => 'order_customer_uid'
 		)));
 
 		// ...
@@ -1108,7 +1108,7 @@ The `belongsto` association supports these options:
 By convention, Jam assumes that the foreign_key used to hold the foreign key on this model is the name of the association with the suffix _id added. The `foreign_key` option lets you set the name of the foreign key directly:
 
 ```php
-<?php 
+<?php
 class Model_Order extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -1134,7 +1134,7 @@ If you set the `dependent` option to `Jam_Association::DELETE`, then deleting th
 The `foreign_model` option is used to configure the associated model.
 
 ```php
-<?php 
+<?php
 class Model_Order extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -1158,7 +1158,7 @@ echo $order->customer_id; // NULL instead of 0
 The `inverse_of` option specifies the name of the `hasmany` or `hasone` association that is the inverse of this association. Does not work in combination with the `polymorphic` options.
 
 ```php
-<?php 
+<?php
 class Model_Supplier extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -1205,7 +1205,7 @@ The `hasone` association creates a one-to-one match with another model. In datab
 While Jam uses intelligent defaults that will work well in most situations, there may be times when you want to customize the behavior of the `hasone` association reference. Such customizations can easily be accomplished by passing options when you create the association. For example, this association uses two such options:
 
 ```php
-<?php 
+<?php
 
 class Model_Supplier extends Jam_Model {
 
@@ -1245,7 +1245,7 @@ If you set the `dependent` option to `Jam_Association::DELETE`, then deleting th
 
 #### foreign_model
 
-The `foreign` option is used to configure the associated model. 
+The `foreign` option is used to configure the associated model.
 
 ```php
 <?php
@@ -1266,7 +1266,7 @@ class Model_Customer extends Jam_Model {
 
 #### foreign_key
 
-The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name. 
+The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name.
 
 ```php
 <?php
@@ -1378,7 +1378,7 @@ If you set the `dependent` option to `Jam_Association::DELETE`, then deleting th
 
 #### foreign_model
 
-The `foreign` option is used to configure the associated model. 
+The `foreign` option is used to configure the associated model.
 
 ```php
 <?php
@@ -1399,7 +1399,7 @@ class Model_Customer extends Jam_Model {
 
 #### foreign_key
 
-The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name. 
+The `foreign_key` option is used to configure the field pointing to the associated model a You can pass a string with the model name.
 
 ```php
 <?php
@@ -1504,7 +1504,7 @@ The `manytomany` association supports these options:
 The `join_table` option allows you to configure the join table for the association. By default its the names of the two models being associated, pluralized and alphabetically orderd. E.g. `$supplier->parts` will have a default join_table `suppliers_parts`
 
 ```php
-<?php 
+<?php
 
 class Model_Supplier extends Jam_Model {
 
@@ -1522,7 +1522,7 @@ class Model_Supplier extends Jam_Model {
 
 #### foreign_model
 
-The `foreign` option is used to configure the associated model. 
+The `foreign` option is used to configure the associated model.
 
 ```php
 <?php

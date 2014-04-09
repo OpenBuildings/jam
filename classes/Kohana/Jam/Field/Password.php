@@ -26,9 +26,9 @@ abstract class Kohana_Jam_Field_Password extends Jam_Field_String {
 
 	/**
 	 * Hash and set the password to the database
-	 * @param  Jam_Model $model  
+	 * @param  Jam_Model $model
 	 * @param  string      $value  plain password
-	 * @param  bool        $loaded 
+	 * @param  bool        $loaded
 	 * @return string
 	 */
 	public function convert(Jam_Validated $model, $value, $is_loaded)

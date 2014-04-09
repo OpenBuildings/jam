@@ -19,7 +19,7 @@
  * @license    http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
-	
+
 	/**
 	 * @var  int  default is NULL, which implies no date
 	 */
@@ -76,7 +76,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 			{
 				$value = strtotime($value);
 			}
-			
+
 			if (is_numeric($value) AND $value AND $this->timezone !== FALSE)
 			{
 				$value = $this->timezone->convert($value, Jam_Timezone::MASTER_TIMEZONE, Jam_Timezone::USER_TIMEZONE);

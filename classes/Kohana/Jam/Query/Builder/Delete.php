@@ -13,9 +13,9 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	/**
 	 * Create object of class Jam_Query_Builder_Delete
-	 * @param  string $model 
-	 * @param  string $key - limit to only one record with this unique key 
-	 * @return Jam_Query_Builder_Delete        
+	 * @param  string $model
+	 * @param  string $key - limit to only one record with this unique key
+	 * @return Jam_Query_Builder_Delete
 	 */
 	public static function factory($model, $key = NULL)
 	{
@@ -53,7 +53,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 		{
 			Jam_Query_Builder::find_primary_key($this, $key);
 		}
-		
+
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
@@ -70,9 +70,9 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 		{
 			$db = Database::instance($this->meta()->db());
 		}
-		
+
 		$this->_table = $this->meta()->table();
-		
+
 		$this->meta()->events()->trigger('builder.before_delete', $this);
 
 		$result = parent::compile($db);
@@ -94,7 +94,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	protected function _compile_order_by(Database $db, array $order_by)
 	{
-		foreach ($order_by as & $order) 
+		foreach ($order_by as & $order)
 		{
 			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->meta()->model());
 		}
@@ -104,9 +104,9 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	protected function _compile_conditions(Database $db, array $conditions)
 	{
-		foreach ($conditions as & $group) 
+		foreach ($conditions as & $group)
 		{
-			foreach ($group as & $condition) 
+			foreach ($group as & $condition)
 			{
 				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
 			}
@@ -135,9 +135,9 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 	/**
 	 * Getter/setter for the params array used to store arbitrary values by the behaviors
-	 * 
-	 * @param  array|string $params 
-	 * @param  mixed $param  
+	 *
+	 * @param  array|string $params
+	 * @param  mixed $param
 	 * @return Jam_Builder         $this
 	 */
 	public function params($params = NULL, $param = NULL)
@@ -168,7 +168,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 
 		if ( ! in_array($name, $allowed))
 				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
-		
+
 		return $this->{'_'.$name};
 	}
 

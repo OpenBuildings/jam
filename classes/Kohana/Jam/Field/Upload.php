@@ -61,11 +61,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 		if ($value instanceof Upload_File)
 		{
-			$upload_file = $value;	
+			$upload_file = $value;
 		}
 		else
 		{
-			$upload_file = $model->{$this->name};	
+			$upload_file = $model->{$this->name};
 
 			if ($value === NULL)
 			{
@@ -77,7 +77,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 				{
 					$upload_file->source($value);
 				}
-				
+
 				$upload_file->filename($value);
 			}
 
@@ -88,7 +88,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * Move the file to the temp directory even before it validates, so validaitons can be properly performed
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_before_check(Jam_Model $model)
 	{
@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * After the validation for this field passes without any errors, fire up transformations and thumbnail generation
-	 * @param  Jam_Model $model      
+	 * @param  Jam_Model $model
 	 */
 	public function model_after_check(Jam_Model $model)
 	{
@@ -113,7 +113,7 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	/**
 	 * Cleanup temporary file directories when the files are successfully saved
 	 * @param  Jam_Model $model
-	 * @param  boolean $is_changed 
+	 * @param  boolean $is_changed
 	 */
 	public function model_after_save(Jam_Model $model)
 	{
@@ -140,9 +140,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * Get the filename to store in the database
-	 * @param  Jam_Model $model       
-	 * @param  Upload_File $upload_file 
-	 * @param  boolean $is_loaded   
+	 * @param  Jam_Model $model
+	 * @param  Upload_File $upload_file
+	 * @param  boolean $is_loaded
 	 */
 	public function convert(Jam_Validated $model, $upload_file, $is_loaded)
 	{
@@ -151,9 +151,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * Remove files on model deletion
-	 * 
-	 * @param  Jam_Model $model      
-	 * @param  boolean $is_changed 
+	 *
+	 * @param  Jam_Model $model
+	 * @param  boolean $is_changed
 	 */
 	public function model_after_delete(Jam_Validated $model, Jam_Event_Data $data, $delete_finishd)
 	{
@@ -165,9 +165,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 
 	/**
 	 * Get upload file object for a given model
-	 * 
-	 * @param  Jam_Model $model 
-	 * @return Upload_File        
+	 *
+	 * @param  Jam_Model $model
+	 * @return Upload_File
 	 */
 	public function upload_file(Jam_Model $model)
 	{
@@ -189,9 +189,9 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	/**
 	 * Get the localized path for a given model, so that there are less filename conflicts and files are easily located,
 	 * for example the default path is model/id so that Model_Image(1) images will be stored as images/1/file.jpg
-	 * 
+	 *
 	 * @param  Jam_Model $model the model for the context
-	 * @return string           
+	 * @return string
 	 */
 	protected function path(Jam_Model $model)
 	{

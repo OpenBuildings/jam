@@ -36,7 +36,7 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior {
 		{
 			$case .= strtr($template, array(':id' => $id, ':position' => $i));
 		}
-		
+
 		$case .= 'END';
 
 		Jam::update($this->_model)->value($this->_field, DB::expr($case))->execute();

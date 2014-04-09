@@ -28,7 +28,7 @@ abstract class Kohana_Jam_Field_Polymorphic extends Jam_Field_String {
 	public function initialize(Jam_Meta $meta, $name)
 	{
 		parent::initialize($meta, $name);
-		
+
 		$this->default = $this->model;
 	}
 

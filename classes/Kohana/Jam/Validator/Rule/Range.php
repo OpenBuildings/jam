@@ -23,9 +23,9 @@ class Kohana_Jam_Validator_Rule_Range extends Jam_Validator_Rule {
 		$min = min($value->min(), $value->max());
 		$max = max($value->min(), $value->max());
 
-		if ( ! ($value instanceof Jam_Range)) 
+		if ( ! ($value instanceof Jam_Range))
 			throw new Kohana_Exception('Range validation rule can only be applied to range');
-			
+
 		if ($this->minimum !== NULL AND ($min <= $this->minimum))
 		{
 			$model->errors()->add($attribute, 'range_minimum', array(':minimum' => $this->minimum));

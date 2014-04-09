@@ -38,7 +38,7 @@ abstract class Testcase_Validate_Upload extends Testcase_Validate {
 						'path' => $this->test_local,
 						'web' => '/upload',
 					),
-				),			
+				),
 			));
 	}
 }

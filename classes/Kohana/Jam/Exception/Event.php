@@ -9,9 +9,9 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Event extends Kohana_Exception {
-	
+
 	public $event;
-	
+
 	function __construct($message, $event, $fields = NULL)
 	{
 		$fields[':event'] = $this->event = $event;

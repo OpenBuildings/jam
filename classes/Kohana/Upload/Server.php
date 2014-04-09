@@ -1,7 +1,7 @@
 <?php
 /**
  * Abstract Class for manupulating a server
- * 
+ *
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
@@ -108,7 +108,7 @@ abstract class Kohana_Upload_Server
 			'apiKey' => $validation['api_key'],
 		));
 
-		foreach (array('cdn_uri', 'cdn_ssl', 'cdn_streaming', 'url_type') as $param) 
+		foreach (array('cdn_uri', 'cdn_ssl', 'cdn_streaming', 'url_type') as $param)
 		{
 			if (isset($validation[$param]))
 			{

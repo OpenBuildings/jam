@@ -19,14 +19,14 @@ class Create_Table_Images extends Migration
 {
 	public function up()
 	{
-		$this->create_table('posts', array( 
+		$this->create_table('posts', array(
 			'name' => 'string',
 			'title' => 'string',
 			'content' => 'text',
 			'created_at' => 'timestamp'
 		));
 	}
-	
+
 	public function down()
 	{
 		$this->drop_table('posts');
@@ -34,7 +34,7 @@ class Create_Table_Images extends Migration
 }
 ?>
 ```
-	
+
 Then run the migration with
 
 	./minion db:migrate
@@ -58,7 +58,7 @@ class Model_Post extends Jam_Model {
 			'content'         => Jam::field('text'),
 			'created_at'      => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
-			)),	
+			)),
 		));
 	}
 }
@@ -86,7 +86,7 @@ class Model_Post extends Jam_Model {
 			'content'         => Jam::field('text'),
 			'created_at'      => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
-			)),	
+			)),
 		));
 
 		$meta
@@ -102,7 +102,7 @@ These changes will ensure that all posts have a name and a title, and that the t
 
 ## Controllers and views
 
-To actually use this module in your Kohana application you will probably need a controller action and a corresponding view with the HTML Form in it. Let's start with the controller. 
+To actually use this module in your Kohana application you will probably need a controller action and a corresponding view with the HTML Form in it. Let's start with the controller.
 
 
 ### The Controller
@@ -113,7 +113,7 @@ We will place it in classes/controller/posts.php We're using the [Controller_Tem
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Controller_Posts extends Controller_Template {
-	
+
 	public function action_new()
 	{
 		$post = Jam::build('post');
@@ -176,7 +176,7 @@ To be able to display the posts individually you will need the following code in
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Controller_Posts extends Controller_Template {
-	
+
 	public function action_show()
 	{
 		$post = Jam::find('post', $this->request->param('id'));
@@ -187,7 +187,7 @@ class Controller_Posts extends Controller_Template {
 ?>
 ```
 
-We use the factory method of Jam again, but this time we pass the 'id' from the route as the second argument, and then Jam will find the row with the proper ID. 
+We use the factory method of Jam again, but this time we pass the 'id' from the route as the second argument, and then Jam will find the row with the proper ID.
 
 Having the post object we can easily create a view like this to display it:
 
@@ -214,7 +214,7 @@ Finally we can make the delete link usable by adding this to the controller:
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Controller_Posts extends Controller_Template {
-	
+
 	public function action_delete()
 	{
 		$post = Jam::find('post', $this->request->param('id'));
@@ -248,14 +248,14 @@ class Create_Table_Comments extends Migration
 {
 	public function up()
 	{
-		$this->create_table('posts', array( 
+		$this->create_table('posts', array(
 			'commenter' => 'string',
 			'body' => 'text',
 			'post_id' => 'integer',
 			'created_at' => 'timestamp',
 		));
 	}
-	
+
 	public function down()
 	{
 		$this->drop_table('posts');
@@ -295,7 +295,7 @@ class Model_Comment extends Jam_Model {
 			'body'              => Jam::field('text'),
 			'created_at'        => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
-			)),	
+			)),
 		));
 	}
 }
@@ -322,7 +322,7 @@ class Model_Post extends Jam_Model {
 			'content'         => Jam::field('text'),
 			'created_at'      => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
-			)),	
+			)),
 		));
 
 		$meta
@@ -343,7 +343,7 @@ Suppose we want to show all comments of the post in the post page itself, along 
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Controller_Posts extends Controller_Template {
-	
+
 	public function action_show()
 	{
 		$post = Jam::find('post', $this->request->param('id'));
@@ -352,7 +352,7 @@ class Controller_Posts extends Controller_Template {
 
 		if ($this->request->method() == Request::POST)
 		{
-			// Set the post of the comment directly. 
+			// Set the post of the comment directly.
 			// This relationship will be saved on comment save
 			$new_comment
 				->set($this->request->post())
@@ -390,7 +390,7 @@ The view to handle all this functionality will look like this:
 <ul>
 	<?php foreach ($post->comments as $comment): ?>
 		<li>
-			<strong><?php echo HTML::chars($comment->creator) ?></strong> said: 
+			<strong><?php echo HTML::chars($comment->creator) ?></strong> said:
 			<?php echo HTML::chars($comment->body) ?>
 			<span><?php echo Date::fuzzy_span($comment->created_at) ?> ago</span>
 		</li>

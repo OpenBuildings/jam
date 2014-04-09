@@ -13,16 +13,16 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Convert a column to a `table`.`column` using the appropriate model info
-	 * @param  string $column 
-	 * @param  string $model  
-	 * @param  mixed $value  
-	 * @return string         
+	 * @param  string $column
+	 * @param  string $model
+	 * @param  mixed $value
+	 * @return string
 	 */
 	public static function resolve_attribute_name($column, $model = NULL, $value = NULL)
 	{
 		if (is_array($column))
 		{
-			list($column, $alias) = $column;	
+			list($column, $alias) = $column;
 		}
 
 		if ( ! ($column instanceof Database_Expression) AND $column !== '*')
@@ -43,7 +43,7 @@ abstract class Kohana_Jam_Query_Builder {
 				{
 					$model = $model[1];
 				}
-				elseif ($meta) 
+				elseif ($meta)
 				{
 					$model = $meta->table();
 				}
@@ -64,8 +64,8 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Set a primary key condition. If its an array make in an IN condition.
-	 * @param  Database_Query $query 
-	 * @param  string         $key   
+	 * @param  Database_Query $query
+	 * @param  string         $key
 	 * @return Database_Query
 	 */
 	public static function find_by_primary_key(Database_Query $query, $key)
@@ -74,7 +74,7 @@ abstract class Kohana_Jam_Query_Builder {
 		{
 			if ( ! $key)
 				throw new Kohana_Exception('Arrays of primary keys is empty');
-			
+
 			$query->where(':primary_key', 'IN', $key);
 		}
 		else
@@ -89,9 +89,9 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Set the table name, even if its in an alias array (table, alias)
-	 * @param string|array $model 
-	 * @param string $table 
-	 * @return string|array 
+	 * @param string|array $model
+	 * @param string $table
+	 * @return string|array
 	 */
 	public static function set_table_name($model, $table)
 	{
@@ -108,8 +108,8 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Convert model name to its corresponding table, even if its in an array (model, alias)
-	 * @param  string|array $model 
-	 * @return string|array        
+	 * @param  string|array $model
+	 * @return string|array
 	 */
 	public static function resolve_table_alias($model)
 	{
@@ -122,7 +122,7 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Generate Jam_Query_Builder_Join based on the given arguments
-	 * @param  string  $table               
+	 * @param  string  $table
 	 * @param  string  $type                LEFT, NATURAL...
 	 * @param  string  $context_model       the model of the parent
 	 * @param  boolean $resolve_table_model wether to resolve the name of the model to a tablename
@@ -151,8 +151,8 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Return the model if its alias array (model, alias)
-	 * @param  string|array $model 
-	 * @return string        
+	 * @param  string|array $model
+	 * @return string
 	 */
 	public static function aliased_model($model)
 	{
@@ -161,14 +161,14 @@ abstract class Kohana_Jam_Query_Builder {
 
 	/**
 	 * Convert :primary_key, :name_kay and :unique_key to their corresponding column names
-	 * @param  string   $attribute 
-	 * @param  Jam_Meta $meta      
-	 * @param  mixed   $value     
+	 * @param  string   $attribute
+	 * @param  Jam_Meta $meta
+	 * @param  mixed   $value
 	 * @return string
 	 */
 	public static function resolve_meta_attribute($attribute, Jam_Meta $meta, $value = NULL)
 	{
-		switch ($attribute) 
+		switch ($attribute)
 		{
 			case ':primary_key':
 				$attribute = $meta->primary_key();

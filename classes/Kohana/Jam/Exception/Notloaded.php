@@ -10,9 +10,9 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Notloaded extends Kohana_Exception {
-	
+
 	public $model;
-	
+
 	function __construct($message, $model, $fields = NULL)
 	{
 		$fields[':model'] = $this->model = $model;

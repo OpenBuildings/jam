@@ -16,7 +16,7 @@ class Kohana_Jam_Validator_Rule_Accepted extends Jam_Validator_Rule {
 	{
 		if ($value != $this->accept)
 		{
-			$model->errors()->add($attribute, 'accepted', array(':accept' => $this->accept));	
+			$model->errors()->add($attribute, 'accepted', array(':accept' => $this->accept));
 		}
 	}
 }

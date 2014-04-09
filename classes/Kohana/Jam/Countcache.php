@@ -14,7 +14,7 @@ class Kohana_Jam_Countcache {
 	{
 		$query = Jam::update($model);
 
-		foreach ($counters as $name => $change) 
+		foreach ($counters as $name => $change)
 		{
 			$change = (int) $change;
 			$operator = $change < 0 ? '-' : '+';

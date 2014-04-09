@@ -27,16 +27,16 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 		if ( ! $value)
 			return NULL;
 
-		if ($value instanceof Jam_Validated) 
+		if ($value instanceof Jam_Validated)
 			return $value->id();
 
-		if (is_integer($value) OR is_numeric($value)) 
+		if (is_integer($value) OR is_numeric($value))
 			return (int) $value;
 
 		if (is_string($value))
 			return $value;
 
-		if (is_array($value)) 
+		if (is_array($value))
 			return Arr::get($value, Jam::meta($model_name)->primary_key());
 	}
 
@@ -44,7 +44,7 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	{
 		if ($value instanceof Jam_Model AND ( ! $value->loaded() OR $value->changed()))
 			return TRUE;
-		
+
 		return is_array($value);
 	}
 
@@ -56,16 +56,16 @@ abstract class Kohana_Jam_Association extends Jam_Attribute {
 	 * If set to true, will delete the association object when this one gets deleted
 	 * possible values are Jam_Association::DELETE and Jam_Association::ERASE and Jam_Association::NULLIFY
 	 * Jam_Association::DELETE will run the delete event of the associated model, Jam_Association::ERASE will not
-	 * 
+	 *
 	 * @var boolean|string
 	 */
 	public $dependent = FALSE;
 
 	/**
-	 * See if the association is polymorphic. 
+	 * See if the association is polymorphic.
 	 * This is overloaded in the associations themselves
-	 * 
-	 * @return boolean 
+	 *
+	 * @return boolean
 	 */
 	public function is_polymorphic()
 	{

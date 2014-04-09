@@ -88,7 +88,7 @@ class Kohana_Jam_Field_Decimal extends Jam_Field_String {
 		{
 			$value = round($value, $this->precision);
 		}
-		
+
 		return $value;
 	}
 }

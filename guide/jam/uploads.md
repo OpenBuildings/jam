@@ -11,9 +11,9 @@ return array(
 	'jam' => array(
 		'upload' => array(
 			'temp' => array(
-				'path' => DOCROOT.'upload'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR, 
+				'path' => DOCROOT.'upload'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR,
 				'web' => 'upload/temp/'
-			),		
+			),
 			'servers' => array(
 				'local' => array(
 					'type' => 'local',
@@ -29,7 +29,7 @@ return array(
 ?>
 ```
 
-It is important to configure the temp folder location to be publicly available as it will be used to store files that have not yet been validated, allowing you to show them to the user after the validation has failed or even use ajax upload schemes to populate it before actually submitting the form. 
+It is important to configure the temp folder location to be publicly available as it will be used to store files that have not yet been validated, allowing you to show them to the user after the validation has failed or even use ajax upload schemes to populate it before actually submitting the form.
 
 There are three servers at the moment, but the interface for them is simple enough so other backends can be implemented quickly.
 
@@ -92,7 +92,7 @@ Example:
 	 		'save_size' => true,
 	 		'server' => 'local',
 			'path' => ':model/:model:id',
-            'thumbnails' => array(												
+            'thumbnails' => array(
 			    'small' => array(
 			      'transformations' => array(
 			        'resize' => array(100, 100)
@@ -119,7 +119,7 @@ Which will delete the image when the checkbox is saved
 
 If istead of a file field a string is passed with {directory}/{filename} that exists inside the temp directory, it will be used and moved to the server if validation passes. That way you can populate the temporary directory with whatever method you chose (e.g. ajax upload) and then this file will be used. The temporary folder will be deleted.
 
-Example: 
+Example:
 
 	<input type="file" id="cover_image" name="cover_image">
 	<input type="hidden" name="cover_image" value="23u402394u0/penetrometer-86.png">
@@ -134,7 +134,7 @@ Example:
 		}
 		else
 		{
-			$(this).prev().removeAttr("disabled");	
+			$(this).prev().removeAttr("disabled");
 		}
 	});
 	</script>

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); 
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
  * Resource_Jam_Exception_Sluggable class
@@ -10,7 +10,7 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Sluggable extends Kohana_Exception {
-	
+
 	public $slug;
 	public $model;
 

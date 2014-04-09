@@ -2,7 +2,7 @@
 
 /**
  * Handles building and maintaining HTML Forms
- * 
+ *
  * @package    Jam
  * @category   Form
  * @author     Ivan Kerin
@@ -13,9 +13,9 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Helper method to build a prefix based
-	 * 
-	 * @param string $prefix 
-	 * @param string $name 
+	 *
+	 * @param string $prefix
+	 * @param string $name
 	 * @return string
 	 */
 	public static function generate_prefix($prefix, $name)
@@ -39,9 +39,9 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Convert Jam_Builder or Jam_Collection to an array of id => name
-	 * 
-	 * @param mixed $choices 
-	 * @return  array 
+	 *
+	 * @param mixed $choices
+	 * @return  array
 	 */
 	public static function list_choices($choices)
 	{
@@ -49,14 +49,14 @@ abstract class Kohana_Jam_Form {
 		{
 			$choices = $choices->as_array(':primary_key', ':name_key');
 		}
-		
+
 		return $choices;
 	}
 
 	/**
 	 * Get the id or list of ids of an object (Jam_Model / Jam_Colleciton respectively)
-	 * 
-	 * @param int|array $id 
+	 *
+	 * @param int|array $id
 	 * @param bool $force_single if a value is an array get the first value
 	 */
 	public static function list_id($id, $force_single = FALSE)
@@ -65,24 +65,24 @@ abstract class Kohana_Jam_Form {
 		{
 			$id = $id->id();
 		}
-		elseif ($id instanceof Jam_Query_Builder_Select OR $id instanceof Jam_Array_Model) 
+		elseif ($id instanceof Jam_Query_Builder_Select OR $id instanceof Jam_Array_Model)
 		{
 			$id = $id->ids();
 		}
-		
+
 		if ($force_single AND is_array($id))
 		{
 			$id = reset($id);
 		}
-		
+
 		return $id;
 	}
 
 	/**
 	 * Add a class to the 'class' attribute, without removing existing value
-	 * 
-	 * @param array  $attributes 
-	 * @param array $class      
+	 *
+	 * @param array  $attributes
+	 * @param array $class
 	 */
 	public static function add_class(array $attributes, $class)
 	{
@@ -95,7 +95,7 @@ abstract class Kohana_Jam_Form {
 		$collection = ($collection instanceof Jam_Query_Builder_Collection OR $collection instanceof Jam_Array_Model) ? $collection->as_array() : $collection;
 
 		$common = array();
-		foreach ($params as $name => $param) 
+		foreach ($params as $name => $param)
 		{
 			$attribute_name = is_numeric($name) ? $param : $name;
 			$param_collection = array_map(function($item) use ($attribute_name) { return $item->$attribute_name; }, $collection);
@@ -117,14 +117,14 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * The "prefix" of the form - this is used to implement nesting with html forms
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_prefix = '%s';
 
 	/**
 	 * The current object the form is bound to
-	 * 
+	 *
 	 * @var Jam_Model
 	 */
 	protected $_object;
@@ -137,7 +137,7 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * The meta of the Jam_Object the form is bound to
-	 * 
+	 *
 	 * @var Jam_Meta
 	 */
 	protected $_meta;
@@ -164,8 +164,8 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Getter / setter of the prefix
-	 * 
-	 * @param string $prefix 
+	 *
+	 * @param string $prefix
 	 */
 	public function prefix($prefix = NULL)
 	{
@@ -196,7 +196,7 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Create a nested form for a child association of the model, assigning the correct prefix
-	 * 
+	 *
 	 * @param string $name  of the association
 	 * @param int $index an index id of a collection (if the association if a colleciton)
 	 * @return  Jam_Form
@@ -216,7 +216,7 @@ abstract class Kohana_Jam_Form {
 				$object = $object->build();
 			}
 		}
-		elseif ( ! $object) 
+		elseif ( ! $object)
 		{
 			$object = $this->object()->build($name);
 		}
@@ -229,9 +229,9 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Get the default name for a field of this form
-	 * 
-	 * @param string $name 
-	 * @return string 
+	 *
+	 * @param string $name
+	 * @return string
 	 */
 	public function default_name($name)
 	{
@@ -240,9 +240,9 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Get the default html attribute id for a field of this form
-	 * 
-	 * @param string $name 
-	 * @return string 
+	 *
+	 * @param string $name
+	 * @return string
 	 */
 	public function default_id($name)
 	{
@@ -251,10 +251,10 @@ abstract class Kohana_Jam_Form {
 
 	/**
 	 * Get the default attributes (name and id) for a field of this form
-	 * 
-	 * @param string $name      
+	 *
+	 * @param string $name
 	 * @param array  $overrides
-	 * @return array 
+	 * @return array
 	 */
 	public function default_attributes($name, array $overrides = array())
 	{
@@ -270,7 +270,7 @@ abstract class Kohana_Jam_Form {
 
 		if ($this->validation())
 		{
-			foreach ($this->object()->meta()->validators() as $validator) 
+			foreach ($this->object()->meta()->validators() as $validator)
 			{
 				if ( ! $validator->condition)
 				{

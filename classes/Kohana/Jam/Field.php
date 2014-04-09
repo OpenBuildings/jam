@@ -179,7 +179,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 
 	/**
 	 * Shortcut for setting a filter
-	 * @param  string $filter_name 
+	 * @param  string $filter_name
 	 * @param  array $values    values, defaults to array(':value')
 	 * @return Jam_Field            $this
 	 */
@@ -227,7 +227,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	{
 		if ($this->convert_empty AND $this->empty_value !== NULL)
 			return $value === $this->empty_value;
-		
+
 		return ($value === NULL OR $value === $this->default);
 	}
 
@@ -235,7 +235,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	{
 		if ( ! empty($this->filters))
 		{
-			foreach ($this->filters as $filter => $arguments) 
+			foreach ($this->filters as $filter => $arguments)
 			{
 				if (is_numeric($filter))
 				{
@@ -252,8 +252,8 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 	public function run_filter(Jam_Validated $model, $value, $filter, array $arguments = array())
 	{
 		$bound = array(
-			':model' => $model, 
-			':field' => $this->name, 
+			':model' => $model,
+			':field' => $this->name,
 			':value' => $value,
 		);
 
@@ -269,7 +269,7 @@ abstract class Kohana_Jam_Field extends Jam_Attribute {
 		}
 
 		$value = call_user_func_array($filter, $arguments);
-		
+
 
 		return $value;
 	}

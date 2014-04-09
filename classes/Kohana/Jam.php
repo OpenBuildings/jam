@@ -48,21 +48,21 @@ abstract class Kohana_Jam {
 	 *               This can be overridden to allow you to place
 	 *               association classes in a different location.
 	 */
-	protected static $_association_prefix = 'Jam_Association_';	
+	protected static $_association_prefix = 'Jam_Association_';
 
 	/**
 	 * @var  string  This prefix to use for all model's form classes
 	 *               This can be overridden to allow you to place
 	 *               form classes in a different location.
 	 */
-	protected static $_form_prefix = 'Jam_Form_';	
+	protected static $_form_prefix = 'Jam_Form_';
 
 	/**
 	 * @var  string  This prefix to use for all attribute's validator rule classes
 	 *               This can be overridden to allow you to place
 	 *               form classes in a different location.
 	 */
-	protected static $_validator_rule_prefix = 'Jam_Validator_Rule_';	
+	protected static $_validator_rule_prefix = 'Jam_Validator_Rule_';
 
 	/**
 	 * @var  array  Contains all of the meta classes related to models
@@ -77,15 +77,15 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make a new object of the given model, optionally setting some fields
-	 * @param  string $model_name      
-	 * @param  array  $attributes 
+	 * @param  string $model_name
+	 * @param  array  $attributes
 	 * @return Jam_Model
 	 */
 	public static function build($model_name, array $attributes = NULL)
 	{
 		$meta = Jam::meta($model_name);
 
-		if ($meta AND $meta->polymorphic_key() AND ! empty($attributes[$meta->polymorphic_key()])) 
+		if ($meta AND $meta->polymorphic_key() AND ! empty($attributes[$meta->polymorphic_key()]))
 		{
 			$model_name = $attributes[$meta->polymorphic_key()];
 		}
@@ -94,7 +94,7 @@ abstract class Kohana_Jam {
 
 		$object = new $class();
 
-		if ($attributes) 
+		if ($attributes)
 		{
 			$object->set($attributes);
 		}
@@ -104,8 +104,8 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Create a new object of a given model, optionally setting some fields, and then save it to the database
-	 * @param  string $model      
-	 * @param  array  $attributes 
+	 * @param  string $model
+	 * @param  array  $attributes
 	 * @return Jam_Model
 	 */
 	public static function create($model, array $attributes = array())
@@ -359,7 +359,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Delete
-	 * @param  string $model 
+	 * @param  string $model
 	 * @return Jam_Query_Builder_Delete
 	 */
 	public static function delete($model)
@@ -369,7 +369,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Update
-	 * @param  string $model 
+	 * @param  string $model
 	 * @return Jam_Query_Builder_Update
 	 */
 	public static function update($model)
@@ -379,7 +379,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Insert
-	 * @param  string $model 
+	 * @param  string $model
 	 * @return Jam_Query_Builder_Insert
 	 */
 	public static function insert($model, array $columns = array())
@@ -389,7 +389,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Select
-	 * @param  string $model 
+	 * @param  string $model
 	 * @return Jam_Query_Builder_Select
 	 */
 	public static function select($model)
@@ -399,16 +399,16 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Collection
-	 * @param  string $model 
+	 * @param  string $model
 	 * @return Jam_Query_Builder_Collection
 	 */
 	public static function all($model)
 	{
 		if ( ! ($meta = Jam::meta($model)))
 			throw new Kohana_Exception('Model :model does not exist', array(':model' => $model));
-			
+
 		$class = $meta->collection();
-		
+
 		if ( ! $class)
 		{
 			$class = 'Jam_Query_Builder_Collection';
@@ -420,7 +420,7 @@ abstract class Kohana_Jam {
 	{
 		$collection = Jam::all($model);
 		$converted_keys = array();
-		foreach ($values as $key => $value) 
+		foreach ($values as $key => $value)
 		{
 			$key = Jam_Query_Builder::resolve_meta_attribute($key, Jam::meta($model), $value);
 
@@ -435,11 +435,11 @@ abstract class Kohana_Jam {
 	}
 
 	/**
-	 * Try to find a model with the given fields, if one cannot be found, 
+	 * Try to find a model with the given fields, if one cannot be found,
 	 * build it and set the fields we've search with to it.
-	 * @param  string $model  
-	 * @param  array  $values 
-	 * @return Jam_Model         
+	 * @param  string $model
+	 * @param  array  $values
+	 * @return Jam_Model
 	 */
 	public static function find_or_build($model, array $values)
 	{
@@ -447,11 +447,11 @@ abstract class Kohana_Jam {
 	}
 
 	/**
-	 * Try to find a model with the given fields, if one cannot be found, 
+	 * Try to find a model with the given fields, if one cannot be found,
 	 * create it and set the fields we've search with to it. Save the model to the database.
-	 * @param  string $model  
-	 * @param  array  $values 
-	 * @return Jam_Model         
+	 * @param  string $model
+	 * @param  array  $values
+	 * @return Jam_Model
 	 */
 	public static function find_or_create($model, array $values)
 	{
@@ -461,9 +461,9 @@ abstract class Kohana_Jam {
 	/**
 	 * Find a model with its unique key. Return NULL on failure.
 	 * You can pass an array - then it tries to find all the models corresponding to the keys
-	 * @param  string $model 
-	 * @param  string|array $key   
-	 * @return Jam_Model        
+	 * @param  string $model
+	 * @param  string|array $key
+	 * @return Jam_Model
 	 */
 	public static function find($model, $key)
 	{
@@ -473,9 +473,9 @@ abstract class Kohana_Jam {
 	}
 
 	/**
-	 * Find a model with its unique key. Throw Jam_Exception_Notfound on failure 
+	 * Find a model with its unique key. Throw Jam_Exception_Notfound on failure
 	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_Notfound
-	 * @param  string $model 
+	 * @param  string $model
 	 * @param  string|array $key
 	 * @return Jam_Model
 	 */
@@ -491,18 +491,18 @@ abstract class Kohana_Jam {
 		{
 			$missing = $result ? array() : array($key);
 		}
-		
+
 		if ($missing)
 			throw new Jam_Exception_Notfound(':model (:missing) not found', $model, array(':missing' => join(', ', $missing)));
-	
+
 		return $result;
 	}
 
 	/**
 	 * Filter the $data array by removing everything that does not have a key in the permit array
-	 * @param  array  $permit array of permitted keys 
-	 * @param  array  $data   
-	 * @return array         
+	 * @param  array  $permit array of permitted keys
+	 * @param  array  $data
+	 * @return array
 	 */
 	public static function permit(array $permit = array(), array $data = array())
 	{
@@ -517,7 +517,7 @@ abstract class Kohana_Jam {
 		}
 
 		$class = Jam::capitalize_class_name($class);
-		
+
 		if (is_string($model))
 		{
 			$model = Jam::build($model);
@@ -537,7 +537,7 @@ abstract class Kohana_Jam {
 
 		$model_name = ($meta AND $meta->polymorphic_key()) ? Arr::get($values, $meta->polymorphic_key(), $model_name) : $model_name;
 
-		if ( ! isset(Jam::$_build_templates[$model_name])) 
+		if ( ! isset(Jam::$_build_templates[$model_name]))
 		{
 			Jam::$_build_templates[$model_name] = Jam::build($model_name);
 		}

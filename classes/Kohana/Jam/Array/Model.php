@@ -2,7 +2,7 @@
 
 /**
  * Represents an array of models. Lazy loaded from a Jam_Query_Builder_Collection, and can be changed, checked and saved at once.
- * 
+ *
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
@@ -18,7 +18,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Convert a collection to an array, keep an array or make a Jam_Model to an array(Jam_Model)
-	 * @param  mixed $collection 
+	 * @param  mixed $collection
 	 * @return array
 	 */
 	public static function convert_collection_to_array($collection)
@@ -61,11 +61,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	 * @var boolean
 	 */
 	protected $_replace = FALSE;
-	
+
 	/**
 	 * Getter / Setter of the model name
-	 * @param  string $model 
-	 * @return string        
+	 * @param  string $model
+	 * @return string
 	 */
 	public function model($model = NULL)
 	{
@@ -79,20 +79,20 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Getter of the meta object for this iterator (based on $_model)
-	 * @return Jam_Model 
+	 * @return Jam_Model
 	 * @throws Kohana_Exception If $_model not present
 	 */
 	public function meta()
 	{
 		if ( ! $this->model())
 			throw new Kohana_Exception('Model not set');
-			
+
 		return Jam::meta($this->model());
 	}
-	
+
 	/**
 	 * Getter / Setter of the collection, used to lazy load the data for this iterator
-	 * @param  Jam_Query_Builder_Collection $collection 
+	 * @param  Jam_Query_Builder_Collection $collection
 	 * @return Jam_Query_Builder_Collection
 	 */
 	public function collection(Jam_Query_Builder_Collection $collection = NULL)
@@ -107,7 +107,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	}
 
 	/**
-	 * Load the content from the database, using $_collection. 
+	 * Load the content from the database, using $_collection.
 	 * If some items have been added to the iterator before it has been loaded, merge the results
 	 * @throws Kohana_Exception If the $_collection has not been loaded
 	 */
@@ -117,7 +117,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		{
 			if ( ! $this->collection())
 				throw new Kohana_Exception('Cannot load content because collection not loaded for Jam_Array(:model)', array(':model' => $this->model()));
-			
+
 			$collection = clone $this->collection();
 
 			$this->_original = $collection->result()->as_array();
@@ -145,8 +145,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Load an item from the database, based on a unique key
-	 * @param  string $key 
-	 * @return Jam_Model      
+	 * @param  string $key
+	 * @return Jam_Model
 	 */
 	protected function _find_item($key)
 	{
@@ -155,10 +155,10 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Convert an item from the $_content to a Jam_Model
-	 * @param  mixed $value      
-	 * @param  boolean $is_changed 
-	 * @param  int $offset     
-	 * @return Jam_Model             
+	 * @param  mixed $value
+	 * @param  boolean $is_changed
+	 * @param  int $offset
+	 * @return Jam_Model
 	 */
 	protected function _load_item($value, $is_changed, $offset)
 	{
@@ -167,7 +167,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			$item = $value;
 		}
 		elseif ( ! is_array($value))
-		{ 
+		{
 			$item = $this->_find_item($value);
 		}
 		elseif (is_array($value) AND $is_changed)
@@ -176,7 +176,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			if (isset($value[$key]) AND $value[$key])
 			{
 				$item_key = is_array($value[$key]) ? reset($value[$key]) : $value[$key];
-				
+
 				$model = $this->_find_item($item_key);
 				if ( ! $model)
 				{
@@ -191,7 +191,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 			{
 				$model = clone Jam::build_template($this->model(), $value);
 			}
-				
+
 			$item = $model->set($value);
 		}
 		else
@@ -207,8 +207,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Find out the primary_key of an item of the $_content
-	 * @param  mixed $value 
-	 * @return int        
+	 * @param  mixed $value
+	 * @return int
 	 */
 	protected function _id($value)
 	{
@@ -231,7 +231,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 		if ( ! $search_id)
 			return NULL;
-		
+
 		$this->_load_content();
 
 		if ($this->_content)
@@ -254,7 +254,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		$key = Jam_Query_Builder::resolve_meta_attribute($key, $this->meta());
 		$value = Jam_Query_Builder::resolve_meta_attribute($value, $this->meta());
 
-		foreach ($this as $i => $item) 
+		foreach ($this as $i => $item)
 		{
 			$results[$key ? $item->$key : $i] = $value ? $item->$value : $item;
 		}
@@ -306,7 +306,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	{
 		$items = Jam_Array_Model::convert_collection_to_array($items);
 
-		foreach ($items as $item) 
+		foreach ($items as $item)
 		{
 			$this->offsetSet($this->search($item), $item);
 		}
@@ -318,7 +318,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	{
 		$items = Jam_Array_Model::convert_collection_to_array($items);
 
-		foreach ($items as $item) 
+		foreach ($items as $item)
 		{
 			if (($offset = $this->search($item)) !== NULL)
 			{
@@ -328,11 +328,11 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 		return $this;
 	}
-	
+
 	/**
 	 * Build a new Jam Model, add it to the collection and return the newly built model
 	 * @param  array $values set values on the new model
-	 * @return Jam_Model         
+	 * @return Jam_Model
 	 */
 	public function build(array $values = NULL)
 	{
@@ -348,8 +348,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * The same as build but saves the model in the database
-	 * @param  array $values 
-	 * @return Jam_Model         
+	 * @param  array $values
+	 * @return Jam_Model
 	 */
 	public function create(array $values = NULL)
 	{
@@ -359,8 +359,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	public function check_changed()
 	{
 		$check = TRUE;
-		
-		foreach ($this->_changed as $offset => $is_changed) 
+
+		foreach ($this->_changed as $offset => $is_changed)
 		{
 			$item = $this->offsetGet($offset);
 			if ($is_changed AND $item AND ! $item->check())
@@ -374,7 +374,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	public function save_changed()
 	{
-		foreach ($this->_changed as $offset => $is_changed) 
+		foreach ($this->_changed as $offset => $is_changed)
 		{
 			$item = $this->offsetGet($offset);
 			if ($is_changed AND $item AND ! $item->is_saving())
@@ -388,8 +388,8 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	public function clear()
 	{
-		$this->_changed = 
-		$this->_original = 
+		$this->_changed =
+		$this->_original =
 		$this->_content = array();
 
 		return $this;
@@ -407,7 +407,7 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 	{
 		if ( ! $this->collection())
 			return 'Jam_Array ('.$this->model().')[NOT LOADED COLLECTION]';
-		
+
 		return $this->collection()->__toString();
 	}
 
@@ -421,14 +421,14 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 
 	/**
 	 * Getter for the changed array - check if any or a particular item has been changed
-	 * @param  int $offset 
-	 * @return bool         
+	 * @param  int $offset
+	 * @return bool
 	 */
 	public function changed($offset = NULL)
 	{
 		if ($this->_content)
 		{
-			foreach ($this->_content as $key => $value) 
+			foreach ($this->_content as $key => $value)
 			{
 				if ( ! isset($this->_changed[$key]) AND $value instanceof Jam_Model AND $value->changed())
 				{
@@ -468,4 +468,4 @@ abstract class Kohana_Jam_Array_Model extends Jam_Array {
 		$this->_removed  = $data['removed'];
 		$this->_current  = $data['current'];
 	}
-} 
+}

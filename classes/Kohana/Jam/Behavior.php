@@ -34,16 +34,16 @@ abstract class Kohana_Jam_Behavior {
 	 * @var  string  The model this is attached to
 	 */
 	protected $_model;
-	
+
 	/**
 	 * @var  string  The name of this behavior
 	 */
 	protected $_name;
-	
+
 	/**
 	 * Constructor.
 	 *
-	 * @param   array   $params 
+	 * @param   array   $params
 	 */
 	public function __construct($params = array())
 	{
@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Behavior {
 			$this->{'_'.$key} = $param;
 		}
 	}
-	
+
 	/**
 	 * Initialize.
 	 *
@@ -64,7 +64,7 @@ abstract class Kohana_Jam_Behavior {
 	{
 		$this->_name  = $name;
 		$this->_model = $meta->model();
-		
+
 		$meta->events()->discover_events($this, Jam_Event::BEHAVIOR_PRIORITY);
 	}
 } // End Kohana_Jam_Behavior

@@ -2,7 +2,7 @@
 
 /**
  * A collection of jam models from the database.
- * 
+ *
  * @package    Jam
  * @category   Associations
  * @author     Ivan Kerin
@@ -13,14 +13,14 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Create object of class Jam_Query_Builder_Collection
-	 * @param  string $model 
-	 * @return Jam_Query_Builder_Collection        
+	 * @param  string $model
+	 * @return Jam_Query_Builder_Collection
 	 */
 	public static function factory($model)
 	{
 		return new Jam_Query_Builder_Collection($model);
 	}
-	
+
 	/**
 	 * The result of this colleciton
 	 * @var Database_Result
@@ -48,9 +48,9 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 	}
 
 	/**
-	 * Load the info for the collection result, as if was loaded from the database 
-	 * @param  array  $fields 
-	 * @return Jam_Query_Builder_Collection         
+	 * Load the info for the collection result, as if was loaded from the database
+	 * @param  array  $fields
+	 * @return Jam_Query_Builder_Collection
 	 */
 	public function load_fields(array $fields)
 	{
@@ -60,8 +60,8 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Use the Jam::build_template() to return the model for the row in the results
-	 * @param  array $value 
-	 * @return Jam_Model        
+	 * @param  array $value
+	 * @return Jam_Model
 	 */
 	protected function _load_model($value)
 	{
@@ -107,7 +107,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Get the ids of the models in an array
-	 * @return array 
+	 * @return array
 	 */
 	public function ids()
 	{
@@ -116,7 +116,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Return the first model
-	 * @return Jam_Model 
+	 * @return Jam_Model
 	 */
 	public function first()
 	{
@@ -139,8 +139,8 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Find out the primary_key of an item of the $_content
-	 * @param  mixed $value 
-	 * @return int        
+	 * @param  mixed $value
+	 * @return int
 	 */
 	protected function _id($value)
 	{
@@ -179,7 +179,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Implement Countable
-	 * @return int 
+	 * @return int
 	 */
 	public function count()
 	{
@@ -188,9 +188,9 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Implement ArrayAccess
-	 * 
-	 * @param  int $offset 
-	 * @return Jam_Model         
+	 *
+	 * @param  int $offset
+	 * @return Jam_Model
 	 */
 	public function offsetGet($offset)
 	{
@@ -203,9 +203,9 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Implement ArrayAccess
-	 * 
-	 * @param  int $offset 
-	 * @return boolean         
+	 *
+	 * @param  int $offset
+	 * @return boolean
 	 */
 	public function offsetExists($offset)
 	{
@@ -238,7 +238,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Implement Iterator
-	 * @return  Jam_Model 
+	 * @return  Jam_Model
 	 */
 	public function current()
 	{

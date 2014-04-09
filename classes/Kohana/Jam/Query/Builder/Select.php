@@ -13,8 +13,8 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	/**
 	 * Create object of class Jam_Query_Builder_Select
-	 * @param  string $model 
-	 * @return Jam_Query_Builder_Select        
+	 * @param  string $model
+	 * @return Jam_Query_Builder_Select
 	 */
 	public static function factory($model)
 	{
@@ -52,7 +52,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 		if ( ! $this->_meta)
 			throw new Kohana_Exception('There is no model :model for select', array(':model' => $model));
-		
+
 		$this->meta()->events()->trigger('builder.after_construct', $this);
 	}
 
@@ -96,13 +96,13 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		$this->meta()->events()->trigger('builder.before_select', $this);
 
 		$result = parent::compile($db);
-		
+
 		$this->meta()->events()->trigger('builder.after_select', $this);
 
 		$this->_select = $original_select;
 		$this->_from = $original_from;
 
-		return $result;		
+		return $result;
 	}
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
@@ -161,7 +161,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	protected function _compile_order_by(Database $db, array $order_by)
 	{
-		foreach ($order_by as & $order) 
+		foreach ($order_by as & $order)
 		{
 			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->meta()->model());
 		}
@@ -171,7 +171,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	protected function _compile_group_by(Database $db, array $group_by)
 	{
-		foreach ($group_by as & $group) 
+		foreach ($group_by as & $group)
 		{
 			$group = Jam_Query_Builder::resolve_attribute_name($group, $this->meta()->model());
 		}
@@ -181,9 +181,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	protected function _compile_conditions(Database $db, array $conditions)
 	{
-		foreach ($conditions as & $group) 
+		foreach ($conditions as & $group)
 		{
-			foreach ($group as & $condition) 
+			foreach ($group as & $condition)
 			{
 				if (is_array($condition))
 				{
@@ -214,7 +214,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function aggregate($function, $column = NULL)
 	{
-		return $this->aggregate_query($function, $column)->execute()->get('result');	
+		return $this->aggregate_query($function, $column)->execute()->get('result');
 	}
 
 	public function count_all($without_grouping = FALSE)
@@ -249,9 +249,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	/**
 	 * Getter/setter for the params array used to store arbitrary values by the behaviors
-	 * 
-	 * @param  array|string $params 
-	 * @param  mixed $param  
+	 *
+	 * @param  array|string $params
+	 * @param  mixed $param
 	 * @return Jam_Builder         $this
 	 */
 	public function params($params = NULL, $param = NULL)
@@ -283,7 +283,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	/**
 	 * You can get some of the parameters of the jam query builder.
-	 * 
+	 *
 	 * @param  string $name one of select, from, join, where, group_by, having, order_by, union, distinct, limit, offset, parameters
 	 * @return mixed
 	 */
@@ -291,7 +291,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		if ( ! in_array($name, Jam_Query_Builder_Select::$_modifiable))
 				throw new Kohana_Exception('You cannot get :name, only :modifiable', array(':name' => $name, ':modifiable' => join(', ', Jam_Query_Builder_Select::$_modifiable)));
-		
+
 		return $this->{'_'.$name};
 	}
 
@@ -321,7 +321,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 		{
 			$this->{'_'.$name} = $new->{'_'.$name};
 		}
-		
+
 		return $this;
 	}
 }

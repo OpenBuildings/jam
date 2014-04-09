@@ -1,6 +1,6 @@
 ## Binding a Form to an Object
 
-A particularly common task for a form is editing or creating a model object. While the Kohana Form helpers can certainly be used for this task they are somewhat verbose as for each tag you would have to ensure the correct parameter name is used and set the default value of the input appropriately. Jam provides helpers tailored to this task. 
+A particularly common task for a form is editing or creating a model object. While the Kohana Form helpers can certainly be used for this task they are somewhat verbose as for each tag you would have to ensure the correct parameter name is used and set the default value of the input appropriately. Jam provides helpers tailored to this task.
 
 Here's how the typical form code looks like
 
@@ -76,7 +76,7 @@ Sometimes we have associations that we want to set alongside the object in one s
 ```
 
 
-We can now keep the same controller code - it will save both the article and the new category, associated with it. This is quite powerfull and can express any type of nesting that you might require in your forms. 
+We can now keep the same controller code - it will save both the article and the new category, associated with it. This is quite powerfull and can express any type of nesting that you might require in your forms.
 
 Fields_for has a second parameter "index" this is used to allow you to manage collections. For example if we needed a form to edit an article, by changing the info for its "hasmany" tags - we can do:
 
@@ -117,7 +117,7 @@ The available built in helpers (found in Jam_Form_General) are:
 * __file__ - input file tag
 * __password__ input password tag
 * __textarea__ textarea tag
-* __select__ select tag, Options are set through the option "choices" (value => label). If its a nested array the result will be optiongroup tags. 
+* __select__ select tag, Options are set through the option "choices" (value => label). If its a nested array the result will be optiongroup tags.
 
 ## Form rows.
 

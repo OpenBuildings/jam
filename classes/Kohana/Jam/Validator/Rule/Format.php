@@ -21,7 +21,7 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 	public $url;
 
 	public $ip;
-	
+
 	public $credit_card;
 
 	public function validate(Jam_Validated $model, $attribute, $value)
@@ -70,7 +70,7 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 		elseif ($this->regex)
 		{
 			return array('pattern' => trim($this->regex, '/'));
-		}		
+		}
 		elseif ($this->credit_card)
 		{
 			return array('pattern' => '^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$');

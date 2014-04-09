@@ -7,7 +7,7 @@ Jam is a small ORM for Kohana 3.3+ that builds on top of Jelly - the project was
 
 
 
-Jam adds some much needed features to Jelly project, 
+Jam adds some much needed features to Jelly project,
 
 * Lazy loading of collections
 * Modifying Collections on the fly and saving the changes

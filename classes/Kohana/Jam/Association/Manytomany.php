@@ -65,7 +65,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
 	 * @param  string $alias table name alias
 	 * @param  string $type  join type (LEFT, NATURAL)
-	 * @return Jam_Query_Builder_Join        
+	 * @return Jam_Query_Builder_Join
 	 */
 	public function join($alias, $type = NULL)
 	{
@@ -83,7 +83,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	{
 		$collection = Jam::all($this->foreign_model);
 
-		return $collection	
+		return $collection
 			->join_table($this->join_table)
 				->context_model($this->foreign_model)
 				->on($this->association_foreign_key, '=', ':primary_key')
@@ -95,7 +95,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	/**
 	 * After the model is deleted, remove all the join_table entries associated with it,
 	 * You can disabled this by setting join_table_dependent to FALSE
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_after_delete(Jam_Model $model)
 	{
@@ -108,8 +108,8 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 
 	/**
 	 * Generate a query to delete associated models in the database
-	 * @param  Jam_Model $model 
-	 * @return Database_Query           
+	 * @param  Jam_Model $model
+	 * @return Database_Query
 	 */
 	public function erase_query(Jam_Model $model)
 	{
@@ -120,7 +120,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	/**
 	 * Generate a query to remove models from the association (without deleting them), for specific ids
 	 * @param  Jam_Model $model
-	 * @param  array     $ids  
+	 * @param  array     $ids
 	 * @return Database_Query
 	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
@@ -133,7 +133,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	/**
 	 * Generate a query to add models from the association (without deleting them), for specific ids
 	 * @param  Jam_Model $model
-	 * @param  array     $ids  
+	 * @param  array     $ids
 	 * @return Database_Query
 	 */
 	public function add_items_query(Jam_Model $model, array $ids)
@@ -141,7 +141,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 		$query = DB::insert($this->join_table)
 			->columns(array($this->foreign_key, $this->association_foreign_key));
 
-		foreach ($ids as $id) 
+		foreach ($ids as $id)
 		{
 			$query->values(array($model->id(), $id));
 		}

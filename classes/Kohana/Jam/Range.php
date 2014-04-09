@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * This class is what the upload field accually returns 
+ * This class is what the upload field accually returns
  * and has all the nesessary info and manipulation abilities to save / delete / validate itself
- * 
+ *
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
@@ -16,7 +16,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	protected $_max;
 
 	protected $_format = ":min - :max";
-	
+
 	public function format($format = NULL)
 	{
 		if ($format !== NULL)
@@ -75,7 +75,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 		$this->format($format);
 	}
-	
+
 	public function min($min = NULL)
 	{
 		if ($min !== NULL)
@@ -85,7 +85,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		}
 		return $this->_min;
 	}
-	
+
 	public function max($max = NULL)
 	{
 		if ($max !== NULL)
@@ -101,16 +101,16 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 		return Jam_Range::sum(array($this, $addition), $this->format());
 	}
 
-	public function offsetSet($offset, $value) 
+	public function offsetSet($offset, $value)
 	{
-		if (is_null($offset)) 
+		if (is_null($offset))
 			throw new Kohana_Exception('Cannot add new values to range');
 
 		if ($offset == 0)
 		{
 			$this->min($value);
 		}
-		elseif ($offset == 1) 
+		elseif ($offset == 1)
 		{
 			$this->max($value);
 		}
@@ -134,7 +134,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if ( ! $this->offsetExists($offset))
 			throw new Kohana_Exception('Use offset 0 for min and offset 1 for max, offset :offset not supported', array(':offset' => $offset));
-			
+
 		return $offset ? $this->max() : $this->min();
 	}
 

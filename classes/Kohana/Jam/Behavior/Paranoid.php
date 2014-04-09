@@ -2,7 +2,7 @@
 
 /**
  * Implementation of the paranoid behavior, so when you delete soemthing it does not dissapear but is set with a flag is_deleted
- * 
+ *
  * @package    Jam
  * @category   Behavior
  * @author     Ivan Kerin
@@ -15,7 +15,7 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	public static function filter($filter = NULL)
 	{
-		if ($filter !== NULL) 
+		if ($filter !== NULL)
 		{
 			Jam_Behavior_Paranoid::$_default_filter = $filter;
 		}
@@ -40,12 +40,12 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	/**
 	 * The field used for checking if an item is deleated
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_field = 'is_deleted';
 
-	public function initialize(Jam_Meta $meta, $name) 
+	public function initialize(Jam_Meta $meta, $name)
 	{
 		parent::initialize($meta, $name);
 
@@ -59,8 +59,8 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	/**
 	 * Perform the actual where modification when it is needed
-	 * 
-	 * @param Jam_Query_Builder_Select    $builder 
+	 *
+	 * @param Jam_Query_Builder_Select    $builder
 	 */
 	public function builder_paranoid_filter(Database_Query $builder)
 	{
@@ -83,13 +83,13 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 	}
 
 	/**
-	 * $builder->deleted(Jam_Behavior_Paranoid::ALL), 
-	 * $builder->deleted(Jam_Behavior_Paranoid::DELETED), 
+	 * $builder->deleted(Jam_Behavior_Paranoid::ALL),
+	 * $builder->deleted(Jam_Behavior_Paranoid::DELETED),
 	 * $builder->deleted(Jam_Behavior_Paranoid::NORMAL)
-	 * 
-	 * @param Jam_Builder    $builder       
-	 * @param Jam_Event_Data $data          
-	 * @param string         $paranoid_filter_type 
+	 *
+	 * @param Jam_Builder    $builder
+	 * @param Jam_Event_Data $data
+	 * @param string         $paranoid_filter_type
 	 */
 	public function builder_call_deleted(Database_Query $builder, Jam_Event_Data $data, $paranoid_filter_type = Jam_Behavior_Paranoid::NORMAL)
 	{
@@ -101,9 +101,9 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	/**
 	 * $model->delete() Delete the item only if the "real delete" flag has been set to TRUE, otherwise set the 'is_deleted' column to TRUE
-	 * 
+	 *
 	 * @param Jam_Model      $model
-	 * @param Jam_Event_Data $data 
+	 * @param Jam_Event_Data $data
 	 */
 	public function model_before_delete(Jam_Model $model, Jam_Event_Data $data)
 	{
@@ -120,9 +120,9 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	/**
 	 * $model->real_delte() Set the flag 'real_delete' to true and perform the deletion
-	 * 
+	 *
 	 * @param Jam_Model      $model
-	 * @param Jam_Event_Data $data 
+	 * @param Jam_Event_Data $data
 	 */
 	public function model_call_real_delete(Jam_Model $model, Jam_Event_Data $data)
 	{
@@ -133,9 +133,9 @@ class Kohana_Jam_Behavior_Paranoid extends Jam_Behavior
 
 	/**
 	 * $model->restore_delete() Perform this to "undelete" a model
-	 * 
-	 * @param Jam_Model      $model 
-	 * @param Jam_Event_Data $data  
+	 *
+	 * @param Jam_Model      $model
+	 * @param Jam_Event_Data $data
 	 */
 	public function model_call_restore_delete(Jam_Model $model)
 	{

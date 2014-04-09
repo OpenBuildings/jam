@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Timezone {
 	{
 		if ( ! $this->is_active())
 			return time();
-		
+
 		return Jam_Timezone::shift(time(), $this->default_timezone(), $this->master_timezone());
 	}
 
@@ -108,7 +108,7 @@ abstract class Kohana_Jam_Timezone {
 	{
 		if ( ! $this->is_active())
 			return strtotime($time_string);
-		
+
 		return Jam_Timezone::shift(strtotime($time_string), $this->default_timezone(), $this->master_timezone());
 	}
 
@@ -129,7 +129,7 @@ abstract class Kohana_Jam_Timezone {
 		{
 			$value = strtotime($value);
 		}
-		
+
 		$value = $this->convert($value, $from, Jam_Timezone::MASTER_TIMEZONE);
 		return date('Y-m-d H:i:s', $value);
 	}

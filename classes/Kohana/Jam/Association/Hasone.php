@@ -62,8 +62,8 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	/**
 	 * Load associated model (from database or after deserialization)
-	 * @param  Jam_Validated $model 
-	 * @param  mixed         $value 
+	 * @param  Jam_Validated $model
+	 * @param  mixed         $value
 	 * @return Jam_Model
 	 */
 	public function load_fields(Jam_Validated $model, $value)
@@ -77,16 +77,16 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 		{
 			$value->retrieved($this->inverse_of, $model);
 		}
-		
+
 		return $value;
 	}
 
 	/**
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
-	 * 
+	 *
 	 * @param  string $alias table name alias
 	 * @param  string $type  join type (LEFT, NATURAL)
-	 * @return Jam_Query_Builder_Join        
+	 * @return Jam_Query_Builder_Join
 	 */
 	public function join($alias, $type = NULL)
 	{
@@ -103,13 +103,13 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	}
 
 	/**
-	 * Get the belonging model for this association using the foreign key, 
+	 * Get the belonging model for this association using the foreign key,
 	 * if the data was changed, use the key from the changed data.
-	 * Assign inverse_of 
-	 * 
-	 * @param  Jam_Validated $model      
+	 * Assign inverse_of
+	 *
+	 * @param  Jam_Validated $model
 	 * @param  mixed         $value      changed data
-	 * @param  boolean       $is_changed 
+	 * @param  boolean       $is_changed
 	 * @return Jam_Model
 	 */
 	public function get(Jam_Validated $model, $value, $is_changed)
@@ -120,7 +120,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 				return $value;
 
 			$key = Jam_Association::primary_key($this->foreign_model, $value);
-		
+
 			if ($key)
 			{
 				$item = $this->_find_item($this->foreign_model, $key);
@@ -133,7 +133,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 			{
 				$item = NULL;
 			}
-		
+
 			if ($item AND is_array($value))
 			{
 				$item->set($value);
@@ -160,7 +160,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 			{
 				$value->{$this->foreign_key} = $model->id();
 			}
-			
+
 			if ($this->as)
 			{
 				$value->retrieved($this->as, $model);
@@ -185,10 +185,10 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	}
 
 	/**
-	 * Perform validation on the belonging model, if it was changed. 
-	 * @param  Jam_Model      $model   
-	 * @param  Jam_Event_Data $data    
-	 * @param  array         $changed 
+	 * Perform validation on the belonging model, if it was changed.
+	 * @param  Jam_Model      $model
+	 * @param  Jam_Event_Data $data
+	 * @param  array         $changed
 	 */
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
@@ -204,10 +204,10 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	/**
 	 * Save the related model after the main model, if it was changed
 	 * Only save related model if it has been changed, and is not in a process of saving itself
-	 * 
-	 * @param  Jam_Model      $model   
-	 * @param  Jam_Event_Data $data    
-	 * @param  boolean        $changed 
+	 *
+	 * @param  Jam_Model      $model
+	 * @param  Jam_Event_Data $data
+	 * @param  boolean        $changed
 	 */
 	public function model_after_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
@@ -253,11 +253,11 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	 * Delete related model if it has been assigned as dependent
 	 * If dependent is Jam_Association::DELETE - execute the delete method (and all events)
 	 * IF dependent is Jam_Association::ERASE - simply remove from database without executing any events (faster)
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_before_delete(Jam_Model $model)
 	{
-		switch ($this->dependent) 
+		switch ($this->dependent)
 		{
 			case Jam_Association::DELETE:
 				if ($model->{$this->name})
@@ -278,7 +278,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	/**
 	 * See if the association is polymorphic
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function is_polymorphic()
 	{
@@ -287,14 +287,14 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 
 	protected function _find_item($foreign_model, $key)
 	{
-		if ( ! $key) 
+		if ( ! $key)
 			return;
-		
+
 		if ($key instanceof Jam_Model)
 		{
 			if ( ! $key->loaded())
 				return;
-			
+
 			$query = $this->query_builder('all', $key);
 		}
 		else

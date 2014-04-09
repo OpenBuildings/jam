@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); 
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
  * Jam_Exception_Upload class
@@ -9,7 +9,7 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Upload extends Kohana_Exception {
-	
+
 	function __construct($message, $fields = NULL)
 	{
 		parent::__construct($message, $fields);

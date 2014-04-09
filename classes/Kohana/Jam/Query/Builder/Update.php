@@ -13,8 +13,8 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	/**
 	 * Create object of class Jam_Query_Builder_Update
-	 * @param  string $model 
-	 * @return Jam_Query_Builder_Update        
+	 * @param  string $model
+	 * @return Jam_Query_Builder_Update
 	 */
 	public static function factory($model, $key = NULL)
 	{
@@ -78,7 +78,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 		$this->meta()->events()->trigger('builder.after_update', $this);
 
-		return $result;		
+		return $result;
 	}
 
 	public function execute($db = NULL, $as_object = NULL, $object_params = NULL)
@@ -93,7 +93,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	protected function _compile_order_by(Database $db, array $order_by)
 	{
-		foreach ($order_by as & $order) 
+		foreach ($order_by as & $order)
 		{
 			$order[0] = Jam_Query_Builder::resolve_attribute_name($order[0], $this->meta()->model());
 		}
@@ -103,9 +103,9 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	protected function _compile_conditions(Database $db, array $conditions)
 	{
-		foreach ($conditions as & $group) 
+		foreach ($conditions as & $group)
 		{
-			foreach ($group as & $condition) 
+			foreach ($group as & $condition)
 			{
 				$condition[0] = Jam_Query_Builder::resolve_attribute_name($condition[0], $this->meta()->model(), $condition[2]);
 			}
@@ -134,9 +134,9 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	/**
 	 * Getter/setter for the params array used to store arbitrary values by the behaviors
-	 * 
-	 * @param  array|string $params 
-	 * @param  mixed $param  
+	 *
+	 * @param  array|string $params
+	 * @param  mixed $param
 	 * @return Jam_Builder         $this
 	 */
 	public function params($params = NULL, $param = NULL)
@@ -163,7 +163,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 	/**
 	 * You can get some of the parameters of the jam query builder.
-	 * 
+	 *
 	 * @param  string $name one of set, from, where, order_by, limit, parameters
 	 * @return mixed
 	 */
@@ -173,7 +173,7 @@ abstract class Kohana_Jam_Query_Builder_Update extends Database_Query_Builder_Up
 
 		if ( ! in_array($name, $allowed))
 				throw new Kohana_Exception('You cannot get :name, only :allowed', array(':name' => $name, ':allowed' => join(', ', $allowed)));
-		
+
 		return $this->{'_'.$name};
 	}
 

@@ -27,7 +27,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * @var  boolean  Whether or not the model is saving
 	 */
 	protected $_is_saving = FALSE;
-	
+
 	/**
 	 * @var  Boolean  A flag that indicates a record has been deleted from the database
 	 */
@@ -106,7 +106,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 			{
 				if ($association->readonly)
 					throw new Kohana_Exception('Cannot change the value of :name, its readonly', array(':name' => $association->name));
-				
+
 				$this->_changed[$association->name] = $association->set($this, $value, TRUE);
 
 				unset($this->_retrieved[$association->name]);
@@ -123,7 +123,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		return $this;
 	}
-	
+
 	/**
 	 * Clears the object and loads an array of values into the object.
 	 *
@@ -165,7 +165,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 				$this->_unmapped[$key] = $value;
 			}
 		}
-		
+
 		// Model is now saved and loaded
 		$this->_saved = TRUE;
 
@@ -190,7 +190,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 	protected function _move_retrieved_to_changed()
 	{
-		foreach ($this->_retrieved as $column => $value) 
+		foreach ($this->_retrieved as $column => $value)
 		{
 			if ($value instanceof Jam_Array_Association	AND $value->changed())
 			{
@@ -203,12 +203,12 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		if ( ! $this->loaded())
 			throw new Kohana_Exception('Model must be loaded to use update_fields method');
-		
+
 		if ( ! is_array($values))
 		{
 			$values = array($values => $value);
 		}
-		
+
 		$this->set($values);
 
 		Jam::update($this)
@@ -229,7 +229,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		if ($this->_is_saving)
 			throw new Kohana_Exception("Cannot save a model that is already in the process of saving");
-		
+
 
 		$key = $this->_original[$this->meta()->primary_key()];
 
@@ -238,7 +238,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		{
 			$this->check_insist();
 		}
-		
+
 		$this->_is_saving = TRUE;
 
 		// These will be processed later
@@ -261,7 +261,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		// Iterate through all fields in original in case any unchanged fields
 		// have convert() behavior like timestamp updating...
-		// 
+		//
 		foreach (array_merge($this->_original, $this->_changed) as $column => $value)
 		{
 			if ($field = $this->meta()->field($column))
@@ -318,17 +318,17 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$this->meta()->events()->trigger('model.after_save', $this, array($this->_changed, $event_type));
 
 		$this->meta()->events()->trigger('model.after_'.$event_type, $this, array($this->_changed));
-		
+
 		// Set the changed data back as original
 		$this->_original = array_merge($this->_original, $this->_changed);
 
 		$this->_changed = array();
 
-		foreach ($this->_retrieved as $name => $retrieved) 
+		foreach ($this->_retrieved as $name => $retrieved)
 		{
 			if (($association = $this->meta()->association($name)))
 			{
-				if ($association instanceof Jam_Association_Collection) 
+				if ($association instanceof Jam_Association_Collection)
 				{
 					$retrieved->clear_changed();
 				}
@@ -415,7 +415,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	{
 		$attribute = $this->__get($attribute_name);
 
-		if ($attribute === NULL) 
+		if ($attribute === NULL)
 			throw new Jam_Exception_Notfound('The association :name was empty on :model_name', NULL, array(
 				':name' => $attribute_name,
 				':model_name' => (string) $this,
@@ -427,17 +427,17 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function build($association_name, array $attributes = array())
 	{
 		$association = $this->meta()->association($association_name);
-		
+
 		if ( ! $association)
 			throw new Kohana_Exception('There is no association named :association_name on model :model', array(':association_name' => $association_name, ':model' => $this->meta()->model()));
-		
+
 		if ($association instanceof Jam_Association_Collection)
 			throw new Kohana_Exception(':association_name association must not be a collection on model :model', array(':association_name' => $association_name, ':model' => $this->meta()->model()));
 
 		$item = $association->build($this, $attributes);
 
 		$this->set($association_name, $item);
-		
+
 		return $item;
 	}
 
@@ -519,14 +519,14 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	public function serialize()
 	{
 		$this->_move_retrieved_to_changed();
-		
+
 		return serialize(array(
-			'original' => $this->_original, 
-			'changed' => $this->_changed, 
+			'original' => $this->_original,
+			'changed' => $this->_changed,
 			'unmapped' => $this->_unmapped,
-			'saved' => $this->_saved, 
-			'loaded' => $this->_loaded, 
-			'deleted' => $this->_deleted, 
+			'saved' => $this->_saved,
+			'loaded' => $this->_loaded,
+			'deleted' => $this->_deleted,
 		));
 	}
 

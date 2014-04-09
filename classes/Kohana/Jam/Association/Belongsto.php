@@ -41,7 +41,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		'allow_null' => TRUE,
 		'convert_empty' => TRUE,
 	);
-	
+
 	/**
 	 * Automatically sets foreign to sensible defaults.
 	 *
@@ -63,7 +63,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 					':model' => $this->model,
 					':name' => $name,
 				));
-		
+
 		$meta->field($this->foreign_key, Jam::field('integer', array_merge($this->_default_field_options, $this->field_options)));
 
 		if ($this->is_polymorphic())
@@ -84,7 +84,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			if ($this->is_polymorphic())
 				throw new Kohana_Exception('Cannot use count cache on polymorphic associations');
-			
+
 			if ($this->count_cache === TRUE)
 			{
 				$this->count_cache = Inflector::plural($this->model).'_count';
@@ -94,8 +94,8 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Load associated model (from database or after deserialization)
-	 * @param  Jam_Validated $model 
-	 * @param  mixed         $value 
+	 * @param  Jam_Validated $model
+	 * @param  mixed         $value
 	 * @return Jam_Model
 	 */
 	public function load_fields(Jam_Validated $model, $value)
@@ -104,18 +104,18 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$value = Jam::build($this->foreign_model)->load_fields($value);
 		}
-		
+
 		return $value;
 	}
 
 	/**
 	 * Return a Jam_Query_Builder_Join object to allow a query to join with this association
-	 * You can join polymorphic association only when you pass an alias, wich will be used as the 
+	 * You can join polymorphic association only when you pass an alias, wich will be used as the
 	 * name of the model to match to the polymorphic_key
-	 * 
+	 *
 	 * @param  string $alias table name alias
 	 * @param  string $type  join type (LEFT, NATURAL)
-	 * @return Jam_Query_Builder_Join        
+	 * @return Jam_Query_Builder_Join
 	 */
 	public function join($alias, $type = NULL)
 	{
@@ -140,13 +140,13 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	}
 
 	/**
-	 * Get the belonging model for this association using the foreign key, 
+	 * Get the belonging model for this association using the foreign key,
 	 * if the data was changed, use the key from the changed data.
-	 * Assign inverse_of 
-	 * 
-	 * @param  Jam_Validated $model      
+	 * Assign inverse_of
+	 *
+	 * @param  Jam_Validated $model
 	 * @param  mixed         $value      changed data
-	 * @param  boolean       $is_changed 
+	 * @param  boolean       $is_changed
 	 * @return Jam_Model
 	 */
 	public function get(Jam_Validated $model, $value, $is_changed)
@@ -167,7 +167,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		{
 			$item = $this->_find_item($this->foreign_model($model), $key);
 		}
-		elseif (is_array($value)) 
+		elseif (is_array($value))
 		{
 			$item = Jam::build($this->foreign_model($model));
 		}
@@ -195,9 +195,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Set releated model, by assigning foreign key for this model
-	 * @param Jam_Validated $model      
-	 * @param mixed         $value      
-	 * @param boolean       $is_changed 
+	 * @param Jam_Validated $model
+	 * @param mixed         $value
+	 * @param boolean       $is_changed
 	 */
 	public function set(Jam_Validated $model, $value, $is_changed)
 	{
@@ -211,7 +211,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$model->{$this->polymorphic} = key($value);
 			$value = current($value);
 		}
-		elseif ($value instanceof Jam_Model) 
+		elseif ($value instanceof Jam_Model)
 		{
 			$model->{$this->polymorphic} = $value->meta()->model();
 		}
@@ -237,22 +237,22 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 		if ( ! $foreign)
 			return NULL;
-		
+
 		$item = Jam::build($foreign->model(), $attributes);
 
 		if ($this->inverse_of AND $foreign->association($this->inverse_of) instanceof Jam_Association_Hasone)
 		{
 			$item->retrieved($this->inverse_of, $model);
 		}
-		
+
 		return $item;
 	}
 
 	/**
-	 * Perform validation on the belonging model, if it was changed. 
-	 * @param  Jam_Model      $model   
-	 * @param  Jam_Event_Data $data    
-	 * @param  array         $changed 
+	 * Perform validation on the belonging model, if it was changed.
+	 * @param  Jam_Model      $model
+	 * @param  Jam_Event_Data $data
+	 * @param  array         $changed
 	 */
 	public function model_after_check(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
@@ -268,9 +268,9 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	/**
 	 * Save the related model before the main model, because we'll need the id to assign to the foreign key
 	 * Only save related model if it has been changed, and is not in a process of saving itself
-	 * @param  Jam_Model      $model   
-	 * @param  Jam_Event_Data $data    
-	 * @param  boolean        $changed 
+	 * @param  Jam_Model      $model
+	 * @param  Jam_Event_Data $data
+	 * @param  boolean        $changed
 	 */
 	public function model_before_save(Jam_Model $model, Jam_Event_Data $data, $changed)
 	{
@@ -294,7 +294,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * If we're using count_cache, increment the count_cache field on the foreign model
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_after_create(Jam_Model $model)
 	{
@@ -308,7 +308,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 	 * Delete related model if it has been assigned as dependent
 	 * If dependent is Jam_Association::DELETE - execute the delete method (and all events)
 	 * IF dependent is Jam_Association::ERASE - simply remove from database without executing any events (faster)
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_before_delete(Jam_Model $model)
 	{
@@ -318,13 +318,13 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 		}
 		elseif ($this->dependent == Jam_Association::ERASE)
 		{
-			$this->_delete_item($this->foreign_model($model), $model->{$this->foreign_key});	
+			$this->_delete_item($this->foreign_model($model), $model->{$this->foreign_key});
 		}
 	}
 
 	/**
 	 * If we're using count_cache, decrement the count_cache field on the foreign model
-	 * @param  Jam_Model $model 
+	 * @param  Jam_Model $model
 	 */
 	public function model_after_delete(Jam_Model $model)
 	{
@@ -336,7 +336,7 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Check if association is polymophic
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function is_polymorphic()
 	{
@@ -345,8 +345,8 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Get the foreign model, if its a polymorphic, use the polymorphic field (e.g. item_model is the polymorphic field, then it's contents will be used)
-	 * @param  Jam_Model $model 
-	 * @return string           
+	 * @param  Jam_Model $model
+	 * @return string
 	 */
 	public function foreign_model(Jam_Model $model)
 	{
@@ -355,23 +355,23 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 
 	/**
 	 * Get an item based on a unique key from the database
-	 * @param  string $foreign_model 
-	 * @param  string $key           
+	 * @param  string $foreign_model
+	 * @param  string $key
 	 * @return Jam_Model
 	 */
 	protected function _find_item($foreign_model, $key)
 	{
 		if ( ! $foreign_model)
 			return NULL;
-		
+
 		return Jam::find($foreign_model, $key);
 	}
 
 	/**
 	 * Delete an item with a specific key from the database
-	 * @param  string $foreign_model 
-	 * @param  string $key           
-	 * @return Database_Result                
+	 * @param  string $foreign_model
+	 * @param  string $key
+	 * @return Database_Result
 	 */
 	protected function _delete_item($foreign_model, $key)
 	{

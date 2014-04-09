@@ -36,7 +36,7 @@ class Model_Post extends Jam_Model {
 You can now use this model like this:
 
 ```php
-<?php 
+<?php
 $post = Jam::build("post");
 
 // Will return false
@@ -67,7 +67,7 @@ Both `save()` and `check_insist()` will raise Jam_Exception_Validation if the va
 If you want to skip the validation of a model, you can insert / update data explicitly through the Database Builder. This method should be used with caution:
 
 ```php
-<?php 
+<?php
 // Insert a new record
 $post = Jam::insert('post')->set(array('name' => 'value'))->execute();
 
@@ -79,7 +79,7 @@ $post = Jam::update('post', 1)->set(array('name' => 'value'))->execute();
 Note that save also has the ability to skip validations if passed FALSE as argument. This technique should be used with caution.
 
 ```php
-<?php 
+<?php
 $post = Jam::find("post", 1);
 $post->save(FALSE);
 ?>
@@ -252,7 +252,7 @@ The choice validator has an option 'in' that receives the set of values that wil
 
 ### format
 
-This helper validates the attributes' values by testing whether they match a given regular expression or other format, which is specified using the :regex option. 
+This helper validates the attributes' values by testing whether they match a given regular expression or other format, which is specified using the :regex option.
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -272,7 +272,7 @@ class Model_Product extends Jam_Model {
 ?>
 ```
 
-You can also use PHP's native format validation function - `filter_var`. 
+You can also use PHP's native format validation function - `filter_var`.
 
 ```php
 <?php defined('SYSPATH') OR die('No direct script access.');
@@ -611,7 +611,7 @@ class Model_User extends Jam_Model {
 
 ## Models only for validation
 
-Sometimes you want to use validation, but without accually having a database table to store the model information in. You can create models that don't have any connection to a database (no save() and delete() methods), but can use all the validations. Jam_Model accually extends Jam_Validated, which encapsulates all the logic that is not associatited with the database, so you can extend it instead of Jam_Model, and use it as if its is a Jam_Model itself. 
+Sometimes you want to use validation, but without accually having a database table to store the model information in. You can create models that don't have any connection to a database (no save() and delete() methods), but can use all the validations. Jam_Model accually extends Jam_Validated, which encapsulates all the logic that is not associatited with the database, so you can extend it instead of Jam_Model, and use it as if its is a Jam_Model itself.
 
 For example we want to have a login form, but we only want to validate it, without storing anithing in the DB. We just create a Model_Session:
 

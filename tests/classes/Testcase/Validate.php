@@ -8,7 +8,7 @@ abstract class Testcase_Validate extends PHPUnit_Framework_TestCase {
 
 		$this->assertArrayHasKey($error, (array) Arr::get($errors, $attribute), 'Should have error '.$error.' for '.$attribute);
 	}
-		
+
 	public function assertNotHasError($model, $attribute, $error)
 	{
 		$errors = $model->errors()->as_array();

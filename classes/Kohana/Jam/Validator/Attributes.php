@@ -12,14 +12,14 @@ abstract class Kohana_Jam_Validator_Attributes {
 	{
 		return new Jam_Validator_Attributes($permit);
 	}
-	
+
 	private static function _clean(array $data, array $permitted)
 	{
 		$cleaned = array();
 
-		foreach ($data as $name => $value) 
+		foreach ($data as $name => $value)
 		{
-			
+
 			if (is_numeric($name) AND is_array($value))
 			{
 				// Handle arrays of arrays for manytomany / hasmany associations
@@ -30,7 +30,7 @@ abstract class Kohana_Jam_Validator_Attributes {
 				// Handle single arrays (objects for belongsto / hasone associations)
 				$cleaned[$name] = is_array($value) ? Jam_Validator_Attributes::_clean($value, Arr::get($permitted, $name, array())) : $value;
 			}
-			elseif (in_array($name, $permitted)) 
+			elseif (in_array($name, $permitted))
 			{
 				// Normal fields
 				$cleaned[$name] = $value;
@@ -64,7 +64,7 @@ abstract class Kohana_Jam_Validator_Attributes {
 		return get_class($this).': '.Jam::model_name($this->_model).' ('.$this->count().')';
 	}
 
-	
+
 	public function permit($permit = NULL)
 	{
 		if ($permit !== NULL)

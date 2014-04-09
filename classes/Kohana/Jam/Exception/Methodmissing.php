@@ -9,11 +9,11 @@
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
 class Kohana_Jam_Exception_Methodmissing extends Kohana_Exception {
-	
+
 	public $method;
 	public $args;
 	public $sender;
-	
+
 	function __construct($sender, $method, array $args = NULL)
 	{
 		$this->args = $args;

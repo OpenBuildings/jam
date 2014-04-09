@@ -37,7 +37,7 @@ abstract class Kohana_Jam_Validator {
 			unset($options['unless']);
 		}
 
-		foreach ($options as $rule => $params) 
+		foreach ($options as $rule => $params)
 		{
 			$this->rules[] = ($params instanceof Jam_Validator_Rule) ? $params : Jam::validator_rule($rule, $params);
 		}
@@ -48,7 +48,7 @@ abstract class Kohana_Jam_Validator {
 		if ( ! $this->condition)
 			return TRUE;
 
-		
+
 		if (is_string($this->condition) AND strpos($this->condition, '::') === FALSE)
 		{
 			if (substr($this->condition, -2) == '()')
@@ -65,7 +65,7 @@ abstract class Kohana_Jam_Validator {
 		{
 			$result = call_user_func($this->condition, $model, $this->attributes);
 		}
-		
+
 		return $this->condition_negative ? ! $result : (bool) $result;
 	}
 
@@ -74,7 +74,7 @@ abstract class Kohana_Jam_Validator {
 		$attributes = array();
 		if (in_array($name, $this->attributes) AND $model instanceof Jam_Validated AND $this->condition_met($model))
 		{
-			foreach ($this->rules as $rule) 
+			foreach ($this->rules as $rule)
 			{
 				if ($rule_attributes = $rule->html5_validation($name))
 				{
@@ -87,7 +87,7 @@ abstract class Kohana_Jam_Validator {
 
 	public function validate_model(Jam_Validated $model, $force = FALSE)
 	{
-		foreach ($this->attributes as $attribute) 
+		foreach ($this->attributes as $attribute)
 		{
 			if ($model instanceof Jam_Validated AND $this->condition_met($model))
 			{

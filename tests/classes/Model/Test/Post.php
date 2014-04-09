@@ -16,7 +16,7 @@ class Model_Test_Post extends Jam_Model {
 		//$meta->load_with(array('test_author'));
 
 		$meta->name_key('name');
-		
+
 		$meta->associations(array(
 			'test_blog'       => Jam::association('belongsto', array('inverse_of' => 'test_posts')),
 			'test_author'     => Jam::association('belongsto', array()),
@@ -51,10 +51,10 @@ class Model_Test_Post extends Jam_Model {
 			)),
 			'created'         => Jam::field('timestamp', array(
 				'auto_now_create' => TRUE
-			)),	
+			)),
 			'updated'         => Jam::field('timestamp', array(
 				'auto_now_update' => TRUE
-			)),	
+			)),
 		));
 
 		// Set some custom validators

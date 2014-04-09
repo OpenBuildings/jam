@@ -2,7 +2,7 @@
 
 /**
  * Resource_Jam_Behavior_Sluggable class
- * 
+ *
  *  Sluggable behavior for Jam ORM library
  *  Provides functionality to generate a slug based on a combination of the model primary value, model singular name and the id
  *  e.g news: some-news-title-23
@@ -33,18 +33,18 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 
 	/**
 	 * Initializes the behavior
-	 * 
+	 *
 	 * It sets the fields used in generating the slug
-	 * 
+	 *
 	 * @param  Jam_Event $event the jam event for the behavior
 	 * @param  Jam_Model      $model The Jam_Model object on which the behavior is applies
-	 * @param  string      $name 
+	 * @param  string      $name
 	 * @return void
 	 */
-	public function initialize(Jam_Meta $meta, $name) 
-	{			
+	public function initialize(Jam_Meta $meta, $name)
+	{
 		parent::initialize($meta, $name);
-		
+
 		$meta->field('slug', Jam::field('slug'));
 
 		if ($this->_unique)
@@ -59,13 +59,13 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 
 		if (empty($this->_pattern))
 		{
-			$this->_pattern = $this->_uses_primary_key ? Jam_Behavior_Sluggable::ID_SLUG : Jam_Behavior_Sluggable::SLUG;	
-		}	
+			$this->_pattern = $this->_uses_primary_key ? Jam_Behavior_Sluggable::ID_SLUG : Jam_Behavior_Sluggable::SLUG;
+		}
 	}
 
 	/**
 	 * Getter for parameter
-	 * @return bool 
+	 * @return bool
 	 */
 	public function auto_save()
 	{
@@ -74,7 +74,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 
 	/**
 	 * Getter for parameter
-	 * @return bool 
+	 * @return bool
 	 */
 	public function unique()
 	{
@@ -83,7 +83,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 
 	/**
 	 * Getter for parameter
-	 * @return bool 
+	 * @return bool
 	 */
 	public function uses_primary_key()
 	{
@@ -92,16 +92,16 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 
 	/**
 	 * Getter for parameter
-	 * @return bool 
+	 * @return bool
 	 */
 	public function pattern()
 	{
 		return $this->_pattern;
 	}
-	
+
 	/**
 	 * Getter for parameter
-	 * @return bool 
+	 * @return bool
 	 */
 	public function slug()
 	{
@@ -109,7 +109,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	}
 	/**
 	 * Called after save. Generates the slug from the specified fields.
-	 * 
+	 *
 	 * @param  Jam_Model $model [description]
 	 * @return void
 	 */
@@ -140,7 +140,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	{
 		return $model->name();
 	}
-	
+
 	/**
 	 * Generates the slug for a model object
 	 * @param  Jam_Model $model the Jam_Model object
@@ -148,7 +148,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	 * @uses URL::title to strip obsolete characters and build the slug
 	 */
 	public function model_call_build_slug(Jam_Model $model, Jam_Event_Data $data)
-	{      
+	{
 		$source_string = trim(strtolower(URL::title(call_user_func($this->_slug, $model), '-', TRUE)), '-');
 
 		if (empty($source_string))
@@ -176,7 +176,7 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 			throw new Kohana_Exception("Invalid Slug :slug for :model", array(':slug' => $slug, ':model' => $builder->meta()->model()));
 		}
 	}
-	
+
 	/**
 	 * Generated a find_by_slug method for Jam_Builder
 	 * @param  Jam_Builder    $builder the builder object

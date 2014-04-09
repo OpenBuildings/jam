@@ -2,7 +2,7 @@
 
 /**
  * The actual widgets, used by the form builder, you can extend replace this to handle your usecase better
- * 
+ *
  * @package    Jam
  * @category   Form
  * @author     Ivan Kerin
@@ -16,11 +16,11 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * @var string
 	 */
 	protected $_template = '<div class="row :name-field :type-field :with-errors">:label<div class="input"><div class="field-wrapper">:field:errors</div>:help</div></div>';
-	
+
 	/**
 	 * Getter / setter for the template
-	 * @param  string|null $template 
-	 * @return Jam_Form|string           
+	 * @param  string|null $template
+	 * @return Jam_Form|string
 	 */
 	public function template($template = NULL)
 	{
@@ -34,7 +34,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * Generate a html row with the input field, label, help and error messages
-	 * 
+	 *
 	 * @param string $type       the html field (input, hidden, textarea ...)
 	 * @param string $name       the name of the attribute of the bound Jam_Model
 	 * @param array  $options    options for the input field, you can also change the 'label', and add 'help' message
@@ -64,8 +64,8 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * Return the html for the errors for a given field
-	 * @param string $name 
-	 * @return string 
+	 * @param string $name
+	 * @return string
 	 */
 	public function errors($name)
 	{
@@ -100,7 +100,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * HTML input text field
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    Not Used - for compatibility
 	 * @param array  $attributes HTML attributes for the field
@@ -114,8 +114,8 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	}
 
 	/**
-	 * HTML input hidden field 
-	 * 
+	 * HTML input hidden field
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    Not Used - for compatibility
 	 * @param array  $attributes HTML attributes for the field
@@ -131,17 +131,17 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * HTML input hidden field for multiple values, renders all the nesessary hidden fields
-	 * @param  string $name       
+	 * @param  string $name
 	 * @param  array  $options    Not Used - for compatibility
 	 * @param  array  $attributes HTML attributes for all the fields
-	 * @return string             
+	 * @return string
 	 */
 	public function hidden_list($name, array $options = array(), array $attributes = array())
 	{
 		$attributes = $this->default_attributes($name, $attributes);
 		$ids = Jam_Form::list_id($this->object()->$name);
 		$html = '';
-		foreach ($ids as $index => $id) 
+		foreach ($ids as $index => $id)
 		{
 			$html .= Form::hidden($attributes['name']."[$index]", $id, $attributes);
 		}
@@ -150,7 +150,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * HTML input checkbox field
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    can change the value of the checkbox with 'value', defaults to 1
 	 * @param array  $attributes HTML attributes for the field
@@ -163,14 +163,14 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		$value = Arr::get($options, 'value', 1);
 		$empty = Arr::get($options, 'empty', 0);
 
-		return 
+		return
 			Form::hidden($attributes['name'], $empty)
-			.Form::checkbox($attributes['name'], $value, $this->object()->$name, $attributes);	
+			.Form::checkbox($attributes['name'], $value, $this->object()->$name, $attributes);
 	}
 
 	/**
 	 * HTML input radio field
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    must provide the value of the radio with 'value'
 	 * @param array  $attributes HTML attributes for the field
@@ -187,7 +187,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name, TRUE) == Jam_Form::list_id($value), $attributes);	
+		return Form::radio($attributes['name'], $value, Jam_Form::list_id($this->object()->$name, TRUE) == Jam_Form::list_id($value), $attributes);
 	}
 
 	public function checkboxes($name, array $options = array(), array $attributes = array())
@@ -225,7 +225,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		foreach ($choices as $key => $title)
 		{
 			$id = $attributes['id'].'_'.$key;
-			$radios[] = 
+			$radios[] =
 				'<li>'
 					.$this->radio($name, array('value' => $key), array('id' => $id))
 					.$this->label($name, $title, array('id' => $id))
@@ -236,7 +236,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * HTML input file field
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    temp_source = TRUE, set this to add a spection hidden input to preserve the file upload on fiald validation
 	 * @param array  $attributes HTML attributes for the field
@@ -246,10 +246,10 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	{
 		$attributes = $this->default_attributes($name, $attributes);
 
-		return 
+		return
 			Form::file($attributes['name'], $attributes)
-			.(Arr::get($options, 'temp_source', FALSE) 
-				? Form::hidden($attributes['name'], $this->object()->$name->temp_source(), Arr::get($options, 'temp_attributes', array('class' => 'hidden-input'))) 
+			.(Arr::get($options, 'temp_source', FALSE)
+				? Form::hidden($attributes['name'], $this->object()->$name->temp_source(), Arr::get($options, 'temp_attributes', array('class' => 'hidden-input')))
 				: ''
 			);
 	}
@@ -259,7 +259,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * @param  string $name       the name of the Jam_Model attribute
 	 * @param  array  $options    Not Used - for compatibility
 	 * @param  array  $attributes HTML attributes for the field
-	 * @return string             
+	 * @return string
 	 */
 	public function password($name, array $options = array(), array $attributes = array())
 	{
@@ -271,7 +271,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 	/**
 	 * HTML input textarea field
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    Not Used - for compatibility
 	 * @param array  $attributes HTML attributes for the field
@@ -289,7 +289,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	 * available options
 	 * 	- choices - this can be Jam_Query_Builder_Collection or a simple array
 	 * 	- include_blank - bool|string - include an empty option
-	 * 
+	 *
 	 * @param string $name       the name of the Jam_Model attribute
 	 * @param array  $options    set the options of the select with 'choices' and 'include_blank'
 	 * @param array  $attributes HTML attributes for the field

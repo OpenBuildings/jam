@@ -32,12 +32,12 @@ class Kohana_Jam_Validator_Rule_Numeric extends Jam_Validator_Rule {
 	{
 		if ( ! is_numeric($value))
 		{
-			$model->errors()->add($attribute, 'numeric');	
+			$model->errors()->add($attribute, 'numeric');
 		}
 
 		if ($this->only_integer !== NULL AND ! (filter_var($value, FILTER_VALIDATE_INT) !== FALSE))
 		{
-			$model->errors()->add($attribute, 'numeric_only_integer');	
+			$model->errors()->add($attribute, 'numeric_only_integer');
 		}
 
 		if ($this->greater_than_or_equal_to !== NULL AND ! ($value >= $this->greater_than_or_equal_to))

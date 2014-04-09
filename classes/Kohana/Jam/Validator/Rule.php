@@ -16,7 +16,7 @@ abstract class Kohana_Jam_Validator_Rule {
 	{
 		if (is_array($params))
 		{
-			foreach ($params as $param => $value) 
+			foreach ($params as $param => $value)
 			{
 				$this->$param = $value;
 			}

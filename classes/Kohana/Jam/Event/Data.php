@@ -24,40 +24,40 @@ abstract class Kohana_Jam_Event_Data {
 	 * @var  string  The name of the event
 	 */
 	public $event = NULL;
-	
+
 	/**
 	 * @var  mixed  The sender of the event
 	 */
 	public $sender = NULL;
-	
+
 	/**
 	 * @var  args  An array of args sent to the event
 	 */
 	public $args = array();
-	
+
 	/**
 	 * @var  string  The return value of the event
 	 */
 	public $return = NULL;
-	
+
 	/**
 	 * @var  boolean  Whether or not to stop execution of events
 	 */
 	public $stop = FALSE;
-	
+
 	/**
 	 * Throws all event parameters into the object as public variables
 	 *
-	 * @param  array  $params 
+	 * @param  array  $params
 	 */
 	public function __construct($params)
-	{	
+	{
 		foreach ($params as $param => $value)
 		{
 			$this->$param = $value;
 		}
 	}
-	
+
 	/**
 	 * Stops execution of the event
 	 *

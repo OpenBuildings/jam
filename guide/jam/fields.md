@@ -23,7 +23,7 @@ class Model_Post extends Jam_Model {
 
 ## Meta::fields, Meta::field
 
-In order for the Jam model to map your database fields accurately you'll need to define each field in your model yourself. This is done in hte static "initialize" method of the model, and is executed only once for each model class. You do this with one of the two methods - `field()` or `fields()` - `fields()` is just a convenience method to assign multipule fields with an array. 
+In order for the Jam model to map your database fields accurately you'll need to define each field in your model yourself. This is done in hte static "initialize" method of the model, and is executed only once for each model class. You do this with one of the two methods - `field()` or `fields()` - `fields()` is just a convenience method to assign multipule fields with an array.
 
 Here's how all of this looks in practice:
 
@@ -45,7 +45,7 @@ class Model_Post extends Jam_Model {
 ?>
 ```
 
-Have in mind that you cannot modify the fields of the model after it has been created, and if you try to do so using the Jam_Meta object, an exception will be thrown. 
+Have in mind that you cannot modify the fields of the model after it has been created, and if you try to do so using the Jam_Meta object, an exception will be thrown.
 
 Each field allows you to pass an array to its constructor to easily configure it. All parameters are optional.
 
@@ -59,7 +59,7 @@ The following properties apply to nearly all fields.
 
 `allow_null` — Whether or not `NULL` values can be set on the field. This defaults to `TRUE` for most fields, except for the string-based fields, in which case it defaults to `FALSE`.
 
- * If this is `FALSE`, most fields will convert the `NULL` to the field's `default` value. 
+ * If this is `FALSE`, most fields will convert the `NULL` to the field's `default` value.
  * If this is `TRUE` the field's `default` value will be changed to `NULL` (unless you set the default value yourself).
 
 `convert_empty` — If set to `TRUE` any `empty()` values passed to the field will be converted to whatever is set for `empty_value`. This also sets `allow_null` to `TRUE` if `empty_value` is `NULL`.
@@ -75,7 +75,7 @@ The following properties apply to nearly all fields.
 
 ## Field Types
 
-Here are all the Jam Fields available out of the box. 
+Here are all the Jam Fields available out of the box.
 
 #### Jam::field('boolean')
 
@@ -146,7 +146,7 @@ The timestamp can be used to store date / datetime columns in the database
 		'format' => "Y-m-d h:i:s",
 	))
 ?>
-``` 
+```
 #### Jam::field('expression')
 
 This field is a rather abstract type that allows you to pull a database expression back on SELECTs. Simply set your `column` to any `DB::expr()`.
@@ -177,7 +177,7 @@ This should be defined in the `cast` property:
 
 #### Jam::field('upload')
 
-You can use this field to store images and files, with some special features - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database. 
+You can use this field to store images and files, with some special features - Non-local upload locations (FTP, Rackspace), automatically save dimensions in the database. Can survive a failed validation even on object that have not been saved in the database.
 
 You can read more about it in [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/upload.md) section.
 

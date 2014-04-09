@@ -159,7 +159,7 @@ There are a lot of logic to help you in writing precise SQL queries in the `wher
 
 ```php
 <?php
-Jam::all('client')->where('client.title', '=', 'Patrik');  
+Jam::all('client')->where('client.title', '=', 'Patrik');
 // SELECT clients.* FROM clients WHERE clients.title = 'Patrick'
 
 Jam::all('client')->where('client.:name_key', '=', 'Patrik');
@@ -179,7 +179,7 @@ The available meta aliases with Jam are
 * :name_key - the field named "name" if not otherwise specified in the `initialize()` method of the Model
 * :unique_key - the field that uniquely identifies the model based on the value
 
-:unique_key is a bit more tricky. It tries to guess the field you need to search for based on the value itself. If it's a numeric value - then it will use :primary_key, but if it's a normal string, it will use the :name_key. 
+:unique_key is a bit more tricky. It tries to guess the field you need to search for based on the value itself. If it's a numeric value - then it will use :primary_key, but if it's a normal string, it will use the :name_key.
 
 ```php
 <?php
@@ -217,19 +217,19 @@ Jam::all('client')->where('client.id', 'BETWEEN', array(1, 100));
 
 ### or_where()
 
-When you want to add an OR SQL statement, you can use the `or_where()` method. What it does is simply adds your constraint with and SQL OR. 
+When you want to add an OR SQL statement, you can use the `or_where()` method. What it does is simply adds your constraint with and SQL OR.
 
 ```php
 <?php
 Jam::all('client')
 	->where('title', '=', 'Patrik')
-	->or_where('price', '<', 100);    
+	->or_where('price', '<', 100);
 // SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
 
 Jam::all('client')
 	->where('title', 'LIKE', '%Pat%')
 	->where('price', '<', 100)
-	->or_where('title', 'LIKE', 'Admin%');   
+	->or_where('title', 'LIKE', 'Admin%');
 // SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND price < 100 OR title LIKE 'Admin%'
 ?>
 ```
@@ -248,12 +248,12 @@ In this example:
 Jam::all('client')
 	->where('title', 'LIKE', '%Pat%')
 	->where('price', '<', 100)
-	->or_where('title', 'LIKE', 'Admin%'); 
+	->or_where('title', 'LIKE', 'Admin%');
 // SELECT clients.* FROM clients WHERE title = 'Patrick' OR price < 100
 ?>
 ```
 
-If we wanted to change the logic of the query to say that 
+If we wanted to change the logic of the query to say that
 
 ```php
 <?php
@@ -261,7 +261,7 @@ Jam::all('client')
 	->where('title', 'LIKE', '%Pat%')
 	->where_open()
 		->where('price', '<', 100)
-		->or_where('title', 'LIKE', 'Admin%'); 
+		->or_where('title', 'LIKE', 'Admin%');
 	->where_close()
 // SELECT clients.* FROM clients WHERE title LIKE '%Pat%' AND (price < 100 OR title LIKE 'Admin%')
 ?>
@@ -300,7 +300,7 @@ Jam::query('client')->join('order')->on('order.name', '=', 'client.name');
 When you want to create complex joins spaning several associations, you will have to use the `join_nested()` method - it returns a Database_Builder_Query_Join object allowing you to join to subsequent models. E.g.
 
 ```php
-<?php 
+<?php
 class Model_Customer extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
@@ -400,7 +400,7 @@ Jam::all('client')->limit(10)->offest(100);
 
 ### select()
 
-If you want to control which columns will be retrieved by the SQL - 
+If you want to control which columns will be retrieved by the SQL -
 
 * $all->select('column');
 * $all->select(array('field', 'alias'));
@@ -427,7 +427,7 @@ After you've built your query with the builder you have the option of querying t
 
 ```php
 <?php
-Jam::all('client')->where('client.title', '=', 'Patrik')->count_all();  
+Jam::all('client')->where('client.title', '=', 'Patrik')->count_all();
 // SELECT COUNT(clients.*) FROM clients WHERE clients.title = 'Patrick'
 ?>
 ```
@@ -436,7 +436,7 @@ If you're using groupby or orderby results then the `count_all` results will pro
 
 ```php
 <?php
-Jam::all('client')->where('client.title', '=', 'Patrik')->group_by('title')->count_all(TRUE);  
+Jam::all('client')->where('client.title', '=', 'Patrik')->group_by('title')->count_all(TRUE);
 // SELECT COUNT(clients.*) FROM clients WHERE clients.title = 'Patrick'
 ?>
 ```
@@ -445,8 +445,8 @@ Also in very complex queries that simply cannot be unwravelled for a fast count 
 
 ```php
 <?php
-Jam::all('client')->where('client.title', '=', 'Patrik')->count_with_subquery();  
-// SELECT count(*) as `total` FROM (SELECT COUNT(clients.*) FROM clients WHERE clients.title = 'Patrick') 
+Jam::all('client')->where('client.title', '=', 'Patrik')->count_with_subquery();
+// SELECT count(*) as `total` FROM (SELECT COUNT(clients.*) FROM clients WHERE clients.title = 'Patrick')
 ?>
 ```
 
@@ -476,7 +476,7 @@ The actual setting of the values is performed with the `set()` method you give i
 
 ```php
 <?php
-Jam::update('client')->where('client.title', '=', 'Patrik')->set(array('title' => 'Maverik', 'logins' => 4))->execute(); 
+Jam::update('client')->where('client.title', '=', 'Patrik')->set(array('title' => 'Maverik', 'logins' => 4))->execute();
 // UPDATE clients SET title = 'Maverik', logins = 4 WHERE title = 'Patrik'
 ?>
 ```
@@ -487,7 +487,7 @@ The same as set() but adds only one key => value pair. We are using a separate m
 
 ```php
 <?php
-Jam::update('client')->where('client.title', '=', 'Patrik')->value('title', 'Maverik')->execute(); 
+Jam::update('client')->where('client.title', '=', 'Patrik')->value('title', 'Maverik')->execute();
 // UPDATE clients SET title = 'Maverik' WHERE title = 'Patrik'
 ?>
 ```

@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * This class is what the upload field accually returns 
+ * This class is what the upload field accually returns
  * and has all the nesessary info and manipulation abilities to save / delete / validate itself
- * 
+ *
  * @package    Jam
  * @author     Ivan Kerin
  * @copyright  (c) 2011-2012 Despark Ltd.
@@ -41,8 +41,8 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get / Set the path for the image on the server
-	 * @param  string $path 
-	 * @return string|Upload_File       
+	 * @param  string $path
+	 * @return string|Upload_File
 	 */
 	public function path($path = NULL)
 	{
@@ -66,21 +66,21 @@ class Kohana_Upload_File {
 
 		$this->server()->download_move($old_file, $file);
 
-		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params)
 		{
 			$thumbnail_file = Upload_Util::combine($this->temp()->directory_path($thumbnail), $this->filename());
 			$old_thumbnail_file = $this->full_path($thumbnail);
-			
+
 			if ( ! $this->server()->is_file($old_thumbnail_file))
 				throw new Kohana_Exception('File '.$old_thumbnail_file.' does not exist');
 
 			$this->server()->download_move($old_thumbnail_file, $thumbnail_file);
 		}
-		
+
 		$this->server($new_server);
 		$this->server()->upload_move($this->full_path(), $file);
 
-		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params)
 		{
 			$thumbnail_file = Upload_Util::combine($this->temp()->directory_path($thumbnail), $this->filename());
 			$this->server()->upload_move($this->full_path($thumbnail), $thumbnail_file);
@@ -91,9 +91,9 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get / Set the source. Automatically set the source_type
-	 * 
-	 * @param  mixed $source 
-	 * @return mixed         
+	 *
+	 * @param  mixed $source
+	 * @return mixed
 	 */
 	public function source($source = NULL)
 	{
@@ -115,8 +115,8 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get / Set transformations
-	 * @param  array $transformations 
-	 * @return array|Upload_File                  
+	 * @param  array $transformations
+	 * @return array|Upload_File
 	 */
 	public function transformations(array $transformations = NULL)
 	{
@@ -133,8 +133,8 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get / Set thumbnails
-	 * @param  array $thumbnails 
-	 * @return array|Upload_File                  
+	 * @param  array $thumbnails
+	 * @return array|Upload_File
 	 */
 	public function thumbnails(array $thumbnails = NULL)
 	{
@@ -150,7 +150,7 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get the Upload_Temp object. Create it if it's not already created
-	 * @return Upload_Temp 
+	 * @return Upload_Temp
 	 */
 	public function temp()
 	{
@@ -164,7 +164,7 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get the upload server
-	 * @return Upload_Server 
+	 * @return Upload_Server
 	 */
 	public function server($server = NULL)
 	{
@@ -179,8 +179,8 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get / Set the current filename
-	 * @param  string $filename 
-	 * @return string|Upload_File           
+	 * @param  string $filename
+	 * @return string|Upload_File
 	 */
 	public function filename($filename = NULL)
 	{
@@ -236,22 +236,22 @@ class Kohana_Upload_File {
 
 	/**
 	 * Generate the thumbnails if they are not generated
-	 * 
+	 *
 	 * @return Upload_File $this
 	 */
 	public function generate_thumbnails()
 	{
-		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params)
 		{
 			if ( ! is_file($this->file($thumbnail)))
 			{
-				Upload_Util::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);	
+				Upload_Util::transform_image($this->file(), $this->file($thumbnail), $thumbnail_params['transformations']);
 			}
 		}
 
 		return $this;
 	}
- 
+
  	/**
  	 * Save the file by moving it from temporary to the upload server
  	 * Generate the thumbnails if nesessary
@@ -263,10 +263,10 @@ class Kohana_Upload_File {
 		{
 			$this->generate_thumbnails();
 		}
-			
+
 		$this->server()->upload_move($this->full_path(), $this->file());
 
-		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params) 
+		foreach ($this->thumbnails() as $thumbnail => $thumbnail_params)
 		{
 			$this->server()->upload_move($this->full_path($thumbnail), $this->file($thumbnail));
 		}
@@ -297,7 +297,7 @@ class Kohana_Upload_File {
 	{
 		$this->server()->unlink($this->full_path());
 
-		foreach ($this->thumbnails() as $thumbnail => $transformations) 
+		foreach ($this->thumbnails() as $thumbnail => $transformations)
 		{
 			$this->server()->unlink($this->full_path($thumbnail));
 		}
@@ -309,8 +309,8 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get the current filename (temp or server)
-	 * @param  string $thumbnail 
-	 * @return string            
+	 * @param  string $thumbnail
+	 * @return string
 	 */
 	public function file($thumbnail = NULL)
 	{
@@ -319,9 +319,9 @@ class Kohana_Upload_File {
 
 	/**
 	 * Get the current url (temp or server)
-	 * @param  string $thumbnail 
-	 * @param  mixed $protocol  
-	 * @return string            
+	 * @param  string $thumbnail
+	 * @param  mixed $protocol
+	 * @return string
 	 */
 	public function url($thumbnail = NULL)
 	{
@@ -329,9 +329,9 @@ class Kohana_Upload_File {
 	}
 
 	/**
-	 * Get the full path with the filename 
-	 * @param  string $thumbnail 
-	 * @return string            
+	 * Get the full path with the filename
+	 * @param  string $thumbnail
+	 * @return string
 	 */
 	public function full_path($thumbnail = NULL)
 	{
@@ -351,7 +351,7 @@ class Kohana_Upload_File {
 		if ( ! $this->filename())
 			return NULL;
 
-		try 
+		try
 		{
 			if ($this->_source)
 			{
@@ -361,8 +361,8 @@ class Kohana_Upload_File {
 			{
 				return $this->server()->$method($this->full_path($thumbnail));
 			}
-		} 
-		catch (Flex\Storage\Exception_Notsupported $exception) 
+		}
+		catch (Flex\Storage\Exception_Notsupported $exception)
 		{
 			return NULL;
 		}
@@ -370,7 +370,7 @@ class Kohana_Upload_File {
 
 	/**
 	 * Check if its empty (no filename or source)
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function is_empty()
 	{

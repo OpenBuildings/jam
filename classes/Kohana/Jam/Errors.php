@@ -98,7 +98,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		{
 			foreach (array_filter(Arr::extract($this->_container, (array) $attribute)) as $attribute_name => $errors)
 			{
-				foreach ($errors as $error => $params) 
+				foreach ($errors as $error => $params)
 				{
 					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_name, $error, Arr::merge($params, array(
 						':model' => $this->_meta->model(),
@@ -126,18 +126,18 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 	private function _add_messages_all(Jam_Model $model, array & $messages)
 	{
-		foreach ($model->errors() as $attribute_name => $errors) 
+		foreach ($model->errors() as $attribute_name => $errors)
 		{
 			if ($model->meta()->association($attribute_name) instanceof Jam_Association_Collection)
 			{
-				foreach ($model->$attribute_name as $i => $item) 
+				foreach ($model->$attribute_name as $i => $item)
 				{
-					if ( ! $item->is_valid()) 
+					if ( ! $item->is_valid())
 					{
 						$this->_add_messages_all($item, $messages);
 					}
 				}
-			}	
+			}
 			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
 			{
 				$this->_add_messages_all($model->$attribute_name, $messages);
@@ -167,18 +167,18 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 	private function _model_messages_dump(Jam_Model $model)
 	{
 		$messages = array();
-		foreach ($model->errors() as $attribute_name => $errors) 
+		foreach ($model->errors() as $attribute_name => $errors)
 		{
 			if ($model->meta()->association($attribute_name) instanceof Jam_Association_Collection)
 			{
-				foreach ($model->$attribute_name as $i => $item) 
+				foreach ($model->$attribute_name as $i => $item)
 				{
-					if ( ! $item->is_valid()) 
+					if ( ! $item->is_valid())
 					{
 						$messages[] = UTF8::ucfirst(Inflector::humanize($attribute_name)).' ('.$i.'): '.join(', ', $this->_model_messages_dump($item));
 					}
 				}
-			}	
+			}
 			elseif ($model->meta()->association($attribute_name) AND $model->$attribute_name)
 			{
 				$messages[] = UTF8::ucfirst(Inflector::humanize($attribute_name)).': '.join(', ', $this->_model_messages_dump($model->$attribute_name));
