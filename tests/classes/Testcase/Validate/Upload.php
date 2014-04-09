@@ -10,6 +10,8 @@ abstract class Testcase_Validate_Upload extends Testcase_Validate {
 	{
 		parent::setUp();
 
+		Database::instance(Kohana::TESTING)->begin();
+
 		$this->test_local = realpath(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', '..', 'test_data', 'test_local'))).DIRECTORY_SEPARATOR;
 		$this->test_local2 = realpath(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', '..', 'test_data', 'test_local2'))).DIRECTORY_SEPARATOR;
 		$this->test_temp = realpath(join(DIRECTORY_SEPARATOR, array(dirname(__FILE__),  '..', '..', '..', 'test_data', 'temp')));
@@ -40,5 +42,11 @@ abstract class Testcase_Validate_Upload extends Testcase_Validate {
 					),
 				),
 			));
+	}
+
+	public function tearDown()
+	{
+		Database::instance(Kohana::TESTING)->rollback();
+		parent::tearDown();
 	}
 }
