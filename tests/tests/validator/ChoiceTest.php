@@ -39,7 +39,7 @@ class Jam_Validator_ChoiceTest extends Testcase_Validate {
 		if ($is_valid)
 		{
 			$this->assertNotHasError($element, 'name', $error);
-			
+
 		}
 		else
 		{

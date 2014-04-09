@@ -58,7 +58,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'text.txt'))
 			->save_to_temp();
-	
+
 		Jam::validator_rule('uploaded', array('only' => 'image'))->validate($this->model, 'file', $this->value);
 
 		$this->assertHasError($this->model, 'file', 'uploaded_extension');
@@ -70,7 +70,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('minimum_size' => '10B'))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_minimum_size');
@@ -86,7 +86,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('maximum_size' => '2KB'))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_maximum_size');
@@ -102,7 +102,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('exact_size' => 1215))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_exact_size');
@@ -118,7 +118,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('minimum_width' => 100))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_minimum_width');
@@ -134,7 +134,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('minimum_height' => 20))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_minimum_height');
@@ -150,7 +150,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('maximum_width' => 300))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_maximum_width');
@@ -166,7 +166,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('maximum_height' => 100))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_maximum_height');
@@ -182,7 +182,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('exact_width' => 127))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_exact_width');
@@ -198,7 +198,7 @@ class Jam_Validator_UploadedTest extends Testcase_Validate_Upload {
 		$this->value
 			->source(Upload_Util::combine($this->test_local, 'source', 'logo.gif'))
 			->save_to_temp();
-		
+
 		Jam::validator_rule('uploaded', array('exact_height' => 34))->validate($this->model, 'file', $this->value);
 
 		$this->assertNotHasError($this->model, 'file', 'uploaded_exact_height');

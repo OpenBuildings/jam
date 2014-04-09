@@ -28,7 +28,7 @@ class Jam_Query_Builder_DeleteTest extends PHPUnit_Framework_TestCase {
 		$select
 			->where('test_post.test_author_id', '=', 10);
 
-		$this->assertEquals('DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 10', (string) $select);	
+		$this->assertEquals('DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 10', (string) $select);
 	}
 
 	public function test_order_by()
@@ -38,7 +38,7 @@ class Jam_Query_Builder_DeleteTest extends PHPUnit_Framework_TestCase {
 		$select
 			->order_by('test_post.test_author_id', 'DESC');
 
-		$this->assertEquals('DELETE FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);	
+		$this->assertEquals('DELETE FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);
 	}
 }
-	
+

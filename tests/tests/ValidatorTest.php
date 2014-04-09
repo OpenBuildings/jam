@@ -15,8 +15,8 @@ class Jam_ValidatorTest extends Testcase_Validate {
 	{
 		parent::setUp();
 		$this->element = Jam::build('test_element')->load_fields(array(
-			'id' => 1, 
-			'name' => 'Part 1', 
+			'id' => 1,
+			'name' => 'Part 1',
 			'email' => 'staff@example.com',
 			'url' => 'http://parts.wordpress.com/',
 			'desceription' => 'Big Part',
@@ -165,7 +165,7 @@ class Jam_ValidatorTest extends Testcase_Validate {
 		$this->assertHasError($this->element, 'email', 'format_filter');
 		$this->assertHasError($this->element, 'amount', 'numeric_greater_than');
 		$this->assertHasError($this->element, 'description', 'length_between');
-		
+
 		$this->assertNotHasError($this->element, 'name', 'length_minimum');
 	}
 

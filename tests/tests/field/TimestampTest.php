@@ -22,11 +22,11 @@ class Jam_Field_TimestampTest extends PHPUnit_Framework_TestCase {
 			array($field, $date, "2010-03-15 05:45:00"),
 		);
 	}
-	
+
 	/**
-	 * Tests for issue #113 that ensures timestamps specified 
+	 * Tests for issue #113 that ensures timestamps specified
 	 * with a format are converted properly.
-	 * 
+	 *
 	 * @dataProvider  provider_format
 	 * @link  http://github.com/jonathangeiger/kohana-jam/issues/113
 	 */
@@ -48,7 +48,7 @@ class Jam_Field_TimestampTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("2010-03-15 03:45:00", $field->convert($model, "2010-03-15 05:45:00", FALSE), 'Should set modified data to the database');
 		$this->assertEquals("2010-03-15 05:45:00", $field->get($model, "2010-03-15 03:45:00", FALSE), 'Should load modified from the database');
 	}
-	
+
 	/**
 	 * Tests that timestamp auto create and auto update work as expected.
 	 */
@@ -64,10 +64,10 @@ class Jam_Field_TimestampTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($default_date, $normal->convert($model, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
 		$this->assertEquals($default_date, $normal->convert($model, $default_date, FALSE), 'Should not generate a new date on normal timestamp');
 
-		$this->assertGreaterThan($default_date, $auto_create->convert($model, $default_date, FALSE), 'Should generate a new date on create');		
-		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, TRUE), 'Should not generate a new date on update');		
+		$this->assertGreaterThan($default_date, $auto_create->convert($model, $default_date, FALSE), 'Should generate a new date on create');
+		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
 
-		$this->assertEquals($default_date, $auto_update->convert($model, $default_date, FALSE), 'Should generate a new date on create');		
+		$this->assertEquals($default_date, $auto_update->convert($model, $default_date, FALSE), 'Should generate a new date on create');
 		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
 	}
 

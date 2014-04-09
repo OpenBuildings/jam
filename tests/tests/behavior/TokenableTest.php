@@ -31,7 +31,7 @@ class Jam_Behavior_TokenableTest extends Testcase_Database {
 	{
 		$behavior = new Jam_Behavior_Tokenable();
 
-		foreach (range(0, 10) as $i) 
+		foreach (range(0, 10) as $i)
 		{
 			$token = $behavior->new_token();
 			$this->assertRegExp('/[a-z0-9]/', $token);
@@ -39,7 +39,7 @@ class Jam_Behavior_TokenableTest extends Testcase_Database {
 
 		$behavior = new Jam_Behavior_Tokenable(array('uppercase' => TRUE));
 
-		foreach (range(0, 10) as $i) 
+		foreach (range(0, 10) as $i)
 		{
 			$token = $behavior->new_token();
 			$this->assertRegExp('/[A-Z0-9]/', $token);

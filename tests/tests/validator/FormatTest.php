@@ -18,7 +18,7 @@ class Jam_Validator_FormatTest extends Testcase_Validate {
 			array('asd@asd$', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', NULL, FALSE),
 			array('test@example.com', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', NULL, TRUE),
 			array('@test.com', array('filter' => FILTER_VALIDATE_EMAIL), 'format_filter', NULL, FALSE),
-			
+
 			// FILTER URL
 			array('asd', array('filter' => FILTER_VALIDATE_URL), 'format_filter', NULL, FALSE),
 			array('example.com', array('filter' => FILTER_VALIDATE_URL), 'format_filter', NULL, FALSE),
@@ -48,7 +48,7 @@ class Jam_Validator_FormatTest extends Testcase_Validate {
 			array('asd', array('ip' => TRUE), 'format_ip', NULL, FALSE),
 			array('1.1.1.1', array('ip' => TRUE), 'format_ip', NULL, TRUE),
 			array('95.87.212.88', array('ip' => TRUE), 'format_ip', NULL, TRUE),
-			array('192.168.1.1', array('ip' => TRUE), 'format_ip', NULL, TRUE),			
+			array('192.168.1.1', array('ip' => TRUE), 'format_ip', NULL, TRUE),
 
 			// CREDIT CARD
 			array('asd', array('credit_card' => TRUE), 'format_credit_card', array('pattern' => '^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$'), FALSE),
@@ -79,7 +79,7 @@ class Jam_Validator_FormatTest extends Testcase_Validate {
 		if ($is_valid)
 		{
 			$this->assertNotHasError($element, 'name', $error);
-			
+
 		}
 		else
 		{

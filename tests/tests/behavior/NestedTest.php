@@ -8,7 +8,7 @@
  * @group   jam.behavior
  * @group   jam.behavior.nested
  */
-class Jam_Behavior_NestedTest extends PHPUnit_Framework_TestCase {
+class Jam_Behavior_NestedTest extends Testcase_Database {
 
 
 	public function provider_builder_root()

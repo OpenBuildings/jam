@@ -27,7 +27,7 @@ class Jam_Validator_UniqueTest extends Testcase_Validate {
 		$element3 = Jam::find('test_element', 2);
 
 		Jam::validator_rule('unique', array('scope' => 'name'))->validate($element3, 'url', $element3->url);
-	
-		$this->assertNotHasError($element3, 'url', 'unique');		
+
+		$this->assertNotHasError($element3, 'url', 'unique');
 	}
 }

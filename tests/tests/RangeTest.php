@@ -210,7 +210,7 @@ class Jam_RangeTest extends PHPUnit_Framework_TestCase {
 
 		$range->format('Jam_RangeTest::format_formatter');
 
-		$this->assertSame('some function 2 - 3', $range->humanize());		
+		$this->assertSame('some function 2 - 3', $range->humanize());
 	}
 
 	public static function format_formatter($min, $max)

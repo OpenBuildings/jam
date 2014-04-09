@@ -10,7 +10,7 @@
  */
 class Jam_Behavior_ParanoidTest extends Testcase_Database {
 
-	
+
 	public function test_select()
 	{
 		$this->assertNotNull(Jam::find('test_video', 1), 'Should be able to find not deleted videos');
@@ -110,7 +110,7 @@ class Jam_Behavior_ParanoidTest extends Testcase_Database {
 		$result = Jam_Behavior_Paranoid::with_filter(Jam_Behavior_Paranoid::DELETED, function(){
 			return Jam::all('test_video')->count();
 		});
-		
+
 		$this->assertEquals(2, $result);
 
 		$video = Jam_Behavior_Paranoid::with_filter(Jam_Behavior_Paranoid::ALL, function(){
@@ -131,7 +131,7 @@ class Jam_Behavior_ParanoidTest extends Testcase_Database {
 		$result = Jam_Behavior_Paranoid::with_filter(Jam_Behavior_Paranoid::DELETED, function(){
 			return Jam::all('test_video')->count();
 		});
-		
+
 		$this->assertEquals(1, $result);
 
 		$video->real_delete();
@@ -147,7 +147,7 @@ class Jam_Behavior_ParanoidTest extends Testcase_Database {
 		$result = Jam_Behavior_Paranoid::with_filter(Jam_Behavior_Paranoid::DELETED, function(){
 			return Jam::all('test_video')->count();
 		});
-		
+
 		$this->assertEquals(1, $result);
 	}
 }

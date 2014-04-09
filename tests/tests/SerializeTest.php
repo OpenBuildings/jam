@@ -21,7 +21,7 @@ class Jam_SerializeTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertCount(3, $unserialized);
 
-		foreach ($data as $i => $item) 
+		foreach ($data as $i => $item)
 		{
 			$this->assertTrue($unserialized[$i]->loaded());
 			$this->assertEquals($item, $unserialized[$i]->as_array());
@@ -82,7 +82,7 @@ class Jam_SerializeTest extends PHPUnit_Framework_TestCase {
 		));
 
 		$post2 = Jam::build('test_post', array('name' => 'unsaved'));
-		
+
 		$author->test_posts->add($post)->add($post2);
 
 		$serialized_data = serialize($author);

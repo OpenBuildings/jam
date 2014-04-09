@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.belongsto
  */
-class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
+class Jam_Association_BelongstoTest extends Testcase_Database {
 
 	public $meta;
 
@@ -50,9 +50,9 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 				->expects($this->at(0))
 				->method('field')
 				->with(
-					$this->equalTo($expected_foreign_key), 
+					$this->equalTo($expected_foreign_key),
 					$this->logicalAnd(
-						$this->isInstanceOf('Jam_Field'), 
+						$this->isInstanceOf('Jam_Field'),
 						$this->attributeEqualTo('default', NULL),
 						$this->attributeEqualTo('allow_null', TRUE),
 						$this->attributeEqualTo('convert_empty', TRUE)
@@ -65,7 +65,7 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 					->expects($this->at(1))
 					->method('field')
 					->with(
-						$this->equalTo($expected_polymorphic), 
+						$this->equalTo($expected_polymorphic),
 						$this->logicalAnd(
 							$this->isInstanceOf('Jam_Field'),
 							$this->attributeEqualTo('default', NULL),
@@ -150,7 +150,7 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 		}
 		else
 		{
-			$this->assertSame($value, $association->get($post, $value, $is_changed));			
+			$this->assertSame($value, $association->get($post, $value, $is_changed));
 		}
 	}
 
@@ -247,7 +247,7 @@ class Jam_Association_BelongstoTest extends PHPUnit_Framework_TestCase {
 
 		$value = $association->build($model, array('model' => 'test_position_big'));
 		$this->assertInstanceOf('Model_Test_Position_Big', $value);
-		
+
 	}
 
 	public function test_load_fields()

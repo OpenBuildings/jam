@@ -22,7 +22,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 			array('id' => 2, 'name' => 'Freelancer', 'model' => 'test_position'),
 			array('id' => 3, 'name' => 'Manager', 'model' => 'test_position'),
 		);
-		
+
 		$this->collection = new Jam_Query_Builder_Collection('test_position');
 		$this->collection->load_fields($this->data);
 	}
@@ -67,7 +67,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 
 	public function test_foreach()
 	{
-		foreach ($this->collection as $i => $model) 
+		foreach ($this->collection as $i => $model)
 		{
 			$this->assertInstanceOf('Jam_Model', $model);
 			$this->assertEquals($this->data[$i], $model->as_array());
@@ -84,7 +84,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$collection = new Jam_Query_Builder_Collection('test_position');
 		$collection->load_fields($this->data);
 
-		foreach ($collection as $i => $item) 
+		foreach ($collection as $i => $item)
 		{
 			$this->assertTrue($item->loaded());
 			$this->assertEquals($this->data[$i], $item->as_array());
@@ -99,7 +99,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$collection = new Jam_Query_Builder_Collection('test_post');
 		$collection->load_fields($data);
 
-		foreach ($collection as $i => $item) 
+		foreach ($collection as $i => $item)
 		{
 			$this->assertTrue($item->loaded());
 			$this->assertEquals($data[$i]['id'], $item->id());
@@ -137,7 +137,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$array = $this->collection->as_array();
 		$this->assertInternalType('array', $array);
 
-		foreach ($array as $offset => $model) 
+		foreach ($array as $offset => $model)
 		{
 			$this->assertInstanceOf('Jam_Model', $model);
 			$this->assertEquals($this->data[$offset], $model->as_array());
@@ -148,7 +148,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$this->assertInternalType('array', $array);
 
 		$offset = 0;
-		foreach ($array as $name => $model) 
+		foreach ($array as $name => $model)
 		{
 			$this->assertInstanceOf('Jam_Model', $model);
 			$this->assertEquals($this->data[$offset]['name'], $name);
@@ -162,7 +162,7 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
 		$this->assertInternalType('array', $array);
 
 		$offset = 0;
-		foreach ($array as $name => $model) 
+		foreach ($array as $name => $model)
 		{
 			$this->assertInstanceOf('Jam_Model', $model);
 			$this->assertEquals($this->data[$offset]['id'], $name);

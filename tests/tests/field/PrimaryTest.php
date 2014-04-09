@@ -12,7 +12,7 @@ class Jam_Field_PrimaryTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Primary fields cannot have allow_null set to FALSE.
-	 * 
+	 *
 	 * @expectedException Kohana_Exception
 	 */
 	public function test_allow_null_throws_exception()

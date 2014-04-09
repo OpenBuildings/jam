@@ -13,5 +13,4 @@ abstract class Testcase_Database extends PHPUnit_Framework_TestCase {
 		Database::instance(Kohana::TESTING)->rollback();
 		parent::tearDown();
 	}
-
 }

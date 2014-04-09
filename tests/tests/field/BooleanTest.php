@@ -12,7 +12,7 @@ class Jam_Field_BooleanTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Boolean fields cannot have convert_empty set to TRUE.
-	 * 
+	 *
 	 * @expectedException Kohana_Exception
 	 */
 	public function test_convert_empty_throws_exception()

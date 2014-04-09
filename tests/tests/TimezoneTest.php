@@ -52,7 +52,7 @@ class Jam_TimezoneTest extends PHPUnit_Framework_TestCase {
 	public function test_master_timezone()
 	{
 		$timezone = new Jam_Timezone();
-		$this->assertEquals('UTC', $timezone->master_timezone()->getName());	
+		$this->assertEquals('UTC', $timezone->master_timezone()->getName());
 	}
 
 	public function test_date()

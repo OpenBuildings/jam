@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.hasmany
  */
-class Jam_Association_HasmanyTest extends PHPUnit_Framework_TestCase {
+class Jam_Association_HasmanyTest extends Testcase_Database {
 
 	public $meta;
 
@@ -107,7 +107,7 @@ class Jam_Association_HasmanyTest extends PHPUnit_Framework_TestCase {
 
 		$value = $association->load_fields($author, $posts);
 
-		foreach ($posts as $i => $post) 
+		foreach ($posts as $i => $post)
 		{
 			$this->assertTrue($value[$i]->loaded());
 			$this->assertEquals($posts[$i]['id'], $value[$i]->id());
@@ -250,7 +250,7 @@ class Jam_Association_HasmanyTest extends PHPUnit_Framework_TestCase {
 		$association->initialize($this->meta, 'test_posts');
 
 		$collection = $this->getMock('Jam_Array_Association', array('original_ids', 'ids'));
-		
+
 		$dummy = $this->getMock('Jam_Query_Builder_Update', array('execute'), array('test_post'));
 		$dummy
 			->expects($this->exactly(2))

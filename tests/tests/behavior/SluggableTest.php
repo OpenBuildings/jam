@@ -51,7 +51,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 		$slug = $video->build_slug();
 		$this->assertEquals('new-videopng-1', $slug, 'Should have a method build_slug() that builds the correct slug');
-		
+
 		$video->save();
 
 		$this->assertEquals('new-videopng-1', $video->slug);
@@ -116,7 +116,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 			'slug' => 'some-other-video-1'
 		));
 		$this->assertSame('some-other-video-1', $video->slug);
-		
+
 		$video->save();
 		$this->assertSame('some-other-video-1', $video->slug);
 

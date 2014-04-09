@@ -19,20 +19,20 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 			array('test_category'),
 		);
 	}
-	
+
 	/**
 	 * Tests that empty models can be saved with nothing set on them.
 	 * This should work for every model that has no rules that require
 	 * data to be set on them, since Jam properly manages NULLs and
 	 * default values.
-	 * 
+	 *
 	 * @dataProvider  provider_save_empty_model
 	 */
 	public function test_save_empty_model($model_name)
 	{
 		$model = Jam::build($model_name);
 		$model->save();
-		
+
 		// Model should be saved, loaded, and have an id
 		$this->assertTrue($model->saved());
 		$this->assertTrue($model->loaded());
@@ -40,7 +40,7 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 
 		$model->delete();
 	}
-	
+
 	/**
 	 * Tests that primary keys can be changed or set manually.
 	 *
@@ -124,7 +124,7 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 
 		$element->set($params);
 
-		foreach ($params as $key => $value) 
+		foreach ($params as $key => $value)
 		{
 			$this->assertEquals($value, $element->{$key});
 		}
@@ -254,7 +254,7 @@ class Jam_ModelTest extends PHPUnit_Framework_TestCase {
 	public function test_get_insist()
 	{
 		$post = Jam::build('test_post')->load_fields(array(
-			'id' => 1, 
+			'id' => 1,
 			'name' => 'blog',
 			'test_author' => array(
 				'id' => 1,

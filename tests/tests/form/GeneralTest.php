@@ -37,7 +37,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 	public function test_hidden()
 	{
 		$input = $this->form->hidden('name', array(), array('class' => 'myclass'));
-		
+
 		$this->assertSelectCount('input.myclass[type="hidden"][name="name"][id="name"][value="'.$this->post->name.'"]', 1, $input);
 	}
 
@@ -54,14 +54,14 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 	public function test_input()
 	{
 		$input = $this->form->input('name', array(), array('class' => 'myclass'));
-		
+
 		$this->assertSelectCount('input.myclass[type="text"][name="name"][id="name"][value="'.$this->post->name.'"]', 1, $input);
 	}
 
 	public function test_file()
 	{
 		$input = $this->form->file('name', array(), array('class' => 'myclass'));
-		
+
 		$this->assertSelectCount('input.myclass[type="file"][name="name"][id="name"][value=""]', 1, $input);
 	}
 
@@ -75,7 +75,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 	public function test_select()
 	{
 		$select = $this->form->select('status', array('choices' => array('draft' => 'Draft Title', 'published' => 'Published Title', 'review' => 'Published Review')), array('class' => 'myclass'));
-		
+
 		$this->assertSelectCount('select.myclass[name="status"][id="status"]', 1, $select);
 		$this->assertSelectCount('option', 3, $select);
 		$this->assertSelectEquals('option[value="draft"][selected="selected"]', 'Draft Title', 1, $select);
@@ -87,7 +87,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 			array('id' => 1, 'name' => 'Flowers blog', 'url' => 'http://flowers.wordpress.com'),
 			array('id' => 2, 'name' => 'Awesome programming', 'url' => 'http://programming-blog.com'),
 			array('id' => 3, 'name' => 'Tabless', 'url' => 'http://bobby-tables-ftw.com'),
-		));	
+		));
 
 		$this->form->object()->test_blog = $blogs[0];
 
@@ -97,7 +97,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 		$this->assertSelectCount('option', count($blogs) + 1, $select);
 
 		$this->assertSelectEquals('option[value="'.$this->post->test_blog_id.'"][selected="selected"]', $blogs[0]->name(), 1, $select);
-		foreach ($blogs as $blog) 
+		foreach ($blogs as $blog)
 		{
 			$this->assertSelectEquals('option[value="'.$blog->id().'"]', $blog->name(), 1, $select);
 		}
@@ -124,7 +124,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 		$this->assertSelectCount('div.row.name-field.input-field', 1, $row);
 
 		$row = $this->form->row('input', 'name', array('label' => 'My New Name', 'help' => 'help message'), array('class' => 'myclass'));
-		
+
 		$this->assertSelectEquals('label[for="name"]', 'My New Name', 1, $row);
 		$this->assertSelectEquals('span.help-block', 'help message', 1, $row);
 	}

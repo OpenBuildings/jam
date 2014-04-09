@@ -60,7 +60,7 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 		$file = $image->file->file();
 
 		$this->assertFileExists($file);
-		
+
 		$image->delete();
 
 		$this->assertFileNotExists($file);

@@ -51,7 +51,7 @@ class Jam_Validator_CountTest extends Testcase_Validate {
 		if ($is_valid)
 		{
 			$this->assertNotHasError($element, 'count', $error);
-			
+
 		}
 		else
 		{

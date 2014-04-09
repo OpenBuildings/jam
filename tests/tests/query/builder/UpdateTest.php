@@ -33,7 +33,7 @@ class Jam_Query_Builder_UpdateTest extends PHPUnit_Framework_TestCase {
 			->value('name', 'Test')
 			->where('test_post.test_author_id', '=', 10);
 
-		$this->assertEquals('UPDATE `test_posts` SET `name` = \'Test\' WHERE `test_posts`.`test_author_id` = 10', (string) $select);	
+		$this->assertEquals('UPDATE `test_posts` SET `name` = \'Test\' WHERE `test_posts`.`test_author_id` = 10', (string) $select);
 	}
 
 	public function test_order_by()
@@ -44,7 +44,7 @@ class Jam_Query_Builder_UpdateTest extends PHPUnit_Framework_TestCase {
 			->value('name', 'Test')
 			->order_by('test_post.test_author_id', 'DESC');
 
-		$this->assertEquals('UPDATE `test_posts` SET `name` = \'Test\' ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);	
+		$this->assertEquals('UPDATE `test_posts` SET `name` = \'Test\' ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);
 	}
 }
-	
+

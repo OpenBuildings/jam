@@ -32,7 +32,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 		$this->upload->transformations(array('resize' => array(10, 10)));
 
 		$file = $this->test_temp.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test_logo.jpg';
-		if ( ! is_dir(dirname($file))) 
+		if ( ! is_dir(dirname($file)))
 		{
 			mkdir(dirname($file), 0777, TRUE);
 		}
@@ -58,7 +58,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 		));
 
 		$file = $this->test_temp.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test_logo2.jpg';
-		if ( ! is_dir(dirname($file))) 
+		if ( ! is_dir(dirname($file)))
 		{
 			mkdir(dirname($file), 0777, TRUE);
 		}
@@ -78,7 +78,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 		rmdir(dirname($this->upload->file('small')));
 		rmdir(dirname($this->upload->file()));
 	}
-	
+
 	public function test_source()
 	{
 		$this->assertNull($this->upload->source());
@@ -130,7 +130,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 
 		$file = $this->test_temp.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'file_temp.gif';
 		$thumb = $this->test_temp.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'small'.DIRECTORY_SEPARATOR.'file_temp.gif';
-		
+
 		if ( ! file_exists(dirname($thumb)))
 		{
 			mkdir(dirname($thumb), 0777, TRUE);
@@ -160,7 +160,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 
 		$file = $this->test_local.'test'.DIRECTORY_SEPARATOR.'file_temp.txt';
 		$thumb = $this->test_local.'test'.DIRECTORY_SEPARATOR.'small'.DIRECTORY_SEPARATOR.'file_temp.txt';
-		
+
 		if ( ! file_exists(dirname($thumb)))
 		{
 			mkdir(dirname($thumb), 0777, TRUE);
@@ -182,7 +182,7 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 
 		$this->assertEquals($new_file, $this->upload->file());
 		$this->assertEquals($new_thumb_file, $this->upload->file('small'));
-		
+
 		rmdir($this->test_local.'test'.DIRECTORY_SEPARATOR.'small');
 		rmdir($this->test_local.'test');
 		unlink($new_thumb_file);
@@ -194,9 +194,9 @@ class Jam_Upload_FileTest extends Testcase_Validate_Upload {
 	public function test_save_to_temp()
 	{
 		$file = $this->test_local.'file'.DIRECTORY_SEPARATOR.'file_temp.txt';
-		
+
 		file_put_contents($file, 'temp');
-		
+
 		$this->upload->source($file);
 		$this->assertEquals('file', $this->upload->source()->type());
 

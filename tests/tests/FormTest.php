@@ -16,10 +16,10 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 		parent::setUp();
 
 		$this->post = Jam::build('test_post')->load_fields(array(
-			'id' => 1, 
-			'name' => 'First Post', 
-			'slug' => 'first-post', 
-			'status' => 'draft', 
+			'id' => 1,
+			'name' => 'First Post',
+			'slug' => 'first-post',
+			'status' => 'draft',
 			'test_blog_id' => 1,
 			'test_blog' => array(
 				'id' => 1,
@@ -56,16 +56,16 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 
 		$posts = Jam::all('test_post')->load_fields(array(
 			array(
-				'id' => 1, 
-				'name' => 'Big Post', 
+				'id' => 1,
+				'name' => 'Big Post',
 				'test_blog' => array(
 					'id' => 1,
 					'name' => 'Green blog',
 				),
 			),
 			array(
-				'id' => 2, 
-				'name' => 'Big Post', 
+				'id' => 2,
+				'name' => 'Big Post',
 				'test_blog' => array(
 					'id' => 2,
 					'name' => 'Green blog',
@@ -74,10 +74,10 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 		));
 
 		$expected = array(
-			'id' => NULL, 
-			'name' => 'Big Post', 
+			'id' => NULL,
+			'name' => 'Big Post',
 			'test_blog' => array(
-				'id' => NULL, 
+				'id' => NULL,
 				'name' => 'Green blog'
 			)
 		);
@@ -92,7 +92,7 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 			array('id' => 1, 'name' => 'Flowers blog', 'url' => 'http://flowers.wordpress.com'),
 			array('id' => 2, 'name' => 'Awesome programming', 'url' => 'http://programming-blog.com'),
 			array('id' => 3, 'name' => 'Tabless', 'url' => 'http://bobby-tables-ftw.com'),
-		));	
+		));
 
 		$select = $blogs->as_array(':primary_key', ':name_key');
 
@@ -122,7 +122,7 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('test_blog_field', $empty_blog_form->default_id('field'));
 		$this->assertEquals('test_blog[field]', $empty_blog_form->default_name('field'));
 		$this->assertEquals(array('id' => 'test_blog_field', 'name' => 'test_blog[field]'), $empty_blog_form->default_attributes('field'));
-		
+
 
 		$blog_form = $this->form->fields_for('test_blog');
 
@@ -134,7 +134,7 @@ class Jam_FormTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertGreaterThan(1, count($this->post->test_tags), 'Should have some tags to test on');
 
-		foreach ($this->post->test_tags as $i => $test_tag) 
+		foreach ($this->post->test_tags as $i => $test_tag)
 		{
 			$tag_form = $this->form->fields_for('test_tags', $i);
 

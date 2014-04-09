@@ -21,7 +21,7 @@ class Jam_deepTest extends Testcase_Database {
 		$this->assertEquals(2, $author->test_post->id());
 		$this->assertEquals('changed post', $author->test_post->name());
 
-		$author = Jam::find('test_author', 1);		
+		$author = Jam::find('test_author', 1);
 
 		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
 		$this->assertEquals(2, $author->test_post->id());
@@ -90,8 +90,8 @@ class Jam_deepTest extends Testcase_Database {
 		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
 		$this->assertFalse($author->test_posts[2]->test_cover_image->loaded());
 
-		$this->assertTrue($author->test_posts[0]->test_categories->has(1));		
-		$this->assertTrue($author->test_posts[0]->test_categories->has(5));		
+		$this->assertTrue($author->test_posts[0]->test_categories->has(1));
+		$this->assertTrue($author->test_posts[0]->test_categories->has(5));
 
 		$author->save();
 
@@ -125,8 +125,8 @@ class Jam_deepTest extends Testcase_Database {
 		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
 		$this->assertTrue($author->test_posts[2]->test_cover_image->loaded());
 
-		$this->assertTrue($author->test_posts[0]->test_categories->has(1));		
-		$this->assertTrue($author->test_posts[0]->test_categories->has(5));		
+		$this->assertTrue($author->test_posts[0]->test_categories->has(1));
+		$this->assertTrue($author->test_posts[0]->test_categories->has(5));
 
 	}
 }

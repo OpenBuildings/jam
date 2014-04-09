@@ -13,7 +13,7 @@ class Jam_Validator_AttributesTest extends Testcase_Validate {
 	public function test_permit()
 	{
 		$data = array(
-			'test' => 10, 
+			'test' => 10,
 			'test2' => 20,
 			'test_object' => array(
 				'var1' => 5,

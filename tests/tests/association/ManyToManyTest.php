@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.manytomany
  */
-class Jam_Association_ManytomanyTest extends PHPUnit_Framework_TestCase {
+class Jam_Association_ManytomanyTest extends Testcase_Database {
 
 	public $meta;
 

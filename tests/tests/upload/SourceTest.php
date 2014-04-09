@@ -42,11 +42,11 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 			array(
 				UPLOAD_ERR_INI_SIZE,
 				'File not uploaded properly. Error: must not be larger than '.ini_get('post_max_size')
-			),			
+			),
 			array(
 				UPLOAD_ERR_PARTIAL,
 				'File not uploaded properly. Error: was only partially uploaded.'
-			),			
+			),
 			array(
 				UPLOAD_ERR_NO_TMP_DIR,
 				'File not uploaded properly. Error: missing a temporary folder.'

@@ -22,7 +22,7 @@ class Jam_ArrayTest extends PHPUnit_Framework_TestCase {
 		$data = array('one', 'two', 'three');
 		$array = new Jam_Array();
 		$array->content($data);
-		
+
 		$this->assertEquals($data, $array->content());
 
 		$this->assertCount(3, $array);
@@ -35,7 +35,7 @@ class Jam_ArrayTest extends PHPUnit_Framework_TestCase {
 		$array[] = 'new';
 
 		$this->assertCount(4, $array);
-		
+
 		$this->assertEquals('new', $array[3]);
 
 		$array[0] = 'changed';
@@ -51,7 +51,7 @@ class Jam_ArrayTest extends PHPUnit_Framework_TestCase {
 		$array = new Jam_Array();
 		$array->content($data);
 
-		foreach ($array as $offset => $item) 
+		foreach ($array as $offset => $item)
 		{
 			$this->assertEquals($data[$offset], $item);
 		}
@@ -64,7 +64,7 @@ class Jam_ArrayTest extends PHPUnit_Framework_TestCase {
 		$array->content($data);
 
 		$this->assertFalse($array->changed());
-		foreach ($data as $offset => $value) 
+		foreach ($data as $offset => $value)
 		{
 			$this->assertFalse($array->changed($offset));
 		}

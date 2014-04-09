@@ -51,6 +51,6 @@ class Jam_Query_BuilderTest extends PHPUnit_Framework_TestCase {
 	{
 		$join = call_user_func_array('Jam_Query_Builder::resolve_join', $arguments);
 
-		$this->assertEquals($expected, (string) $join);	
+		$this->assertEquals($expected, (string) $join);
 	}
 }

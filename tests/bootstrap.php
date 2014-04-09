@@ -36,9 +36,12 @@ Kohana::$config
 			'caching'      => FALSE,
 		));
 
+error_reporting(E_ALL ^ E_DEPRECATED);
+
 Kohana::$environment = Kohana::TESTING;
 foreach (Database::instance(Kohana::TESTING)->list_tables() as $table)
 {
 	Database::instance(Kohana::TESTING)->query(NULL, "TRUNCATE `{$table}`");
 }
 require_once __DIR__.'/database/fixtures/data.php';
+

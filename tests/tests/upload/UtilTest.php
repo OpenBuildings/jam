@@ -38,7 +38,7 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 	 */
 	public function test_download($url, $filename, $expected_filename)
 	{
-		if ($expected_filename == NULL) 
+		if ($expected_filename == NULL)
 		{
 			$this->setExpectedException('Kohana_Exception');
 		}
@@ -144,7 +144,7 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 			array(array(DIRECTORY_SEPARATOR.'test', DIRECTORY_SEPARATOR.'test2', 'test3', 'test4'), DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'test2'.DIRECTORY_SEPARATOR.'test3'.DIRECTORY_SEPARATOR.'test4'),
 		);
 	}
-	
+
 	/**
 	 * @dataProvider data_combine
 	 */

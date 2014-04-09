@@ -60,7 +60,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->join('test_author');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);
 	}
 
 	public function test_join_duplicate()
@@ -72,7 +72,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 			->join('test_author')
 			->join('test_author');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`)', (string) $select);
 	}
 
 
@@ -83,7 +83,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->having('test_post.test_author_id', '=', 10);
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` HAVING `test_posts`.`test_author_id` = 10', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` HAVING `test_posts`.`test_author_id` = 10', (string) $select);
 	}
 
 	public function test_group()
@@ -93,7 +93,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->group_by('test_post.id');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` GROUP BY `test_posts`.`id`', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` GROUP BY `test_posts`.`id`', (string) $select);
 	}
 
 	public function test_where()
@@ -103,7 +103,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->where('test_post.test_author_id', '=', 10);
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`test_author_id` = 10', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` WHERE `test_posts`.`test_author_id` = 10', (string) $select);
 	}
 
 	public function test_order_by()
@@ -113,7 +113,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->order_by('test_post.test_author_id', 'DESC');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` ORDER BY `test_posts`.`test_author_id` DESC', (string) $select);
 	}
 
 	public function data_aggregate_query()
@@ -137,7 +137,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 
 		$query = $select->aggregate_query($function, $column);
 
-		$this->assertEquals($expected_sql, (string) $query);	
+		$this->assertEquals($expected_sql, (string) $query);
 	}
 
 	public function test_nested_join()
@@ -149,7 +149,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 				->join('test_categories')
 			->end();
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`) JOIN `test_categories` ON (`test_categories`.`test_author_id` = `test_authors`.`id`)', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_authors` ON (`test_authors`.`id` = `test_posts`.`test_author_id`) JOIN `test_categories` ON (`test_categories`.`test_author_id` = `test_authors`.`id`)', (string) $select);
 	}
 
 	public function test_manytomany_join()
@@ -159,7 +159,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
 		$select
 			->join('test_categories');
 
-		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`) JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`)', (string) $select);	
+		$this->assertEquals('SELECT `test_posts`.* FROM `test_posts` JOIN `test_categories_test_posts` ON (`test_categories_test_posts`.`test_post_id` = `test_posts`.`id`) JOIN `test_categories` ON (`test_categories`.`id` = `test_categories_test_posts`.`test_category_id`)', (string) $select);
 	}
 
 	public function data_except()

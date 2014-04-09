@@ -25,7 +25,7 @@ class Jam_Behavior_CascadeTest extends Testcase_Database {
 	 */
 	public function test_get_current_children($current, $children, $expected)
 	{
-		
+
 		$this->assertEquals($expected, Jam_Behavior_Cascade::get_current_children($current, $children));
 	}
 
@@ -37,13 +37,13 @@ class Jam_Behavior_CascadeTest extends Testcase_Database {
 
 		$this->assertEquals((string) $model, (string) $collected[0]);
 
-		foreach ($model->test_posts as $i => $post) 
+		foreach ($model->test_posts as $i => $post)
 		{
 			$this->assertEquals((string) $post, (string) $collected[$i+1]);
 		}
 
 		$collected = Jam_Behavior_Cascade::collect_models($model, array('test_posts' => array('test_author', 'test_tags', 'test_images')));
-		
+
 		$expected = array(
 			$model,
 			$model->test_posts[0],
@@ -56,7 +56,7 @@ class Jam_Behavior_CascadeTest extends Testcase_Database {
 			$model->test_posts[0]->test_images[0],
 		);
 
-		foreach ($expected as $i => $item) 
+		foreach ($expected as $i => $item)
 		{
 			$this->assertEquals((string) $item, (string) $collected[$i], 'Collection item '.$i.' must be "'.$item.'"');
 		}

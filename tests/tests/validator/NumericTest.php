@@ -29,7 +29,7 @@ class Jam_Validator_NumericTest extends Testcase_Validate {
 			array(12, array('greater_than_or_equal_to' => 12), 'numeric_greater_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
 			array(12, array('greater_than_or_equal_to' => 20), 'numeric_greater_than_or_equal_to', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 
-			// Greater Than 
+			// Greater Than
 			array(12, array('greater_than' => 10), 'numeric_greater_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), TRUE),
 			array(12, array('greater_than' => 20), 'numeric_greater_than', array('pattern' => '-?\d+(\.\d+)?', 'title' => 'Numbers with an optional floating point'), FALSE),
 			array(12, array('greater_than' => 20, 'only_integer' => TRUE), 'numeric_greater_than', array('pattern' => '-?\d+', 'title' => 'Integer numbers'), FALSE),

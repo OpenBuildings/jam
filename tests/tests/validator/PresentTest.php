@@ -36,7 +36,7 @@ class Jam_Validator_PresentTest extends Testcase_Validate {
 		$validator_rule->allow_zero = $allow_zero;
 
 		$this->assertEquals(array('required' => TRUE), $validator_rule->html5_validation());
-		
+
 		$validator_rule->validate($element, 'url', $value);
 
 		if ($is_valid)

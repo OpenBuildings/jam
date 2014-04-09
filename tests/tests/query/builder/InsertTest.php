@@ -271,4 +271,4 @@ class Jam_Query_Builder_InsertTest extends PHPUnit_Framework_TestCase {
 		), $insert->params());
 	}
 }
-	
+

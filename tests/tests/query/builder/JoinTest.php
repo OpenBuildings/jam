@@ -76,7 +76,7 @@ class Jam_Query_Builder_JoinTest extends PHPUnit_Framework_TestCase {
 			->end();
 
 		$this->assertEquals('JOIN `test_posts` ON () JOIN `test_blogs` ON (`test_blogs`.`id` = `test_posts`.`test_blog_id`) JOIN `test_posts` ON (`test_posts`.`test_blog_id` = `test_blogs`.`id`)', (string) $join);
-		
+
 	}
 
 }
