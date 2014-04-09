@@ -5,9 +5,7 @@ php:
   - 5.3
 
 notifications:
-  campfire:
-    rooms:
-      secure: Q4Lcj7mKpNFuDCY3Dfh8KrTtiLYGcQ5otgR7ddRoaSLsq/FqgL2Cv+0I2+RRjaObQj3blUXeF06PIfxe/2wyhCPqLFzKq5fLdFMYEBhqiQBCGLoJWJ2z6fPKjGfW5Qvf+GqLtLcM54nB1vgWV+GJIQ06H5EeQdzuGGqHhQUZ0Wg=
+  slack: MGu9NifkyAvGNQfQwO9pkylWsiA6w+BT5F0EGLpLdFKSkTNT3oEAHWEADxT/JTbFNFEHap9XM1i2frhz6SMI2Nfvq2bfk1nlqF+EGM1eVV++dL4xJ3Z2Cxhv4zZlYoNr78hWi6ZrkHTOtXXd6QThi4NibGEch3sP8zcfnZ1OAJk=
 
 script:
   - phpunit --coverage-clover build/logs/clover.xml
