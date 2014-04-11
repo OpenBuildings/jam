@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  *  Nested behavior for Jam ORM library
- *  Creates a nested set for this model, where an object can have a parent object of the same model. Requires parent_id field in the database. Reference @ref behaviors  
- * 
+ *  Creates a nested set for this model, where an object can have a parent object of the same model. Requires parent_id field in the database. Reference @ref behaviors
+ *
  * @package    Jam
  * @category   Behavior
  * @author     Ivan Kerin
@@ -14,7 +14,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	protected $_field = 'parent_id';
 	protected $_children_dependent = NULL;
 
-	public function initialize(Jam_Meta $meta, $name) 
+	public function initialize(Jam_Meta $meta, $name)
 	{
 		parent::initialize($meta, $name);
 
@@ -28,16 +28,16 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 				'foreign_model' => $this->_model,
 				'foreign_key' => $this->_field,
 				'inverse_of' => 'parent',
-				'children_dependent' => $this->_children_dependent,
+				'dependent' => $this->_children_dependent,
 			)),
 		));
 	}
-	
+
 	/**
-	 * $builder->root() select only the root items 
-	 * 
-	 * @param Jam_Builder    $builder 
-	 * @param Jam_Event_Data $data    
+	 * $builder->root() select only the root items
+	 *
+	 * @param Jam_Builder    $builder
+	 * @param Jam_Event_Data $data
 	 * @return Jam_Builder
 	 */
 	public function builder_call_root(Database_Query $builder, Jam_Event_Data $data, $is_root = TRUE)
@@ -48,24 +48,24 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 		}
 		else
 		{
-			$data->return = $builder->where($this->_field, '!=', 0)->where($this->_field, 'IS NOT', NULL);	
+			$data->return = $builder->where($this->_field, '!=', 0)->where($this->_field, 'IS NOT', NULL);
 		}
-		
+
 		$data->stop = TRUE;
 	}
-	
+
 	/**
 	 * $model->is_root() check if an item is a root object
-	 * @param Jam_Model      $model 
-	 * @param Jam_Event_Data $data  
-	 * @return Jam_Model 
+	 * @param Jam_Model      $model
+	 * @param Jam_Event_Data $data
+	 * @return Jam_Model
 	 */
 	public function model_call_is_root(Jam_Model $model, Jam_Event_Data $data)
 	{
 		$data->stop = TRUE;
 		$data->return = ! (bool) $model->{$this->_field};
 	}
-	
+
 	/**
 	 * A special query that gets you the IDs of all the parents
 	 * @param  string $child_id starting point id (included in the result)
@@ -86,12 +86,12 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 
 	/**
 	 * $model->parents() get all the parents of a given item
-	 * @param Jam_Model      $model 
+	 * @param Jam_Model      $model
 	 * @param Jam_Event_Data $data
 	 * @return array
 	 */
 	public function model_call_parents(Jam_Model $model, Jam_Event_Data $data)
-	{	
+	{
 		$data->return = Jam::all($this->_model)
 			->join(array($this->parents_query($model->parent_id), 'recursion_table'))
 			->on('recursion_table._id', '=', ':primary_key')
@@ -101,7 +101,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 	}
 
 	public static function builder_call_nested_collection(Database_Query_Builder $builder, Jam_Event_Data $data, $groups = FALSE, $depth = 0)
-	{		
+	{
 		$choices = array();
 
 		if ($depth == 0)
@@ -116,26 +116,26 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 			if ($groups AND $depth == 0)
 			{
 				$choices[$item->name()] = array();
-				
+
 				if ($item->children->count())
 				{
 					$choices[$item->name()] = self::builder_call_nested_collection($item->children->collection(), $data, $groups, $depth+1);
-				}				
+				}
 			}
 			else
 			{
 				$choices[$item->id()] = str_repeat('&nbsp;&nbsp;&nbsp;', $depth).$item->name();
 
 				if ($item->children->count())
-				{	
+				{
 					$choices = Arr::merge($choices, self::builder_call_nested_collection($item->children->collection(), $data, $groups, $depth+1));
 				}
 			}
 		}
-		
+
 		if ($depth == 0)
 		{
-			$data->return = $choices;		
+			$data->return = $choices;
 		}
 		else
 			return $choices;
