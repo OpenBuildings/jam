@@ -107,15 +107,34 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	{
 		return $this->_slug;
 	}
+
 	/**
-	 * Called after save. Generates the slug from the specified fields.
+	 * Called before validation.
+	 * If the slug does not use the primary key the slug is built event before
+	 * the validation. This way it could be validated and there are no
+	 * additional database queries to update it.
 	 *
-	 * @param  Jam_Model $model [description]
-	 * @return void
+	 * @param  Jam_Model $model
+	 */
+	public function model_before_check(Jam_Model $model)
+	{
+		if ($this->auto_save() AND ! $this->uses_primary_key() AND ! $model->changed('slug'))
+		{
+			// Use the built in slug transformation
+			$model->slug = $model->build_slug();
+		}
+	}
+
+	/**
+	 * Called after save.
+	 * If the slug uses the primary key it is built after save and it is updated
+	 * with an additional database query.
+	 *
+	 * @param  Jam_Model $model
 	 */
 	public function model_after_save(Jam_Model $model)
 	{
-		if ($this->auto_save() AND ! $model->changed('slug'))
+		if ($this->auto_save() AND $this->uses_primary_key() AND ! $model->changed('slug'))
 		{
 			// Use the built in slug transformation
 			$model->slug = $model->build_slug();
@@ -127,7 +146,6 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 					->value('slug', $model->slug)
 					->execute();
 			}
-
 		}
 	}
 

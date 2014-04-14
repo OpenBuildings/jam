@@ -233,7 +233,7 @@ This behavior has some options:
 
 #### uses_primary_key, default TRUE
 
-If you set `uses_primary_key` to FALSE then it will not add the id at the end of the string and the special functionality for throwing Jam_Exception_Slugmismatch exceptions will not be available. Only the name key will be used for the slug
+If you set `uses_primary_key` to FALSE then it will not add the id at the end of the string and the special functionality for throwing `Jam_Exception_Slugmismatch` exceptions will not be available. Only the name key will be used for the slug. In addition the slug would be generated earlier during the `model.before_check` event.
 
 #### unique, default TRUE
 
