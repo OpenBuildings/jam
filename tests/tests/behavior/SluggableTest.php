@@ -10,21 +10,38 @@
  */
 class Jam_Behavior_SluggableTest extends Testcase_Database {
 
+    /**
+     * @covers Jam_Behavior_Sluggable::model_call_build_slug
+     * @covers Jam_Behavior_Sluggable::model_before_check
+     */
+    public function test_set_no_primary_key()
+    {
+        $tag = Jam::find('test_tag', 1);
+
+        $this->assertNotNull($tag);
+        $this->assertNotNull($tag->slug);
+
+        $tag->name = ' new tag j320&lt';
+        $tag->check();
+
+        $this->assertEquals('new-tag-j320lt', $tag->slug);
+    }
+
 	/**
 	 * @covers Jam_Behavior_Sluggable::model_call_build_slug
 	 * @covers Jam_Behavior_Sluggable::model_after_save
 	 */
-	public function test_set_no_primary_key()
+	public function test_save_with_primary_key()
 	{
-		$tag = Jam::find('test_tag', 1);
+		$video = Jam::find('test_video', 1);
 
-		$this->assertNotNull($tag);
-		$this->assertNotNull($tag->slug);
+		$this->assertNotNull($video);
+		$this->assertNotNull($video->slug);
 
-		$tag->name = ' new tag j320&lt';
-		$tag->save();
+		$video->file = ' new video j320&lt';
+		$video->save();
 
-		$this->assertEquals('new-tag-j320lt', $tag->slug);
+		$this->assertEquals('new-video-j320lt-1', $video->slug);
 	}
 
 	/**
