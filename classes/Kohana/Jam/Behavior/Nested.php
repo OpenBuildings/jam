@@ -28,7 +28,7 @@ class Kohana_Jam_Behavior_Nested extends Jam_Behavior {
 				'foreign_model' => $this->_model,
 				'foreign_key' => $this->_field,
 				'inverse_of' => 'parent',
-				'children_dependent' => $this->_children_dependent,
+				'dependent' => $this->_children_dependent,
 			)),
 		));
 	}
