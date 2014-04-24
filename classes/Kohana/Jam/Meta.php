@@ -729,7 +729,7 @@ abstract class Kohana_Jam_Meta {
 	 */
 	public function unique_key($value = NULL)
 	{
-		if (is_callable($value))
+		if (is_callable($value) AND ! $this->initialized())
 		{
 			return $this->set('unique_key', $value);
 		}
