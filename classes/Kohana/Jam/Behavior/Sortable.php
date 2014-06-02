@@ -27,7 +27,7 @@ class Kohana_Jam_Behavior_Sortable extends Jam_Behavior {
 	 * @param  array  $ids
 	 * @return $this
 	 */
-	public function sort_ids(array $ids)
+	public function builder_call_sort_ids(Database_Query_Builder $builder, Jam_Event_Data $data, array $ids)
 	{
 		$case = 'CASE  `id` ';
 		$template = 'WHEN :id THEN :position ';
