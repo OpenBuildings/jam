@@ -26,7 +26,7 @@ Kohana::$config
 			'type'       => 'MySQL',
 			'connection' => array(
 				'hostname'   => 'localhost',
-				'database'   => 'test-jam',
+				'database'   => 'openbuildings/jam',
 				'username'   => 'root',
 				'password'   => '',
 				'persistent' => TRUE,

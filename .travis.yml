@@ -16,8 +16,8 @@ install:
 
 before_script:
   - mkdir -p build/logs
-  - mysql -e 'create database `test-jam`;'
-  - mysql test-jam < tests/database/structure/mysql.sql
+  - mysql -e 'create database `openbuildings/jam`;'
+  - mysql openbuildings/jam < tests/database/structure/mysql.sql
 
 script:
   - phpunit --coverage-clover build/logs/clover.xml
