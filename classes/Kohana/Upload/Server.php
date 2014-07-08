@@ -142,4 +142,31 @@ abstract class Kohana_Upload_Server
 
 		return $server;
 	}
+
+	public static function server_local_placeholdit(array $params = array())
+	{
+		$validation = Validation::factory($params)
+			->rule('path', 'not_empty')
+			->rule('path', 'is_dir')
+			->rule('placeholder', 'url')
+			->rule('url_type', 'in_array', array(':value', array(Flex\Storage\Server::URL_HTTP, Flex\Storage\Server::URL_SSL, Flex\Storage\Server::URL_STREAMING)))
+			->rule('web', 'not_empty');
+
+		if ( ! $validation->check())
+			throw new Kohana_Exception('Upload server local params had errors: :errors',
+				array(':errors' => join(', ', $validation->errors('upload_server'))));
+
+		$server = new Flex\Storage\Server_Local_Placeholdit($validation['path'], $validation['web']);
+
+		if (isset($validation['placeholder'])) {
+			$server->placeholder($validation['placeholder']);
+		}
+
+		if (isset($validation['url_type']))
+		{
+			$server->url_type($validation['url_type']);
+		}
+
+		return $server;
+	}
 }
