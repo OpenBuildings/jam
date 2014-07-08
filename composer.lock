@@ -97,16 +97,16 @@
         },
         {
             "name": "openbuildings/flex-storage",
-            "version": "v0.1.2",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenBuildings/flex-storage.git",
-                "reference": "v0.1.2"
+                "reference": "780d09228a3e4e5a3086c1f55592304502efe987"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenBuildings/flex-storage/zipball/v0.1.2",
-                "reference": "v0.1.2",
+                "url": "https://api.github.com/repos/OpenBuildings/flex-storage/zipball/780d09228a3e4e5a3086c1f55592304502efe987",
+                "reference": "780d09228a3e4e5a3086c1f55592304502efe987",
                 "shasum": ""
             },
             "require": {
@@ -131,7 +131,7 @@
                 }
             ],
             "description": "Flexible storage provider for files (rackspace, aws, ftp, local)",
-            "time": "2013-08-14 07:24:02"
+            "time": "2014-07-08 12:07:06"
         },
         {
             "name": "rackspace/php-opencloud",
