@@ -99,7 +99,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$collection->where($this->polymorphic_key, '=', $model->meta()->model());
+			$collection->where($this->polymorphic_key, '=', $this->model);
 		}
 
 		return $collection;
@@ -119,7 +119,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			{
 				if ($item instanceof Jam_Model)
 				{
-					$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
+					$this->assign_item($item, $model->id(), $this->model, $model);
 				}
 			}
 		}
@@ -179,7 +179,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$query->where($this->polymorphic_key, '=', $model->meta()->model());
+			$query->where($this->polymorphic_key, '=', $this->model);
 		}
 
 		return $query;
@@ -199,7 +199,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 		if ($this->is_polymorphic())
 		{
 			$query
-				->where($this->polymorphic_key, '=', $model->meta()->model())
+				->where($this->polymorphic_key, '=', $this->model)
 				->value($this->polymorphic_key, NULL);
 		}
 		return $query;
@@ -262,7 +262,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 
 		if ($this->is_polymorphic())
 		{
-			$query->value($this->polymorphic_key, $model->meta()->model());
+			$query->value($this->polymorphic_key, $this->model);
 		}
 		return $query;
 	}
@@ -297,7 +297,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function item_get(Jam_Model $model, Jam_Model $item)
 	{
-		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
+		$this->assign_item($item, $model->id(), $this->model, $model);
 	}
 
 	/**
@@ -308,7 +308,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function item_set(Jam_Model $model, Jam_Model $item)
 	{
-		$this->assign_item($item, $model->id(), $model->meta()->model(), $model);
+		$this->assign_item($item, $model->id(), $this->model, $model);
 	}
 
 	/**
