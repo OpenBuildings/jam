@@ -64,7 +64,7 @@ abstract class Kohana_Jam_Attribute {
 	{
 		// This will come in handy for setting complex relationships
 		if (!$this->model)
-        {
+		{
 			$this->model = $meta->model();
 		}
 
