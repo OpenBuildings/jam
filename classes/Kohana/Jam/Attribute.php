@@ -63,7 +63,7 @@ abstract class Kohana_Jam_Attribute {
 	public function initialize(Jam_Meta $meta, $name)
 	{
 		// This will come in handy for setting complex relationships
-		if (!$this->model)
+		if ( ! $this->model)
 		{
 			$this->model = $meta->model();
 		}
