@@ -17,6 +17,12 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	public $join_table_dependent = TRUE;
 
 	/**
+	 * Set paranoid column
+	 * @var boolean
+	 */
+	public $join_table_paranoid = NULL;
+
+	/**
 	 * The name of the field on the join table, corresponding to the model
 	 * @var string
 	 */
@@ -55,6 +61,11 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			$this->foreign_key = $this->model.'_id';
 		}
 
+		if ($this->join_table_paranoid === TRUE)
+		{
+			$this->join_table_paranoid = 'is_deleted';
+		}
+
 		if ( ! $this->association_foreign_key)
 		{
 			$this->association_foreign_key = $this->foreign_model.'_id';
@@ -69,10 +80,16 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 */
 	public function join($alias, $type = NULL)
 	{
-		return Jam_Query_Builder_Join::factory($this->join_table, $type)
+		$join = Jam_Query_Builder_Join::factory($this->join_table, $type)
 			->context_model($this->model)
 			->model($this->foreign_model)
-			->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key')
+			->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key');
+
+		if ($this->join_table_paranoid) {
+			$join->on($this->join_table.'.'.$this->join_table_paranoid, 'IS', DB::expr('NULL'));
+		}
+
+		return $join
 			->join_table($alias ? array($this->foreign_model, $alias) : $this->foreign_model, $type)
 				->on(':primary_key', '=' , $this->join_table.'.'.$this->association_foreign_key)
 				->context_model($this->model)
@@ -83,12 +100,18 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	{
 		$collection = Jam::all($this->foreign_model);
 
-		return $collection
+		$collection
 			->join_table($this->join_table)
 				->context_model($this->foreign_model)
 				->on($this->association_foreign_key, '=', ':primary_key')
 			->end()
 			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
+
+		if ($this->join_table_paranoid) {
+			$collection->where($this->join_table.'.'.$this->join_table_paranoid, 'IS', NULL);
+		}
+
+		return $collection;
 	}
 
 
