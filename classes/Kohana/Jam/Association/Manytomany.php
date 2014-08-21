@@ -86,7 +86,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->on($this->join_table.'.'.$this->foreign_key, '=', ':primary_key');
 
 		if ($this->join_table_paranoid) {
-			$join->on($this->join_table.'.'.$this->join_table_paranoid, 'IS', DB::expr('NULL'));
+			$join->on($this->join_table.'.'.$this->join_table_paranoid, '=', DB::expr('0'));
 		}
 
 		return $join
@@ -108,7 +108,7 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 			->where($this->join_table.'.'.$this->foreign_key, '=' , $model->id());
 
 		if ($this->join_table_paranoid) {
-			$collection->where($this->join_table.'.'.$this->join_table_paranoid, 'IS', NULL);
+			$collection->where($this->join_table.'.'.$this->join_table_paranoid, '=', FALSE);
 		}
 
 		return $collection;
