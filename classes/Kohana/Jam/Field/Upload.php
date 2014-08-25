@@ -94,7 +94,11 @@ abstract class Kohana_Jam_Field_Upload extends Jam_Field {
 	{
 		if ($model->changed($this->name) AND $upload_file = $model->{$this->name} AND $upload_file->source())
 		{
-			$upload_file->save_to_temp();
+			try {
+				$upload_file->save_to_temp();
+			} catch (Kohana_Exception $e) {
+				$model->errors()->add($this->name, 'uploaded_native', array(':message' => $e->getMessage()));
+			}
 		}
 	}
 
