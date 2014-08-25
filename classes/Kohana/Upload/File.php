@@ -252,11 +252,11 @@ class Kohana_Upload_File {
 		return $this;
 	}
 
- 	/**
- 	 * Save the file by moving it from temporary to the upload server
- 	 * Generate the thumbnails if nesessary
- 	 * @return Upload_File $this
- 	 */
+	/**
+	 * Save the file by moving it from temporary to the upload server
+	 * Generate the thumbnails if nesessary
+	 * @return Upload_File $this
+	 */
 	public function save()
 	{
 		if ($this->_thumbnails AND @ getimagesize($this->file()))

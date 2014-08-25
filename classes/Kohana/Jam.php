@@ -481,6 +481,9 @@ abstract class Kohana_Jam {
 	 */
 	public static function find_insist($model, $key)
 	{
+		if ( ! $key)
+			throw new Jam_Exception_Notfound(':model not found - no id specified', $model);
+
 		$result = Jam::find($model, $key);
 
 		if (is_array($key))
