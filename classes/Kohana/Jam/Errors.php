@@ -124,7 +124,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 		return $this->_add_messages_all($this->_model, $messages);
 	}
 
-	private function _add_messages_all(Jam_Model $model, array & $messages)
+	private function _add_messages_all(Jam_Validated $model, array & $messages)
 	{
 		foreach ($model->errors() as $attribute_name => $errors)
 		{

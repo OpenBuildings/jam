@@ -467,6 +467,9 @@ abstract class Kohana_Jam {
 	 */
 	public static function find($model, $key)
 	{
+		if ( ! $key)
+			throw new Jam_Exception_Invalidargument(':model - no id specified', $model);
+
 		$collection = Jam::all($model);
 		$collection->where_key($key);
 		return is_array($key) ? $collection : $collection->first();
@@ -477,12 +480,14 @@ abstract class Kohana_Jam {
 	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_Notfound
 	 * @param  string $model
 	 * @param  string|array $key
+	 * @throws Jam_Exception_Invalidargument If id is array() or null
+	 * @throws Jam_Exception_Notfound If no model was found
 	 * @return Jam_Model
 	 */
 	public static function find_insist($model, $key)
 	{
 		if ( ! $key)
-			throw new Jam_Exception_Notfound(':model not found - no id specified', $model);
+			throw new Jam_Exception_Invalidargument(':model - no id specified', $model);
 
 		$result = Jam::find($model, $key);
 
