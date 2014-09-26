@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.range
  */
-class Jam_Field_RangeTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_RangeTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_set()
 	{

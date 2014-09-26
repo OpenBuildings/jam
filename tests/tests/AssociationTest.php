@@ -8,7 +8,7 @@
  * @group   jam.association
  * @group   jam.association.core
  */
-class Jam_AssociationTest extends PHPUnit_Framework_TestCase {
+class Jam_AssociationTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function data_primary_key()
 	{

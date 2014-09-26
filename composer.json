@@ -18,7 +18,8 @@
 		"openbuildings/flex-storage": "0.1.*"
 	},
 	"require-dev": {
-		"openbuildings/kohana-test-bootsrap": "0.1.*"
+		"openbuildings/kohana-test-bootsrap": "0.1.*",
+		"phpunit/phpunit-dom-assertions": "1.0.*@dev"
 	},
 	"suggest": {
 		"openbuildings/jam-auth": "A Kohana Auth implementation for Jam, with services",

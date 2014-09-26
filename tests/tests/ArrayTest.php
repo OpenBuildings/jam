@@ -8,7 +8,7 @@
  * @group   jam.array
  * @group   jam.array.core
  */
-class Jam_ArrayTest extends PHPUnit_Framework_TestCase {
+class Jam_ArrayTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_content_not_set()
 	{

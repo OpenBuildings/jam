@@ -8,7 +8,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.delete
  */
-class Jam_Query_Builder_DeleteTest extends PHPUnit_Framework_TestCase {
+class Jam_Query_Builder_DeleteTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_constructor()
 	{

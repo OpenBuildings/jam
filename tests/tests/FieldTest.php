@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.field
  */
-class Jam_FieldTest extends PHPUnit_Framework_TestCase {
+class Jam_FieldTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Provider for test_construction
