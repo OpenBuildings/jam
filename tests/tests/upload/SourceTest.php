@@ -41,7 +41,7 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 		return array(
 			array(
 				UPLOAD_ERR_INI_SIZE,
-				'File not uploaded properly. Error: must not be larger than '.ini_get('post_max_size')
+				'File not uploaded properly. Error: must not be larger than '.ini_get('upload_max_filesize')
 			),
 			array(
 				UPLOAD_ERR_PARTIAL,
