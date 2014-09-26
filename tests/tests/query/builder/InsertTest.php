@@ -8,7 +8,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.insert
  */
-class Jam_Query_Builder_InsertTest extends PHPUnit_Framework_TestCase {
+class Jam_Query_Builder_InsertTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * @covers Jam_Query_Builder_Insert::__construct

@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.boolean
  */
-class Jam_Field_BooleanTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_BooleanTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Boolean fields cannot have convert_empty set to TRUE.

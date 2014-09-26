@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.password
  */
-class Jam_Field_PasswordTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_PasswordTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function data_change_password()
 	{

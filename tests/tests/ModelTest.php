@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.model
  */
-class Jam_ModelTest extends PHPUnit_Framework_TestCase {
+class Jam_ModelTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Provider for test_save_empty_model

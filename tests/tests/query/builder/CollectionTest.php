@@ -8,7 +8,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.collection
  */
-class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_TestCase {
+class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_DOMTestCase {
 
 	public $collection;
 	public $data;

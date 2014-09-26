@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.decimal
  */
-class Jam_Field_DecimalTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_DecimalTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_set()
 	{

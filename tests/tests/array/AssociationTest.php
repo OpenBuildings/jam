@@ -8,7 +8,7 @@
  * @group   jam.array
  * @group   jam.array.association
  */
-class Jam_Array_AssociationTest extends PHPUnit_Framework_TestCase {
+class Jam_Array_AssociationTest extends PHPUnit_Framework_DOMTestCase {
 
 	public $data = array(array('id' => 1, 'name' => 'one'), array('id' => 3, 'name' => 'three'));
 	public $collection;

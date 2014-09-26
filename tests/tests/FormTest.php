@@ -6,7 +6,7 @@
  * @group   jam.form
  * @group   jam.form.core
  */
-class Jam_FormTest extends PHPUnit_Framework_TestCase {
+class Jam_FormTest extends PHPUnit_Framework_DOMTestCase {
 
 	protected $form;
 	protected $post;

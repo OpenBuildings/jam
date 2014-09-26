@@ -8,7 +8,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.select
  */
-class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_TestCase {
+class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_constructor()
 	{

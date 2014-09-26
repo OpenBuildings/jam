@@ -6,7 +6,7 @@
  * @group   jam.form
  * @group   jam.form.general
  */
-class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
+class Jam_Form_GeneralTest extends PHPUnit_Framework_DOMTestCase {
 
 	protected $form;
 	protected $post;
@@ -62,7 +62,7 @@ class Jam_Form_GeneralTest extends PHPUnit_Framework_TestCase {
 	{
 		$input = $this->form->file('name', array(), array('class' => 'myclass'));
 
-		$this->assertSelectCount('input.myclass[type="file"][name="name"][id="name"][value=""]', 1, $input);
+		$this->assertSelectCount('input.myclass[type="file"][name="name"][id="name"]', 1, $input);
 	}
 
 	public function test_textarea()

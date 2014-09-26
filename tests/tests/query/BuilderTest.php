@@ -8,7 +8,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.core
  */
-class Jam_Query_BuilderTest extends PHPUnit_Framework_TestCase {
+class Jam_Query_BuilderTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function data_resolve_attribute_name()
 	{

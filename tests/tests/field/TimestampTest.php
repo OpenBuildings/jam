@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.timestamp
  */
-class Jam_Field_TimestampTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_TimestampTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Provider for test_format

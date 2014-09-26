@@ -7,7 +7,7 @@
  * @group   jam
  * @group   jam.meta
  */
-class Jam_MetaTest extends PHPUnit_Framework_TestCase {
+class Jam_MetaTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Tests various properties on a meta object.

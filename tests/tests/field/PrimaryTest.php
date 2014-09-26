@@ -8,7 +8,7 @@
  * @group   jam.field
  * @group   jam.field.primary
  */
-class Jam_Field_PrimaryTest extends PHPUnit_Framework_TestCase {
+class Jam_Field_PrimaryTest extends PHPUnit_Framework_DOMTestCase {
 
 	/**
 	 * Primary fields cannot have allow_null set to FALSE.
