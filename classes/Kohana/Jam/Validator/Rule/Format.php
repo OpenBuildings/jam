@@ -58,7 +58,7 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 			$model->errors()->add($attribute, 'format_credit_card');
 		}
 
-		if ($this->date === TRUE AND ! (strtotime($value)))
+		if ($this->date === TRUE AND strtotime($value) === FALSE)
 		{
 			$model->errors()->add($attribute, 'format_date');
 		}
