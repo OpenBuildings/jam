@@ -50,6 +50,12 @@ class Jam_Validator_FormatTest extends Testcase_Validate {
 			array('95.87.212.88', array('ip' => TRUE), 'format_ip', NULL, TRUE),
 			array('192.168.1.1', array('ip' => TRUE), 'format_ip', NULL, TRUE),
 
+			// DATE
+			array('asd', array('date' => TRUE), 'format_date', array('type' => 'date'), FALSE),
+			array('2014-01-20', array('date' => TRUE), 'format_date', array('type' => 'date'), TRUE),
+			array('2/2/2014', array('date' => TRUE), 'format_date', array('type' => 'date'), TRUE),
+			array('20132013', array('date' => TRUE), 'format_date', array('type' => 'date'), FALSE),
+
 			// CREDIT CARD
 			array('asd', array('credit_card' => TRUE), 'format_credit_card', array('pattern' => '^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$'), FALSE),
 			array('378282246310005', array('credit_card' => TRUE), 'format_credit_card', array('pattern' => '^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$'), TRUE),
