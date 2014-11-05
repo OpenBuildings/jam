@@ -47,5 +47,6 @@ return array(
 	'format_ip'                        => ':attribute must be a valid IP address',
 	'format_regex'                     => ':attribute is invalid',
 	'format_filter'                    => ':attribute is invalid',
-	'format_credit_card'               => ':attribute is invalid',
+	'format_credit_card'               => ':attribute must be a valid Credit Card',
+	'format_date'                      => ':attribute must be a valid date',
 );

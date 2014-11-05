@@ -24,6 +24,8 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 
 	public $credit_card;
 
+	public $date;
+
 	public function validate(Jam_Validated $model, $attribute, $value)
 	{
 		if ($this->regex !== NULL AND ! (preg_match($this->regex, $value)))
@@ -55,6 +57,11 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 		{
 			$model->errors()->add($attribute, 'format_credit_card');
 		}
+
+		if ($this->date === TRUE AND strtotime($value) === FALSE)
+		{
+			$model->errors()->add($attribute, 'format_date');
+		}
 	}
 
 	public function html5_validation()
@@ -66,6 +73,10 @@ class Kohana_Jam_Validator_Rule_Format extends Jam_Validator_Rule {
 		elseif ($this->email)
 		{
 			return array('type' => 'email');
+		}
+		elseif ($this->date)
+		{
+			return array('type' => 'date');
 		}
 		elseif ($this->regex)
 		{
