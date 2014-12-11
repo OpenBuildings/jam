@@ -162,9 +162,10 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		$value = Arr::get($options, 'value', 1);
 		$empty = Arr::get($options, 'empty', 0);
+		$disabled = (in_array('disabled', $attributes) OR isset($attributes['disabled']));
 
 		return
-			Form::hidden($attributes['name'], $empty)
+			Form::hidden($attributes['name'], $empty, $disabled ? array('disabled') : array())
 			.Form::checkbox($attributes['name'], $value, $this->object()->$name, $attributes);
 	}
 
@@ -307,6 +308,11 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 		if ($blank = Arr::get($options, 'include_blank'))
 		{
 			Arr::unshift($choices, '', ($blank === TRUE) ? " -- Select -- " : $blank);
+		}
+
+		if ($additional = Arr::get($options, 'additional'))
+		{
+			$choices = Arr::merge($choices, $additional);
 		}
 
 		$selected = Jam_Form::list_id($this->object()->$name);
