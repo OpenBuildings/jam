@@ -309,6 +309,11 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 			Arr::unshift($choices, '', ($blank === TRUE) ? " -- Select -- " : $blank);
 		}
 
+		if ($additional = Arr::get($options, 'additional'))
+		{
+			$choices = Arr::merge($choices, $additional);
+		}
+
 		$selected = Jam_Form::list_id($this->object()->$name);
 
 		return Form::select($attributes['name'], $choices, $selected, $attributes);
