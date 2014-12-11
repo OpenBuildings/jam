@@ -162,7 +162,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		$value = Arr::get($options, 'value', 1);
 		$empty = Arr::get($options, 'empty', 0);
-		$disabled = in_array('disabled', $attributes) OR isset($attributes['disabled']);
+		$disabled = (in_array('disabled', $attributes) OR isset($attributes['disabled']));
 
 		return
 			Form::hidden($attributes['name'], $empty, $disabled ? array('disabled') : array())
