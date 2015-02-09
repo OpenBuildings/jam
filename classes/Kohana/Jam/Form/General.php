@@ -166,7 +166,7 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 
 		return
 			Form::hidden($attributes['name'], $empty, $disabled ? array('disabled') : array())
-			.Form::checkbox($attributes['name'], $value, $this->object()->$name, $attributes);
+			.Form::checkbox($attributes['name'], $value, $this->object()->$name == $value, $attributes);
 	}
 
 	/**
