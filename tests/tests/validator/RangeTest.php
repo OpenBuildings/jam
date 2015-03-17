@@ -13,19 +13,46 @@ class Jam_Validator_RangeTest extends Testcase_Validate {
 	public function data_validate()
 	{
 		return array(
+			// NUMERIC
+			array(array('a', 'b'), array(), 'range_numeric', FALSE),
+			array(array('1', 'b'), array(), 'range_numeric', FALSE),
+			array(array('a', '1'), array(), 'range_numeric', FALSE),
+
 			// MINIMUM
 			array(array(2, 5), array('minimum' => 4), 'range_minimum', FALSE),
+			array(array(4, 7), array('minimum' => 4), 'range_minimum', FALSE),
 			array(array(5, 7), array('minimum' => 4), 'range_minimum', TRUE),
 
 			array(array(5, 2), array('minimum' => 4), 'range_minimum', FALSE),
+			array(array(7, 4), array('minimum' => 4), 'range_minimum', FALSE),
 			array(array(7, 5), array('minimum' => 4), 'range_minimum', TRUE),
 
-			// MAXIMUM
-			array(array(5, 10), array('maximum' => 6), 'range_maximum', FALSE),
-			array(array(5, 10), array('maximum' => 15), 'range_maximum', TRUE),
+			// MINIMUM OR EQUAL
+			array(array(2, 5), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', FALSE),
+			array(array(4, 7), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', TRUE),
+			array(array(5, 7), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', TRUE),
 
-			array(array(10, 5), array('maximum' => 6), 'range_maximum', FALSE),
-			array(array(10, 5), array('maximum' => 15), 'range_maximum', TRUE),
+			array(array(5, 2), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', FALSE),
+			array(array(7, 4), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', TRUE),
+			array(array(7, 5), array('minimum_or_equal_to' => 4), 'range_minimum_or_equal_to', TRUE),
+
+			// MAXIMUM
+			array(array(5, 10), array('maximum' => 8), 'range_maximum', FALSE),
+			array(array(5, 8), array('maximum' => 8), 'range_maximum', FALSE),
+			array(array(5, 7), array('maximum' => 8), 'range_maximum', TRUE),
+
+			array(array(10, 5), array('maximum' => 8), 'range_maximum', FALSE),
+			array(array(8, 5), array('maximum' => 8), 'range_maximum', FALSE),
+			array(array(7, 5), array('maximum' => 8), 'range_maximum', TRUE),
+
+			// MAXIMUM OR EQUAL
+			array(array(5, 10), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', FALSE),
+			array(array(5, 8), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', TRUE),
+			array(array(5, 7), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', TRUE),
+
+			array(array(10, 5), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', FALSE),
+			array(array(8, 5), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', TRUE),
+			array(array(7, 5), array('maximum_or_equal_to' => 8), 'range_maximum_or_equal_to', TRUE),
 
 			// BETWEEN
 			array(array(5, 10), array('between' => array(2, 5)), 'range_between', FALSE),
