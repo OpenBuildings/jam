@@ -20,7 +20,8 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 		if (Jam_Validator_Rule_Present::is_empty_value($value, $this->allow_zero)
 			OR Jam_Validator_Rule_Present::is_empty_string($value)
 			OR Jam_Validator_Rule_Present::is_empty_countable($value)
-			OR Jam_Validator_Rule_Present::is_empty_upload_file($value))
+			OR Jam_Validator_Rule_Present::is_empty_upload_file($value)
+			OR Jam_Validator_Rule_Present::is_empty_range($value))
 		{
 			$model->errors()->add($attribute, 'present');
 		}
@@ -39,6 +40,13 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 	public static function is_empty_upload_file($value)
 	{
 		return (($value instanceof Upload_File) AND $value->is_empty());
+	}
+
+	public static function is_empty_range($value)
+	{
+		return (($value instanceof Jam_Range)
+			AND ($value->min() === NULL OR $value->min() === '')
+			AND ($value->max() === NULL OR $value->max() === ''));
 	}
 
 	public static function is_empty_string($value)

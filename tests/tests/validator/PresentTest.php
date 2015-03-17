@@ -23,6 +23,11 @@ class Jam_Validator_PresentTest extends Testcase_Validate {
 			array('0', TRUE, TRUE),
 			array('', TRUE, FALSE),
 			array(1, TRUE, TRUE),
+			array(new Jam_Range(), FALSE, FALSE),
+			array(new Jam_Range(''), FALSE, FALSE),
+			array(new Jam_Range('|'), FALSE, FALSE),
+			array(new Jam_Range('1|'), FALSE, TRUE),
+			array(new Jam_Range('|1'), FALSE, TRUE),
 		);
 	}
 
