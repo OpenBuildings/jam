@@ -110,7 +110,7 @@ class Jam_FormTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertEquals('field', $this->form->default_id('field'));
 		$this->assertEquals('field', $this->form->default_name('field'));
 		$this->assertEquals(array('id' => 'field', 'name' => 'field'), $this->form->default_attributes('field'));
-		$this->assertEquals(array('id' => 'name', 'name' => 'name'), $this->form->default_attributes('name'));
+		$this->assertEquals(array('id' => 'name', 'name' => 'name', 'required' => TRUE), $this->form->default_attributes('name'));
 	}
 
 	public function test_fields_for()
