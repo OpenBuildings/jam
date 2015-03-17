@@ -57,7 +57,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 	public function __construct($source = NULL, $format = NULL)
 	{
-		if (is_string($source))
+		if (is_string($source) AND $source !== '')
 		{
 			$source = explode('|', $source);
 		}

@@ -11,6 +11,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	{
 		return array(
 			array(NULL, NULL, NULL, NULL, ':min - :max'),
+			array('', NULL, NULL, NULL, ':min - :max'),
 			array('30|40', NULL, '30', '40', ':min - :max'),
 			array('-2|19', ':min / :max time', '-2', '19', ':min / :max time'),
 			array('|', NULL, '', '', ':min - :max'),
