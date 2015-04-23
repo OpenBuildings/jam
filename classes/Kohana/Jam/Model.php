@@ -142,6 +142,15 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = TRUE;
 
+		foreach ($this->meta()->fields() as $key => $field)
+		{
+			if (isset($values[$field->column]) AND ! isset($values[$field->name]))
+			{
+				$values[$field->name] = $values[$field->column];
+				unset($values[$field->column]);
+			}
+		}
+
 		foreach ($values as $key => $value)
 		{
 			if ($field = $this->meta()->field($key))
@@ -275,12 +284,12 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 					// Only set the value to be saved if it's changed from the original
 					if ($value !== $this->_original[$column])
 					{
-						$values[$field->name] = $value;
+						$values[$field->column] = $value;
 					}
 					// Or if we're INSERTing and we need to set the defaults for the first time
 					elseif ( ! $key AND ( ! $this->changed($field->name) OR $field->default === $value) AND ! $field->primary)
 					{
-						$defaults[$field->name] = $field->default;
+						$defaults[$field->column] = $field->default;
 					}
 				}
 			}

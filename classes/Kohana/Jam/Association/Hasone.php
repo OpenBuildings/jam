@@ -127,7 +127,7 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 			}
 			elseif (is_array($value))
 			{
-				$item = Jam::build($this->foreign_model);
+				$item = Jam::build($this->foreign_model, $value);
 			}
 			else
 			{
