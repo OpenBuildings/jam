@@ -244,7 +244,7 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	public function __call($method, $args)
 	{
 		$return = $this->_meta->events()->trigger_callback('builder', $this, $method, $args);
-		return $return ? $return : $this;
+		return ($return !== NULL) ? $return : $this;
 	}
 
 	/**
