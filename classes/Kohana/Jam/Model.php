@@ -130,7 +130,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * This should only be used for setting from database results
 	 * since the model declares itself as saved and loaded after.
 	 *
-	 * @param   Jam_Query_Builder_Collection|Jam_Model|array  $values
+	 * @param   Jam_Model|array  $values
 	 * @return  Jam_Model
 	 */
 	public function load_fields($values)
@@ -142,19 +142,22 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 
 		$this->_loaded = TRUE;
 
+		$columns = array();
+
 		foreach ($this->meta()->fields() as $key => $field)
 		{
-			if (isset($values[$field->column]) AND ! isset($values[$field->name]))
-			{
-				$values[$field->name] = $values[$field->column];
-				unset($values[$field->column]);
-			}
+			$columns[$field->column] = $field;
 		}
 
 		foreach ($values as $key => $value)
 		{
 			if ($field = $this->meta()->field($key))
 			{
+				$this->_original[$field->name] = $field->set($this, $value, FALSE);
+			}
+			elseif (isset($columns[$key]))
+			{
+				$field = $columns[$key];
 				$this->_original[$field->name] = $field->set($this, $value, FALSE);
 			}
 			elseif ($association = $this->meta()->association($key))
