@@ -205,8 +205,9 @@ class Kohana_Jam_Behavior_Sluggable extends Jam_Behavior {
 	public function builder_call_find_by_slug(Jam_Query_Builder_Select $builder, Jam_Event_Data $data, $slug)
 	{
 		$this->builder_call_where_slug($builder, $data, $slug);
-		$data->return = $builder->first();
+		$result = $builder->first();
 		$data->stop = TRUE;
+		return $data->return = ($result !== NULL) ? $result : FALSE;
 	}
 
 	/**

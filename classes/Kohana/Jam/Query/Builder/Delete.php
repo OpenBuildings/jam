@@ -130,7 +130,7 @@ abstract class Kohana_Jam_Query_Builder_Delete extends Database_Query_Builder_De
 	public function __call($method, $args)
 	{
 		$return = $this->meta()->events()->trigger_callback('builder', $this, $method, $args);
-		return $return ? $return : $this;
+		return ($return !== NULL) ? $return : $this;
 	}
 
 	/**
