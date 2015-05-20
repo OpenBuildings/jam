@@ -118,6 +118,9 @@ class Jam_Association_ManytomanyTest extends Testcase_Database {
 			array('tags', array('foreign_model' => 'test_tag'), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1'),
 			array('test_tags', array('foreign_key' => 'test_id'), 'DELETE FROM `test_blogs_test_tags` WHERE `test_id` = 1'),
 			array('test_tags', array('join_table' => 'permissions'), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1'),
+			array('test_tags', array('join_table_paranoid' => TRUE), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1'),
+			array('test_tags', array('join_table_paranoid' => 'is_deleted'), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1'),
+			array('test_tags', array('join_table_paranoid' => 'is_paranoid_deleted'), 'UPDATE `test_blogs_test_tags` SET `is_paranoid_deleted` = \'1\' WHERE `test_blog_id` = 1'),
 		);
 	}
 
@@ -141,6 +144,9 @@ class Jam_Association_ManytomanyTest extends Testcase_Database {
 			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
 			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_id` IN (1, 2, 3)'),
 			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => TRUE), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => 'is_deleted'), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => 'is_paranoid_deleted'), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_paranoid_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
 		);
 	}
 

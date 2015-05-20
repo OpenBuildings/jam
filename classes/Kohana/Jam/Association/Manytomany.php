@@ -136,8 +136,19 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 */
 	public function erase_query(Jam_Model $model)
 	{
-		return DB::delete($this->join_table)
-			->where($this->foreign_key, '=', $model->id());
+		if ($this->join_table_paranoid)
+		{
+			$query = DB::update($this->join_table)
+				->set(array(
+					$this->join_table_paranoid => TRUE,
+				));
+		}
+		else
+		{
+			$query = DB::delete($this->join_table);
+		}
+
+		return $query->where($this->foreign_key, '=', $model->id());
 	}
 
 	/**
@@ -148,7 +159,19 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
 	{
-		return DB::delete($this->join_table)
+		if ($this->join_table_paranoid)
+		{
+			$query = DB::update($this->join_table)
+				->set(array(
+					$this->join_table_paranoid => TRUE,
+				));
+		}
+		else
+		{
+			$query = DB::delete($this->join_table);
+		}
+
+		return $query
 			->where($this->foreign_key, '=', $model->id())
 			->where($this->association_foreign_key, 'IN', $ids);
 	}
