@@ -71,4 +71,13 @@ class Jam_Field_TimestampTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
 	}
 
+	public function test_empty_value()
+	{
+		$model = Jam::build('test_position');
+		$field = new Jam_Field_Timestamp(array('timezone' => new Jam_Timezone()));
+		$value = $field->set($model, '', FALSE);
+
+		$this->assertNull($value);
+	}
+
 }

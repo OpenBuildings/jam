@@ -47,6 +47,12 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	public $timezone = NULL;
 
 	/**
+	 * Convert empty values by default because some DB's
+	 * will convert empty strings to zero timestamps
+	 */
+	public $convert_empty = TRUE;
+
+	/**
 	 * Sets the default to 0 if we have no format, or an empty string otherwise.
 	 *
 	 * @param  array  $options
