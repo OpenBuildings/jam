@@ -109,7 +109,7 @@ abstract class Kohana_Jam_Field_Timestamp extends Jam_Field {
 	public function convert(Jam_Validated $model, $value, $is_loaded)
 	{
 		// Do we need to provide a default since we're creating or updating
-		if (( ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
+		if ((empty($value) AND ! $is_loaded AND $this->auto_now_create) OR ($is_loaded AND $this->auto_now_update))
 		{
 			$value = ($this->timezone !== FALSE) ? $this->timezone->time() : time();
 		}
