@@ -61,14 +61,23 @@ class Jam_Field_TimestampTest extends PHPUnit_Framework_DOMTestCase {
 
 		$model = Jam::build('test_position');
 
-		$this->assertEquals($default_date, $normal->convert($model, $default_date, TRUE), 'Should not generate a new date on normal timestamp');
-		$this->assertEquals($default_date, $normal->convert($model, $default_date, FALSE), 'Should not generate a new date on normal timestamp');
+		$this->assertEquals(NULL, $normal->convert($model, NULL, TRUE), 'Should not generate a new date on normal timestamp without set timestamp');
+		$this->assertEquals(NULL, $normal->convert($model, NULL, FALSE), 'Should not generate a new date on normal timestamp without set timestamp');
 
-		$this->assertGreaterThan($default_date, $auto_create->convert($model, $default_date, FALSE), 'Should generate a new date on create');
-		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
+		$this->assertEquals($default_date, $normal->convert($model, $default_date, TRUE), 'Should not generate a new date on normal timestamp with set timestamp');
+		$this->assertEquals($default_date, $normal->convert($model, $default_date, FALSE), 'Should not generate a new date on normal timestamp with set timestamp');
 
-		$this->assertEquals($default_date, $auto_update->convert($model, $default_date, FALSE), 'Should generate a new date on create');
-		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should not generate a new date on update');
+		$this->assertGreaterThan($default_date, $auto_create->convert($model, NULL, FALSE), 'Should generate a new date on create without set timestamp');
+		$this->assertEquals(NULL, $auto_create->convert($model, NULL, TRUE), 'Should not generate a new date on update without set timestamp');
+
+		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, FALSE), 'Should not generate a new date on create with set timestamp');
+		$this->assertEquals($default_date, $auto_create->convert($model, $default_date, TRUE), 'Should not generate a new date on update with set timestamp');
+
+		$this->assertEquals(NULL, $auto_update->convert($model, NULL, FALSE), 'Should not generate a new date on create without set timestamp');
+		$this->assertGreaterThan($default_date, $auto_update->convert($model, NULL, TRUE), 'Should not generate a new date on update without set timestamp');
+
+		$this->assertEquals($default_date, $auto_update->convert($model, $default_date, FALSE), 'Should not generate a new date on create with set timestamp');
+		$this->assertGreaterThan($default_date, $auto_update->convert($model, $default_date, TRUE), 'Should generate a new date on update with set timestamp');
 	}
 
 	public function test_empty_value()
