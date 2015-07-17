@@ -246,11 +246,12 @@ abstract class Kohana_Jam_Form_General extends Jam_Form {
 	public function file($name, array $options = array(), array $attributes = array())
 	{
 		$attributes = $this->default_attributes($name, $attributes);
+		$disabled = Arr::get($attributes, 'disabled', NULL);
 
 		return
 			Form::file($attributes['name'], $attributes)
 			.(Arr::get($options, 'temp_source', FALSE)
-				? Form::hidden($attributes['name'], $this->object()->$name->temp_source(), Arr::get($options, 'temp_attributes', array('class' => 'hidden-input')))
+				? Form::hidden($attributes['name'], $this->object()->$name->temp_source(), Arr::get($options, 'temp_attributes', array('class' => 'hidden-input', 'disabled' => $disabled)))
 				: ''
 			);
 	}
