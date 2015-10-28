@@ -350,7 +350,7 @@ abstract class Kohana_Jam_Meta {
 		if (is_array($value))
 		{
 			// Set key's value
-			$this->{'_'.$key} += $value;
+			$this->{'_'.$key} = array_merge($this->{'_'.$key}, $value);
 		}
 
 		return $this;
