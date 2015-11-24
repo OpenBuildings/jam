@@ -123,7 +123,7 @@ abstract class Kohana_Jam_Event {
 	 */
 	public function trigger_callback($type, $sender, $method, $params)
 	{
-		$event = "{$type}.call_{$method}";
+		$event = strtolower("{$type}.call_{$method}");
 
 		if (empty($this->_events[$event]))
 			throw new Jam_Exception_Methodmissing($sender, $method, $params);
