@@ -43,9 +43,9 @@ class Jam_Association_AutocreateTest extends Testcase_Database {
 	 * @dataProvider data_set
 	 * @covers Jam_Association_Autocreate::set
 	 */
-	public function test_set($value, $default_fields, $expected_value, $expected_foreign_key)
+	public function test_set($value, $additional_fields, $expected_value, $expected_foreign_key)
 	{
-		$association = new Jam_Association_Autocreate(array('default_fields' => $default_fields));
+		$association = new Jam_Association_Autocreate(array('additional_fields' => $additional_fields));
 		$association->initialize($this->meta, 'test_author');
 
 		$model = new Model_Test_Post();
