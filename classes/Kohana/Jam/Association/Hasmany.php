@@ -133,22 +133,28 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function model_before_delete(Jam_Model $model)
 	{
-		switch ($this->dependent)
+		if (Jam_Association::DELETE === $this->dependent)
 		{
-			case Jam_Association::DELETE:
-				foreach ($model->{$this->name} as $item)
-				{
-					$item->delete();
-				}
-			break;
-
-			case Jam_Association::ERASE:
-				$this->erase_query($model)->execute();
-			break;
-
-			case Jam_Association::NULLIFY:
-				$this->nullify_query($model)->execute();
-			break;
+			foreach ($model->{$this->name} as $item)
+			{
+				$item->delete();
+			}
+		}
+		elseif (Jam_Association::ERASE === $this->dependent)
+		{
+			$query = $this->erase_query($model);
+			if ($query)
+			{
+				$query->execute();
+			}
+		}
+		elseif (Jam_Association::NULLIFY === $this->dependent)
+		{
+			$query = $this->nullify_query($model);
+			if ($query)
+			{
+				$query->execute();
+			}
 		}
 	}
 
@@ -164,7 +170,7 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 			$item->{$this->foreign_key} = NULL;
 		}
 
-		$this->nullify_query($model)->execute();
+		parent::clear($model, $collection);
 	}
 
 	/**
@@ -174,6 +180,11 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function erase_query(Jam_Model $model)
 	{
+		if (NULL === $model->id())
+		{
+			return NULL;
+		}
+
 		$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
 			->where($this->foreign_key, '=', $model->id());
 
@@ -192,6 +203,11 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function nullify_query(Jam_Model $model)
 	{
+		if (NULL === $model->id())
+		{
+			return NULL;
+		}
+
 		$query = Jam_Query_Builder_Update::factory($this->foreign_model)
 			->value($this->foreign_key, NULL)
 			->where($this->foreign_key, '=', $model->id());
@@ -213,36 +229,34 @@ abstract class Kohana_Jam_Association_Hasmany extends Jam_Association_Collection
 	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
 	{
-		switch ($this->delete_on_remove)
+		if (TRUE === $this->delete_on_remove OR Jam_Association::DELETE === $this->delete_on_remove)
 		{
-			case TRUE:
-			case Jam_Association::DELETE:
-				foreach (Jam::all($this->foreign_model)->where_key($ids) as $item )
-				{
-					$item->delete();
-				}
-				$query = NULL;
-			break;
+			foreach (Jam::all($this->foreign_model)->where_key($ids) as $item )
+			{
+				$item->delete();
+			}
+			$query = NULL;
+		}
+		elseif ($this->delete_on_remove === Jam_Association::ERASE)
+		{
+			$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
+				->where(':primary_key', 'IN', $ids);
 
-			case Jam_Association::ERASE:
-				$query = Jam_Query_Builder_Delete::factory($this->foreign_model)
-					->where(':primary_key', 'IN', $ids);
+			if ($this->is_polymorphic())
+			{
+				$query->value($this->polymorphic_key, NULL);
+			}
+		}
+		else
+		{
+			$query = Jam_Query_Builder_Update::factory($this->foreign_model)
+				->where(':primary_key', 'IN', $ids)
+				->value($this->foreign_key, NULL);
 
-				if ($this->is_polymorphic())
-				{
-					$query->value($this->polymorphic_key, NULL);
-				}
-			break;
-
-			default:
-				$query = Jam_Query_Builder_Update::factory($this->foreign_model)
-					->where(':primary_key', 'IN', $ids)
-					->value($this->foreign_key, NULL);
-
-				if ($this->is_polymorphic())
-				{
-					$query->value($this->polymorphic_key, NULL);
-				}
+			if ($this->is_polymorphic())
+			{
+				$query->value($this->polymorphic_key, NULL);
+			}
 		}
 
 		return $query;

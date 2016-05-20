@@ -257,22 +257,20 @@ abstract class Kohana_Jam_Association_Hasone extends Jam_Association {
 	 */
 	public function model_before_delete(Jam_Model $model)
 	{
-		switch ($this->dependent)
+		if (Jam_Association::DELETE === $this->dependent)
 		{
-			case Jam_Association::DELETE:
-				if ($model->{$this->name})
-				{
-					$model->{$this->name}->delete();
-				}
-			break;
-
-			case Jam_Association::ERASE:
-				$this->query_builder('delete', $model)->execute();
-			break;
-
-			case Jam_Association::NULLIFY:
-				$this->update_query($model, NULL, NULL)->execute();
-			break;
+			if ($model->{$this->name})
+			{
+				$model->{$this->name}->delete();
+			}
+		}
+		elseif (Jam_Association::ERASE === $this->dependent)
+		{
+			$this->query_builder('delete', $model)->execute();
+		}
+		elseif (Jam_Association::NULLIFY === $this->dependent)
+		{
+			$this->update_query($model, NULL, NULL)->execute();
 		}
 	}
 
