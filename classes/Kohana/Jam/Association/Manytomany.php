@@ -159,6 +159,11 @@ abstract class Kohana_Jam_Association_Manytomany extends Jam_Association_Collect
 	 */
 	public function remove_items_query(Jam_Model $model, array $ids)
 	{
+		if (NULL === $model->id())
+		{
+			return NULL;
+		}
+
 		if ($this->join_table_paranoid)
 		{
 			$query = DB::update($this->join_table)

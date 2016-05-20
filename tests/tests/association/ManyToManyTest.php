@@ -140,24 +140,25 @@ class Jam_Association_ManytomanyTest extends Testcase_Database {
 	public function data_remove_items_query()
 	{
 		return array(
-			array('test_tags', array(), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
-			array('tags', array('foreign_model' => 'test_tag'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
-			array('test_tags', array('association_foreign_key' => 'test_id'), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_id` IN (1, 2, 3)'),
-			array('test_tags', array('join_table' => 'permissions'), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
-			array('test_tags', array('join_table_paranoid' => TRUE), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
-			array('test_tags', array('join_table_paranoid' => 'is_deleted'), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
-			array('test_tags', array('join_table_paranoid' => 'is_paranoid_deleted'), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_paranoid_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array(), array('id' => 1), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('tags', array('foreign_model' => 'test_tag'), array('id' => 1), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('association_foreign_key' => 'test_id'), array('id' => 1), array(1,2,3), 'DELETE FROM `test_blogs_test_tags` WHERE `test_blog_id` = 1 AND `test_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table' => 'permissions'), array('id' => 1), array(1,2,3), 'DELETE FROM `permissions` WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => TRUE), array('id' => 1), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => 'is_deleted'), array('id' => 1), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array('join_table_paranoid' => 'is_paranoid_deleted'), array('id' => 1), array(1,2,3), 'UPDATE `test_blogs_test_tags` SET `is_paranoid_deleted` = \'1\' WHERE `test_blog_id` = 1 AND `test_tag_id` IN (1, 2, 3)'),
+			array('test_tags', array(), array(), array(1,2,3), NULL),
 		);
 	}
 
 	/**
 	 * @dataProvider data_remove_items_query
 	 */
-	public function test_remove_items_query($name, $options, $ids, $expected_sql)
+	public function test_remove_items_query($name, $options, $model_fields, $ids, $expected_sql)
 	{
 		$association = new Jam_Association_Manytomany($options);
 		$association->initialize($this->meta, $name);
-		$model = Jam::build('test_blog')->load_fields(array('id' => 1));
+		$model = Jam::build('test_blog')->load_fields($model_fields);
 
 		$this->assertEquals($expected_sql, (string) $association->remove_items_query($model, $ids));
 	}
