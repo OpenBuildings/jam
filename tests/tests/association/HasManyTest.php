@@ -154,44 +154,46 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 	public function data_erase_query()
 	{
 		return array(
-			array('test_posts', array(), 'DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 1'),
-			array('posts', array('foreign_model' => 'test_post'), 'DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 1'),
-			array('test_posts', array('foreign_key' => 'author_id'), 'DELETE FROM `test_posts` WHERE `test_posts`.`author_id` = 1'),
-			array('test_posts', array('as' => 'poster'), 'DELETE FROM `test_posts` WHERE `test_posts`.`poster_id` = 1 AND `test_posts`.`poster_model` = \'test_author\''),
+			array('test_posts', array(), array('id' => 1), 'DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 1'),
+			array('posts', array('foreign_model' => 'test_post'), array('id' => 1), 'DELETE FROM `test_posts` WHERE `test_posts`.`test_author_id` = 1'),
+			array('test_posts', array('foreign_key' => 'author_id'), array('id' => 1), 'DELETE FROM `test_posts` WHERE `test_posts`.`author_id` = 1'),
+			array('test_posts', array('as' => 'poster'), array('id' => 1), 'DELETE FROM `test_posts` WHERE `test_posts`.`poster_id` = 1 AND `test_posts`.`poster_model` = \'test_author\''),
+			array('test_posts', array(), array(), NULL),
 		);
 	}
 
 	/**
 	 * @dataProvider data_erase_query
 	 */
-	public function test_erase_query($name, $options, $expected_sql)
+	public function test_erase_query($name, $options, $model_fields, $expected_sql)
 	{
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::build('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields($model_fields);
 		$this->assertEquals($expected_sql, (string) $association->erase_query($model));
 	}
 
 	public function data_nullify_query()
 	{
 		return array(
-			array('test_posts', array(), 'UPDATE `test_posts` SET `test_author_id` = NULL WHERE `test_posts`.`test_author_id` = 1'),
-			array('posts', array('foreign_model' => 'test_post'), 'UPDATE `test_posts` SET `test_author_id` = NULL WHERE `test_posts`.`test_author_id` = 1'),
-			array('test_posts', array('foreign_key' => 'author_id'), 'UPDATE `test_posts` SET `author_id` = NULL WHERE `test_posts`.`author_id` = 1'),
-			array('test_posts', array('as' => 'poster'), 'UPDATE `test_posts` SET `poster_id` = NULL, `poster_model` = NULL WHERE `test_posts`.`poster_id` = 1 AND `test_posts`.`poster_model` = \'test_author\''),
+			array('test_posts', array(), array('id' => 1), 'UPDATE `test_posts` SET `test_author_id` = NULL WHERE `test_posts`.`test_author_id` = 1'),
+			array('posts', array('foreign_model' => 'test_post'), array('id' => 1), 'UPDATE `test_posts` SET `test_author_id` = NULL WHERE `test_posts`.`test_author_id` = 1'),
+			array('test_posts', array('foreign_key' => 'author_id'), array('id' => 1), 'UPDATE `test_posts` SET `author_id` = NULL WHERE `test_posts`.`author_id` = 1'),
+			array('test_posts', array('as' => 'poster'), array('id' => 1), 'UPDATE `test_posts` SET `poster_id` = NULL, `poster_model` = NULL WHERE `test_posts`.`poster_id` = 1 AND `test_posts`.`poster_model` = \'test_author\''),
+			array('test_posts', array(), array(), NULL),
 		);
 	}
 
 	/**
 	 * @dataProvider data_nullify_query
 	 */
-	public function test_nullify_query($name, $options, $expected_sql)
+	public function test_nullify_query($name, $options, $model_fields, $expected_sql)
 	{
 		$association = new Jam_Association_Hasmany($options);
 		$association->initialize($this->meta, $name);
 
-		$model = Jam::build('test_author')->load_fields(array('id' => 1));
+		$model = Jam::build('test_author')->load_fields($model_fields);
 
 		$this->assertEquals($expected_sql, (string) $association->nullify_query($model));
 	}
@@ -203,6 +205,9 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 			array('posts', array('foreign_model' => 'test_post'), array(1,2,3), 'UPDATE `test_posts` SET `test_author_id` = NULL WHERE `test_posts`.`id` IN (1, 2, 3)'),
 			array('test_posts', array('foreign_key' => 'author_id'), array(1,2,3), 'UPDATE `test_posts` SET `author_id` = NULL WHERE `test_posts`.`id` IN (1, 2, 3)'),
 			array('test_posts', array('as' => 'poster'), array(1,2,3), 'UPDATE `test_posts` SET `poster_id` = NULL, `poster_model` = NULL WHERE `test_posts`.`id` IN (1, 2, 3)'),
+			array('test_categories', array('delete_on_remove' => TRUE), array(1,2,3), NULL),
+			array('test_categories', array('delete_on_remove' => Jam_Association::DELETE), array(1,2,3), NULL),
+			array('test_categories', array('delete_on_remove' => Jam_Association::ERASE), array(1,2,3), 'DELETE FROM `test_categories` WHERE `test_categories`.`id` IN (1, 2, 3)'),
 		);
 	}
 
@@ -279,5 +284,53 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 			->will($this->returnValue($dummy));
 
 		$association->save($model, $collection);
+	}
+
+	public function test_clear()
+	{
+		$model = Jam::build('test_author')->load_fields(array('id' => 1));
+
+		$association = $this->getMock('Jam_Association_Hasmany', array('remove_items_query'), array(array()));
+		$association->initialize($this->meta, 'test_posts');
+
+		$collection = $this->getMock('Jam_Array_Association', array('ids', 'valid', 'current'));
+
+		$dummy = $this->getMock('Jam_Query_Builder_Update', array('execute'), array('test_post'));
+		$dummy
+			->expects($this->once())
+			->method('execute');
+
+		$items = array(
+			Jam::build('test_post', array('test_author_id' => 1)),
+			Jam::build('test_post', array('test_author_id' => 1)),
+			Jam::build('test_post', array('test_author_id' => 1)),
+		);
+
+		$collection
+			->expects($this->once())
+			->method('ids')
+			->will($this->returnValue(array(1, 2, 3)));
+
+		$collection
+			->expects($this->exactly(4))
+			->method('valid')
+			->will($this->onConsecutiveCalls(TRUE, TRUE, TRUE, FALSE));
+
+		$collection
+			->expects($this->exactly(3))
+			->method('current')
+			->will(call_user_func_array(array($this, 'onConsecutiveCalls'), $items));
+
+		$association
+			->expects($this->once())
+			->method('remove_items_query')
+			->with($this->equalTo($model), $this->equalTo(array(1, 2, 3)))
+			->will($this->returnValue($dummy));
+
+		$association->clear($model, $collection);
+
+		foreach ($items as $item) {
+			$this->assertNull($item->test_author_id);
+		}
 	}
 }
