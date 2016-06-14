@@ -231,7 +231,9 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 
 	public function count_with_subquery()
 	{
-		return (int) DB::select(array(DB::expr('COUNT(*)'), 'result'))->from(array($this, 'result_table'))->execute($this->meta()->db())->get('result');
+		$query = clone $this;
+		$query->except('order_by');
+		return (int) DB::select(array(DB::expr('COUNT(*)'), 'result'))->from(array($query, 'result_table'))->execute($query->meta()->db())->get('result');
 	}
 
 	/**
