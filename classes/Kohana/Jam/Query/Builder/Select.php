@@ -221,9 +221,11 @@ abstract class Kohana_Jam_Query_Builder_Select extends Database_Query_Builder_Se
 	{
 		$query = $this->aggregate_query('COUNT');
 
+		$query->except('order_by');
+
 		if ($without_grouping)
 		{
-			$query->except('group_by', 'order_by', 'limit', 'offset');
+			$query->except('group_by', 'limit', 'offset');
 		}
 
 		return (int) $query->execute()->get('result');
