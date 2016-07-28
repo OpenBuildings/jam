@@ -26,7 +26,7 @@ before_script:
   - mysql openbuildings/jam < tests/database/structure/mysql.sql
 
 script:
-  - phpunit --coverage-clover build/logs/clover.xml
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
