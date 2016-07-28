@@ -11,6 +11,14 @@ php:
   - 7.0
   - hhvm
 
+env:
+  - DEPS=normal
+  - DEPS=highest
+  - DEPS=lowest
+
+matrix:
+  fast_finish: true
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -20,9 +28,12 @@ notifications:
   slack:
     secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
 
+before_install: composer selfupdate --preview
+
 install:
-  - composer selfupdate
-  - composer install --no-interaction
+  - if [ "$DEPS" = "normal" ]; then composer install --no-interaction; fi;
+  - if [ "$DEPS" = "highest" ]; then composer update --no-interaction; fi;
+  - if [ "$DEPS" = "lowest" ]; then composer update --no-interaction --prefer-lowest --prefer-stable; fi;
 
 before_script:
   - mkdir -p build/logs
