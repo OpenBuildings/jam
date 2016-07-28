@@ -23,7 +23,7 @@
 		"phpunit/phpunit-dom-assertions": "1.0.*@dev",
 		"openbuildings/kohana-test-bootstrap": "^0.2",
 		"kohana/image": "^3.3.0",
-		"phpunit/phpunit": "^4.0"
+		"phpunit/phpunit": "~4.0.0"
 	},
 	"suggest": {
 		"openbuildings/flex-storage": "Used by Jam for file uploads",
