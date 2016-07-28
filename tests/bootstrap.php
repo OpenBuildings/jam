@@ -23,7 +23,7 @@ spl_autoload_register('test_autoload');
 Kohana::$config
 	->load('database')
 		->set(Kohana::TESTING, array(
-			'type'       => 'MySQL',
+			'type'       => 'MySQLi',
 			'connection' => array(
 				'hostname'   => 'localhost',
 				'database'   => 'openbuildings/jam',
