@@ -23,14 +23,14 @@ spl_autoload_register('test_autoload');
 Kohana::$config
 	->load('database')
 		->set(Kohana::TESTING, array(
-			'type'       => 'MySQLi',
+			'type'       => 'PDO',
 			'connection' => array(
-				'hostname'   => 'localhost',
-				'database'   => 'openbuildings/jam',
+				'dsn' => 'mysql:host=localhost;dbname=openbuildings/jam',
 				'username'   => 'root',
 				'password'   => '',
 				'persistent' => TRUE,
 			),
+			'identifier' => '`',
 			'table_prefix' => '',
 			'charset'      => 'utf8',
 			'caching'      => FALSE,
@@ -39,9 +39,10 @@ Kohana::$config
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 Kohana::$environment = Kohana::TESTING;
-foreach (Database::instance(Kohana::TESTING)->list_tables() as $table)
+foreach (Database::instance(Kohana::TESTING)->query(Database::SELECT, 'SHOW TABLES') as $table)
 {
-	Database::instance(Kohana::TESTING)->query(NULL, "TRUNCATE `{$table}`");
+	$table_name = reset($table);
+	Database::instance(Kohana::TESTING)->query(NULL, "TRUNCATE `{$table_name}`");
 }
 require_once __DIR__.'/database/fixtures/data.php';
 
