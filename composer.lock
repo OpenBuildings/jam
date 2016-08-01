@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "87237a1bc9442062d15531813a15ddff",
-    "content-hash": "84eca36433081474a41d99cf336e3576",
+    "hash": "b25caeeefc20e2070e74a859a97287b3",
+    "content-hash": "568f0d9670d20168a8d03beaff00ac49",
     "packages": [
         {
             "name": "composer/installers",
@@ -227,9 +227,7 @@
                 "kohana"
             ],
             "time": "2016-03-23 17:12:30"
-        }
-    ],
-    "packages-dev": [
+        },
         {
             "name": "kohana/image",
             "version": "v3.3.6",
@@ -328,6 +326,54 @@
             "description": "Flexible storage provider for files (rackspace, aws, ftp, local)",
             "time": "2014-07-08 12:07:06"
         },
+        {
+            "name": "rackspace/php-opencloud",
+            "version": "V1.5.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rackspace/php-opencloud.git",
+                "reference": "f4c4bbbae8b108c572b346a7cd350c62122451d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rackspace/php-opencloud/zipball/f4c4bbbae8b108c572b346a7cd350c62122451d5",
+                "reference": "f4c4bbbae8b108c572b346a7cd350c62122451d5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Glen Campbell",
+                    "email": "glen.campbell@rackspace.com"
+                },
+                {
+                    "name": "Jamie Hannaford",
+                    "email": "jamie.hannaford@rackspace.com",
+                    "homepage": "https://github.com/jamiehannaford"
+                }
+            ],
+            "description": "Rackspace open cloud php library",
+            "keywords": [
+                "cloudfiles",
+                "opencloud"
+            ],
+            "time": "2013-08-01 16:12:19"
+        }
+    ],
+    "packages-dev": [
         {
             "name": "openbuildings/kohana-test-bootstrap",
             "version": "0.2.0",
@@ -797,52 +843,6 @@
                 "xunit"
             ],
             "time": "2014-06-12 07:19:48"
-        },
-        {
-            "name": "rackspace/php-opencloud",
-            "version": "V1.5.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rackspace/php-opencloud.git",
-                "reference": "f4c4bbbae8b108c572b346a7cd350c62122451d5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rackspace/php-opencloud/zipball/f4c4bbbae8b108c572b346a7cd350c62122451d5",
-                "reference": "f4c4bbbae8b108c572b346a7cd350c62122451d5",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Glen Campbell",
-                    "email": "glen.campbell@rackspace.com"
-                },
-                {
-                    "name": "Jamie Hannaford",
-                    "email": "jamie.hannaford@rackspace.com",
-                    "homepage": "https://github.com/jamiehannaford"
-                }
-            ],
-            "description": "Rackspace open cloud php library",
-            "keywords": [
-                "cloudfiles",
-                "opencloud"
-            ],
-            "time": "2013-08-01 16:12:19"
         },
         {
             "name": "sebastian/diff",
