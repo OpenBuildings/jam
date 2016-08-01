@@ -18,6 +18,9 @@ env:
 
 matrix:
   fast_finish: true
+  exclude:
+    - php: hhvm
+      env: DEPS=lowest
 
 branches:
   only:
