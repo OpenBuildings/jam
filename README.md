@@ -23,7 +23,7 @@ Jam adds some much needed features to Jelly project:
 * Updated files to the Kohana convention (inside kohana directory)
 * Versitile form builder with automattic error display
 
-As the original Jelly had a lot of great but undocumented functionality This guide will try to write about both about the new features and the hidden gems of Jelly, as a more comprehensive guide.
+As the original Jelly had a lot of great but undocumented functionality this guide will try to write about both about the new features and the hidden gems of Jelly, as a more comprehensive guide.
 
 ---
 
