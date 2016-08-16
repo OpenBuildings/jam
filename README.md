@@ -6,8 +6,7 @@ Jam is a small ORM for Kohana 3.3+ that builds on top of Jelly - the project was
 [![Latest Stable Version](https://poser.pugx.org/openbuildings/jam/v/stable.png)](https://packagist.org/packages/openbuildings/jam)
 
 
-
-Jam adds some much needed features to Jelly project,
+Jam adds some much needed features to Jelly project:
 
 * Lazy loading of collections
 * Modifying Collections on the fly and saving the changes
@@ -26,7 +25,7 @@ Jam adds some much needed features to Jelly project,
 
 As the original Jelly had a lot of great but undocumented functionality This guide will try to write about both about the new features and the hidden gems of Jelly, as a more comprehensive guide.
 
---------
+---
 
 Jam
 ===
@@ -41,8 +40,24 @@ Jam
 * [Behaviors](guide/jam/behaviors.md)
 * [Form Builder](guide/jam/form-builder.md)
 
---------
+---
 
-Jam was developed by [Despark](http://despark.com) Team as part of the [Clippings](http://clippings.com) Project
+Support
+-------
+
+Supports the following PHP versions:
+
+- PHP 5.3
+- PHP 5.4
+- PHP 5.5
+- PHP 5.6
+- PHP 7
+- HHVM
+
+Works with MySQL using either the PDO or MySQL driver of Kohana Database module.
+
+---
+
+Jam was developed by the [Clippings Team](https://clippings.github.io/) as part of [Clippings.com](https://clippings.com).
 
 The guide itself is heavily influenced by [Rails Guides](http://guides.rubyonrails.org/) - they did amazing work of creating an accessible documentation and as I'm not much of a writer I've tried to follow their example as much as possible.
