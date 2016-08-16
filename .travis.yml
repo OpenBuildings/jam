@@ -6,6 +6,25 @@ sudo: false
 php:
   - 5.3
   - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
+
+env:
+  - DEPS=normal
+  - DEPS=highest
+  - DEPS=lowest
+
+matrix:
+  fast_finish: true
+  exclude:
+    - php: hhvm
+      env: DEPS=lowest
+
+branches:
+  only:
+    - master
 
 cache:
   directories:
@@ -16,9 +35,12 @@ notifications:
   slack:
     secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
 
+before_install: composer selfupdate --preview
+
 install:
-  - composer selfupdate
-  - composer install --no-interaction
+  - if [ "$DEPS" = "normal" ]; then composer install --no-interaction; fi;
+  - if [ "$DEPS" = "highest" ]; then composer update --no-interaction; fi;
+  - if [ "$DEPS" = "lowest" ]; then composer update --no-interaction --prefer-lowest --prefer-stable; fi;
 
 before_script:
   - mkdir -p build/logs
@@ -26,7 +48,7 @@ before_script:
   - mysql openbuildings/jam < tests/database/structure/mysql.sql
 
 script:
-  - phpunit --coverage-clover build/logs/clover.xml
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

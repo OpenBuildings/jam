@@ -10,6 +10,12 @@
  */
 class Jam_Query_Builder_InsertTest extends PHPUnit_Framework_DOMTestCase {
 
+	public function tearDown()
+	{
+		Jam::clear_cache();
+		parent::tearDown();
+	}
+
 	/**
 	 * @covers Jam_Query_Builder_Insert::__construct
 	 */
