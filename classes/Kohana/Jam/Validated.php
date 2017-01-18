@@ -246,7 +246,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 * Set preloaded values, without changing the save, loaded and changed flags
 	 * @param  array|string $values
 	 * @param  mixed $value
-	 * @return Jam_Model         $this
+	 * @return $this
 	 */
 	public function retrieved($values, $value = NULL)
 	{
@@ -274,7 +274,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 *
 	 * @param   array|string  $values
 	 * @param   string        $value
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function set($values, $value = NULL)
 	{
@@ -322,7 +322,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 *
 	 * @throws  Jam_Exception_Validation
 	 * @param   Validation|null   $extra_validation
-	 * @return  Kohana_Jam_Model
+	 * @return  bool
 	 */
 	public function check($force = FALSE)
 	{
@@ -371,7 +371,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 * If there are no errors yet - return NULL
 	 *
 	 * @param  string $name the name of the field to get errors of
-	 * @return array|NULL
+	 * @return Jam_Errors|string[]|NULL
 	 */
 	public function errors($name = NULL)
 	{
@@ -391,7 +391,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 *
 	 * This method only works on loaded models.
 	 *
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function revert()
 	{
@@ -406,7 +406,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	/**
 	 * Sets a model to its original state, as if freshly instantiated
 	 *
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function clear()
 	{

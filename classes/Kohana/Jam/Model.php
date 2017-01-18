@@ -90,7 +90,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * @param   array|string  $values
 	 * @param   string        $value
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function set($values, $value = NULL)
 	{
@@ -131,7 +131,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * since the model declares itself as saved and loaded after.
 	 *
 	 * @param   Jam_Model|array  $values
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function load_fields($values)
 	{
@@ -191,7 +191,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * @throws  Jam_Exception_Validation
 	 * @param   Validation|null   $extra_validation
-	 * @return  Kohana_Jam_Model
+	 * @return  bool
 	 */
 	public function check($force = FALSE)
 	{
@@ -235,7 +235,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 * Creates or updates the current record.
 	 *
 	 * @param   bool|null        $validate
-	 * @return  Kohana_Jam_Model
+	 * @return  $this
 	 */
 	public function save($validate = NULL)
 	{
@@ -393,7 +393,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * This method only works on loaded models.
 	 *
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function revert()
 	{
@@ -411,7 +411,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	/**
 	 * Sets a model to its original state, as if freshly instantiated
 	 *
-	 * @return  Jam_Model
+	 * @return  $this
 	 */
 	public function clear()
 	{

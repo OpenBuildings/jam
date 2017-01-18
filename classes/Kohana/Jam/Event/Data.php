@@ -36,7 +36,7 @@ abstract class Kohana_Jam_Event_Data {
 	public $args = array();
 
 	/**
-	 * @var  string  The return value of the event
+	 * @var  mixed  The return value of the event
 	 */
 	public $return = NULL;
 

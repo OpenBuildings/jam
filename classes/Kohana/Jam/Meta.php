@@ -129,7 +129,6 @@ abstract class Kohana_Jam_Meta {
 	 * finalize any changes to the meta object.
 	 *
 	 * @param  string  $model
-	 * @return
 	 */
 	public function finalize($model)
 	{
@@ -310,7 +309,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string      $key
 	 * @param   mixed       $value
-	 * @return  Jam_Meta
+	 * @return  $this
 	 */
 	protected function set($key, $value)
 	{
@@ -334,7 +333,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string      $key
 	 * @param   mixed       $value
-	 * @return  Jam_Meta
+	 * @return  $this
 	 */
 	protected function set_append($key, $value)
 	{
@@ -360,7 +359,7 @@ abstract class Kohana_Jam_Meta {
 	 * Gets or sets the db group
 	 *
 	 * @param   string  $value
-	 * @return  Jam_Meta|string
+	 * @return  $this|string
 	 */
 	public function db($value = NULL)
 	{
@@ -386,7 +385,7 @@ abstract class Kohana_Jam_Meta {
 	 * Gets or sets the table
 	 *
 	 * @param   string  $value
-	 * @return  Jam_Meta|string
+	 * @return  $this|string
 	 */
 	public function table($value = NULL)
 	{
@@ -403,7 +402,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string       $name     name of the field
 	 * @param   mixed        $field    the field alias or object
-	 * @return  Jam_Field|Jam_Meta|null
+	 * @return  Jam_Field|$this|null
 	 */
 	public function field($name, $field = NULL, $prepend = FALSE)
 	{
@@ -441,7 +440,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string       $name     name of the field
 	 * @param   mixed        $field    the field alias or object
-	 * @return  Jam_Field|Jam_Meta|null
+	 * @return  Jam_Field|$this|null
 	 */
 	public function field_insist($name, $field = NULL)
 	{
@@ -473,7 +472,7 @@ abstract class Kohana_Jam_Meta {
 	 * Calling this multiple times will overwrite fields.
 	 *
 	 * @param   array|null  $fields
-	 * @return  array|Jam_Meta
+	 * @return  Jam_Field[]|$this
 	 */
 	public function fields(array $fields = NULL)
 	{
@@ -498,7 +497,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string       $name     name of the association
 	 * @param   mixed        $association    the association alias or object
-	 * @return  Jam_Association|Jam_Meta|null
+	 * @return  Jam_Association|$this|null
 	 */
 	public function association($name, $association = NULL, $prepend = FALSE)
 	{
@@ -535,7 +534,7 @@ abstract class Kohana_Jam_Meta {
 	 * The same as assocation method, but throws an exception if association does not exist
 	 * @param   string       $name     name of the association
 	 * @param   mixed        $association    the association alias or object
-	 * @return  Jam_Association|Jam_Meta|null
+	 * @return  Jam_Association|$this|null
 	 * @see  association
 	 */
 	public function association_insist($name, $association = NULL)
@@ -553,7 +552,7 @@ abstract class Kohana_Jam_Meta {
 	 * Calling this multiple times will overwrite associations.
 	 *
 	 * @param   array|null  $associations
-	 * @return  array|Jam_Meta
+	 * @return  Jam_Association[]|$this
 	 */
 	public function associations(array $associations = NULL)
 	{
@@ -595,7 +594,7 @@ abstract class Kohana_Jam_Meta {
 	/**
 	 * Returns or sets the name of the file used for errors.
 	 *
-	 * @return string
+	 * @return $this|string
 	 */
 	public function errors_filename($value = NULL)
 	{
@@ -611,7 +610,7 @@ abstract class Kohana_Jam_Meta {
 	 * Gets or sets the behaviors attached to the object.
 	 *
 	 * @param   array|null  $behaviors
-	 * @return  array|Kohana_Jam_Meta
+	 * @return  Jam_Behavior[]|$this
 	 */
 	public function behaviors(array $behaviors = NULL)
 	{
@@ -630,7 +629,7 @@ abstract class Kohana_Jam_Meta {
 	 *
 	 * @param   string       $name     name of the association
 	 * @param   mixed        $association    the association alias or object
-	 * @return  Jam_Association|Jam_Meta|null
+	 * @return  Jam_Behavior|$this|null
 	 */
 	public function behavior($name, $behavior = NULL, $prepend = FALSE)
 	{
@@ -666,7 +665,7 @@ abstract class Kohana_Jam_Meta {
 	/**
 	 * Gets the events attached to the object.
 	 *
-	 * @return  array|Jam_Event
+	 * @return  Jam_Event
 	 */
 	public function events()
 	{
@@ -693,7 +692,7 @@ abstract class Kohana_Jam_Meta {
 	 * Gets or sets the model's name key
 	 *
 	 * @param   string  $value
-	 * @return  string
+	 * @return  string|$this
 	 */
 	public function name_key($value = NULL)
 	{
@@ -709,7 +708,7 @@ abstract class Kohana_Jam_Meta {
 	 * Gets or sets the model's foreign key
 	 *
 	 * @param   string  $value
-	 * @return  string
+	 * @return  string|$this
 	 */
 	public function foreign_key($value = NULL)
 	{
