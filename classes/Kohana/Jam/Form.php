@@ -82,7 +82,7 @@ abstract class Kohana_Jam_Form {
 	 * Add a class to the 'class' attribute, without removing existing value
 	 *
 	 * @param array  $attributes
-	 * @param array $class
+	 * @param string $class
 	 */
 	public static function add_class(array $attributes, $class)
 	{
