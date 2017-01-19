@@ -462,7 +462,7 @@ abstract class Kohana_Jam {
 	 * Find a model with its unique key. Return NULL on failure.
 	 * You can pass an array - then it tries to find all the models corresponding to the keys
 	 * @param  string $model
-	 * @param  string|array $key
+	 * @param  int|string|int[] $key
 	 * @return Jam_Model
 	 */
 	public static function find($model, $key)
@@ -479,7 +479,7 @@ abstract class Kohana_Jam {
 	 * Find a model with its unique key. Throw Jam_Exception_Notfound on failure
 	 * You can pass an array of unique keys. If even one of them is not found, through Jam_Exception_Notfound
 	 * @param  string $model
-	 * @param  string|array $key
+	 * @param  int|string|int[] $key
 	 * @throws Jam_Exception_Invalidargument If id is array() or null
 	 * @throws Jam_Exception_Notfound If no model was found
 	 * @return Jam_Model
