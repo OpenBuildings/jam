@@ -42,7 +42,7 @@ abstract class Kohana_Jam_Event {
 	 * Binds an event.
 	 *
 	 * @param   string    $event
-	 * @param   callback  $callback
+	 * @param   callable  $callback
 	 * @return  Jam_Event
 	 */
 	public function bind($event, $callback, $priority = 0)
