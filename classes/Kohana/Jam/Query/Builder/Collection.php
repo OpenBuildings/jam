@@ -116,7 +116,7 @@ abstract class Kohana_Jam_Query_Builder_Collection extends Jam_Query_Builder_Sel
 
 	/**
 	 * Return the first model
-	 * @return Jam_Model
+	 * @return Jam_Model|null
 	 */
 	public function first()
 	{
