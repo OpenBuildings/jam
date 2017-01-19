@@ -399,7 +399,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Collection
-	 * @param  string $model
+	 * @param  string|Jam_Model $model
 	 * @return Jam_Query_Builder_Collection
 	 */
 	public static function all($model)
