@@ -119,7 +119,7 @@ abstract class Kohana_Jam {
 	 *
 	 * FALSE is returned on failure.
 	 *
-	 * @param   string|Jam_Model  $model
+	 * @param   string|Jam_Validated  $model
 	 * @return  Jam_Meta
 	 */
 	public static function meta($model)
