@@ -359,7 +359,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Delete
-	 * @param  string $model
+	 * @param  string|Jam_Model $model
 	 * @return Jam_Query_Builder_Delete
 	 */
 	public static function delete($model)
@@ -369,7 +369,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Update
-	 * @param  string $model
+	 * @param  string|Jam_Model $model
 	 * @return Jam_Query_Builder_Update
 	 */
 	public static function update($model)
@@ -379,7 +379,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Insert
-	 * @param  string $model
+	 * @param  string|Jam_Model $model
 	 * @return Jam_Query_Builder_Insert
 	 */
 	public static function insert($model, array $columns = array())
@@ -389,7 +389,7 @@ abstract class Kohana_Jam {
 
 	/**
 	 * Make an object of class Jam_Query_Builder_Select
-	 * @param  string $model
+	 * @param  string|Jam_Model $model
 	 * @return Jam_Query_Builder_Select
 	 */
 	public static function select($model)
