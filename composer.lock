@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "84a2b5548c19b0ba51db2c5add81638b",
+    "content-hash": "e45c20f307ee215039275b367cda8a54",
     "packages": [
         {
             "name": "composer/installers",
@@ -731,23 +731,23 @@
         },
         {
             "name": "phpunit/phpunit-dom-assertions",
-            "version": "dev-master",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phpunit/phpunit-dom-assertions.git",
-                "reference": "257935b67e8bce718775b0cd06c8605634bd9491"
+                "url": "https://github.com/lstrojny/phpunit-dom-assertions.git",
+                "reference": "a0c00d3051d4075273ce5613b11306f064fa2c81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpunit/phpunit-dom-assertions/zipball/257935b67e8bce718775b0cd06c8605634bd9491",
-                "reference": "257935b67e8bce718775b0cd06c8605634bd9491",
+                "url": "https://api.github.com/repos/lstrojny/phpunit-dom-assertions/zipball/a0c00d3051d4075273ce5613b11306f064fa2c81",
+                "reference": "a0c00d3051d4075273ce5613b11306f064fa2c81",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "phpunit/phpunit": "~4.0",
-                "symfony/css-selector": "~2.0",
-                "symfony/dom-crawler": "~2.0"
+                "phpunit/phpunit": ">=4.0 <6",
+                "symfony/css-selector": ">=2.4 <4",
+                "symfony/dom-crawler": ">=2.4 <4"
             },
             "type": "library",
             "extra": {
@@ -784,7 +784,7 @@
                 "phpunit",
                 "tests"
             ],
-            "time": "2015-01-13T13:26:56+00:00"
+            "time": "2016-11-24T21:48:53+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1265,9 +1265,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "phpunit/phpunit-dom-assertions": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

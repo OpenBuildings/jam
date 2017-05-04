@@ -21,7 +21,7 @@
 		"kohana/image": "^3.3.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit-dom-assertions": "dev-master#a0c00d3051d4075273ce5613b11306f064fa2c81",
+		"phpunit/phpunit-dom-assertions": "^0.1",
 		"symfony/dom-crawler": ">=2.3",
 		"symfony/css-selector": ">=2.3",
 		"openbuildings/kohana-test-bootstrap": "^0.2",
