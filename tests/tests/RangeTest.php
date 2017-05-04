@@ -12,12 +12,12 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		return array(
 			array(NULL, NULL, NULL, NULL, ':min - :max'),
 			array('', NULL, NULL, NULL, ':min - :max'),
-			array('30|40', NULL, '30', '40', ':min - :max'),
-			array('-2|19', ':min / :max time', '-2', '19', ':min / :max time'),
-			array('|', NULL, '', '', ':min - :max'),
-			array('-19.2|10.12', NULL, '-19.2', '10.12', ':min - :max'),
-			array(array(4, 10), ':min - ?', 4, 10, ':min - ?'),
-			array(array(10.3, 10), ':min - :max days', 10.3, 10, ':min - :max days'),
+			array('30|40', NULL, 30.0, 40.0, ':min - :max'),
+			array('-2|19', ':min / :max time', -2.0, 19.0, ':min / :max time'),
+			array('|', NULL, 0.0, 0.0, ':min - :max'),
+			array('-19.2|10.12', NULL, -19.2, 10.12, ':min - :max'),
+			array(array(4, 10), ':min - ?', 4.0, 10.0, ':min - ?'),
+			array(array(10.3, 10), ':min - :max days', 10.3, 10.0, ':min - :max days'),
 		);
 	}
 
@@ -37,8 +37,8 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	{
 		return array(
 			array(NULL, NULL, NULL, NULL, NULL, ':min - :max'),
-			array(array(4, 10), ':min - :max', ':min - ?', 4, 10, ':min - ?'),
-			array(array(10.3, 10), ':min - :max hours', ':min - :max days', 10.3, 10, ':min - :max days'),
+			array(array(4, 10), ':min - :max', ':min - ?', 4.0, 10.0, ':min - ?'),
+			array(array(10.3, 10), ':min - :max hours', ':min - :max days', 10.3, 10.0, ':min - :max days'),
 		);
 	}
 
@@ -103,13 +103,13 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	public function test_offsetGet()
 	{
 		$range = new Jam_Range(array(10, 30));
-		$this->assertEquals(10, $range[0]);
-		$this->assertEquals(30, $range[1]);
+		$this->assertEquals(10.0, $range[0]);
+		$this->assertEquals(30.0, $range[1]);
 
 		$range->min(3);
 		$range->max(5);
-		$this->assertEquals(3, $range[0]);
-		$this->assertEquals(5, $range[1]);
+		$this->assertEquals(3.0, $range[0]);
+		$this->assertEquals(5.0, $range[1]);
 	}
 
 	/**
@@ -121,10 +121,10 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$range[0] = 14;
 		$range[1] = 124;
 
-		$this->assertEquals(14, $range[0]);
-		$this->assertEquals(14, $range->min());
-		$this->assertEquals(124, $range[1]);
-		$this->assertEquals(124, $range->max());
+		$this->assertEquals(14.0, $range[0]);
+		$this->assertEquals(14.0, $range->min());
+		$this->assertEquals(124.0, $range[1]);
+		$this->assertEquals(124.0, $range->max());
 	}
 
 	/**
@@ -158,7 +158,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$range_added = $range1->add($range2);
 
 		$this->assertInstanceOf('Jam_Range', $range_added);
-		$this->assertEquals(array(13, 42), $range_added->as_array());
+		$this->assertEquals(array(13.0, 42.0), $range_added->as_array());
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$sum = Jam_Range::sum(array($range1, $range2, $range3));
 
 		$this->assertInstanceOf('Jam_Range', $sum);
-		$this->assertEquals(array(10+3+5, 30+12+21), $sum->as_array());
+		$this->assertEquals(array(10+3+5.0, 30+12+21.0), $sum->as_array());
 	}
 
 	/**
@@ -188,7 +188,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$merge = Jam_Range::merge(array($range1, $range2, $range3));
 
 		$this->assertInstanceOf('Jam_Range', $merge);
-		$this->assertEquals(array(10, 42), $merge->as_array());
+		$this->assertEquals(array(10.0, 42.0), $merge->as_array());
 	}
 
 	/**
@@ -228,7 +228,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertSame(NULL, $range->min());
 
 		$range->min(5);
-		$this->assertSame(5, $range->min());
+		$this->assertSame(5.0, $range->min());
 	}
 
 	/**
@@ -240,13 +240,13 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertSame(NULL, $range->max());
 
 		$range->max(10);
-		$this->assertSame(10, $range->max());
+		$this->assertSame(10.0, $range->max());
 	}
 
 	public function data_humanize()
 	{
 		return array(
-			array(1, 2, ':min - :max', '1 - 2'),
+			array(1.0, 2.0, ':min - :max', '1 - 2'),
 			array(NULL, 2, ':min - :max', ' - 2'),
 			array(NULL, NULL, ':min - :max', ' - '),
 			array(4, NULL, ':min - :max', '4 - '),
@@ -273,7 +273,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$range = new Jam_Range;
 		$range->min(4);
 		$range->max(10);
-		$this->assertSame(array(4, 10), $range->as_array());
+		$this->assertSame(array(4.0, 10.0), $range->as_array());
 	}
 
 	/**
@@ -309,7 +309,7 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$range = new Jam_Range;
 
 		$range->unserialize('4|5');
-		$this->assertSame('4', $range->min());
-		$this->assertSame('5', $range->max());
+		$this->assertSame(4.0, $range->min());
+		$this->assertSame(5.0, $range->max());
 	}
 }

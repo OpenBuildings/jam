@@ -80,7 +80,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if ($min !== NULL)
 		{
-			$this->_min = $min;
+			$this->_min = (float) $min;
 			return $this;
 		}
 		return $this->_min;
@@ -90,7 +90,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if ($max !== NULL)
 		{
-			$this->_max = $max;
+			$this->_max =(float) $max;
 			return $this;
 		}
 		return $this->_max;

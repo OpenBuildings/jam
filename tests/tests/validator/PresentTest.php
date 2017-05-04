@@ -25,7 +25,7 @@ class Jam_Validator_PresentTest extends Testcase_Validate {
 			array(1, TRUE, TRUE),
 			array(new Jam_Range(), FALSE, FALSE),
 			array(new Jam_Range(''), FALSE, FALSE),
-			array(new Jam_Range('|'), FALSE, FALSE),
+			array(new Jam_Range('|'), FALSE, TRUE),
 			array(new Jam_Range('1|'), FALSE, TRUE),
 			array(new Jam_Range('|1'), FALSE, TRUE),
 		);
