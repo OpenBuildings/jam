@@ -13,11 +13,6 @@ class Jam_Validator_RangeTest extends Testcase_Validate {
 	public function data_validate()
 	{
 		return array(
-			// NUMERIC
-			array(array('a', 'b'), array(), 'range_numeric', FALSE),
-			array(array('1', 'b'), array(), 'range_numeric', FALSE),
-			array(array('a', '1'), array(), 'range_numeric', FALSE),
-
 			// MINIMUM
 			array(array(2, 5), array('minimum' => 4), 'range_minimum', FALSE),
 			array(array(4, 7), array('minimum' => 4), 'range_minimum', FALSE),
