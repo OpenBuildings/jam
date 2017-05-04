@@ -59,13 +59,13 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if (is_string($source) AND $source !== '')
 		{
-			$source = array_map('intval', explode('|', $source));
+			$source = explode('|', $source);
 		}
 
 		if (is_array($source))
 		{
-			$this->min((int) $source[0]);
-			$this->max((int) $source[1]);
+			$this->min($source[0]);
+			$this->max($source[1]);
 		}
 		elseif ($source instanceof Jam_Range)
 		{
@@ -80,7 +80,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if ($min !== NULL)
 		{
-			$this->_min = $min;
+			$this->_min = (float) $min;
 			return $this;
 		}
 		return $this->_min;
@@ -90,7 +90,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		if ($max !== NULL)
 		{
-			$this->_max = $max;
+			$this->_max =(float) $max;
 			return $this;
 		}
 		return $this->_max;
@@ -169,7 +169,7 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 	{
 		list($min, $max) = explode('|', $data);
 
-		$this->min((int) $min);
-		$this->max((int) $max);
+		$this->min($min);
+		$this->max($max);
 	}
 }
