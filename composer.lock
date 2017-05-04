@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "092a9b90ae92b25ebe7c44d6de68e4e6",
-    "content-hash": "7b6f104f0c5d06b6762822ae3e5184d2",
+    "content-hash": "84a2b5548c19b0ba51db2c5add81638b",
     "packages": [
         {
             "name": "composer/installers",
@@ -107,7 +106,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2016-07-05 06:18:20"
+            "time": "2016-07-05T06:18:20+00:00"
         },
         {
             "name": "kohana/core",
@@ -165,7 +164,7 @@
                 "framework",
                 "kohana"
             ],
-            "time": "2016-07-25 13:15:13"
+            "time": "2016-07-25T13:15:13+00:00"
         },
         {
             "name": "kohana/database",
@@ -226,7 +225,7 @@
                 "framework",
                 "kohana"
             ],
-            "time": "2016-03-23 17:12:30"
+            "time": "2016-03-23T17:12:30+00:00"
         },
         {
             "name": "kohana/image",
@@ -286,7 +285,7 @@
                 "image",
                 "kohana"
             ],
-            "time": "2016-03-23 17:12:48"
+            "time": "2016-03-23T17:12:48+00:00"
         },
         {
             "name": "openbuildings/flex-storage",
@@ -324,7 +323,7 @@
                 }
             ],
             "description": "Flexible storage provider for files (rackspace, aws, ftp, local)",
-            "time": "2014-07-08 12:07:06"
+            "time": "2014-07-08T12:07:06+00:00"
         },
         {
             "name": "rackspace/php-opencloud",
@@ -370,7 +369,7 @@
                 "cloudfiles",
                 "opencloud"
             ],
-            "time": "2013-08-01 16:12:19"
+            "time": "2013-08-01T16:12:19+00:00"
         }
     ],
     "packages-dev": [
@@ -414,7 +413,7 @@
                 }
             ],
             "description": "Helper package for testing Kohana modules",
-            "time": "2016-07-28 14:07:23"
+            "time": "2016-07-28T14:07:23+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -476,7 +475,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-05-25 05:11:59"
+            "time": "2015-05-25T05:11:59+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -521,7 +520,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2013-10-10 15:34:57"
+            "time": "2013-10-10T15:34:57+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -562,7 +561,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -606,7 +605,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2016-05-12T18:03:57+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -655,7 +654,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2015-09-15 10:49:45"
+            "time": "2015-09-15T10:49:45+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -728,7 +727,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-05-02 07:19:37"
+            "time": "2014-05-02T07:19:37+00:00"
         },
         {
             "name": "phpunit/phpunit-dom-assertions",
@@ -785,7 +784,7 @@
                 "phpunit",
                 "tests"
             ],
-            "time": "2015-01-13 13:26:56"
+            "time": "2015-01-13T13:26:56+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -842,7 +841,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-06-12 07:19:48"
+            "time": "2014-06-12T07:19:48+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -894,7 +893,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2015-12-08 07:14:41"
+            "time": "2015-12-08T07:14:41+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -944,7 +943,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-05-17 03:18:57"
+            "time": "2016-05-17T03:18:57+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -1009,7 +1008,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2014-09-10 00:51:36"
+            "time": "2014-09-10T00:51:36+00:00"
         },
         {
             "name": "sebastian/version",
@@ -1044,7 +1043,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2015-06-21 13:59:46"
+            "time": "2015-06-21T13:59:46+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -1097,7 +1096,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29 05:31:50"
+            "time": "2016-06-29T05:31:50+00:00"
         },
         {
             "name": "symfony/dom-crawler",
@@ -1153,7 +1152,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29 05:29:29"
+            "time": "2016-06-29T05:29:29+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1212,7 +1211,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-05-18 14:26:46"
+            "time": "2016-05-18T14:26:46+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1261,7 +1260,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29 05:29:29"
+            "time": "2016-06-29T05:29:29+00:00"
         }
     ],
     "aliases": [],
@@ -1272,7 +1271,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.9"
     },
     "platform-dev": []
 }
