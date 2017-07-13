@@ -300,4 +300,4 @@ $orders = Jam::update('order')->set('name', 'new order')->execute();
 
 ### Uploadable Behavior
 
-This is discussed in depth in [Uploads](/OpenBuildings/Jam/blob/master/guide/jam/uploads.md)
+This is discussed in depth in [Uploads](/guide/jam/uploads.md#jam_behavior_uploadable)
