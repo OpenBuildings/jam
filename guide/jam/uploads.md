@@ -33,7 +33,7 @@ It is important to configure the temp folder location to be publicly available a
 
 There are three servers at the moment, but the interface for them is simple enough so other backends can be implemented quickly.
 
-Whatever you choose those files will first be moved to the temp folder and only then be moved to whatever server you've configured. This intermidiate step is useful as you now can safely not validate a form submission and the user will not be forced to reupload the file, also you can immideatley display thumbnails from the temp folder.
+Whatever you choose those files will first be moved to the temp folder and only then be moved to whatever server you've configured. This intermidiate step is useful as you now can safely not validate a form submission and the user will not be forced to reupload the file, also you can immediately display thumbnails from the temp folder.
 
 
 ### Upload_Server_Local
