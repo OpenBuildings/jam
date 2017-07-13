@@ -129,7 +129,7 @@ class Model_Part extends Jam_Model {
 
 	public static function initialize(Jam_Meta $meta)
 	{
-		$meta->association('parts', Jam::association('manytomany'));
+		$meta->association('assemblies', Jam::association('manytomany'));
 
 		$meta->fields(array(
 			'id'         => Jam::field('primary'),
