@@ -1,6 +1,6 @@
 # Jam Upload Fields
 
-In order to use Jam::field('upload'), you first have to configure where to save the information. This is done by configuring "servers" where to store the information, but a server can also be "local" so to store the files locally. After you configure those servers, all of the `upload` fields will use them will use them.
+In order to use Jam::field('upload'), you first have to configure where to save the information. This is done by configuring "servers" where to store the information, but a server can also be "local" so to store the files locally. After you configure those servers, all of the `upload` fields will use them.
 
 The default configuration file:
 
