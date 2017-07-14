@@ -102,7 +102,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 				{
 					$messages[] = Jam_Errors::message($this->_error_filename, $attribute_name, $error, Arr::merge($params, array(
 						':model' => $this->_meta->model(),
-						':name_key' => $this->_model->name(),
+						':name' => $this->_model->name(),
 						':attribute' => Jam_Errors::attribute_label($this->_meta, $attribute_name),
 					)));
 				}
@@ -151,6 +151,7 @@ abstract class Kohana_Jam_Errors implements Countable, SeekableIterator, ArrayAc
 
 					$messages[] = $model_name.': '.Jam_Errors::message($model->meta()->errors_filename(), $attribute_name, $error, Arr::merge($params, array(
 						':model' => $model->meta()->model(),
+						':name' => $model->name(),
 						':attribute' => Jam_Errors::attribute_label($model->meta(), $attribute_name),
 					)));
 				}
