@@ -43,4 +43,44 @@ abstract class Kohana_Jam_Field_Range extends Jam_Field {
 
 		return $value->__toString();
 	}
+
+	protected function _default(Jam_Validated $model, $value)
+	{
+		$return = FALSE;
+
+		$value = $this->run_filters($model, $value);
+
+		$min = NULL;
+		$max = NULL;
+
+		if (is_array($value))
+		{
+			$min = $value[0];
+			$max = $value[1];
+		}
+
+		if (is_string($value) AND strstr($value, '|'))
+		{
+			$values = explode('|', $value);
+
+			$min = isset($values[0]) ? $values[0] : NULL;
+			$max = isset($values[1]) ? $values[1] : NULL;
+		}
+
+		// Convert empty values to NULL, if needed
+		if ($this->convert_empty AND ($min == '' OR $max == ''))
+		{
+			$value  = $this->empty_value;
+			$return = TRUE;
+		}
+
+		// Allow NULL values to pass through untouched by the field
+		if ($this->allow_null AND ($min === NULL OR $max === NULL))
+		{
+			$value  = NULL;
+			$return = TRUE;
+		}
+
+		return array($value, $return);
+	}
 }
