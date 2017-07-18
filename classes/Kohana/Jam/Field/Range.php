@@ -68,7 +68,7 @@ abstract class Kohana_Jam_Field_Range extends Jam_Field {
 		}
 
 		// Convert empty values to NULL, if needed
-		if ($this->convert_empty AND (empty($min) OR empty($max)))
+		if ($this->convert_empty AND ($min == '' OR $max == ''))
 		{
 			$value  = $this->empty_value;
 			$return = TRUE;

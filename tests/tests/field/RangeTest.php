@@ -67,4 +67,52 @@ class Jam_Field_RangeTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertInstanceOf('Jam_Range', $range);
 		$this->assertEquals('10 - 20 days', $range->humanize());
 	}
+
+	public function test_set_empty_value_with_convert_empty()
+	{
+		$field = new Jam_Field_Range(array(
+			'convert_empty' => TRUE
+		));
+
+		$model = Jam::build('test_position');
+
+		$range = $field->set($model, '|', FALSE);
+
+		$this->assertEquals(NULL, $range);
+
+		$range = $field->set($model, '0|0', FALSE);
+
+		$this->assertInstanceOf('Jam_Range', $range);
+		$this->assertEquals(0, $range->min());
+		$this->assertEquals(0, $range->max());
+
+		$range = $field->set($model, array('',''), FALSE);
+
+		$this->assertEquals(NULL, $range);
+	}
+
+	public function test_set_empty_value_without_convert_empty()
+	{
+		$field = new Jam_Field_Range();
+
+		$model = Jam::build('test_position');
+
+		$range = $field->set($model, '|', FALSE);
+
+        $this->assertInstanceOf('Jam_Range', $range);
+        $this->assertEquals(NULL, $range->min());
+        $this->assertEquals(NULL, $range->max());
+
+		$range = $field->set($model, '0|0', FALSE);
+
+		$this->assertInstanceOf('Jam_Range', $range);
+		$this->assertEquals(0, $range->min());
+		$this->assertEquals(0, $range->max());
+
+		$range = $field->set($model, array('',''), FALSE);
+
+        $this->assertInstanceOf('Jam_Range', $range);
+        $this->assertEquals(NULL, $range->min());
+        $this->assertEquals(NULL, $range->max());
+	}
 }
