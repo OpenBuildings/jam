@@ -34,8 +34,8 @@ class Kohana_Jam_Range implements ArrayAccess, Serializable {
 
 		foreach ($ranges as $range)
 		{
-			$min += $range->min();
-			$max += $range->max();
+			$min += (int) $range->min();
+			$max += (int) $range->max();
 		}
 
 		return new Jam_Range(array($min, $max), $format);
