@@ -216,6 +216,18 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 		$this->assertSame($post, $association->set($post, $author, TRUE)->test_post);
 	}
 
+	public function test_set_inverse_of_has_many_model()
+    {
+        $association = new Jam_Association_Belongsto(array('inverse_of' => 'test_posts'));
+        $association->initialize($this->meta, 'test_blog');
+
+        $blog = Jam::build('test_blog');
+        $post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_blog_id' => 1));
+
+        $posts = $association->set($post, $blog, TRUE)->test_posts->as_array();
+        $this->assertSame($post, $posts[0]);
+    }
+
 	public function test_build()
 	{
 		$association = new Jam_Association_Belongsto(array('polymorphic' => FALSE, 'inverse_of' => 'test_post'));
