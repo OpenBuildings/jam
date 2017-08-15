@@ -199,7 +199,7 @@ abstract class Kohana_Jam_Form {
 	 *
 	 * @param string $name  of the association
 	 * @param int $index an index id of a collection (if the association if a colleciton)
-	 * @return  Jam_Form
+	 * @return static
 	 */
 	public function fields_for($name, $index = NULL)
 	{
