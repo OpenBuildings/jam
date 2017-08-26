@@ -89,7 +89,7 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *    ));
 	 *
 	 * @param   array|string  $values
-	 * @param   string        $value
+	 * @param   mixed|null    $value
 	 * @return  $this
 	 */
 	public function set($values, $value = NULL)

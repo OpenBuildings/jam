@@ -273,7 +273,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	 *    ));
 	 *
 	 * @param   array|string  $values
-	 * @param   string        $value
+	 * @param   mixed|null    $value
 	 * @return  $this
 	 */
 	public function set($values, $value = NULL)
