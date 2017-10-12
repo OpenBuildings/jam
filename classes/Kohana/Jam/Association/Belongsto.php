@@ -223,9 +223,15 @@ abstract class Kohana_Jam_Association_Belongsto extends Jam_Association {
 			$model->{$this->foreign_key} = $key;
 		}
 
-		if ($value instanceof Jam_Model AND $this->inverse_of AND $value->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone)
+		if ($value instanceof Jam_Model AND $this->inverse_of)
 		{
-			$value->retrieved($this->inverse_of, $model);
+		    if ($value->meta()->association($this->inverse_of) instanceof Jam_Association_Hasone) {
+			    $value->retrieved($this->inverse_of, $model);
+            }
+
+            if ($value->meta()->association($this->inverse_of) instanceof Jam_Association_Hasmany) {
+                $value->{$this->inverse_of}->add($model);
+            }
 		}
 
 		return $value;
