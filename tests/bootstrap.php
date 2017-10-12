@@ -6,6 +6,7 @@ Kohana::modules(array(
 	'database' => MODPATH.'database',
 	'image'    => MODPATH.'image',
 	'jam'      => __DIR__.'/..',
+	'jam-monetary' => MODPATH.'jam-monetary',
 ));
 
 function test_autoload($class)
