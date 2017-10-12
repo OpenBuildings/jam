@@ -35,7 +35,7 @@ class Kohana_Jam_Validator_Rule_Present extends Jam_Validator_Rule {
 
 	public static function is_empty_price($value, $allow_zero = FALSE)
 	{
-		if ($value instanceof Jam_Price) {
+		if (class_exists('Jam_Price') AND $value instanceof Jam_Price) {
 			return Jam_Validator_Rule_Present::is_empty_value($value->amount(), $allow_zero);
 		}
 
