@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e45c20f307ee215039275b367cda8a54",
+    "content-hash": "2f980ec180a8ef7e19f204ce659f1b10",
     "packages": [
         {
             "name": "composer/installers",
@@ -374,6 +374,105 @@
     ],
     "packages-dev": [
         {
+            "name": "desarrolla2/cache",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/desarrolla2/Cache.git",
+                "reference": "8b6719695ac68380f11e89920ce456665079391e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/8b6719695ac68380f11e89920ce456665079391e",
+                "reference": "8b6719695ac68380f11e89920ce456665079391e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "desarrolla2/timer": "dev-master",
+                "raulfraile/ladybug": "master-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Desarrolla2\\Cache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel González",
+                    "homepage": "http://desarrolla2.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Provides an cache interface for several adapters (Apc, File, Mongo, Memcached, Mysql, ... )",
+            "homepage": "https://github.com/desarrolla2/Cache/blob/master/README.md",
+            "keywords": [
+                "apc",
+                "cache",
+                "file",
+                "memcached",
+                "mongo",
+                "mysql",
+                "redis"
+            ],
+            "time": "2013-07-10T12:22:00+00:00"
+        },
+        {
+            "name": "openbuildings/jam-monetary",
+            "version": "0.1.22",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OpenBuildings/jam-monetary.git",
+                "reference": "f32d940ece54a8fd3dbbfa116cab865567aa23c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OpenBuildings/jam-monetary/zipball/f32d940ece54a8fd3dbbfa116cab865567aa23c2",
+                "reference": "f32d940ece54a8fd3dbbfa116cab865567aa23c2",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "openbuildings/monetary": "~0.4.1",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "openbuildings/jam": "^0.5.13",
+                "openbuildings/kohana-test-bootstrap": "^0.2.0",
+                "phpunit/phpunit": "^4.0, <4.5"
+            },
+            "type": "kohana-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Kerin",
+                    "email": "ivan@openbuildings.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "A Jam Field to transparently use 'monetary' as a jam field, and have currency exchange arithmetic out of the box",
+            "homepage": "https://github.com/OpenBuildings/jam-monetary",
+            "keywords": [
+                "exchange",
+                "jam",
+                "kohana",
+                "monetary",
+                "money",
+                "price"
+            ],
+            "time": "2017-08-26T00:21:46+00:00"
+        },
+        {
             "name": "openbuildings/kohana-test-bootstrap",
             "version": "0.2.0",
             "source": {
@@ -414,6 +513,71 @@
             ],
             "description": "Helper package for testing Kohana modules",
             "time": "2016-07-28T14:07:23+00:00"
+        },
+        {
+            "name": "openbuildings/monetary",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OpenBuildings/monetary.git",
+                "reference": "f05bc74cadc6d850b199705f10ee590aaf3bbd59"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OpenBuildings/monetary/zipball/f05bc74cadc6d850b199705f10ee590aaf3bbd59",
+                "reference": "f05bc74cadc6d850b199705f10ee590aaf3bbd59",
+                "shasum": ""
+            },
+            "require": {
+                "desarrolla2/cache": "1.6.*",
+                "ext-curl": "*",
+                "ext-simplexml": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.24"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "OpenBuildings\\Monetary\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Kerin",
+                    "email": "ivan@openbuildings.com",
+                    "homepage": "https://github.com/OpenBuildings/jam",
+                    "role": "Author"
+                },
+                {
+                    "name": "Haralan Dobrev",
+                    "email": "hdobrev@despark.com",
+                    "homepage": "https://github.com/hkdobrev",
+                    "role": "Author"
+                },
+                {
+                    "name": "Yasen Yanev",
+                    "email": "yasen@openbuildings.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "Useful tool for formatting and converting currencies",
+            "homepage": "https://github.com/OpenBuildings/monetary",
+            "keywords": [
+                "ECB",
+                "conversion",
+                "currencies",
+                "exchange",
+                "monetary",
+                "money",
+                "yahoo"
+            ],
+            "time": "2013-10-28T11:21:15+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1269,7 +1433,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.9"
+        "php": ">=5.4"
     },
     "platform-dev": []
 }
