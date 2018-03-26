@@ -465,7 +465,7 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 	/**
 	 * Returns the value of the model's name key
 	 *
-	 * @return  mixed
+	 * @return  string
 	 */
 	public function name()
 	{
