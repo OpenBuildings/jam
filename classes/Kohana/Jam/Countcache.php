@@ -31,11 +31,11 @@ class Kohana_Jam_Countcache {
 
 	public static function increment($model, $counter, $id)
 	{
-		Jam_CountCache::update_counters($model, $id, array($counter => +1))->execute();
+		Jam_Countcache::update_counters($model, $id, array($counter => +1))->execute();
 	}
 
 	public static function decrement($model, $counter, $id)
 	{
-		Jam_CountCache::update_counters($model, $id, array($counter => -1))->execute();
+		Jam_Countcache::update_counters($model, $id, array($counter => -1))->execute();
 	}
 }
