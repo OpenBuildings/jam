@@ -236,6 +236,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * @param   bool|null        $validate
 	 * @return  $this
+	 * @throws Kohana_Exception
+	 * @throws Jam_Exception_Validation
 	 */
 	public function save($validate = NULL)
 	{
