@@ -345,8 +345,16 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 		return $this->is_valid();
 	}
 
+	/**
+	 * @return $this
+	 * @throws Jam_Exception_Validation
+	 *
+	 * @deprecated Since 0.5.24 Use try-catch around save() instead. This might be removed in future version.
+	 */
 	public function check_insist()
 	{
+		@trigger_error('check_insist() is deprecated and might be removed in future version.', E_USER_DEPRECATED);
+
 		if ( ! $this->check())
 			throw new Jam_Exception_Validation('There was an error validating the :model: :errors', $this);
 
