@@ -236,6 +236,8 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 	 *
 	 * @param   bool|null        $validate
 	 * @return  $this
+	 * @throws Kohana_Exception
+	 * @throws Jam_Exception_Validation
 	 */
 	public function save($validate = NULL)
 	{
@@ -246,9 +248,9 @@ abstract class Kohana_Jam_Model extends Jam_Validated {
 		$key = $this->_original[$this->meta()->primary_key()];
 
 		// Run validation
-		if ($validate !== FALSE)
+		if ($validate !== FALSE && !$this->check())
 		{
-			$this->check_insist();
+			throw new Jam_Exception_Validation('There was an error validating the :model: :errors', $this);
 		}
 
 		$this->_is_saving = TRUE;
