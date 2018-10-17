@@ -230,6 +230,9 @@ class Jam_ModelTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertTrue($video->check());
 		$video->file = '111';
 		$this->assertFalse($video->check());
+
+		$this->setExpectedException('Jam_Exception_Validation');
+		$video->check_insist();
 	}
 
 	public function test_duplicate()
