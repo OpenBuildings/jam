@@ -200,6 +200,19 @@ class Jam_ModelTest extends PHPUnit_Framework_DOMTestCase {
 		$this->assertSame($model->changed($field), $expected);
 	}
 
+	public function test_changed_after_set_comparison()
+	{
+		$category = Jam::build('test_category')
+			->load_fields(array(
+				'id' => 1,
+				'name' => 'Furniture',
+				'is_featured' => true,
+			))->set('is_featured', 'yes');
+		$this->assertFalse($category->changed('is_featured'));
+		$category->set('is_featured', 'no');
+		$this->assertTrue($category->changed('is_featured'));
+	}
+
 	/**
 	 * Tests Jam_Model::clear()
 	 */
