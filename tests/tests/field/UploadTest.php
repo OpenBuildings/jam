@@ -52,6 +52,10 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 
 	public function test_save_and_delete()
 	{
+		$this->markTestSkipped(
+			'Unavailability to upload images to rackspace.'
+		);
+
 		$image = Jam::build('test_image');
 
 		$image->file = Upload_Util::combine($this->test_local, 'source', 'logo.gif');

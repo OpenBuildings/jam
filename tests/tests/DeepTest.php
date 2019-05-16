@@ -38,6 +38,10 @@ class Jam_deepTest extends Testcase_Database {
 
 	public function test_association_create()
 	{
+		$this->markTestSkipped(
+			'Unavailability to upload images to rackspace.'
+		);
+		
 		$author = Jam::build('test_author', array('name' => 'Joe'));
 		$author->test_posts = array(
 			Jam::build('test_post', array(
@@ -127,6 +131,5 @@ class Jam_deepTest extends Testcase_Database {
 
 		$this->assertTrue($author->test_posts[0]->test_categories->has(1));
 		$this->assertTrue($author->test_posts[0]->test_categories->has(5));
-
 	}
 }
