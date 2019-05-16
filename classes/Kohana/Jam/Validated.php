@@ -288,9 +288,10 @@ abstract class Kohana_Jam_Validated extends Model implements Serializable {
 		{
 			if ($field = $this->meta()->field($key))
 			{
-				if ($value !== $this->{$field->name})
+				$converted_field_value = $field->set($this, $value, TRUE);
+				if ($converted_field_value !== $this->{$field->name})
 				{
-					$this->_changed[$field->name] = $field->set($this, $value, TRUE);
+					$this->_changed[$field->name] = $converted_field_value;
 
 					if (array_key_exists($field->name, $this->_retrieved))
 					{

@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS `test_images`;
 
 CREATE TABLE `test_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `file` varchar(255) NOT NULL,
+  `file` varchar(255) DEFAULT NULL,
   `test_holder_id` int(11) DEFAULT NULL,
   `test_holder_model` varchar(255) NULL,
   PRIMARY KEY (`id`)
