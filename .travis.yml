@@ -29,6 +29,9 @@ notifications:
   slack:
     secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
 
+services:
+  - mysql
+
 before_install: composer selfupdate --preview
 
 install:
