@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests Jam_Meta
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.meta
  */
-class Jam_MetaTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_MetaTest extends TestCase {
 
 	/**
 	 * Tests various properties on a meta object.

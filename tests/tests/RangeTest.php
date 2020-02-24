@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @package Jam
  * @group   jam
  * @group   jam.range
  */
-class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_RangeTest extends TestCase {
 
 	public function data_construct()
 	{

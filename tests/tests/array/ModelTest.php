@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests jam array.
  *
@@ -8,7 +10,7 @@
  * @group   jam.array
  * @group   jam.array.model
  */
-class Jam_Array_ModelTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Array_ModelTest extends TestCase {
 
 	public $data = array(array('id' => 1, 'name' => 'one'), array('id' => 3, 'name' => 'three'));
 	public $collection;

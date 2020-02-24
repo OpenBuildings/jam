@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Model functionality.
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.model
  */
-class Jam_ModelTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_ModelTest extends TestCase {
 
 	/**
 	 * Provider for test_save_empty_model

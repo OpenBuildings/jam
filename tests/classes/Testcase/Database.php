@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
-abstract class Testcase_Database extends PHPUnit_Framework_DOMTestCase {
+use PHPUnit\Framework\TestCase;
+
+abstract class Testcase_Database extends TestCase {
 
 	public function setUp()
 	{

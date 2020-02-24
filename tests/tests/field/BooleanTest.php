@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests primary fields.
  *
@@ -8,7 +10,7 @@
  * @group   jam.field
  * @group   jam.field.boolean
  */
-class Jam_Field_BooleanTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Field_BooleanTest extends TestCase {
 
 	/**
 	 * Boolean fields cannot have convert_empty set to TRUE.

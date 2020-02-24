@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Provides a set of tests that apply to many different field types.
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.field
  */
-class Jam_FieldTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_FieldTest extends TestCase {
 
 	/**
 	 * Provider for test_construction

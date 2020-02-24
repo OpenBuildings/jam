@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests timestamp fields.
  *
@@ -8,7 +10,7 @@
  * @group   jam.field
  * @group   jam.field.range
  */
-class Jam_Field_RangeTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Field_RangeTest extends TestCase {
 
 	public function test_set()
 	{

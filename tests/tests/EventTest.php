@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Timezone.
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.event
  */
-class Jam_EventTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_EventTest extends TestCase {
 
 	public $event;
 

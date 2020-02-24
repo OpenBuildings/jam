@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for core Jam methods.
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.core
  */
-class Jam_CoreTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_CoreTest extends TestCase {
 
 	/**
 	 * Provides for test_register
