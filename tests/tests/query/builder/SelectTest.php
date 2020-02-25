@@ -188,7 +188,7 @@ class Jam_Query_Builder_SelectTest extends TestCase {
 
 		if ($expected_sql === NULL)
 		{
-			$this->setExpectedException('Kohana_Exception');
+			$this->expectException('Kohana_Exception');
 		}
 
 		call_user_func_array(array($select, 'except'), $except);

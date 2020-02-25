@@ -57,13 +57,15 @@ class Jam_Query_Builder_CollectionTest extends TestCase {
 
 	public function test_offsetSet()
 	{
-		$this->setExpectedException('Kohana_Exception', 'Database results are read-only');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Database results are read-only');
 		$this->collection->offsetSet(3, array('id' => 4, 'name' => 'Cleaner'));
 	}
 
 	public function test_offsetUnset()
 	{
-		$this->setExpectedException('Kohana_Exception', 'Database results are read-only');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Database results are read-only');
 		$this->collection->offsetUnset(0);
 	}
 

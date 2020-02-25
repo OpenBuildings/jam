@@ -40,7 +40,7 @@ class Jam_Upload_UtilTest extends Testcase_Validate_Upload {
 	{
 		if ($expected_filename == NULL)
 		{
-			$this->setExpectedException('Kohana_Exception');
+			$this->expectException('Kohana_Exception');
 		}
 		Upload_Util::download($url, $this->test_local, $filename);
 		$this->assertFileExists($this->test_local.$expected_filename);

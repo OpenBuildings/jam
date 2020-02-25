@@ -246,7 +246,7 @@ class Jam_ModelTest extends TestCase {
 		$video->file = '111';
 		$this->assertFalse($video->check());
 
-		$this->setExpectedException('Jam_Exception_Validation');
+		$this->expectException('Jam_Exception_Validation');
 		$video->check_insist();
 	}
 
