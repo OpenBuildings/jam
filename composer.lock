@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce28468e433f0907becf9716adc946ba",
+    "content-hash": "d22d532ce493bd73c110efb02cd77e0f",
     "packages": [
         {
             "name": "composer/installers",
@@ -1904,25 +1904,25 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v2.8.8",
+            "version": "v4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "9da4c615ba303850986e0480cc472bf704cfdb64"
+                "reference": "a167b1860995b926d279f9bb538f873e3bfa3465"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/9da4c615ba303850986e0480cc472bf704cfdb64",
-                "reference": "9da4c615ba303850986e0480cc472bf704cfdb64",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/a167b1860995b926d279f9bb538f873e3bfa3465",
+                "reference": "a167b1860995b926d279f9bb538f873e3bfa3465",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": "^7.1.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "4.4-dev"
                 }
             },
             "autoload": {
@@ -1939,12 +1939,12 @@
             ],
             "authors": [
                 {
-                    "name": "Jean-François Simon",
-                    "email": "jeanfrancois.simon@sensiolabs.com"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Jean-François Simon",
+                    "email": "jeanfrancois.simon@sensiolabs.com"
                 },
                 {
                     "name": "Symfony Community",
@@ -1953,28 +1953,33 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29T05:31:50+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v2.8.8",
+            "version": "v4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "f8c304f5715081c949043902d311480d71adb1e0"
+                "reference": "b66fe8ccc850ea11c4cd31677706c1219768bea1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/f8c304f5715081c949043902d311480d71adb1e0",
-                "reference": "f8c304f5715081c949043902d311480d71adb1e0",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/b66fe8ccc850ea11c4cd31677706c1219768bea1",
+                "reference": "b66fe8ccc850ea11c4cd31677706c1219768bea1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9",
+                "php": "^7.1.3",
+                "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-mbstring": "~1.0"
             },
+            "conflict": {
+                "masterminds/html5": "<2.6"
+            },
             "require-dev": {
-                "symfony/css-selector": "~2.8|~3.0.0"
+                "masterminds/html5": "^2.6",
+                "symfony/css-selector": "^3.4|^4.0|^5.0"
             },
             "suggest": {
                 "symfony/css-selector": ""
@@ -1982,7 +1987,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "4.4-dev"
                 }
             },
             "autoload": {
@@ -2009,7 +2014,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29T05:29:29+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2071,16 +2076,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.2.0",
+            "version": "v1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "dff51f72b0706335131b00a7f49606168c582594"
+                "reference": "34094cfa9abe1f0f14f48f490772db7a775559f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/dff51f72b0706335131b00a7f49606168c582594",
-                "reference": "dff51f72b0706335131b00a7f49606168c582594",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/34094cfa9abe1f0f14f48f490772db7a775559f2",
+                "reference": "34094cfa9abe1f0f14f48f490772db7a775559f2",
                 "shasum": ""
             },
             "require": {
@@ -2092,7 +2097,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -2126,7 +2131,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-05-18T14:26:46+00:00"
+            "time": "2020-01-13T11:15:53+00:00"
         },
         {
             "name": "theseer/tokenizer",

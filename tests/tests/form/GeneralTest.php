@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
  */
 class Jam_Form_GeneralTest extends TestCase {
 
+	use Trait_DomSearch;
+
 	protected $form;
 	protected $post;
 
