@@ -14,7 +14,10 @@ class Jam_Association_HasoneTest extends Testcase_Database {
 	{
 		parent::setUp();
 
-		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_author'));
+		$this->meta = $this->getMockBuilder('Jam_Meta')
+			->setMethods(['field'])
+			->setConstructorArgs(['test_author'])
+			->getMock();
 	}
 
 	public function data_initialize()
@@ -82,7 +85,9 @@ class Jam_Association_HasoneTest extends Testcase_Database {
 
 	public function test_get()
 	{
-		$association = $this->getMock('Jam_Association_Hasone', array('_find_item'), array());
+		$association = $this->getMockBuilder('Jam_Association_Hasone')
+			->setMethods(['_find_item'])
+			->getMock();
 		$association->initialize($this->meta, 'test_post');
 
 		$author = Jam::build('test_author')->load_fields(array('id' => 1));
@@ -127,7 +132,10 @@ class Jam_Association_HasoneTest extends Testcase_Database {
 		$association->initialize($this->meta, 'test_post');
 
 		$author = Jam::build('test_author')->load_fields(array('id' => 1));
-		$post = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
+		$post = $this->getMockBuilder('Model_Test_Post')
+			->setMethods(['check'])
+			->setConstructorArgs(['test_post'])
+			->getMock();
 		$post->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => 'test_category'));
 		$post
 			->expects($this->once())
@@ -214,5 +222,4 @@ class Jam_Association_HasoneTest extends Testcase_Database {
 		$author->save();
 		$this->assertNull($author->test_post);
 	}
-
 }
