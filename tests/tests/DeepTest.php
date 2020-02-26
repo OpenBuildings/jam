@@ -40,6 +40,7 @@ class Jam_deepTest extends Testcase_Database {
 		$author->test_posts = array(
 			Jam::build('test_post', array(
 				'name' => 'hardware',
+				'status' => 'published',
 				'test_categories' => array(
 					Jam::build('test_category', array('name' => 'cat1', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat2', 'test_author' => $author)),
@@ -54,6 +55,7 @@ class Jam_deepTest extends Testcase_Database {
 			)),
 			Jam::build('test_post', array(
 				'name' => 'software',
+				'status' => 'published',
 				'test_categories' => array(
 					Jam::build('test_category', array('name' => 'cat3', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat4', 'test_author' => $author)),
@@ -63,6 +65,7 @@ class Jam_deepTest extends Testcase_Database {
 			)),
 			array(
 				'name' => 'new post',
+				'status' => 'published',
 				'test_cover_image' => array(
 					'file' => 'new file',
 				)
