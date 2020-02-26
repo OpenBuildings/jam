@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d22d532ce493bd73c110efb02cd77e0f",
+    "content-hash": "2c8ea83745fcd76966eac70fdcfb5429",
     "packages": [
         {
             "name": "composer/installers",
@@ -531,27 +531,27 @@
         },
         {
             "name": "openbuildings/jam-monetary",
-            "version": "0.1.22",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenBuildings/jam-monetary.git",
-                "reference": "f32d940ece54a8fd3dbbfa116cab865567aa23c2"
+                "reference": "af32dc9bed63d556ff4efc374aa3670966111069"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenBuildings/jam-monetary/zipball/f32d940ece54a8fd3dbbfa116cab865567aa23c2",
-                "reference": "f32d940ece54a8fd3dbbfa116cab865567aa23c2",
+                "url": "https://api.github.com/repos/OpenBuildings/jam-monetary/zipball/af32dc9bed63d556ff4efc374aa3670966111069",
+                "reference": "af32dc9bed63d556ff4efc374aa3670966111069",
                 "shasum": ""
             },
             "require": {
                 "composer/installers": "*",
                 "openbuildings/monetary": "~0.4.1",
-                "php": ">=5.3.0"
+                "php": "^7.1"
             },
             "require-dev": {
                 "openbuildings/jam": "^0.5.13",
                 "openbuildings/kohana-test-bootstrap": "^0.2.0",
-                "phpunit/phpunit": "^4.0, <4.5"
+                "phpunit/phpunit": "^7"
             },
             "type": "kohana-module",
             "notification-url": "https://packagist.org/downloads/",
@@ -575,7 +575,7 @@
                 "money",
                 "price"
             ],
-            "time": "2017-08-26T00:21:46+00:00"
+            "time": "2020-02-24T16:09:48+00:00"
         },
         {
             "name": "openbuildings/kohana-test-bootstrap",
