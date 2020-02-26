@@ -14,7 +14,6 @@ trait Trait_DomSearch
 	)
 	{
 		$crawler = new Crawler($searchString);
-
 		$crawler = $crawler->filter($selector);
 
 		if (!empty($content)) {
@@ -23,10 +22,9 @@ trait Trait_DomSearch
 					if ($content === '') {
 						return $node->text() === '';
 					}
-
-
-					return (bool)preg_match('/' . $content . '/i', $node->text());
-				});
+					return (bool) preg_match('/' . $content . '/i', $node->text());
+				}
+			);
 		}
 
 		$found = count($crawler);
