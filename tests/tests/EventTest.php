@@ -23,7 +23,12 @@ class Jam_EventTest extends TestCase {
 	{
 		$sender = new stdClass;
 
-		$observer = $this->getMock('Jam_EventTest_Observer', array('callback'));
+		$observer = $this
+			->getMockBuilder(Jam_EventTest_Observer::class)
+			->disableOriginalConstructor()
+			->setMethods(['callback'])
+			->getMock();
+
 		$observer
 			->expects($this->once())
 			->method('callback')
