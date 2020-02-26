@@ -20,7 +20,9 @@ class Kohana_Jam_Validator_Rule_Count extends Jam_Validator_Rule {
 
 	public function validate(Jam_Validated $model, $attribute, $value)
 	{
-		$count = count($value);
+		// Since PHP 7.2 method count() parameter must be an array or an object that implements Countable
+		// https://www.php.net/manual/en/function.count.php#124263
+		$count = count((array) $value);
 		$params = (array) $this;
 
 		if ($this->minimum !== NULL AND ! ($count >= $this->minimum))
