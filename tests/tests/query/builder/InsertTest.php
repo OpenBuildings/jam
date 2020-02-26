@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\Constraint\LogicalAnd;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -62,11 +63,11 @@ class Jam_Query_Builder_InsertTest extends TestCase {
 	 */
 	public function test_event_builder_after_construct()
 	{
-		$mock = $this->getMock('stdClass', array(
-			'test_event_callback'
-		));
+		$mock = $this->getMockBuilder('stdClass')
+			->setMethods(['test_event_callback'])
+			->getMock();
 
-		$jam_event_data_constraint = new PHPUnit_Framework_Constraint_And;
+		$jam_event_data_constraint = new LogicalAnd();
 
 		$jam_event_data_constraint
 			->setConstraints(array(
@@ -99,11 +100,11 @@ class Jam_Query_Builder_InsertTest extends TestCase {
 	 */
 	public function test_call()
 	{
-		$mock = $this->getMock('stdClass', array(
-			'test_event_callback'
-		));
+		$mock = $this->getMockBuilder('stdClass')
+			->setMethods(['test_event_callback'])
+			->getMock();
 
-		$jam_event_data_constraint = new PHPUnit_Framework_Constraint_And;
+		$jam_event_data_constraint = new LogicalAnd();
 
 		$jam_event_data_constraint
 			->setConstraints(array(
@@ -163,11 +164,10 @@ class Jam_Query_Builder_InsertTest extends TestCase {
 	 */
 	public function test_toString()
 	{
-		$insert = $this->getMock('Jam_Query_Builder_Insert', array(
-			'compile'
-		), array(
-			'test_author'
-		));
+		$insert = $this->getMockBuilder('Jam_Query_Builder_Insert')
+			->setMethods(['compile'])
+			->setConstructorArgs(['test_author'])
+			->getMock();
 
 		$insert
 			->expects($this->once())
@@ -182,11 +182,10 @@ class Jam_Query_Builder_InsertTest extends TestCase {
 	 */
 	public function test_toString_exception()
 	{
-		$insert = $this->getMock('Jam_Query_Builder_Insert', array(
-			'compile'
-		), array(
-			'test_author'
-		));
+		$insert = $this->getMockBuilder('Jam_Query_Builder_Insert')
+			->setMethods(['compile'])
+			->setConstructorArgs(['test_author'])
+			->getMock();
 
 		$insert
 			->expects($this->once())
