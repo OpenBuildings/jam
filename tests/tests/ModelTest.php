@@ -53,6 +53,7 @@ class Jam_ModelTest extends TestCase {
 	{
 		$model = Jam::build('test_post');
 		$model->id = 9000;
+		$model->status = 'published';
 		$model->save();
 
 		// Verify data is as it should be
