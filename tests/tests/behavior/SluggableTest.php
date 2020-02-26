@@ -104,7 +104,8 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		{
 			$this->expectException('Kohana_Exception');
 		}
-		Jam::all('test_video')->where_slug($pattern);
+		$object = Jam::all('test_video')->where_slug($pattern);
+		$this->assertInstanceOf('Jam_Query_Builder_Collection', $object);
 	}
 
 	/**
@@ -117,7 +118,8 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 		{
 			$this->expectException('Kohana_Exception');
 		}
-		Jam::all('test_video')->find_by_slug($pattern);
+		$object = Jam::all('test_video')->find_by_slug($pattern);
+		$this->assertInstanceOf('Model_Test_Video', $object);
 	}
 
 	/**
@@ -237,7 +239,13 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	 */
 	public function test_matches_slug_insist($slug, $return_value, $expected_exception, $expected_result)
 	{
-		$model = $this->getMock('Model_Test_Video', array('matches_slug'), array('test_video'), '', TRUE, TRUE, TRUE, FALSE, TRUE);
+//		$model = $this->getMock('Model_Test_Video', array('matches_slug'), array('test_video'), '', TRUE, TRUE, TRUE, FALSE, TRUE);
+
+		$model = $this
+			->getMockBuilder(Model_Test_Video::class)
+			->setConstructorArgs(['test_video'])
+			->setMethods(['matches_slug'])
+			->getMock();
 
 		$model
 			->expects($this->once())
