@@ -295,7 +295,11 @@ class Jam_RangeTest extends TestCase {
 	 */
 	public function test_serialize()
 	{
-		$range = $this->getMock('Jam_Range', array('__toString'));
+		$range = $this
+			->getMockBuilder(Jam_Range::class)
+			->disableOriginalConstructor()
+			->setMethods(['__toString'])
+			->getMock();
 
 		$range
 			->expects($this->once())

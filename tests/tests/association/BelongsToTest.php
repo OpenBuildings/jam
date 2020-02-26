@@ -16,7 +16,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	{
 		parent::setUp();
 
-		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_post'));
+		$this->meta = $this
+			->getMockBuilder(Jam_Meta::class)
+			->setConstructorArgs(['test_post'])
+			->setMethods(['field'])
+			->getMock();
 	}
 
 	public function data_initialize()
@@ -42,7 +46,8 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	{
 		if ($expected_exception)
 		{
-			$this->setExpectedException('Kohana_Exception', $expected_exception);
+			$this->expectException('Kohana_Exception');
+			$this->expectExceptionMessage($expected_exception);
 		}
 		else
 		{
@@ -131,7 +136,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	 */
 	public function test_get($is_polymorphic, $polymorphic_default_model, $value, $is_changed, $expected_id, $expected_model)
 	{
-		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('polymorphic' => $is_polymorphic, 'polymorphic_default_model' => $polymorphic_default_model)));
+		$association = $this
+			->getMockBuilder(Jam_Association_Belongsto::class)
+			->setConstructorArgs([['polymorphic' => $is_polymorphic, 'polymorphic_default_model' => $polymorphic_default_model]])
+			->setMethods(['_find_item'])
+			->getMock();
 		$association->initialize($this->meta, 'test_author');
 
 		$post = Jam::build('test_post')->load_fields(array('id' => 1, 'test_author_id' => 10, 'test_author_model' => $polymorphic_default_model ? NULL : 'test_category'));
@@ -156,7 +165,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 
 	public function test_get_inverse_of()
 	{
-		$association = $this->getMock('Jam_Association_Belongsto', array('_find_item'), array(array('inverse_of' => 'test_post')));
+		$association = $this
+			->getMockBuilder(Jam_Association_Belongsto::class)
+			->setConstructorArgs([['inverse_of' => 'test_post']])
+			->setMethods(['_find_item'])
+			->getMock();
 		$association->initialize($this->meta, 'test_author');
 
 		$author = Jam::build('test_author');
@@ -279,7 +292,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	 */
 	public function test_model_after_check($changed, $perform_check)
 	{
-		$author = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
+		$author = $this
+			->getMockBuilder(Model_Test_Post::class)
+			->setConstructorArgs(['test_post'])
+			->setMethods(['check'])
+			->getMock();
 		$author
 			->expects($perform_check ? $this->once() : $this->never())
 			->method('check')
@@ -306,7 +323,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	 */
 	public function test_model_after_check_polymorphic($changed, $perform_check)
 	{
-		$author = $this->getMock('Model_Test_Post', array('check'), array('test_post'));
+		$author = $this
+			->getMockBuilder(Model_Test_Post::class)
+			->setConstructorArgs(['test_post'])
+			->setMethods(['check'])
+			->getMock();
 		$author
 			->expects($perform_check ? $this->once() : $this->never())
 			->method('check')
@@ -334,7 +355,11 @@ class Jam_Association_BelongstoTest extends Testcase_Database {
 	 */
 	public function test_model_after_save($changed, $perform_save)
 	{
-		$author = $this->getMock('Model_Test_Post', array('check', 'save'), array('test_post'));
+		$author = $this
+			->getMockBuilder(Model_Test_Post::class)
+			->setConstructorArgs(['test_post'])
+			->setMethods(['check', 'save'])
+			->getMock();
 		$author
 			->expects($this->any())
 			->method('check')
