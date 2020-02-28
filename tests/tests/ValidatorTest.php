@@ -450,16 +450,17 @@ class Jam_ValidatorTest extends Testcase_Validate {
 	 */
 	public function test_validate_model()
 	{
-		$mock_rule_present = $this->getMock('Jam_Validator_Rule_Present', array(
-			'validate',
-			'is_processable_attribute'
-		), array(TRUE));
+		$mock_rule_present = $this
+			->getMockBuilder(Jam_Validator_Rule_Present::class)
+			->disableOriginalConstructor()
+			->setMethods(['validate', 'is_processable_attribute'])
+			->getMock();
 
-		$mock_model = $this->getMock('Model_Test_Element', array(
-			'loaded',
-			'changed',
-			'unmapped',
-		), array('test_element'));
+		$mock_model = $this
+			->getMockBuilder(Model_Test_Element::class)
+			->setConstructorArgs(['test_element'])
+			->setMethods(['loaded', 'changed', 'unmapped'])
+			->getMock();
 
 		$mock_model->name = 'xyz';
 		$mock_model->url = 'example.com';
@@ -497,28 +498,20 @@ class Jam_ValidatorTest extends Testcase_Validate {
 			->method('validate')
 			->with($mock_model, 'url', 'example.com');
 
-		$mock_validator = $this->getMock('Jam_Validator', array(
-			'condition_met'
-		), array(
-			array(),
-			array(
-				$mock_rule_present
-			)
-		));
+		$mock_validator = $this
+			->getMockBuilder(Jam_Validator::class)
+			->setConstructorArgs([[], [$mock_rule_present]])
+			->setMethods(['condition_met'])
+			->getMock();
 
 		// Test validator with no attributes
 		$mock_validator->validate_model($mock_model);
 
-		$mock_validator = $this->getMock('Jam_Validator', array(
-			'condition_met'
-		), array(
-			array(
-				'name',
-			),
-			array(
-				$mock_rule_present,
-			)
-		));
+		$mock_validator = $this
+			->getMockBuilder(Jam_Validator::class)
+			->setConstructorArgs([['name'], [$mock_rule_present]])
+			->setMethods(['condition_met'])
+			->getMock();
 
 		$mock_validator
 			->expects($this->at(0))
@@ -529,10 +522,11 @@ class Jam_ValidatorTest extends Testcase_Validate {
 		// Test validator with one attribute and one rule
 		$mock_validator->validate_model($mock_model);
 
-		$mock_rule_format = $this->getMock('Jam_Validator_Rule_Format', array(
-			'is_processable_attribute',
-			'validate',
-		), array(array()));
+		$mock_rule_format = $this
+			->getMockBuilder(Jam_Validator_Rule_Format::class)
+			->setConstructorArgs([[]])
+			->setMethods(['is_processable_attribute', 'validate'])
+			->getMock();
 
 		$mock_rule_format
 			->expects($this->at(0))
@@ -556,18 +550,11 @@ class Jam_ValidatorTest extends Testcase_Validate {
 			->method('validate')
 			->with($mock_model, 'url', 'example.com');
 
-		$mock_validator = $this->getMock('Jam_Validator', array(
-			'condition_met'
-		), array(
-			array(
-				'name',
-				'url',
-			),
-			array(
-				$mock_rule_present,
-				$mock_rule_format,
-			)
-		));
+		$mock_validator = $this
+			->getMockBuilder(Jam_Validator::class)
+			->setConstructorArgs([['name', 'url'], [$mock_rule_present, $mock_rule_format]])
+			->setMethods(['condition_met'])
+			->getMock();
 
 		$mock_validator
 			->expects($this->at(0))
@@ -629,18 +616,11 @@ class Jam_ValidatorTest extends Testcase_Validate {
 			->method('validate')
 			->with($mock_model, 'url', 'example.com');
 
-		$mock_validator = $this->getMock('Jam_Validator', array(
-			'condition_met'
-		), array(
-			array(
-				'name',
-				'url',
-			),
-			array(
-				$mock_rule_present,
-				$mock_rule_format,
-			)
-		));
+		$mock_validator = $this
+			->getMockBuilder(Jam_Validator::class)
+			->setConstructorArgs([['name', 'url'], [$mock_rule_present, $mock_rule_format]])
+			->setMethods(['condition_met'])
+			->getMock();
 
 		$mock_validator
 			->expects($this->at(0))

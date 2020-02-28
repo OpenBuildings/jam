@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests jam array.
  *
@@ -8,7 +10,7 @@
  * @group   jam.array
  * @group   jam.array.association
  */
-class Jam_Array_AssociationTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Array_AssociationTest extends TestCase {
 
 	public $data = array(array('id' => 1, 'name' => 'one'), array('id' => 3, 'name' => 'three'));
 	public $collection;
@@ -24,7 +26,11 @@ class Jam_Array_AssociationTest extends PHPUnit_Framework_DOMTestCase {
 		$this->collection->load_fields($this->data);
 
 		$this->parent = Jam::build('test_author')->load_fields(array('id' => 1, 'name' => 'author'));
-		$this->association = $this->getMock('Jam_Association_Hasmany', array('item_get', 'item_set', 'item_unset', 'clear', 'save', 'collection'));
+		$this->association = $this
+			->getMockBuilder(Jam_Association_Hasmany::class)
+			->disableOriginalConstructor()
+			->setMethods(['item_get', 'item_set', 'item_unset', 'clear', 'save', 'collection'])
+			->getMock();
 		$this->association->initialize(Jam::meta('test_author'), 'test_elements');
 
 		$this->array = new Jam_Array_Association();

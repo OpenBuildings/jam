@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Model functionality.
  *
@@ -8,7 +10,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.core
  */
-class Jam_Query_BuilderTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Query_BuilderTest extends TestCase {
 
 	public function data_resolve_attribute_name()
 	{

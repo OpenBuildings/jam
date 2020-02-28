@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests password fields.
  *
@@ -8,7 +10,7 @@
  * @group   jam.field
  * @group   jam.field.password
  */
-class Jam_Field_PasswordTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Field_PasswordTest extends TestCase {
 
 	public function data_change_password()
 	{

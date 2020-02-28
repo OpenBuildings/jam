@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
-abstract class Testcase_Validate extends PHPUnit_Framework_DOMTestCase {
+use PHPUnit\Framework\TestCase;
+
+abstract class Testcase_Validate extends TestCase {
 
 	public function assertHasError($model, $attribute, $error)
 	{

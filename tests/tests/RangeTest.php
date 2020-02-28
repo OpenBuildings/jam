@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @package Jam
  * @group   jam
  * @group   jam.range
  */
-class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_RangeTest extends TestCase {
 
 	public function data_construct()
 	{
@@ -133,7 +135,8 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	public function test_offsetSet_exception()
 	{
 		$range = new Jam_Range;
-		$this->setExpectedException('Kohana_Exception', 'Use offset 0 for min and offset 1 for max, offset 2 not supported');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Use offset 0 for min and offset 1 for max, offset 2 not supported');
 		$range[2] = 5;
 	}
 
@@ -143,7 +146,8 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	public function test_offsetUnset()
 	{
 		$range = new Jam_Range;
-		$this->setExpectedException('Kohana_Exception', 'Cannot unset range object');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Cannot unset range object');
 		unset($range[0]);
 	}
 
@@ -291,7 +295,11 @@ class Jam_RangeTest extends PHPUnit_Framework_DOMTestCase {
 	 */
 	public function test_serialize()
 	{
-		$range = $this->getMock('Jam_Range', array('__toString'));
+		$range = $this
+			->getMockBuilder(Jam_Range::class)
+			->disableOriginalConstructor()
+			->setMethods(['__toString'])
+			->getMock();
 
 		$range
 			->expects($this->once())

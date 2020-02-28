@@ -49,7 +49,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	 */
 	public function test_select_no_primary_key()
 	{
-		$this->setExpectedException('Jam_Exception_Notfound');
+		$this->expectException('Jam_Exception_Notfound');
 		Jam::all('test_tag')->find_by_slug_insist('-j320lt');
 	}
 
@@ -79,7 +79,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	 */
 	public function test_slug_mismatch()
 	{
-		$this->setExpectedException('Jam_Exception_Slugmismatch');
+		$this->expectException('Jam_Exception_Slugmismatch');
 		Jam::all('test_video')->find_by_slug_insist('video-jp2g-1');
 	}
 
@@ -102,9 +102,10 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	{
 		if ( ! $correct)
 		{
-			$this->setExpectedException('Kohana_Exception');
+			$this->expectException('Kohana_Exception');
 		}
-		Jam::all('test_video')->where_slug($pattern);
+		$object = Jam::all('test_video')->where_slug($pattern);
+		$this->assertInstanceOf('Jam_Query_Builder_Collection', $object);
 	}
 
 	/**
@@ -115,9 +116,10 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	{
 		if ( ! $correct)
 		{
-			$this->setExpectedException('Kohana_Exception');
+			$this->expectException('Kohana_Exception');
 		}
-		Jam::all('test_video')->find_by_slug($pattern);
+		$object = Jam::all('test_video')->find_by_slug($pattern);
+		$this->assertInstanceOf('Model_Test_Video', $object);
 	}
 
 	/**
@@ -237,7 +239,13 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 	 */
 	public function test_matches_slug_insist($slug, $return_value, $expected_exception, $expected_result)
 	{
-		$model = $this->getMock('Model_Test_Video', array('matches_slug'), array('test_video'), '', TRUE, TRUE, TRUE, FALSE, TRUE);
+//		$model = $this->getMock('Model_Test_Video', array('matches_slug'), array('test_video'), '', TRUE, TRUE, TRUE, FALSE, TRUE);
+
+		$model = $this
+			->getMockBuilder(Model_Test_Video::class)
+			->setConstructorArgs(['test_video'])
+			->setMethods(['matches_slug'])
+			->getMock();
 
 		$model
 			->expects($this->once())
@@ -247,7 +255,7 @@ class Jam_Behavior_SluggableTest extends Testcase_Database {
 
 		if ($expected_exception)
 		{
-			$this->setExpectedException($expected_exception);
+			$this->expectException($expected_exception);
 		}
 
 		$actual_result = $model->matches_slug_insist($slug);

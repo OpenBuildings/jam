@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests jam array.
  *
@@ -8,7 +10,7 @@
  * @group   jam.array
  * @group   jam.array.model
  */
-class Jam_Array_ModelTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Array_ModelTest extends TestCase {
 
 	public $data = array(array('id' => 1, 'name' => 'one'), array('id' => 3, 'name' => 'three'));
 	public $collection;
@@ -196,7 +198,11 @@ class Jam_Array_ModelTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_check_changed()
 	{
-		$model = $this->getMock('Model_Test_Element', array('check'), array('test_element'));
+		$model = $this
+			->getMockBuilder(Model_Test_Element::class)
+			->setConstructorArgs(['test_element'])
+			->setMethods(['check'])
+			->getMock();
 		$model
 			->expects($this->at(0))
 			->method('check')
@@ -216,7 +222,11 @@ class Jam_Array_ModelTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_save_changed()
 	{
-		$model = $this->getMock('Model_Test_Element', array('save', 'is_saving'), array('test_element'));
+		$model = $this
+			->getMockBuilder(Model_Test_Element::class)
+			->setConstructorArgs(['test_element'])
+			->setMethods(['save', 'is_saving'])
+			->getMock();
 		$model
 			->expects($this->once())
 			->method('save');

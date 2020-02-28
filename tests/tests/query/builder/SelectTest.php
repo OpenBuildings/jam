@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Model functionality.
  *
@@ -8,7 +10,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.select
  */
-class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Query_Builder_SelectTest extends TestCase {
 
 	public function test_constructor()
 	{
@@ -186,7 +188,7 @@ class Jam_Query_Builder_SelectTest extends PHPUnit_Framework_DOMTestCase {
 
 		if ($expected_sql === NULL)
 		{
-			$this->setExpectedException('Kohana_Exception');
+			$this->expectException('Kohana_Exception');
 		}
 
 		call_user_func_array(array($select, 'except'), $except);

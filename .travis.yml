@@ -4,11 +4,9 @@ language: php
 sudo: false
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
   - 7.1
+  - 7.2
+  - 7.3
 
 env:
   - DEPS=normal
@@ -30,6 +28,9 @@ notifications:
   email: false
   slack:
     secure: bpD3fT1VbGKMSrVCh5NiqQEnKUETpnhrDFXrCjNnQnq0O4aiePmMInpgEDqQiNm7/znjtWSwdyAValSsJXUc1JdkS7rAr95OfKd0vimc7IsSxeqdHYMEFSVrRoJbd6UGyXU6gaexqW02EWHmWvtk18mL2X2M5+o76GamBQWcn/k=
+
+services:
+  - mysql
 
 before_install: composer selfupdate --preview
 

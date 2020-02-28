@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests primary fields.
  *
@@ -8,7 +10,7 @@
  * @group   jam.field
  * @group   jam.field.primary
  */
-class Jam_Field_PrimaryTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Field_PrimaryTest extends TestCase {
 
 	/**
 	 * Primary fields cannot have allow_null set to FALSE.

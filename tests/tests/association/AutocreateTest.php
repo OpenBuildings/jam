@@ -16,7 +16,11 @@ class Jam_Association_AutocreateTest extends Testcase_Database {
 	{
 		parent::setUp();
 
-		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_post'));
+		$this->meta = $this
+			->getMockBuilder(Jam_Meta::class)
+			->setConstructorArgs(['test_post'])
+			->setMethods(['field'])
+			->getMock();
 	}
 
 	public function data_set()

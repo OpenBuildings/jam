@@ -1,12 +1,16 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @package Jam
  * @group   jam
  * @group   jam.form
  * @group   jam.form.general
  */
-class Jam_Form_GeneralTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Form_GeneralTest extends TestCase {
+
+	use Trait_DomSearch;
 
 	protected $form;
 	protected $post;

@@ -75,7 +75,8 @@ class Jam_Upload_SourceTest extends Testcase_Validate_Upload {
 			'error' => $upload_error,
 		);
 
-		$this->setExpectedException('Jam_Exception_Upload', $expected_exception);
+		$this->expectException('Jam_Exception_Upload');
+		$this->expectExceptionMessage($expected_exception);
 
 		Upload_Source::process_type_upload($data, $this->test_local);
 	}

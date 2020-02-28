@@ -22,7 +22,11 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 
 	public function test_attribute_before_check()
 	{
-		$upload = $this->getMock('Upload_File', array('save_to_temp'), array('default', 'file'));
+		$upload = $this
+			->getMockBuilder(Upload_File::class)
+			->setConstructorArgs(['default', 'file'])
+			->setMethods(['save_to_temp'])
+			->getMock();
 		$upload->expects($this->once())->method('save_to_temp');
 		$upload->source('http://example.com/test.png');
 		$this->model->file = $upload;
@@ -49,25 +53,4 @@ class Jam_Field_UploadTest extends Testcase_Validate_Upload {
 		$this->assertEquals('file1.png', $upload->filename());
 		$this->assertNull($upload->source());
 	}
-
-	public function test_save_and_delete()
-	{
-		$this->markTestSkipped(
-			'Unavailability to upload images to rackspace.'
-		);
-
-		$image = Jam::build('test_image');
-
-		$image->file = Upload_Util::combine($this->test_local, 'source', 'logo.gif');
-		$image->save();
-
-		$file = $image->file->file();
-
-		$this->assertFileExists($file);
-
-		$image->delete();
-
-		$this->assertFileNotExists($file);
-	}
-
 }

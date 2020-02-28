@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests jam array.
  *
@@ -8,12 +10,12 @@
  * @group   jam.array
  * @group   jam.array.core
  */
-class Jam_ArrayTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_ArrayTest extends TestCase {
 
 	public function test_content_not_set()
 	{
 		$array = new Jam_Array();
-		$this->setExpectedException('Kohana_Exception');
+		$this->expectException('Kohana_Exception');
 		$array->content();
 	}
 

@@ -16,7 +16,10 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 	{
 		parent::setUp();
 
-		$this->meta = $this->getMock('Jam_Meta', array('field'), array('test_author'));
+		$this->meta = $this->getMockBuilder('Jam_Meta')
+		->setMethods(['field'])
+		->setConstructorArgs(['test_author'])
+		->getMock();
 	}
 
 	public function data_initialize()
@@ -35,7 +38,8 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 	{
 		if ($expected_exception)
 		{
-			$this->setExpectedException('Kohana_Exception', $expected_exception);
+			$this->expectException('Kohana_Exception');
+			$this->expectExceptionMessage($expected_exception);
 		}
 
 		$association = new Jam_Association_Hasmany($options);
@@ -251,12 +255,20 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 	{
 		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
-		$association = $this->getMock('Jam_Association_Hasmany', array('add_items_query', 'remove_items_query'), array(array()));
+		$association = $this->getMockBuilder('Jam_Association_Hasmany')
+			->setMethods(['add_items_query', 'remove_items_query'])
+			->getMock();
 		$association->initialize($this->meta, 'test_posts');
 
-		$collection = $this->getMock('Jam_Array_Association', array('original_ids', 'ids'));
+		$collection = $this->getMockBuilder('Jam_Array_Association')
+			->setMethods(['original_ids', 'ids'])
+			->getMock();
 
-		$dummy = $this->getMock('Jam_Query_Builder_Update', array('execute'), array('test_post'));
+		$dummy = $this->getMockBuilder('Jam_Query_Builder_Update')
+			->setMethods(['execute'])
+			->setConstructorArgs(['test_post'])
+			->getMock();
+
 		$dummy
 			->expects($this->exactly(2))
 			->method('execute');
@@ -290,12 +302,20 @@ class Jam_Association_HasmanyTest extends Testcase_Database {
 	{
 		$model = Jam::build('test_author')->load_fields(array('id' => 1));
 
-		$association = $this->getMock('Jam_Association_Hasmany', array('remove_items_query'), array(array()));
+		$association = $this->getMockBuilder('Jam_Association_Hasmany')
+			->setMethods(['remove_items_query'])
+			->getMock();
 		$association->initialize($this->meta, 'test_posts');
 
-		$collection = $this->getMock('Jam_Array_Association', array('ids', 'valid', 'current'));
+		$collection = $this->getMockBuilder('Jam_Array_Association')
+			->setMethods(['ids', 'valid', 'current'])
+			->getMock();
 
-		$dummy = $this->getMock('Jam_Query_Builder_Update', array('execute'), array('test_post'));
+		$dummy = $this->getMockBuilder('Jam_Query_Builder_Update')
+		->setMethods(['execute'])
+		->setConstructorArgs(['test_post'])
+		->getMock();
+
 		$dummy
 			->expects($this->once())
 			->method('execute');

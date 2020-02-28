@@ -1,11 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
 /**
  * @package Jam
  * @group   jam
  * @group   jam.serialize
  */
-class Jam_SerializeTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_SerializeTest extends TestCase {
 
 	public function test_collection()
 	{

@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @package Jam
  * @group   jam
  * @group   jam.countcache
  */
-class Jam_CountercacheTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_CountercacheTest extends TestCase {
 
 	public function data_update_counters()
 	{

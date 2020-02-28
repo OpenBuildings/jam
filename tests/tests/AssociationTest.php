@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
 /**
  * Tests associatons.
  *
@@ -8,7 +9,7 @@
  * @group   jam.association
  * @group   jam.association.core
  */
-class Jam_AssociationTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_AssociationTest extends TestCase {
 
 	public function data_primary_key()
 	{

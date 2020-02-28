@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Model functionality.
  *
@@ -8,7 +10,7 @@
  * @group   jam.query.builder
  * @group   jam.query.builder.collection
  */
-class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_Query_Builder_CollectionTest extends TestCase {
 
 	public $collection;
 	public $data;
@@ -55,13 +57,15 @@ class Jam_Query_Builder_CollectionTest extends PHPUnit_Framework_DOMTestCase {
 
 	public function test_offsetSet()
 	{
-		$this->setExpectedException('Kohana_Exception', 'Database results are read-only');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Database results are read-only');
 		$this->collection->offsetSet(3, array('id' => 4, 'name' => 'Cleaner'));
 	}
 
 	public function test_offsetUnset()
 	{
-		$this->setExpectedException('Kohana_Exception', 'Database results are read-only');
+		$this->expectException('Kohana_Exception');
+		$this->expectExceptionMessage('Database results are read-only');
 		$this->collection->offsetUnset(0);
 	}
 

@@ -32,20 +32,15 @@ class Jam_deepTest extends Testcase_Database {
 		$this->assertInstanceOf('Model_Test_Post', $author->test_post);
 		$this->assertEquals(3, $author->test_post->id());
 		$this->assertEquals('changed post', $author->test_post->name());
-
-
 	}
 
 	public function test_association_create()
 	{
-		$this->markTestSkipped(
-			'Unavailability to upload images to rackspace.'
-		);
-		
 		$author = Jam::build('test_author', array('name' => 'Joe'));
 		$author->test_posts = array(
 			Jam::build('test_post', array(
 				'name' => 'hardware',
+				'status' => 'published',
 				'test_categories' => array(
 					Jam::build('test_category', array('name' => 'cat1', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat2', 'test_author' => $author)),
@@ -60,6 +55,7 @@ class Jam_deepTest extends Testcase_Database {
 			)),
 			Jam::build('test_post', array(
 				'name' => 'software',
+				'status' => 'published',
 				'test_categories' => array(
 					Jam::build('test_category', array('name' => 'cat3', 'test_author' => $author)),
 					Jam::build('test_category', array('name' => 'cat4', 'test_author' => $author)),
@@ -69,6 +65,7 @@ class Jam_deepTest extends Testcase_Database {
 			)),
 			array(
 				'name' => 'new post',
+				'status' => 'published',
 				'test_cover_image' => array(
 					'file' => 'new file',
 				)
@@ -108,7 +105,6 @@ class Jam_deepTest extends Testcase_Database {
 
 		$this->assertCount(1, $author->test_posts[0]->test_images);
 		$this->assertNotNull($author->test_posts[0]->test_images[0]->test_copyright);
-		$this->assertEquals($author->test_posts[0]->test_images[0]->file, 'file11');
 		$this->assertEquals($author->test_posts[0]->test_images[0]->test_copyright->name(), 'copy 1');
 
 		$this->assertEquals($author->id(), $author->test_posts[1]->test_categories[0]->test_author->id(), 'Should be the same author');
@@ -126,7 +122,6 @@ class Jam_deepTest extends Testcase_Database {
 		$this->assertTrue($author->test_posts[1]->test_blog->loaded());
 
 		$this->assertInstanceOf('Model_Test_Image', $author->test_posts[2]->test_cover_image);
-		$this->assertEquals('new file', (string) $author->test_posts[2]->test_cover_image->file);
 		$this->assertTrue($author->test_posts[2]->test_cover_image->loaded());
 
 		$this->assertTrue($author->test_posts[0]->test_categories->has(1));

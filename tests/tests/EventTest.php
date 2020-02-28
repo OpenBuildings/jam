@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for Jam_Timezone.
  *
@@ -7,7 +9,7 @@
  * @group   jam
  * @group   jam.event
  */
-class Jam_EventTest extends PHPUnit_Framework_DOMTestCase {
+class Jam_EventTest extends TestCase {
 
 	public $event;
 
@@ -21,7 +23,12 @@ class Jam_EventTest extends PHPUnit_Framework_DOMTestCase {
 	{
 		$sender = new stdClass;
 
-		$observer = $this->getMock('Jam_EventTest_Observer', array('callback'));
+		$observer = $this
+			->getMockBuilder(Jam_EventTest_Observer::class)
+			->disableOriginalConstructor()
+			->setMethods(['callback'])
+			->getMock();
+
 		$observer
 			->expects($this->once())
 			->method('callback')
