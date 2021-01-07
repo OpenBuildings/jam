@@ -32,7 +32,8 @@ notifications:
 services:
   - mysql
 
-before_install: composer selfupdate --preview
+before_install:
+  - composer self-update --1
 
 install:
   - if [ "$DEPS" = "normal" ]; then composer install --no-interaction; fi;
