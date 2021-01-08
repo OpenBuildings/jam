@@ -12,7 +12,6 @@ env:
   - DEPS=normal
   - DEPS=highest
   - DEPS=lowest
-  - XDEBUG_MODE=coverage
 
 matrix:
   fast_finish: true
@@ -47,7 +46,7 @@ before_script:
   - mysql openbuildings/jam < tests/database/structure/mysql.sql
 
 script:
-  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+  - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
