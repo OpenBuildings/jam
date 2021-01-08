@@ -12,6 +12,7 @@ env:
   - DEPS=normal
   - DEPS=highest
   - DEPS=lowest
+  - XDEBUG_MODE=coverage
 
 matrix:
   fast_finish: true
